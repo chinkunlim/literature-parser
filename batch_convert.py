@@ -265,8 +265,27 @@ def process_book_dir(book_dir: Path, args) -> bool:
             print(f"No checkpoint status file found at {dashboard}")
         return True
 
-    chapters = sorted(b_chapters_dir.glob("*/"))
-    chapters = [c for c in chapters if (c / f"{c.name}.pdf").exists()]
+    all_ch_dirs = sorted(b_chapters_dir.glob("*/"))
+    pdf_chapters = [c for c in all_ch_dirs if (c / f"{c.name}.pdf").exists()]
+
+    if not pdf_chapters and all_ch_dirs:
+        from book_processor.parsers.epub_parser import EPUBProcessor
+        epub_candidates = list(Path("processed").glob(f"{book_dir.name}*.epub")) + list(Path("inbox").glob(f"{book_dir.name}*.epub"))
+        if not epub_candidates:
+            epub_candidates = list(Path("processed").glob("*.epub")) + list(Path("inbox").glob("*.epub"))
+        if epub_candidates:
+            epub_path = epub_candidates[0]
+            print(f"\n{'='*70}")
+            print(f"📖 Processing: {book_dir.name}")
+            print(f"[📖 EPUB Book Detected] Re-processing via EPUBProcessor: {epub_path.name}")
+            EPUBProcessor.process(str(epub_path), str(book_dir.parent))
+            ch_count = len(list(b_chapters_dir.glob("*/")))
+            print(f"\n{'='*60}")
+            print(f"Book conversion complete: {ch_count}/{ch_count} chapters OK")
+            print("All chapters converted successfully!")
+            return True
+
+    chapters = pdf_chapters
 
     if args.audit:
         print(f"\n[🔍 Visual Quality Audit] Inspecting {len(chapters)} chapters in {book_dir.name}...")
@@ -303,6 +322,7 @@ def process_book_dir(book_dir: Path, args) -> bool:
     print(f"\n{'='*70}")
     print(f"📖 Processing: {book_dir.name}")
     print(f"Found {len(chapters)} chapters to process (force={args.force}).\n")
+
     ok = 0
     failed = []
     total_t = time.time()

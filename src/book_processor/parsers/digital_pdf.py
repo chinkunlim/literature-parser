@@ -91,6 +91,19 @@ class DigitalPDFParser:
         return combined
 
     @staticmethod
+    def _is_running_header(top: float, ph: float) -> bool:
+        """Determines if a text element is part of the top running header (top 4%)."""
+        return top < ph * 0.04
+
+    @staticmethod
+    def _is_running_footer(top: float, ph: float, txt: str, footer_ratio: float = 0.06) -> bool:
+        """Determines if a text element is part of the bottom running footer."""
+        cut_ratio = max(footer_ratio, 0.06)
+        if top > ph * (1.0 - cut_ratio):
+            return bool(re.match(r'^\d+$', txt) or 'copyright' in txt.lower())
+        return False
+
+    @staticmethod
     def extract_page_xml(pdf_path: str, page_num: int) -> str:
         """Extracts pdftohtml XML representation of a single page."""
         try:
@@ -101,6 +114,9 @@ class DigitalPDFParser:
             return proc.stdout.decode('utf-8', errors='ignore')
         except subprocess.TimeoutExpired:
             logger.warning("pdftohtml timed out (30s) extracting page %d XML from '%s'", page_num, pdf_path)
+            return ""
+        except subprocess.CalledProcessError as e:
+            logger.warning("pdftohtml failed with exit code %d on page %d: %s", e.returncode, page_num, e)
             return ""
         except Exception as e:
             logger.debug("pdftohtml failed on page %d: %s", page_num, e)
@@ -125,6 +141,12 @@ class DigitalPDFParser:
                     stderr=subprocess.DEVNULL, timeout=30
                 ).decode('utf-8', errors='ignore')
                 return MathLaTeXConverter.process_text(raw.strip())
+            except subprocess.TimeoutExpired:
+                logger.warning("pdftotext timed out (30s) on page %d: '%s'", page_num, pdf_path)
+                return ""
+            except subprocess.CalledProcessError as e:
+                logger.warning("pdftotext failed with exit code %d on page %d: %s", e.returncode, page_num, e)
+                return ""
             except Exception as e:
                 logger.debug("pdftotext fallback failed on page %d: %s", page_num, e)
                 return ""
@@ -179,13 +201,21 @@ class DigitalPDFParser:
                 cleaned = clean_punctuation_spacing(cleaned)
                 cleaned = repair_hyphens(cleaned)
                 if cleaned:
+                    page_elem.clear()
                     return MathLaTeXConverter.process_text(cleaned)
+            except subprocess.TimeoutExpired:
+                logger.warning("pdftotext -layout timed out (30s) on page %d: '%s'", page_num, pdf_path)
+            except subprocess.CalledProcessError as e:
+                logger.warning("pdftotext -layout failed with exit code %d on page %d: %s", e.returncode, page_num, e)
             except Exception as e:
                 logger.debug("pdftotext fallback failed on page %d: %s", page_num, e)
 
-
         # 1. Pre-extract Learning Objectives
-        lo_md, lo_consumed = LayoutDetector.extract_learning_objectives(page_elem, fonts)
+        try:
+            lo_md, lo_consumed = LayoutDetector.extract_learning_objectives(page_elem, fonts)
+        except Exception as e:
+            logger.warning("extract_learning_objectives failed on page %d: %s", page_num, e)
+            lo_md, lo_consumed = "", set()
 
         # 2. Pre-extract Concept Map (Only if page has Learning Objectives or chapter title on page 1)
         # Never run concept map on back-matter sections (Appendix, Glossary, Index, References)
@@ -203,24 +233,36 @@ class DigitalPDFParser:
         map_md = ""
         map_consumed = set()
         if not skip_concept_map and (lo_consumed or page_num == 1):
-            lo_top = 9999.0
-            if lo_consumed:
-                lo_top = min(float(t.attrib.get('top', 0)) for t in lo_consumed)
-            header_bottom = 0.0
-            for t in page_elem.findall('text'):
-                top = float(t.attrib.get('top', 0))
-                h = float(t.attrib.get('height', 20))
-                fid = t.attrib.get('font', '')
-                sz = fonts.get(fid, {}).get('size', 12)
-                if top < lo_top and sz >= 25:
-                    header_bottom = max(header_bottom, top + h)
-            map_md, map_consumed = LayoutDetector.reconstruct_concept_map(page_elem, fonts, header_bottom, lo_top)
+            try:
+                lo_top = 9999.0
+                if lo_consumed:
+                    lo_top = min(float(t.attrib.get('top', 0)) for t in lo_consumed)
+                header_bottom = 0.0
+                for t in page_elem.findall('text'):
+                    top = float(t.attrib.get('top', 0))
+                    h = float(t.attrib.get('height', 20))
+                    fid = t.attrib.get('font', '')
+                    sz = fonts.get(fid, {}).get('size', 12)
+                    if top < lo_top and sz >= 25:
+                        header_bottom = max(header_bottom, top + h)
+                map_md, map_consumed = LayoutDetector.reconstruct_concept_map(page_elem, fonts, header_bottom, lo_top)
+            except Exception as e:
+                logger.warning("reconstruct_concept_map failed on page %d: %s", page_num, e)
+                map_md, map_consumed = "", set()
 
         # 3. Pre-extract Page Tables (e.g. Table 1.1, Table 2.1, Table 2.2) - priority over margin notes
-        page_tables, tbl_consumed = LayoutDetector.extract_page_tables(page_elem, fonts, pw, ph)
+        try:
+            page_tables, tbl_consumed = LayoutDetector.extract_page_tables(page_elem, fonts, pw, ph)
+        except Exception as e:
+            logger.warning("extract_page_tables failed on page %d: %s", page_num, e)
+            page_tables, tbl_consumed = [], set()
 
         # 4. Pre-extract Exhibits (e.g. Exhibit 3.1, Exhibit 4.1)
-        page_exhibits, ex_consumed = LayoutDetector.extract_exhibits(page_elem, fonts, pw, ph, page_num)
+        try:
+            page_exhibits, ex_consumed = LayoutDetector.extract_exhibits(page_elem, fonts, pw, ph, page_num)
+        except Exception as e:
+            logger.warning("extract_exhibits failed on page %d: %s", page_num, e)
+            page_exhibits, ex_consumed = [], set()
 
         # 5. Pre-extract Margin Glossaries (Odd = Right margin, Even = Left margin)
         # Tables and exhibits already consumed elements so they won't be stolen by margin notes
@@ -256,12 +298,12 @@ class DigitalPDFParser:
             font_info = fonts.get(font_id, {'is_bold': False, 'is_italic': False, 'is_math': False, 'family': '', 'size': 12})
 
             # Check running header (top 4%)
-            if top < ph * 0.04:
+            if cls._is_running_header(top, ph):
                 continue
             # Check running footer: drop if pure page number digit or copyright at bottom 6%
             txt_raw = ''.join(text_el.itertext()).strip()
             footer_ratio = _STYLE.get("footer_cut_ratio", 0.06)
-            if top > ph * (1.0 - max(footer_ratio, 0.06)) and (re.match(r'^\d+$', txt_raw) or 'copyright' in txt_raw.lower()):
+            if cls._is_running_footer(top, ph, txt_raw, footer_ratio):
                 continue
 
             # Filter unmapped vector font noise strings
@@ -745,6 +787,7 @@ class DigitalPDFParser:
         if _STYLE.get("gloss_placement") == "chapter_end":
             cls.collect_inline_bold_terms(result_md, page_num)
 
+        page_elem.clear()
         return result_md
 
 

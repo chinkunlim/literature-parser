@@ -147,8 +147,12 @@ class BookProcessorOrchestrator:
             for line in out.splitlines():
                 if line.startswith('Pages:'):
                     return int(line.split(':')[1].strip())
-        except Exception:
-            pass
+        except subprocess.TimeoutExpired:
+            logger.warning("pdfinfo timed out (15s) for '%s'", pdf_path)
+        except subprocess.CalledProcessError as e:
+            logger.warning("pdfinfo returned error %d for '%s'", e.returncode, pdf_path)
+        except Exception as e:
+            logger.debug("Failed to get PDF page count for '%s': %s", pdf_path, e)
         return 0
 
     @staticmethod
@@ -172,8 +176,13 @@ class BookProcessorOrchestrator:
                     if enc != 'jbig2' and (w >= 1000 and h >= 1000):
                         full_page_images += 1
             return full_page_images >= (sample_pages * 0.5)
-        except Exception:
-            return False
+        except subprocess.TimeoutExpired:
+            logger.warning("pdfimages -list timed out (30s) for '%s'", pdf_path)
+        except subprocess.CalledProcessError as e:
+            logger.warning("pdfimages -list returned error %d for '%s'", e.returncode, pdf_path)
+        except Exception as e:
+            logger.debug("Failed to check if scanned PDF for '%s': %s", pdf_path, e)
+        return False
 
     @staticmethod
     def get_pdf_sections(pdf_path: str) -> list:
@@ -196,6 +205,7 @@ class BookProcessorOrchestrator:
 
         sections = self.get_pdf_sections(pdf_path)
         if not sections:
+            logger.warning("No sections identified for '%s'", book_name)
             print(f"[!] Unable to identify sections for {book_name}")
             return
 
@@ -484,6 +494,7 @@ class BookProcessorOrchestrator:
     # STAGE 3 & ALL: Full Book / Smart Resume Engine
     # =========================================================================
     def process_pdf_book(self, pdf_path: str, target_chapter: str = None, resume: bool = False):
+        QualityInvariantGuard.check_pdf_pre_split(pdf_path)
         book_name = Path(pdf_path).stem
         book_out = os.path.join(self.output_dir, sanitize_filename(book_name))
         chapters_root = os.path.join(book_out, 'chapters')
@@ -491,6 +502,7 @@ class BookProcessorOrchestrator:
 
         sections = self.get_pdf_sections(pdf_path)
         if not sections:
+            logger.warning("No sections identified for '%s'", book_name)
             print(f"[!] Unable to identify sections for {book_name}")
             return
 

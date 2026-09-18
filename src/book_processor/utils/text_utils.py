@@ -4,11 +4,14 @@ Text Processing Utilities
 """
 
 import re
+from typing import Optional
 from book_processor.config import MAX_FILENAME_LEN
 
 
 def sanitize_filename(name: str, max_len: int = MAX_FILENAME_LEN) -> str:
     """Sanitize string to be safe for filenames across OS platforms."""
+    if not name:
+        return "untitled"
     name = re.sub(r'[/\\\\:*?\"<>|]', ' - ', name)
     name = re.sub(r'\s+', ' ', name).strip()
     name = name.rstrip('. ')
@@ -19,6 +22,8 @@ def sanitize_filename(name: str, max_len: int = MAX_FILENAME_LEN) -> str:
 
 def repair_hyphens(text: str) -> str:
     """Re-flows line-wrapped words broken by a hyphen (e.g., 'coun-\\n seling' -> 'counseling')."""
+    if not text:
+        return ""
     return re.sub(r'([a-zA-Z]+)-\s*\n\s*([a-zA-Z]+)', r'\1\2', text)
 
 
@@ -35,6 +40,9 @@ def stitch_cross_page_continuity(text: str) -> str:
        comment or joins the text with a single line break so CommonMark renders
        them as part of the exact same paragraph.
     """
+    if not text:
+        return ""
+
     # 1. Hyphenated word split across page comment
     # Pattern: word- \n+ <!-- Page N --> \n+ lowercase_suffix
     def _join_hyphen_across_page(m):
@@ -115,6 +123,8 @@ def normalize_ligatures(text: str) -> str:
     Unpacks PDF typographic ligatures (fi, fl, ffi, ffl, etc.) into constituent characters.
     Prevents OCR and vocabulary check degradation caused by font ligature collapsing.
     """
+    if not text:
+        return ""
     for lig, replacement in LIGATURE_MAP.items():
         if lig in text:
             text = text.replace(lig, replacement)
@@ -128,6 +138,8 @@ def clean_typography_artifacts(text: str) -> str:
     - Orphaned page-margin artifacts (e.g. solitary '|' or '¦')
     - Font ligatures
     """
+    if not text:
+        return ""
     text = normalize_ligatures(text)
     # Standardize dashes
     text = re.sub(r'---', '—', text)
@@ -143,6 +155,8 @@ def clean_typography_artifacts(text: str) -> str:
 
 def clean_punctuation_spacing(text: str) -> str:
     """Fixes punctuation spacing artifacts, un-collapses ligatures, and cleans typography."""
+    if not text:
+        return ""
     text = clean_typography_artifacts(text)
     text = re.sub(r'\s+([,.:;?!])', r'\1', text)
     # Fix trailing page-number colons at end-of-line (e.g. '166:' → '166')
@@ -151,11 +165,13 @@ def clean_punctuation_spacing(text: str) -> str:
     return text
 
 
-def clean_page_text_artifacts(raw: str, page_num: int = None) -> str:
+def clean_page_text_artifacts(raw: str, page_num: Optional[int] = None) -> str:
     """
     Strips publisher copyright disclaimers, top running headers, and bottom running footers
     from raw text pages (e.g. extracted via pdftotext) so paragraphs flow cleanly.
     """
+    if not raw:
+        return ""
     lines = raw.splitlines()
     filtered = []
     for l in lines:
@@ -207,6 +223,8 @@ def clean_page_text_artifacts(raw: str, page_num: int = None) -> str:
 
 def format_chapter_title(title: str) -> str:
     """Standardizes chapter titles into 'Ch01 Title' format."""
+    if not title:
+        return "untitled"
     m = re.search(r'^(?:Chapter\s+)?(\d+)[\.\s:\-]+(.*)', title, re.I)
     if m:
         ch_num = int(m.group(1))
@@ -217,6 +235,8 @@ def format_chapter_title(title: str) -> str:
 
 def format_appendix_title(title: str) -> str:
     """Standardizes appendix titles into 'Appendix A Title' format."""
+    if not title:
+        return "Appendix"
     clean = title.strip()
     if clean.lower() == 'appendix':
         return "Appendix"

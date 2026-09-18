@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "book-processor"
+version = "2.2.0"
+description = "Enterprise-grade PDF & EPUB Structured Markdown & Image Extractor with Neural Layout OCR, LaTeX Math & Local Ollama AI Verification"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    { name = "Antigravity", email = "antigravity@google.com" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: Text Processing :: Markup :: Markdown",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence"
+]
+
+[project.scripts]
+book-processor = "book_processor.cli:main"
+verify-accuracy = "book_processor.verification.verifier:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

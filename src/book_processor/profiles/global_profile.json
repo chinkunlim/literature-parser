@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "name": "Global Minimalist Profile",
+  "description": "Universal contract for clean, distraction-free markdown typography across all books.",
+  "learning_objectives": {
+    "style": "numbered_plain",
+    "use_blockquote": false,
+    "emoji": "🎯",
+    "number_format": "**{num}**",
+    "colon_after_number": false
+  },
+  "study_questions": {
+    "callout": "[!TIP]",
+    "strip_nested_quotes": true
+  },
+  "margin_glossary": {
+    "placement": "chapter_end",
+    "section_title": "## 🗂️ Chapter Key Terms & Active Recall",
+    "format": "anki",
+    "include_in_body": false
+  },
+  "tables": {
+    "heading_style": "bold-label",
+    "merged_rows_strategy": "html_colspan",
+    "consume_footnotes": true
+  },
+  "typography": {
+    "math_arrows": true,
+    "arrow_symbol": "$\\rightarrow$",
+    "css_justify_body": true,
+    "css_heading_align": "left",
+    "css_blockquote_align": "left"
+  },
+  "eoc": {
+    "practice_test_ensure_spacing": true,
+    "sites_format": "bullet_with_indent"
+  }
+}

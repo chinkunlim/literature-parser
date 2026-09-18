@@ -1,0 +1,31 @@
+{
+  "publisher": "Cengage Learning",
+  "archetype": "cengage_standard",
+  "geometry": {
+    "page_width": 918.0,
+    "page_height": 1174.0,
+    "header_cut_ratio": 0.05,
+    "footer_cut_ratio": 0.05,
+    "odd_page_margin_x": [0.68, 0.98],
+    "even_page_margin_x": [0.02, 0.32]
+  },
+  "typography": {
+    "h1_min_size": 24.0,
+    "h2_min_size": 18.0,
+    "h3_min_size": 14.0
+  },
+  "special_blocks": {
+    "has_concept_map": false,
+    "lo_pattern": "^(?:LO\\s*\\d+|\\d+\\.\\d+)",
+    "has_margin_glossary": true,
+    "gloss_placement": "chapter_end",
+    "exhibit_heading_pattern": "^(?:Feature|Case|Focus)\\s+\\d+",
+    "eoc_heading_patterns": [
+      "^Chapter Review\\b",
+      "^Key Terms\\b",
+      "^Summary\\b",
+      "^Study Questions\\b",
+      "^Critical Thinking Exercises\\b"
+    ]
+  }
+}

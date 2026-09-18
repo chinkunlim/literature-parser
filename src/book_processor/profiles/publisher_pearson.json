@@ -1,0 +1,33 @@
+{
+  "publisher": "Pearson Education",
+  "archetype": "pearson_standard",
+  "geometry": {
+    "page_width": 918.0,
+    "page_height": 1174.0,
+    "header_cut_ratio": 0.04,
+    "footer_cut_ratio": 0.04,
+    "odd_page_margin_x": [0.70, 1.0],
+    "even_page_margin_x": [0.0, 0.30]
+  },
+  "typography": {
+    "h1_min_size": 22.0,
+    "h2_min_size": 16.0,
+    "h3_min_size": 13.0,
+    "body_font_family": "MinionPro",
+    "margin_font_family": "Frutiger"
+  },
+  "special_blocks": {
+    "has_concept_map": true,
+    "lo_pattern": "^\\d+\\.\\d+",
+    "has_margin_glossary": true,
+    "gloss_placement": "chapter_end",
+    "exhibit_heading_pattern": "^EXHIBIT\\s+\\d+\\.\\d+",
+    "eoc_heading_patterns": [
+      "^Key Terms and Concepts\\b",
+      "^Related Internet Sites\\b",
+      "^Practice Test\\b",
+      "^Challenge Exercises\\b",
+      "^Summary\\b"
+    ]
+  }
+}

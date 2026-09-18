@@ -1,0 +1,44 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+*.egg-info/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE / Editors
+.idea/
+.vscode/
+*.swp
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Textbook inputs, outputs, and temporary archives (heavy binaries)
+inbox/*
+!inbox/.gitkeep
+processed/*
+!processed/.gitkeep
+output/*
+!output/.gitkeep
+
+# Local testing and scratch dumps
+*.xml
+*.log
+.book_processor/

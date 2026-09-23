@@ -55,6 +55,12 @@ uv run python run.py handoff "去上課暫存進度"
 uv run python run.py archive-sessions
 ```
 
+### ⑥ 軟硬體一體化看門狗 (Integrated Watchdog)
+```bash
+# 常駐監聽 data/input/ 新檔案，同時守衛 RAM、SSD 與電池安全，來檔即轉
+uv run python run.py watchdog
+```
+
 ---
 
 ## 3. 常見狀況與疑難排解 (Troubleshooting)

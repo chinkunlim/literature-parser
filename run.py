@@ -398,8 +398,89 @@ def cmd_archive_sessions(args):
         else:
             print(f"  - 紀錄 (Transcript): {'✅ 已存在' if transcript_file.exists() else '⚠️ 來源日誌不存在'}")
 
+# ==============================================================================
+# 6. WATCHDOG: Integrated Hardware & Directory Monitor
+# ==============================================================================
+def cmd_watchdog(args):
+    """
+    Intelligent Watchdog: Monitors data/input/ for new books/literature
+    while continuously auditing macOS hardware health (RAM, Battery, SSD, MPS, Ollama).
+    Auto-triggers safe conversion when files arrive.
+    """
+    import time
+
+    books_in = ROOT / "data" / "input" / "books"
+    lit_in = ROOT / "data" / "input" / "literature"
+    books_in.mkdir(parents=True, exist_ok=True)
+    lit_in.mkdir(parents=True, exist_ok=True)
+
+    print("\n" + "=" * 65)
+    print("👁️ [WATCHDOG] 軟硬體一體化智慧看門狗 (Hardware & Input Monitor)")
     print("=" * 65)
-    print("🎉 全數 5 個對話雙軌會話封存完成！\n")
+    print("• 監控目錄 (Books)     : data/input/books/")
+    print("• 監控目錄 (Literature): data/input/literature/")
+    print("• 守衛防線             : RAM ≥ 4GB | SSD ≥ 10GB | 非低電量電池模式")
+    print("=" * 65 + "\n")
+
+    def scan_files():
+        found = {}
+        for p in books_in.iterdir():
+            if p.is_file() and p.suffix.lower() in (".pdf", ".epub") and not p.name.startswith("."):
+                found[p] = "book"
+        for p in lit_in.iterdir():
+            if p.is_file() and p.suffix.lower() in (".pdf", ".epub") and not p.name.startswith("."):
+                found[p] = "literature"
+        return found
+
+    known = scan_files()
+    print(f"ℹ️ [Watchdog] 目前已有檔案: {len(known)} 個。等待新檔案投入...\n")
+
+    iterations = 0
+    max_iter = 1 if getattr(args, "once", False) else 999999
+
+    while iterations < max_iter:
+        iterations += 1
+        hw = check_hardware_safety(ignore_battery=getattr(args, "ignore_battery", False))
+        m = hw["metrics"]
+
+        current = scan_files()
+        new_files = [f for f in current if f not in known]
+
+        if getattr(args, "once", False) or new_files:
+            print(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] 🩺 系統硬體巡檢: "
+                  f"RAM: {m['ram_available_gb']}GB (門檻≥4GB), "
+                  f"SSD: {m['disk_free_gb']}GB, "
+                  f"電源: {m['power_status']}")
+
+        for nfile in new_files:
+            doc_type = current[nfile]
+            print(f"\n📥 [新檔案偵測] 發現待處理文件: [{doc_type.upper()}] {nfile.name}")
+            try:
+                s1 = nfile.stat().st_size
+                time.sleep(0.3)
+                s2 = nfile.stat().st_size
+                if s1 != s2 or s1 == 0:
+                    print("  ⏳ 檔案正在寫入中，暫緩處理...")
+                    continue
+            except Exception:
+                continue
+
+            if not hw["safe_for_batch_ocr"]:
+                print(f"  🛑 硬體資源不足，暫停自動處理: {'; '.join(hw['reasons'])}")
+                break
+
+            print(f"  🚀 自動啟動轉檔: {doc_type} 管線...")
+            class DummyArgs:
+                file = str(nfile)
+                type = doc_type
+                ignore_battery = getattr(args, "ignore_battery", False)
+            cmd_process(DummyArgs())
+            known[nfile] = doc_type
+
+        if getattr(args, "once", False):
+            break
+
+        time.sleep(3)
 
 
 def main():
@@ -447,6 +528,12 @@ def main():
     # archive-sessions
     p_arch = subparsers.add_parser("archive-sessions", help="自動掃描並更新所有歷史對話之雙軌歸檔 (Summary + Transcript)")
     p_arch.set_defaults(func=cmd_archive_sessions)
+
+    # watchdog
+    p_watch = subparsers.add_parser("watchdog", help="啟動軟硬體一體化看門狗，監控目錄檔案並確保硬體安全")
+    p_watch.add_argument("--once", action="store_true", help="僅執行一次巡檢後離開")
+    p_watch.add_argument("--ignore-battery", action="store_true", help="忽略電池電量限制")
+    p_watch.set_defaults(func=cmd_watchdog)
 
     args = parser.parse_args()
     args.func(args)

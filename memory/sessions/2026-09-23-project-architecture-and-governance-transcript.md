@@ -20187,3 +20187,522 @@ Output:
 
 ---
 
+## 🤖 [Step 898] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:41:42Z`
+
+Created At: 2026-09-24T00:41:42+08:00
+Completed At: 2026-09-24T00:41:45+08:00
+
+The command exited with code 0.
+Output:
+
+=================================================================
+🗄️ [ARCHIVE-SESSIONS] 全自動對話雙軌歸檔 (Dual-Track Archiving)
+=================================================================
+• 會話 [2026-09-18] 書籍轉檔管線初版開發與版面分析 (ID: e81a99f1...):
+  - 總結 (Summary)   : ✅ 已存在 (2026-09-18-initial-textbook-pipeline-development-summary.md)
+  - 紀錄 (Transcript): ✅ 已同步更新 (6086.5 KB)
+• 會話 [2026-09-18] Research Methods 教科書轉檔與排版優化 (ID: 74bb97d9...):
+  - 總結 (Summary)   : ✅ 已存在 (2026-09-18-research-methods-book-conversion-summary.md)
+  - 紀錄 (Transcript): ✅ 已同步更新 (1732.8 KB)
+• 會話 [2026-09-20] 排版、表格與跨頁內容語義修復 (ID: cb3aa69b...):
+  - 總結 (Summary)   : ✅ 已存在 (2026-09-20-typography-tables-and-formula-refinement-summary.md)
+  - 紀錄 (Transcript): ✅ 已同步更新 (1023.6 KB)
+• 會話 [2026-09-23] 學術期刊雙欄管線開發與 Ollama 邊界分流 (ID: e7e0ccf8...):
+  - 總結 (Summary)   : ✅ 已存在 (2026-09-23-academic-journal-pipeline-and-dual-column-summary.md)
+  - 紀錄 (Transcript): ✅ 已同步更新 (2532.4 KB)
+• 會話 [2026-09-23] 專案架構治理、軟硬體守衛與跨 Agent 規範 (ID: d934528e...):
+  - 總結 (Summary)   : ✅ 已存在 (2026-09-23-project-architecture-and-governance-summary.md)
+  - 紀錄 (Transcript): ✅ 已同步更新 (971.1 KB)
+
+
+
+---
+
+## 🤖 [Step 899] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:41:49Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `run_command`: *"Saving updated transcript"* ("Save transcript")
+
+---
+
+## 🤖 [Step 900] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:41:49Z`
+
+Created At: 2026-09-24T00:41:49+08:00
+Completed At: 2026-09-24T00:41:50+08:00
+
+The command exited with code 0.
+Output:
+[main 33835a5] [2026-09-24] docs: refresh conversation transcript in memory/sessions
+ 1 file changed, 572 insertions(+)
+
+✅ [Local Git] Committed (in English): [2026-09-24] docs: refresh conversation transcript in memory/sessions
+
+
+
+---
+
+## 🤖 [Step 901] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:41:59Z`
+
+這兩個資料夾是專案在**架構演進歷程中所留下的產物**：
+
+---
+
+### 1. `.agent/skills/`（現行官方唯一標準技能目錄 ✅）
+- **用途**：這是 **Google Antigravity IDE 與現代 AI Agent 體系的官方原生標準目錄**。
+- **特點**：
+  - Antigravity 啟動與掃描工作區時，會**自動掛載並辨識**此目錄下的所有技能：
+    - `document-processor`（👑 總調度技能）
+    - `textbook-processor`（📖 長篇教科書領域子技能）
+    - `literature-processor`（📑 學術文獻雙欄子技能）
+    - `book-processor`（既有相容技能）
+  - 這裡的內容與當前專案的最新規範（如 `data/input/`、`data/output/`、`literature/`、`run.py`）**100% 同步**。
+
+---
+
+### 2. `skills/`（歷史過渡殘留目錄，已過時 ❌）
+- **由來**：這是 9 月 18 日早期版本（當時採用 OpenClaw 舊架構）留下的舊目錄。
+- **問題**：
+  - 裡面只有一個舊檔案 `skills/book-processor/SKILL.md`。
+  - 經檢查其內容，裡面仍然記載著早已被我們淘汰的舊路徑與舊腳本（例如 `inbox/`、`processed/`、`python3 book_processor.py`、`batch_convert.py`）。
+  - 代碼庫與現代 Antigravity 完全沒有引用此目錄，留著它只會造成 AI 與人類被兩個重複資料夾混淆。
+
+---
+
+### 🧹 處理動作 (依據「鐵律 26：過渡產物即時收斂與零技術包袱」)
+
+依據專案治理的「零歷史包袱」原則，凡被新架構取代之舊產物，應在發現時即時物理清理。
+
+我剛剛已經主動為您完成以下清理與驗證：
+1. **安全移除**：執行 `git rm -r skills/` 徹底清除該過渡目錄。
+2. **測試驗證**：執行單元測試 `python -m unittest discover tests`，**171 個測試全數在 0.11 秒內通過 (100% PASS)**，證明移除 `skills/` 對系統毫無負面影響。
+3. **文檔與 Git 存檔**：更新 `memory/TASKS.md`，並以標準英文 Commit 完成存檔：
+   `[2026-09-24] chore: prune legacy skills/ folder in favor of standard .agent/skills/`。
+
+現在整個專案維持**單一真理來源 (Single Source of Truth)**，所有 Agent Skills 統一歸屬於唯一的官方標準目錄：**`.agent/skills/`**！
+
+---
+
+## 👤 [Step 902] 使用者指令 (User Input)
+**時間**: `2026-09-23T16:40:53Z`
+
+每次開始新對話，要先讀哪個md檔案？
+
+<ADDITIONAL_METADATA>
+The current local time is: 2026-09-24T00:40:53+08:00.
+</ADDITIONAL_METADATA>
+
+---
+
+## 🤖 [Step 903] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:42:08Z`
+
+每次開啟新對話時，依據角色不同，閱讀順序有非常明確的規範：
+
+---
+
+### 🤖 一、 AI Agent 開場的「黃金三部曲」閱讀順序
+
+當一個全新的 AI（或新對話的 Antigravity / Claude / Cursor）進入專案時，**必須按以下順序讀取這 3 個 Markdown 檔案**：
+
+| 順序 | 檔案路徑 | 為什麼先讀它？（AI 核心目標） |
+| :--- | :--- | :--- |
+| **🥇 第一優先** | **[AGENTS.md](file:///Users/limchinkun/Desktop/books/AGENTS.md)**<br>*(專案跨 AI 憲法)* | **搞懂工作底線**：<br>1. 絕對嚴禁未授權 `git push`（Local-Only）。<br>2. 提交前必須更新文檔，且 **Commit 必須全英文**。<br>3. 拒絕幽靈修復，主動執行指令，不可消極叫使用者去跑。 |
+| **🥈 第二優先** | **[memory/HANDOFF.md](file:///Users/limchinkun/Desktop/books/memory/HANDOFF.md)**<br>*(離席交接卡片)* | **掌握當前上下文**：<br>1. 上次使用者為何中斷（如去上課、外出）。<br>2. 上次做到哪一個步驟。<br>3. **「下次接手的第一步指令」是什麼**，直接接續進度，絕不反問使用者「要做什麼」。 |
+| **🥉 第三優先** | **[memory/TASKS.md](file:///Users/limchinkun/Desktop/books/memory/TASKS.md)**<br>*(當前 Sprint 看板)* | **確認任務全景**：<br>1. 查看當前 Sprint 哪些項目已完成 `[x]`。<br>2. 哪些項目尚未完成 `[ ]`，作為本次對話的主攻目標。 |
+
+---
+
+### ⚡ 最佳自動化實踐（AI 開場一行指令全搞定）
+
+在我們的架構下，AI 甚至**不需要逐一手動開檔**！
+
+依據 `AGENTS.md` 鐵律 0，任何 AI 進入專案的第一秒，只要在終端機執行：
+```bash
+uv run python run.py agent-init
+```
+系統會**自動將 `AGENTS.md` 的行為鐵律與 `memory/HANDOFF.md` 的最新交接狀態一次性匯總輸出在終端機**，AI 3 秒內自動喚醒、瞬間找回完整記憶！
+
+---
+
+### 👤 二、 如果是您（人類開發者）回到專案
+
+如果您隔了一兩週或幾個月重新打開專案，想快速回憶起怎麼操作：
+- **首要閱讀：[OPERATIONS.md](file:///Users/limchinkun/Desktop/books/OPERATIONS.md)（30 秒冷啟動手冊）**
+- 裡面整理好了 Top 常用轉檔指令、存檔指令、看門狗常駐方式與軟硬體疑難排解，30 秒內即可直接上手！
+
+---
+
+## 👤 [Step 904] 使用者指令 (User Input)
+**時間**: `2026-09-23T16:43:12Z`
+
+好，我要結束這個對話，開心的對話了。
+該更新、該紀錄、該git的，都一次過處理完，這個對話就不會再繼續了。
+
+<ADDITIONAL_METADATA>
+The current local time is: 2026-09-24T00:43:12+08:00.
+</ADDITIONAL_METADATA>
+
+---
+
+## 🤖 [Step 905] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:43:26Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `view_file`: *"Viewing HANDOFF.md"* ("View HANDOFF.md")
+
+---
+
+## 🤖 [Step 906] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:43:26Z`
+
+Created At: 2026-09-24T00:43:26+08:00
+Completed At: 2026-09-24T00:43:29+08:00
+File Path: `file:///Users/limchinkun/Desktop/books/memory/HANDOFF.md`
+Total Lines: 32
+Total Bytes: 1429
+Showing lines 1 to 32
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # 🪪 memory/HANDOFF.md (離席交接卡片)
+2: 
+3: > 💡 本檔案供「去上課、外出、或切換至不同 AI Agent」時無縫交接使用。
+4: > 每次離開前由 AI 自動更新；接手之 AI 請直接從最頂部的交接卡開始執行。
+5: 
+6: ---
+7: 
+8: ### 🕒 最新交接時間：2026-09-24 00:24
+9: 
+10: #### 1. 剛剛完成了什麼？
+11: - 完成全專案核心架構重構與文件治理。
+12: - 建立所有核心文檔：`OPERATIONS.md`, `AGENTS.md`, `CHANGELOG.md`, `PROJECT_INIT_STANDARD.md`。
+13: - 建立軟硬體安全守衛 (`hardware.py` / `ollama_guard.py` / `validator.py`) 與 `run.py` 總入口。
+14: - 配置了 Git 物理 Push 鎖，並建立 `data/` 雙軌實體分流與隔離區。
+15: 
+16: #### 2. 目前專案狀態與代碼位置
+17: - 分支：`main` (或 `dev`)
+18: - 當前狀態：所有治理檔案與核心程式碼皆已建立，所有單元檢驗測試通過。
+19: 
+20: #### 3. 當前已知的挑戰 / 待解決問題
+21: - Ollama 需要確保本地已 pull 至少一個推薦模型（如 `qwen2.5:7b` 或 `deepseek-r1:8b`），否則守衛會降級為規則檢驗。
+22: 
+23: #### 4. 下一個 AI 回來接手時的第 1 步指令
+24: ```bash
+25: # 步驟 1：執行健康檢查確認軟硬體狀態
+26: uv run python run.py doctor
+27: 
+28: # 步驟 2：執行 Ollama 自動除錯自檢
+29: uv run python run.py test-ollama-auto-trigger
+30: ```
+31: 接手者請直接向使用者彙報目前環境健康狀態，並依使用者下一步需求繼續進行書籍或期刊轉檔！
+32: 
+The above content shows the entire, complete file contents of the requested file.
+
+
+---
+
+## 🤖 [Step 907] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:43:36Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `write_to_file`: *"Updating HANDOFF.md with final session summary"* ("Update HANDOFF.md")
+
+---
+
+## 🤖 [Step 908] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:43:37Z`
+
+Created At: 2026-09-24T00:43:37+08:00
+Completed At: 2026-09-24T00:43:37+08:00
+Created file file:///Users/limchinkun/Desktop/books/memory/HANDOFF.md with requested content.
+If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+
+---
+
+## 🤖 [Step 909] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:43:40Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `view_file`: *"Viewing TASKS.md"* ("View TASKS.md")
+
+---
+
+## 🤖 [Step 910] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:43:40Z`
+
+Created At: 2026-09-24T00:43:40+08:00
+Completed At: 2026-09-24T00:43:40+08:00
+File Path: `file:///Users/limchinkun/Desktop/books/memory/TASKS.md`
+Total Lines: 42
+Total Bytes: 3756
+Showing lines 1 to 42
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # 📋 memory/TASKS.md (專案任務進度看板)
+2: 
+3: 最後更新日期：2026-09-24
+4: 
+5: ---
+6: 
+7: ## 🏃 當前 Sprint (v1.0.0-rc1 專案治理與守衛上線)
+8: 
+9: - [x] [2026-09-23] 梳理專案核心需求與淘汰 OpenClaw 冗餘檔案
+10: - [x] [2026-09-23] 設計跨 Agent 協同規範 (`AGENTS.md`) 與冷啟動手冊 (`OPERATIONS.md`)
+11: - [x] [2026-09-23] 建立雙軌實體資料夾與隔離防呆區 (`data/input/`, `data/output/`, `data/needs_review/`)
+12: - [x] [2026-09-23] 撰寫軟硬體守衛模組 (`src/guards/hardware.py` - RAM/電池/SSD/MPS)
+13: - [x] [2026-09-23] 撰寫 Ollama 自動喚醒、模型檢查與優雅降級守衛 (`src/guards/ollama_guard.py`)
+14: - [x] [2026-09-23] 撰寫輸入 JSON 驗證與輸出異常自動除錯攔截器 (`src/guards/validator.py`)
+15: - [x] [2026-09-23] 實作命令總入口 `run.py` (支援 doctor、process、save、handoff 等)
+16: - [x] [2026-09-23] 安裝 Git 物理防手滑鎖 (`.git/hooks/pre-push`)
+17: - [x] [2026-09-23] 建立通用新專案開案範本 (`PROJECT_INIT_STANDARD.md`)
+18: - [x] [2026-09-23] 將歷史全對話脈絡濃縮歸檔至 `memory/sessions/`
+19: - [x] [2026-09-24] 強化低信度自動隔離與對話工作階段雙軌歸檔 (`data/needs_review/`, `memory/sessions/`)
+20: - [x] [2026-09-24] 補齊專案歷史 5 個對話之雙軌歸檔與全自動會話封存指令 (archive-sessions)
+21: - [x] [2026-09-24] 徹底物理遷移並刪除根目錄過渡資料夾 (`inbox/`, `processed/`, `output/`)
+22: - [x] [2026-09-24] 將學術期刊全面標準化升級為學術文獻 (`journal` -> `lit
+<truncated 346 bytes>
+curacy.py`, `batch_convert.py`, `book_processor.py`) 並優化單元測試相依路徑
+26: - [x] [2026-09-24] 實現軟硬體一體化智慧看門狗 (`run.py watchdog`)，歸檔 `ISSUES.md` 與 `OPTIMIZATION_PROPOSAL.md` 至 `docs/`，並將第 14、15 條鐵律寫入標準
+27: - [x] [2026-09-24] 將開案前置軟硬體基線探針 (鐵律 16) 與開案標配看門狗 (鐵律 17) 寫入 `PROJECT_INIT_STANDARD.md`
+28: - [x] [2026-09-24] 升級 `PROJECT_INIT_STANDARD.md` 至 22 大核心鐵律與企業級目錄骨幹，深度擴充 `docs/CODING_RULES.md` 納入 SOLID 原則、純函數與原子 I/O 規範
+29: - [x] [2026-09-24] 確立 CODING_RULES 雙層繼承架構（通用基線+領域擴充）與六大黃金時機同步矩陣（同步MD/Git/對話歸檔），同步升級標準至 24 大鐵律
+30: - [x] [2026-09-24] 確立八大自動化機制與確定性觸發防線 (The 8 Autonomous Triggers)，在 run.py 實裝存檔測試門禁、發布自動全流程與暫存自動清理，並同步規範至 PROJECT_INIT_STANDARD 與 AGENTS
+31: - [x] [2026-09-24] 確立 Git、對話記憶 (Sessions) 與核心文檔 (Markdown) 全生命週期自動化管理管線規範，並升級 run.py publish 支援本地自動打標籤 (Git Tagging)
+32: - [x] [2026-09-24] 深度分析使用者 6 大操作習慣並整合至 PROJECT_INIT_STANDARD（升級至 30 大工程鐵律），並實作 run.py init-project 達成 3 秒全自動企業級一鍵開案腳手架
+33: - [x] [2026-09-24] 清理歷史殘留的根目錄 `skills/` 資料夾，確立唯一標準技能規範目錄為 `.agent/skills/`，維持單一真理來源
+34: 
+35: ---
+36: 
+37: ## 📅 後續規劃 (Backlog)
+38: 
+39: - [ ] [未排程] 實作 `dashboard/` 視覺化儀表板（讀取 `data/state/status.json`）
+40: - [ ] [未排程] 新增專門適配 IEEE / ACM 雙欄論文的進階版面範本
+41: - [ ] [未排程] 優化長篇書籍跨章節概念雙鏈自動關聯 (Obsidian Graph 支援)
+42: 
+The above content shows the entire, complete file contents of the requested file.
+
+
+---
+
+## 🤖 [Step 911] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:43:44Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `view_file`: *"Viewing CHANGELOG.md"* ("View CHANGELOG.md")
+
+---
+
+## 🤖 [Step 912] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:43:44Z`
+
+Created At: 2026-09-24T00:43:44+08:00
+Completed At: 2026-09-24T00:43:44+08:00
+File Path: `file:///Users/limchinkun/Desktop/books/CHANGELOG.md`
+Total Lines: 41
+Total Bytes: 2349
+Showing lines 1 to 41
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # 📜 CHANGELOG.md (專案變更日誌)
+2: 
+3: 本專案遵循 [Keep a Changelog](https://keepachangelog.com/zh-TW/1.0.0/) 規範，並以語意化版本進行紀錄。
+4: 
+5: ---
+6: 
+7: ## [Unreleased]
+8: - 待開發：未來的視覺化儀表板 (Dashboard) 介面 (`dashboard/`)。
+9: - 待優化：更多特化期刊排版（如 IEEE、ACM）的雙欄分割微調。
+10: 
+11: ---
+12: 
+13: ## [1.0.0-rc1] - 2026-09-23
+14: 
+15: ### 🌟 新增 (Added)
+16: - **跨 Agent 治理體系**：
+17:   - 新增 `OPERATIONS.md`，提供 30 秒冷啟動與故障排除指南。
+18:   - 新增 `AGENTS.md`，建立意圖路由表、Local Git 規範與決策衝突阻斷協議。
+19:   - 新增 `PROJECT_INIT_STANDARD.md`，提供日後所有新專案通用的開案標準範本。
+20: - **軟硬體與連動守衛層 (`src/guards/`)**：
+21:   - `hardware.py`：即時檢測系統可用 RAM (≥ 4GB 門檻)、電池狀態、SSD 剩餘空間 (≥ 10GB) 與 Apple Silicon MPS 狀態。
+22:   - `ollama_guard.py`：自動探活本地 Ollama 服務、支援後台自動喚醒、檢查模型下載狀態，並提供優雅降級機制。
+23:   - `validator.py`：自動檢查輸入檔案是否符合 JSON 描述，並在輸出異常時自動喚醒 Ollama 進行自我修復除錯。
+24: - **總指揮入口 (`run.py`)**：
+25:   - 封裝 `doctor`、`process`、`save`、`handoff`、`publish`、`test-ollama-auto-trigger` 等一鍵指令。
+26: - **雙軌架構與人機防呆分流 (`data/`)**：
+27:   - 實體劃分 `data/input/books/` 與 `data/input/journals/`，達成「路徑即路由」零判斷成本。
+28:   - 新增 `data/needs_review/` 隔離區，異常段落自動隔離，避免卡死主轉檔管線。
+29: - **Git 物理防護鎖**：
+30:   - 配置 `.git/hooks/pre-push`，預設封鎖所有未經 `ALLOW_PUSH=1` 授權的遠端推送。
+31: - **架構決策紀錄 (ADR)**：
+32:   - 建立 `docs/adr/0001-ollama-hardware-guard-and-auto-verify.md`
+33:   - 建立 `docs/adr/0002-domain-split-book-and-paper.md`
+34: 
+35: ### 🔧 變更 (Changed)
+36: - **Ollama 呼叫機制徹底翻新**：徹底告別過往預設關閉 (`use_ollama=False`) 的假修復問題，全面改由守衛層自動依硬體條件決定啟用與降級。
+37: - **日誌標準化**：統一採用結構化日誌格式（Where + Why + How），日誌集中收錄於 `logs/`。
+38: 
+39: ### 🗑️ 移除 (Removed)
+40: - 清理非本專案所需的 OpenClaw 冗餘規範，集中專案記憶於 `memory/` 與 `docs/`。
+41: 
+The above content shows the entire, complete file contents of the requested file.
+
+
+---
+
+## 🤖 [Step 913] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:43:52Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `replace_file_content`: *"Adding v1.0.0-rc2 to CHANGELOG.md"* ("Update CHANGELOG.md")
+
+---
+
+## 🤖 [Step 914] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:43:52Z`
+
+Created At: 2026-09-24T00:43:52+08:00
+Completed At: 2026-09-24T00:43:52+08:00
+The following changes were made by the replace_file_content tool to: /Users/limchinkun/Desktop/books/CHANGELOG.md. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -10,6 +10,39 @@
+ 
+ ---
+ 
++## [1.0.0-rc2] - 2026-09-24
++
++### 🌟 新增 (Added)
++- **通用開案標準升級至 30 大核心工程鐵律 (`PROJECT_INIT_STANDARD.md`)**：
++  - 深度整合 SOLID 物件導向原則、純函數無副作用計算、強型別 Data Contract、防衛性編程與原子性檔案寫入、12-Factor 環境隔離。
++  - 整合使用者 6 大操作習慣（全局系統思維、零歷史包袱、高密度摘要先行、秒級測試迴圈、離線主權、一鍵腳手架）。
++- **雙層代碼規範架構 (`docs/CODING_RULES.md`)**：
++  - 第一部：通用軟體工程基線（所有專案 100% 通用，零污染繼承）。
++  - 第二部：本專案專屬領域擴充（Apple Vision OCR、4GB RAM 守衛、Ollama 修復、`literature` 命名）。
++- **全生命週期六大黃金時機同步矩陣 (The 6 Golden Triggers)**：
++  - 確定性規範開場喚醒、架構異動、規則改進、功能完成、離席暫停與里程碑結案時的文檔、Git 與對話備份動作。
++- **專案全自動化八大防線 (The 8 Autonomous Triggers)**：
++  - 存檔自動測試門禁、發布全流程門禁、Ollama 背景自動喚醒、硬體受限平滑降級、看門狗來檔自動轉檔、瑕疵自動修復隔離、過期暫存自動清理、環境依賴自動同步。
++- **一鍵開案 CLI 指令 (`run.py init-project`)**：
++  - 3 秒內自動建立符合 30 大鐵律的完整專案目錄（14 個目錄）、Git 安全鎖、軟硬體守衛、雙層代碼規範、測試與 run.py 總指揮。
++- **全會話雙軌自動封存 (`run.py archive-sessions`)**：
++  - 自動同步歷史 5 個會話之高密度摘要 (`-summary.md`) 與完整問答紀錄 (`-transcript.md`)。
++- **軟硬體一體化看門狗 (`run.py watchdog`)**：
++  - 常駐監聽 `data/input/` 目錄，同時稽核 RAM、SSD、電池安全，來檔即自動安全轉檔。
++
++### 🔧 變更 (Changed)
++- **領域命名全面標準化**：學術文件命名全面升級為 `literature`（學術文獻），涵蓋期刊、論文、預印本與報告。
++- **技能體系升級三層分流**：`.agent/skills/` 確立 `document-processor` (總調度)、`textbook-processor` (書籍子技能)、`literature-processor` (文獻子技能)。
++- **單元測試相依性優化**：動態注入 `sys.path`，171 個單元測試在 0.11 秒內全數通過 (100% PASS)。
++
++### 🗑️ 移除與清理 (Removed & Cleaned)
++- **根目錄過渡資料夾徹底清除**：移除 `inbox/`、`processed/`、`output/`，資料流嚴格統一於 `data/input/` 與 `data/output/`。
++- **根目錄過渡腳本清理歸檔**：移除 `verify_accuracy.py`、`batch_convert.py`、`book_processor.py` 並歸檔至 `scratch/`。
++- **過時的根目錄 `skills/` 資料夾徹底移除**：移除 9 月 18 日舊版 `skills/`，確立官方原生 `.agent/skills/` 為唯一單一真理來源。
++- **非標 Markdown 檔案歸檔**：`ISSUES.md` 與 `OPTIMIZATION_PROPOSAL.md` 全數規範收納至 `docs/`。
++
++---
++
+ ## [1.0.0-rc1] - 2026-09-23
+ 
+ ### 🌟 新增 (Added)
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.
+
+---
+
+## 🤖 [Step 915] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:43:55Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `view_file`: *"Viewing current session summary"* ("View session summary")
+
+---
+
+## 🤖 [Step 916] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:43:55Z`
+
+Created At: 2026-09-24T00:43:55+08:00
+Completed At: 2026-09-24T00:43:55+08:00
+File Path: `file:///Users/limchinkun/Desktop/books/memory/sessions/2026-09-23-project-architecture-and-governance-summary.md`
+Total Lines: 63
+Total Bytes: 4813
+Showing lines 1 to 63
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # 🗄️ 會話深度紀要：專案治理、文件重構、軟硬體守衛與跨 Agent 體系建立
+2: 
+3: - **會議/會話日期**：2026-09-23
+4: - **參與角色**：使用者 (Developer) & Antigravity (AI Assistant)
+5: - **主題**：解決專案長期痛點、剔除 OpenClaw 冗餘、落實軟硬體守衛、自動觸發 Ollama、雙軌書籍/期刊分離與未來新專案標準化
+6: 
+7: ---
+8: 
+9: ## 一、 背景與原始痛點回溯
+10: 
+11: 1. **檔案混亂與職責重疊**：
+12:    - 另一個專案留下來的 20+ 個 Markdown 檔案（如 `agent.md`, `AGENTS.md`, `IDENTITY.md`, `AI_PROFILE.md` 等）四胞胎並存，身分設定打架。
+13:    - 40KB 的單一 `DECISIONS.md` 造成每次對話吃掉大量 Token，且容易讓 AI 遺忘覆蓋關係、寫回已被廢棄的舊版代碼。
+14:    - 缺乏「臨時檔案（Scratchpad）」與「長期資產（Docs）」的生命週期區分。
+15: 2. **開發過程的中斷（如去上課、外出）**：
+16:    - 使用者中途常需離開去上課，回來時 AI 上下文重置，無法無縫接續，常造成重複施工或方向偏離。
+17: 3. **不同 AI Agent 協作迷航**：
+18:    - 切換到 Codex、Claude 或 Cursor 時，新 Agent 不知道現有專案架構，容易亂創資料夾或重複寫已存在的函式。
+19: 4. **「幽靈修復」與 Ollama 沒自動啟動**：
+20:    - 過去 AI 聲稱「修復了 Ollama 驗證」，但檢視原始碼發現 `use_ollama` 預設為 `False`，根本從未在主流程中被調用。
+21:    - 缺乏
+<truncated 1548 bytes>
+檔程式崩潰。
+40:   - **兩大觸發 Hook**：
+41:     1. 輸入檔案與 JSON manifest 描述不符時，強制喚醒 Ollama 進行語義分析。
+42:     2. 輸出 LaTeX 公式或排版異常時，主動將上下文拋給 Ollama 自我修復。
+43: 
+44: ### 3. 人機防呆與「慣例優於配置（Convention over Configuration）」
+45: - 設立 `data/input/books/` 與 `data/input/journals/`，以實體目錄定生死，完全免除 AI 猜測書籍或論文的錯誤可能。
+46: - 設立 `data/needs_review/` 隔離區：疑難頁面拋入隔離區由人把關，主流程不被中斷。
+47: - 設立 `scratch/` 臨時實驗室：一次性測試程式集中管理，不入 Git，不污染正式目錄。
+48: 
+49: ### 4. Git 本地防護與先更文檔後 Commit 鐵律
+50: - 配置 `.git/hooks/pre-push`，任何 `git push` 自動阻斷，唯有 `ALLOW_PUSH=1` 才放行。
+51: - AI 執行任何 commit 前，必須先自動將文檔（HANDOFF / TASKS / CHANGELOG）蓋上最新時間戳記，嚴禁只 commit 程式碼。
+52: 
+53: ### 5. 跨專案通用開案標準 (`PROJECT_INIT_STANDARD.md`)
+54: - 產出一份通用的開案標準文件，未來開任何新專案時，直接作為 Prompt 餵給 AI，自動在 1 分鐘內建立一模一樣的高規格工程骨架。
+55: 
+56: ---
+57: 
+58: ## 三、 本次實施產出清單
+59: 
+60: 1. **文檔層**：`OPERATIONS.md`, `AGENTS.md`, `CHANGELOG.md`, `PROJECT_INIT_STANDARD.md`, `memory/TASKS.md`, `memory/HANDOFF.md`, `docs/STRUCTURE.md`, `docs/CODING_RULES.md`, `docs/ARCHITECTURE.md`, `docs/adr/0001-...`, `docs/adr/0002-...`。
+61: 2. **代碼層**：`run.py` (CLI 總指揮中心), `src/guards/hardware.py`, `src/guards/ollama_guard.py`, `src/guards/validator.py`, `src/utils/logger.py`, `.git/hooks/pre-push`。
+62: 3. **目錄層**：`data/input/books/`, `data/input/journals/`, `data/output/books/`, `data/output/journals/`, `data/needs_review/`, `data/state/`, `scratch/`, `logs/`。
+63: 
+The above content shows the entire, complete file contents of the requested file.
+
+
+---
+
+## 🤖 [Step 917] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:44:04Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `write_to_file`: *"Updating session summary"* ("Update session summary")
+
+---
+
+## 🤖 [Step 918] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:44:05Z`
+
+Created At: 2026-09-24T00:44:05+08:00
+Completed At: 2026-09-24T00:44:05+08:00
+Created file file:///Users/limchinkun/Desktop/books/memory/sessions/2026-09-23-project-architecture-and-governance-summary.md with requested content.
+If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+
+---
+
+## 🤖 [Step 919] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:44:11Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `run_command`: *"Running archive-sessions for full session sync"* ("Run archive-sessions")
+
+---
+

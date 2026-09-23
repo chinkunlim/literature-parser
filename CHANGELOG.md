@@ -10,6 +10,39 @@
 
 ---
 
+## [1.0.0-rc2] - 2026-09-24
+
+### 🌟 新增 (Added)
+- **通用開案標準升級至 30 大核心工程鐵律 (`PROJECT_INIT_STANDARD.md`)**：
+  - 深度整合 SOLID 物件導向原則、純函數無副作用計算、強型別 Data Contract、防衛性編程與原子性檔案寫入、12-Factor 環境隔離。
+  - 整合使用者 6 大操作習慣（全局系統思維、零歷史包袱、高密度摘要先行、秒級測試迴圈、離線主權、一鍵腳手架）。
+- **雙層代碼規範架構 (`docs/CODING_RULES.md`)**：
+  - 第一部：通用軟體工程基線（所有專案 100% 通用，零污染繼承）。
+  - 第二部：本專案專屬領域擴充（Apple Vision OCR、4GB RAM 守衛、Ollama 修復、`literature` 命名）。
+- **全生命週期六大黃金時機同步矩陣 (The 6 Golden Triggers)**：
+  - 確定性規範開場喚醒、架構異動、規則改進、功能完成、離席暫停與里程碑結案時的文檔、Git 與對話備份動作。
+- **專案全自動化八大防線 (The 8 Autonomous Triggers)**：
+  - 存檔自動測試門禁、發布全流程門禁、Ollama 背景自動喚醒、硬體受限平滑降級、看門狗來檔自動轉檔、瑕疵自動修復隔離、過期暫存自動清理、環境依賴自動同步。
+- **一鍵開案 CLI 指令 (`run.py init-project`)**：
+  - 3 秒內自動建立符合 30 大鐵律的完整專案目錄（14 個目錄）、Git 安全鎖、軟硬體守衛、雙層代碼規範、測試與 run.py 總指揮。
+- **全會話雙軌自動封存 (`run.py archive-sessions`)**：
+  - 自動同步歷史 5 個會話之高密度摘要 (`-summary.md`) 與完整問答紀錄 (`-transcript.md`)。
+- **軟硬體一體化看門狗 (`run.py watchdog`)**：
+  - 常駐監聽 `data/input/` 目錄，同時稽核 RAM、SSD、電池安全，來檔即自動安全轉檔。
+
+### 🔧 變更 (Changed)
+- **領域命名全面標準化**：學術文件命名全面升級為 `literature`（學術文獻），涵蓋期刊、論文、預印本與報告。
+- **技能體系升級三層分流**：`.agent/skills/` 確立 `document-processor` (總調度)、`textbook-processor` (書籍子技能)、`literature-processor` (文獻子技能)。
+- **單元測試相依性優化**：動態注入 `sys.path`，171 個單元測試在 0.11 秒內全數通過 (100% PASS)。
+
+### 🗑️ 移除與清理 (Removed & Cleaned)
+- **根目錄過渡資料夾徹底清除**：移除 `inbox/`、`processed/`、`output/`，資料流嚴格統一於 `data/input/` 與 `data/output/`。
+- **根目錄過渡腳本清理歸檔**：移除 `verify_accuracy.py`、`batch_convert.py`、`book_processor.py` 並歸檔至 `scratch/`。
+- **過時的根目錄 `skills/` 資料夾徹底移除**：移除 9 月 18 日舊版 `skills/`，確立官方原生 `.agent/skills/` 為唯一單一真理來源。
+- **非標 Markdown 檔案歸檔**：`ISSUES.md` 與 `OPTIMIZATION_PROPOSAL.md` 全數規範收納至 `docs/`。
+
+---
+
 ## [1.0.0-rc1] - 2026-09-23
 
 ### 🌟 新增 (Added)

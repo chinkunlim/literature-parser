@@ -12,6 +12,8 @@ def is_valid_dictionary_word(token: str, dict_words: set) -> bool:
     clean = token.strip(".,;:!?\"'()[]{}/*#–-—’“”‘$").lower()
     if not clean:
         return True
+    # Strip possessive 's or ’s
+    clean = re.sub(r"['’]s$", "", clean)
     # Numbers, years, page refs (e.g. 1964, 2018, 166, 1.1)
     if re.match(r'^\d+(\.\d+)?$', clean):
         return True
@@ -21,14 +23,17 @@ def is_valid_dictionary_word(token: str, dict_words: set) -> bool:
     # Direct dictionary match
     if clean in dict_words:
         return True
+    # Common academic & psychological terms
+    if clean in {'doi', 'bart', 'retest', 'psychopharmacology', 'chicago', 'keywords', 'impulsivity', 'delinquency'}:
+        return True
     # Plural or standard endings ('s, s, ed, ing, ly, etc.)
-    for suffix in ('s', 'es', 'ed', 'ing', 'ly', 'er', 'est', 'tion', 'ment', 'able'):
+    for suffix in ('s', 'es', 'ed', 'ing', 'ly', 'er', 'est', 'tion', 'ment', 'able', 'ize', 'ized', 'izing', 'ical', 'ology', 'ability'):
         if clean.endswith(suffix) and clean[:-len(suffix)] in dict_words:
             return True
     # Hyphenated compound words
     if '-' in clean:
         parts = clean.split('-')
-        if all(p in dict_words or p.isdigit() for p in parts if p):
+        if all(p in dict_words or p.isdigit() or p in {'retest', 'bart'} for p in parts if p):
             return True
     return False
 

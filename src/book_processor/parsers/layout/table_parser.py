@@ -265,7 +265,7 @@ class TableParser:
                 if use_html_table:
                     table_lines.append(tbl_header)
                     table_lines.append("")
-                    table_lines.append('<table class="textbook-table">')
+                    table_lines.append('<table class="textbook-table" style="width: auto; max-width: 100%; border-collapse: collapse; margin: 1.5em 0;">')
                     table_lines.append('  <thead>')
                     table_lines.append('    <tr>')
                     for th in header_titles:

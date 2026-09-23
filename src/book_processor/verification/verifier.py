@@ -67,7 +67,9 @@ class AccuracyVerifier:
             md_content = f.read()
 
         # 2. Vocabulary & Dictionary Verification
-        tokens = re.findall(r'\b[a-zA-Z0-9_\-’\']+\b', md_content)
+        vocab_content = re.sub(r'<style>.*?</style>', '', md_content, flags=re.DOTALL)
+        vocab_content = re.sub(r'<[^>]+>', ' ', vocab_content)
+        tokens = re.findall(r'\b[a-zA-Z0-9_\-’\']+\b', vocab_content)
         total_tokens = len(tokens)
         valid_tokens = sum(1 for t in tokens if is_valid_dictionary_word(t, self.dict_words))
         invalid_sample = [t for t in tokens if not is_valid_dictionary_word(t, self.dict_words)][:10]

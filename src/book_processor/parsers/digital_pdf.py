@@ -365,7 +365,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 continue
             if re.search(r'\b(?:8GTDCN|1RGTCVKQ|5JGKUCIQQF|UCNGURGTUQP|UGNNUOCP|CUUKUVUYKVJ|1DUGTXCVKQPU|6JGQT|TGGCTEJ|&CVCFTKXGP)\b', txt_raw):
                 continue
-            if re.search(r'This document is copyrighted|intended solely for the personal use|text and data mining, AI training', txt_raw, re.I):
+            if re.search(r'This document is copyrighted|intended solely for the personal use|text and data mining|AI training|allied publishers|disseminated broadly|All rights, including for text', txt_raw, re.I):
                 continue
 
             # Convert inner XML tags <b> and <i> to Markdown

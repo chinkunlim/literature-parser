@@ -42,3 +42,7 @@ output/*
 *.xml
 *.log
 .book_processor/
+scratch/
+logs/
+data/state/
+data/needs_review/

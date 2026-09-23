@@ -2,6 +2,13 @@
 
 > **Enterprise-Grade PDF & EPUB Structured Markdown Extractor with Neural Layout OCR, Uniform LaTeX Math Reconstruction, Multi-Domain Layout Engines, Human-in-the-Loop Local AI Review, Adaptive Self-Healing, Active Recall Flashcards, and Autonomous Inbox Watchdog.**
 
+> [!TIP]
+> **🚀 快速上手 (Quick Start)**:
+> 本專案已全面升級為統一總指揮中心 [run.py](run.py) 與跨 Agent 協作治理體系。
+> - **人類與新 AI 快速指引**：請優先閱讀 [OPERATIONS.md](OPERATIONS.md)（30 秒喚醒手冊）與 [AGENTS.md](AGENTS.md)（跨 Agent 憲法）。
+> - **常用指令**：執行 `uv run python run.py agent-init` 讀取原則；執行 `uv run python run.py doctor` 進行軟硬體健檢；執行 `uv run python run.py process <filepath>` 開始轉檔。
+> - **資料目錄標準**：書籍請放至 `data/input/books/`，期刊論文請放至 `data/input/journals/`。
+
 Designed for students, academic researchers, AI agents, and software engineers who require **100% high-fidelity, reproduction-accurate Markdown textbooks** with zero cloud token consumption and absolute data privacy.
 
 ---

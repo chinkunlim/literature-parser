@@ -13,6 +13,12 @@ import shutil
 from pathlib import Path
 from src.utils.logger import get_diagnostic_logger
 from src.guards.ollama_guard import OllamaGuard
+from src.guards.prompts import (
+    SYSTEM_LATEX_HEALER,
+    PROMPT_LATEX_HEALER_TEMPLATE,
+    SYSTEM_MANIFEST_VALIDATOR,
+    PROMPT_MANIFEST_VALIDATOR_TEMPLATE,
+)
 
 logger = get_diagnostic_logger("Validator")
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -71,16 +77,15 @@ class ValidatorGuard:
             how_to_fix="Review input folder or let Ollama generate repair plan.",
         )
 
-        # Trigger Ollama for semantic diagnosis
-        prompt = (
-            f"Here is the manifest definition:\n{json.dumps(manifest_data, indent=2)}\n\n"
-            f"Actual files found in directory:\n{actual_files}\n\n"
-            f"Discrepancies noted:\n{discrepancies}\n\n"
-            "Please analyze the missing elements and explain what is missing or if filenames differ slightly."
+        # Trigger Ollama for semantic diagnosis using pre-defined prompt template
+        prompt = PROMPT_MANIFEST_VALIDATOR_TEMPLATE.format(
+            manifest_json=json.dumps(manifest_data, indent=2),
+            actual_files=actual_files,
+            discrepancies=discrepancies,
         )
         res = self.ollama.safe_generate(
             prompt=prompt,
-            system_prompt="You are an expert file schema validator. Diagnose discrepancies clearly and concisely.",
+            system_prompt=SYSTEM_MANIFEST_VALIDATOR,
         )
 
         return {
@@ -95,19 +100,17 @@ class ValidatorGuard:
     # ==========================================
     def repair_math_latex(self, broken_latex: str, context: str = "") -> dict:
         """
-        Attempts to repair broken LaTeX math formulas via Ollama.
+        Attempts to repair broken LaTeX math formulas via Ollama using pre-defined prompt.
         If repair fails or is invalid, saves the snippet into data/needs_review/ to avoid halting.
         """
-        prompt = (
-            f"Context around formula:\n\"{context}\"\n\n"
-            f"Broken or malformed LaTeX formula:\n{broken_latex}\n\n"
-            "Task: Fix the LaTeX syntax. Return ONLY the valid LaTeX code, enclosed in $$...$$ or $...$. "
-            "Do NOT include conversational explanation."
+        prompt = PROMPT_LATEX_HEALER_TEMPLATE.format(
+            context=context,
+            broken_latex=broken_latex,
         )
 
         res = self.ollama.safe_generate(
             prompt=prompt,
-            system_prompt="You are a LaTeX typesetting expert. Fix broken math formulas accurately with clean syntax.",
+            system_prompt=SYSTEM_LATEX_HEALER,
         )
 
         if res.get("success") and res.get("response"):

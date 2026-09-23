@@ -45,6 +45,10 @@
 - **嚴禁行為**：在 `try...except` 區塊中嚴禁只寫 `pass` 或只印出錯誤名稱。
 - **處置**：必須將 `(異常上下文, 原始文字, 錯誤訊息)` 打包，自動呼叫 Ollama 進行一次「自動修復嘗試 (Auto-Repair Attempt)」。若修復成功則替換；若修復失敗則將該片段拋入 `data/needs_review/` 隔離區。
 
+### ③ 固定提示詞與無人值守原則 (Pre-defined Prompts & Autonomous Execution)
+- **程式啟動後無人介入**：一旦 Python 轉檔管線啟動，AI Agent（如 Antigravity / Claude）無法在執行期即時介入。
+- **Prompt 集中預設**：所有呼叫 Ollama 的 System Prompt 與模板，必須在 `src/guards/prompts.py` 中集中以常數預先定義好（包含嚴格的格式限制與 JSON 輸出規範），嚴禁在執行期動態拼湊隨意字串。
+
 ---
 
 ## 4. 結構化診斷日誌規範 (Structured Diagnostic Logging)

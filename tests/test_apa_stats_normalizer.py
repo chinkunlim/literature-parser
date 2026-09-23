@@ -44,12 +44,12 @@ class TestAPAStatsNormalizer(unittest.TestCase):
         from book_processor.parsers.math_latex import MathLaTeXConverter
         s1 = 'Click the button labeled “Collect $$$” to cash out.'
         res1 = MathLaTeXConverter.escape_currency_dollars(s1)
-        self.assertIn(r'“Collect \$\$\$”', res1)
+        self.assertIn('“Collect &#36;&#36;&#36;”', res1)
 
         s2 = 'The participant earned $3 or $12.50 during the trial.'
         res2 = MathLaTeXConverter.escape_currency_dollars(s2)
-        self.assertIn(r'\$3', res2)
-        self.assertIn(r'\$12.50', res2)
+        self.assertIn('&#36;3', res2)
+        self.assertIn('&#36;12.50', res2)
 
         # Ensure valid LaTeX math like $3$ or $N = 86$ is untouched
         s3 = 'Formula $3$ and sample $N = 86$ should remain math.'

@@ -300,15 +300,16 @@ class MathLaTeXConverter:
     @classmethod
     def escape_currency_dollars(cls, text: str) -> str:
         r"""
-        Escapes literal currency amounts and non-math triple dollar signs so KaTeX doesn't misparse them.
-        e.g., '$3', '$50', '$$$' -> r'\$3', r'\$50', r'\$\$\$'
+        Escapes literal currency amounts and non-math triple dollar signs to HTML entity &#36;
+        so KaTeX doesn't misparse them and Markdown previewers don't display literal backslashes.
+        e.g., '$3', '$$$' -> '&#36;3', '&#36;&#36;&#36;'
         """
         if not text:
             return ""
         # 1. Escape runs of $$$ (e.g. "Collect $$$")
-        text = re.sub(r'(?<!\\)\${3,}', lambda m: r'\$' * len(m.group(0)), text)
+        text = re.sub(r'(?<!\\)\${3,}', lambda m: '&#36;' * len(m.group(0)), text)
         # 2. Escape currency amounts like $3, $5, $100, $25.50 when not inside LaTeX math
-        text = re.sub(r'(?<!\\)\$(?=\d+(?:[\.,]\d+)?\b(?!\$))', r'\\$', text)
+        text = re.sub(r'(?<!\\)\$(?=\d+(?:[\.,]\d+)?\b(?!\$))', '&#36;', text)
         return text
 
     @classmethod

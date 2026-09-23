@@ -373,3 +373,140 @@ def check_excessive_hard_wraps(content: str) -> dict:
         'unreflowed_paragraphs': unreflowed_paras,
     }
 
+
+def check_latex_and_symbol_integrity(content: str) -> dict:
+    """
+    Validates mathematical formulas, KaTeX compatibility, and symbol safety:
+    - Delimiter parity ($ and $$)
+    - Unescaped currency amounts ($3, $50, etc.)
+    - Triple/quadruple unescaped dollars ($$$)
+    - Unescaped percent signs inside inline math ($50%)
+    - Unbalanced curly braces inside math blocks
+    """
+    issues = []
+
+    # 1. Check for unescaped $$$
+    triple_dollars = re.findall(r'(?<!\\)\${3,}', content)
+    if triple_dollars:
+        issues.append(f"Found {len(triple_dollars)} unescaped multi-dollar sequence(s) (e.g. '$$$' breaks KaTeX)")
+
+    # 2. Strip code fences to avoid false positives in code blocks
+    cleaned = re.sub(r'```.*?```', '', content, flags=re.DOTALL)
+
+    # 3. Check for unescaped percent sign inside LaTeX math
+    for math_block in re.findall(r'\$(.+?)\$', cleaned):
+        if re.search(r'(?<!\\)%', math_block):
+            issues.append(f"Unescaped percent sign % inside LaTeX math: ${math_block[:40]}$ (comments out closing $)")
+
+    # 4. Check display math $$ parity
+    double_dollars = cleaned.count("$$")
+    if double_dollars % 2 != 0:
+        issues.append(f"Unpaired display math delimiter '$$' (count: {double_dollars})")
+
+    # 5. Check for unescaped currency or stray dollars outside valid math
+    no_display_math = re.sub(r'\$\$.*?\$\$', '', cleaned, flags=re.DOTALL)
+    # Strip valid inline math: $(non-space)...(non-space)$
+    stripped_valid_math = re.sub(r'\$(?!\s)(?:\\.|[^\$\n])+?(?<!\s)\$', '[MATH]', no_display_math)
+    # Strip already escaped dollars \$
+    stray_dollars_text = stripped_valid_math.replace(r'\$', '')
+    stray_dollars = re.findall(r'\$', stray_dollars_text)
+    if stray_dollars:
+        issues.append(f"Found {len(stray_dollars)} stray or unescaped dollar sign(s) (e.g. '$3' or unpaired '$') which break KaTeX parser")
+
+    # 6. Check curly braces inside formulas
+    for block in re.findall(r'\$(.+?)\$', cleaned):
+        if block.count('{') != block.count('}'):
+            issues.append(f"Mismatched curly braces in math block: ${block[:50]}$")
+
+    return {
+        'passed': len(issues) == 0,
+        'count': len(issues),
+        'issues': issues,
+    }
+
+
+
+def check_table_column_integrity(content: str) -> dict:
+    """
+    Validates HTML table structure:
+    - Counts header columns (accounting for colspan)
+    - Verifies that tbody rows match the header column count
+    - Detects phantom empty column runs (e.g. <th></th> runs)
+    """
+    issues = []
+    tables = re.findall(r'<table\b[^>]*>(.*?)</table>', content, re.DOTALL | re.IGNORECASE)
+
+    for t_idx, table_html in enumerate(tables, start=1):
+        # Extract thead rows
+        thead_match = re.search(r'<thead\b[^>]*>(.*?)</thead>', table_html, re.DOTALL | re.IGNORECASE)
+        expected_cols = None
+        if thead_match:
+            th_rows = re.findall(r'<tr\b[^>]*>(.*?)</tr>', thead_match.group(1), re.DOTALL | re.IGNORECASE)
+            # Find the max cols across thead rows (taking colspan and rowspan into account)
+            row_cols = []
+            for r in th_rows:
+                cols = 0
+                for cell in re.findall(r'<t[hd]([^>]*)>', r, re.IGNORECASE):
+                    m = re.search(r'colspan=[\"\'](\d+)[\"\']', cell, re.IGNORECASE)
+                    cols += int(m.group(1)) if m else 1
+                row_cols.append(cols)
+            if row_cols:
+                expected_cols = max(row_cols)
+
+        # Check for phantom empty columns in header
+        phantom_ths = re.findall(r'<th[^>]*>\s*</th>\s*<th[^>]*>\s*</th>', table_html, re.IGNORECASE)
+        if phantom_ths:
+            issues.append(f"Table {t_idx}: detected phantom empty header columns")
+
+        # Verify tbody rows
+        tbody_match = re.search(r'<tbody\b[^>]*>(.*?)</tbody>', table_html, re.DOTALL | re.IGNORECASE)
+        if tbody_match and expected_cols:
+            tb_rows = re.findall(r'<tr\b[^>]*>(.*?)</tr>', tbody_match.group(1), re.DOTALL | re.IGNORECASE)
+            for r_idx, r in enumerate(tb_rows, start=1):
+                cols = 0
+                for cell in re.findall(r'<t[hd]([^>]*)>', r, re.IGNORECASE):
+                    m = re.search(r'colspan=[\"\'](\d+)[\"\']', cell, re.IGNORECASE)
+                    cols += int(m.group(1)) if m else 1
+                # If row is a section divider spanning the full table, cols should equal expected_cols
+                if cols != expected_cols:
+                    issues.append(f"Table {t_idx} Row {r_idx}: column count mismatch (found {cols}, expected {expected_cols})")
+                    break  # report first mismatch per table to avoid spam
+
+    return {
+        'passed': len(issues) == 0,
+        'count': len(issues),
+        'issues': issues,
+    }
+
+
+def check_unescaped_special_chars(content: str) -> dict:
+    """
+    Detects risky raw Markdown/HTML character leaks:
+    - Raw unescaped angle brackets like 'p < .05' in prose (outside math mode and HTML tags)
+    - Stray '#' at line start that are item numbers rather than Markdown headings
+    """
+    issues = []
+
+    # Strip code blocks, math blocks, and HTML tags
+    cleaned = re.sub(r'```.*?```', '', content, flags=re.DOTALL)
+    cleaned = re.sub(r'\$\$.*?\$\$', '', cleaned, flags=re.DOTALL)
+    cleaned = re.sub(r'\$.*?\$', '', cleaned)
+    cleaned = re.sub(r'<[^>]+>', '', cleaned)
+
+    # 1. Raw statistical angle brackets outside math
+    raw_p_angles = re.findall(r'\b(?:p|ps)\s*([<>])\s*\.\d+', cleaned, re.IGNORECASE)
+    if raw_p_angles:
+        issues.append(f"Found {len(raw_p_angles)} raw statistical angle bracket(s) (e.g. 'p < .05') outside LaTeX math")
+
+    # 2. Numbered item starting with # at line start (e.g. '#15. Drug')
+    fake_h1 = re.findall(r'(?m)^#\s*(\d+[\.\)].*)', cleaned)
+    if fake_h1:
+        issues.append(f"Found {len(fake_h1)} line(s) starting with '#' as item numbers instead of headings (e.g. '{fake_h1[0][:40]}')")
+
+    return {
+        'passed': len(issues) == 0,
+        'count': len(issues),
+        'issues': issues,
+    }
+
+

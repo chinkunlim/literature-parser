@@ -18,7 +18,8 @@ from book_processor.verification.rules import (
     check_numeric_coordinate_noise, check_shattered_math,
     check_infix_math_in_words, check_heading_prose_intrusion,
     check_table_banner_integrity, check_heading_density,
-    check_excessive_hard_wraps,
+    check_excessive_hard_wraps, check_latex_and_symbol_integrity,
+    check_table_column_integrity, check_unescaped_special_chars,
 )
 from book_processor.verification.ollama_verifier import OllamaVerifier
 
@@ -272,7 +273,43 @@ class AccuracyVerifier:
         if not semantic_pass:
             results['passed'] = False
 
-        # 7. Local Ollama AI Semantic Audit (if enabled)
+        # 7. Math & LaTeX Delimiter Sanity ($$, $, %, {}, currency $)
+        latex_sym_res = check_latex_and_symbol_integrity(md_content)
+        tbl_col_res   = check_table_column_integrity(md_content)
+        spec_char_res = check_unescaped_special_chars(md_content)
+
+        integrity_pass = (
+            latex_sym_res['passed'] and
+            tbl_col_res['passed'] and
+            spec_char_res['passed']
+        )
+
+        results['checks']['syntax_and_symbols'] = {
+            'latex_symbols': latex_sym_res,
+            'table_columns': tbl_col_res,
+            'special_chars': spec_char_res,
+            'passed': integrity_pass
+        }
+
+        print(f"  • LaTeX Math & Currency Delimiters: {'[PASS]' if latex_sym_res['passed'] else '[FAIL]'} ({len(latex_sym_res['issues'])} delimiter issues)")
+        if not latex_sym_res['passed']:
+            for iss in latex_sym_res['issues'][:3]:
+                print(f"      - {iss}")
+
+        print(f"  • Table Structure & Column Alignment: {'[PASS]' if tbl_col_res['passed'] else '[FAIL]'} ({len(tbl_col_res['issues'])} alignment issues)")
+        if not tbl_col_res['passed']:
+            for iss in tbl_col_res['issues'][:3]:
+                print(f"      - {iss}")
+
+        print(f"  • Special Character Leaks & Angle Brackets: {'[PASS]' if spec_char_res['passed'] else '[FAIL]'} ({len(spec_char_res['issues'])} syntax leaks)")
+        if not spec_char_res['passed']:
+            for iss in spec_char_res['issues'][:3]:
+                print(f"      - {iss}")
+
+        if not integrity_pass:
+            results['passed'] = False
+
+        # 8. Local Ollama AI Semantic Audit (if enabled)
         if self.use_ollama and self.ollama:
             print(f"  [*] Dispatching Local Ollama AI ({self.ollama.model_name}) for semantic & LaTeX audit...")
             ai_res = self.ollama.verify_chapter_semantics(ch_name, md_content)

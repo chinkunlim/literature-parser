@@ -110,14 +110,20 @@ class OllamaVerifier:
 
         prompt = (
             f"You are an expert academic editor and publication auditor. Review the following extracted paper/textbook section "
-            f"titled '{chapter_title}'. Verify that the prose flows naturally, has no broken OCR artifacts, "
-            f"and that any LaTeX formulas ($...$ or $$...$$) and tables are syntactically valid.\n\n"
+            f"titled '{chapter_title}'. Specifically audit the following 4 critical dimensions:\n"
+            f"1. Heading Authenticity: Are all headings genuine author section titles (NO AI-hallucinated summary subheadings)?\n"
+            f"2. LaTeX & Symbols: Are all LaTeX formulas ($...$ or $$...$$) syntactically valid with NO unescaped currency ($3) or broken delimiters?\n"
+            f"3. Table Note Separation: Are table notes (<div class=\"table-notes\">) clearly separated from subsequent body prose paragraphs?\n"
+            f"4. Text Continuity & Prose Flow: Does prose flow naturally across pages without broken sentences or OCR glitches?\n\n"
             f"Text Sample:\n```markdown\n{sample_excerpt}\n```\n\n"
             f"Briefly respond with:\n"
-            f"1. Quality Rating (Excellent / Good / Needs Attention)\n"
-            f"2. Formula & Formatting Feedback\n"
-            f"3. Verdict: [PASS] or [REVISE]"
+            f"1. Heading Authenticity Feedback\n"
+            f"2. Formula & Symbol Feedback\n"
+            f"3. Table & Note Separation Feedback\n"
+            f"4. Quality Rating (Excellent / Good / Needs Attention)\n"
+            f"5. Verdict: [PASS] or [REVISE]"
         )
+
 
         payload = {
             "model": self.model_name,

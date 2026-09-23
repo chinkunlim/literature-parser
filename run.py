@@ -309,6 +309,17 @@ def cmd_publish(args):
         subprocess.run(["git", "add", "-A"])
         subprocess.run(["git", "commit", "-m", release_msg])
 
+    # 5. Local Git Tagging
+    tag_name = getattr(args, "tag", None)
+    if not tag_name:
+        match = re.search(r"\b(v\d+\.\d+\.\d+(?:-[a-zA-Z0-9.]+)?)\b", args.message)
+        if match:
+            tag_name = match.group(1)
+    if tag_name:
+        tag_res = subprocess.run(["git", "tag", "-a", tag_name, "-m", release_msg], cwd=str(ROOT))
+        if tag_res.returncode == 0:
+            print(f"🏷️ [Local Git] 成功打上本地發布標籤: {tag_name}")
+
     print("\n🎉 本地打包完成！")
     print("========================================================================")
     print("🛑 提醒：由於 Pre-push 物理防護鎖限制，直接執行 git push 會被安全攔截。")
@@ -563,6 +574,7 @@ def main():
     # publish
     p_pub = subparsers.add_parser("publish", help="本地發布並合併至 main 分支")
     p_pub.add_argument("message", help="發布版本說明")
+    p_pub.add_argument("--tag", default=None, help="可選：打上本地 Git 標籤 (例如 v1.0.0)")
     p_pub.set_defaults(func=cmd_publish)
 
     # test-ollama-auto-trigger

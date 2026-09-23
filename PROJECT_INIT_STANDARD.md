@@ -159,7 +159,57 @@ my-new-project/
 
 ---
 
-## 五、 開案一鍵初始化檢查清單 (AI Checklist)
+## 五、 Git、對話記憶與 Markdown 文檔自動化管線規範 (Autonomous Git, Memory & Docs Lifecycle)
+
+本節專門針對**版本控制 (Git)、對話封存 (Sessions) 與核心文檔 (Markdown)** 的全流程自動化進行嚴格規範，**可 100% 通用移植至任何新專案**：
+
+### 1. 任務看板狀態自動流轉規範 (`memory/TASKS.md`)
+- **需求提出時 (On Goal Backlog)**：當使用者提出新的長期目標或功能點子，AI 自動將其寫入 `## 📅 後續規劃 (Backlog)`，標註 `- [ ] [未排程] <任務敘述>`。
+- **進入開發時 (On Sprint Kickoff)**：AI 將該任務提升至 `## 🏃 當前 Sprint`，標記進行中。
+- **單元測試通過時 (On Task Verification)**：只要功能實作完畢且測試 100% 通過，AI 在執行 `run.py save` 前，必須自動打勾並標註當天日期 `- [x] [YYYY-MM-DD] <任務敘述>`。
+- **里程碑發布時 (On Publish Archive)**：執行 `run.py publish` 時，AI 自動將已完成的 Sprint 封存至 `### 歷史完成存檔`，保持看板當前工作區清爽聚焦。
+
+### 2. 離席交接與喚醒無縫對接規範 (`memory/HANDOFF.md`)
+- **離席中斷時 (On Pause / Handoff)**：
+  - 當使用者表示「要去上課/出門/暫停」，AI 執行 `run.py handoff "<reason>"`。
+  - **自動動作**：自動刷新頂部時間戳記（`### 🕒 最新交接時間：YYYY-MM-DD HH:MM`），自動梳理「當前做到哪一步」、「哪些檔案已完成」、「下次接手的第一步終端機指令是什麼」。
+- **開場喚醒時 (On Warmup / Resume)**：
+  - 任何 AI 進入專案執行 `run.py agent-init` 時，系統自動讀取 `HANDOFF.md` 最新快照並印在終端機。AI 自動從上次中斷處直接繼續工作，禁止發呆或反問使用者「我們要做什麼」。
+
+### 3. 對話紀錄全量封存與高密度摘要自動化 (`memory/sessions/`)
+- **觸發節點**：僅在「**離席交接 (Handoff)**」與「**重大發布 (Publish)**」兩大邏輯斷點自動觸發，**嚴禁每回答一句話就碎裂存檔**。
+- **雙軌成對產出規格**：
+  1. `YYYY-MM-DD-<topic>-transcript.md`：
+     - 自動掃描系統日誌，提取該工作階段的所有 `USER_INPUT`（指令本文）與 `PLANNER_RESPONSE`（工具調用軌跡與回應），保存最真實的原汁原味問答。
+  2. `YYYY-MM-DD-<topic>-summary.md`：
+     - 控制在 100 行以內之極高密度架構總結，強制包含：
+       - `1. 核心需求與背景`
+       - `2. 重大架構與技術決策`
+       - `3. 程式碼與檔案具體變更`
+       - `4. 踩坑修復日誌 (Issues Encountered & Fixes)`
+       - `5. 目前狀態與後續接手方向`
+
+### 4. 目錄結構地圖自動反向審計 (`docs/STRUCTURE.md`)
+- **漂移偵測時機 (Drift Detection)**：每次新增、刪除、重構任何模組或核心檔案時。
+- **自動動作**：AI 在提交前必須反向核對實體目錄樹與 `STRUCTURE.md`。若實體存在但地圖未記載，或地圖記載但實體已被刪除，AI 必須自動同步修補地圖與功能備註，嚴禁文檔與代碼庫漂移脫節。
+
+### 5. 架構決策紀錄自動建檔規範 (`docs/adr/`)
+- **建檔時機 (ADR Trigger)**：當專案發生重大技術選型、底層函式庫替換、實體目錄結構重構、或對既有邏輯有重大影響之決策時。
+- **自動動作**：AI 自動於 `docs/adr/` 建立編號文件 `NNNN-<decision_slug>.md`，包含 `Status: Accepted`、`Context (背景)`、`Decision (決策內容)`、`Consequences (正反面影響)`。
+
+### 6. Git 版本控制、標籤與防護自動化 (Git Automation)
+- **本地安全鎖 (Zero-Push Pre-push Hook)**：
+  - 專案標配安裝 `.git/hooks/pre-push`，任何未帶 `ALLOW_PUSH=1` 的 `git push` 自動物理阻斷，確保專案 100% 在本機安全沙盒內運行。
+- **存檔自動測試門禁 (Pre-Save Test Gate)**：
+  - 執行 `run.py save` 時，自動於背景秒級跑 `unittest`。若測試有任何紅燈報錯，系統自動攔截並拒絕 Commit，杜絕帶病代碼入庫。
+- **全英文 Conventional Commit 自動格式化**：
+  - 系統自動檢查 Commit Message，強制帶入今日日期前綴與標準規範（如 `[YYYY-MM-DD] feat: ...`）。
+- **發布自動標籤 (Local Git Tagging)**：
+  - 執行 `run.py publish "<release_msg>"` 時，系統自動偵測版本號（如 `v1.0.0`），自動於本地建立 Git Annotated Tag，確保任何歷史版本皆可一秒精準簽出。
+
+---
+
+## 六、 開案一鍵初始化檢查清單 (AI Checklist)
 
 任何 AI Agent 在接收到本指南後，必須按以下清單逐一檢查並主動執行，最後向使用者回報：
 - [ ] 1. 建立 `.git/hooks/pre-push` 並給予執行權限 (`chmod +x`)。

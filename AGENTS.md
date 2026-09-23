@@ -1,7 +1,9 @@
 # 🤖 AGENTS.md (跨 AI Agent 協作通用憲法)
 
 > 適用對象：所有參與本專案的 AI Agents（包含 Antigravity、Claude Code、Codex、Cursor、OpenClaw 等）。
-> 所有 Agent 進入專案的第一件事，必須完整閱讀並恪守本憲法。
+> **新對話開場首要動作**：任何 AI 進入本專案的第一步，必須在終端機執行：
+> `uv run python run.py agent-init`
+> 讀取核心工作原則、最新交接狀態與未完成任務！
 
 ---
 
@@ -11,29 +13,35 @@
 
 | 使用者意圖 (User Intent) | 應該執行的 CLI 指令 | 說明與約束 |
 | :--- | :--- | :--- |
+| **新對話喚醒 / 接手專案** | `uv run python run.py agent-init` | **對話開場必跑**：自動簡報守則與交接狀態 |
 | **環境健檢 / 診斷** | `uv run python run.py doctor` | 檢查 RAM、電池、SSD、Ollama、模型 |
 | **轉換書籍** | `uv run python run.py process data/input/books/<filename>` | 自動啟動書籍章節切分與文意縫合 |
 | **轉換學術期刊 / 論文** | `uv run python run.py process data/input/journals/<filename>` | 自動啟動雙欄排版、摘要與文獻解析 |
 | **驗證 Ollama 自動喚醒** | `uv run python run.py test-ollama-auto-trigger` | 驗證輸入與輸出守衛能否自動喚醒 Ollama |
-| **一般進度存檔** | `uv run python run.py save "<commit_message>"` | 先更新文檔時間戳，再本地 commit |
-| **使用者說要去上課/中斷** | `uv run python run.py handoff "<reason>"` | 先更新 `memory/HANDOFF.md`，再本地 commit |
-| **發布與合併到 main** | `uv run python run.py publish "<release_notes>"` | 本地 Squash 合併，提示手動 push 指令 |
+| **一般進度存檔** | `uv run python run.py save "<English_message>"` | 先更新文檔時間戳，再以英文 commit |
+| **使用者說要去上課/中斷** | `uv run python run.py handoff "<reason_in_English>"` | 先更新 `memory/HANDOFF.md`，再英文 commit |
+| **發布與合併到 main** | `uv run python run.py publish "<English_release_notes>"` | 本地 Squash 合併，提示手動 push 指令 |
 
 ---
 
-## 二、 核心四大鐵律 (Core Directives)
+## 二、 核心五大鐵律 (Core Directives)
 
 ### 1. 🛑 嚴禁未經授權 Push (Zero-Push Rule)
 - 本專案預設為 **Local-Only 模式**。
 - 所有 AI Agent 嚴禁在終端機執行任何形式的 `git push`（系統已配置 Pre-push Hook 阻斷）。
 - 唯有使用者明確要求發布，且附帶 `ALLOW_PUSH=1` 授權時方可進行。
 
-### 2. 📝 提交前強制文檔同步 (Doc-Before-Commit Protocol)
+### 2. 📝 提交前強制文檔同步與【全英文 Commit】(Doc-Before-Commit & English Protocol)
 - **嚴禁只 commit 程式碼而遺漏文檔！**
 - 每次準備提交代碼前：
   - 若完成功能：先在 `memory/TASKS.md` 勾選並標註日期 `[YYYY-MM-DD]`。
   - 若中斷或交接：先在 `memory/HANDOFF.md` 刷新當前時間戳與下次接手指令。
   - 若更動架構或檔案：先同步更新 `docs/STRUCTURE.md`。
+- **⚠️ 語言約束：所有 Git Commit 訊息必須使用【英文】(English Only)**：
+  - 嚴格遵循 Conventional Commits 格式，例如：
+    - `[YYYY-MM-DD] feat: implement RAM guard and auto-wake for Ollama`
+    - `[YYYY-MM-DD] fix: resolve LaTeX formula bracket parsing error`
+    - `[YYYY-MM-DD] wip(handoff): pause session before class`
 
 ### 3. 🛡️ 拒絕幽靈修復與硬體守衛原則 (Proof of Execution & Guarding)
 - **嚴禁口頭宣告「已修復」**：每次修改核心程式碼後，必須出示執行 Log 或測試通過的輸出證據。

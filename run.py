@@ -129,7 +129,58 @@ def cmd_process(args):
 
 
 # ==============================================================================
-# 3. SAVE & HANDOFF: Doc-Before-Commit & Safe Git Checkpoints
+# 3. AGENT-INIT: Onboarding Briefing for Any Incoming AI Agent
+# ==============================================================================
+def cmd_agent_init(args):
+    """
+    Onboarding command called at the very beginning of an AI session
+    to brief the agent on mandatory directives, commit habits, and current status.
+    """
+    print("\n" + "=" * 70)
+    print("🤖 [AGENT ONBOARDING BRIEFING] 核心工作原則與即時狀態指引")
+    print("=" * 70)
+    print("""
+【AI 代理核心工作守則 (Mandatory Agent Directives)】
+
+1. 📝 文檔同步先行 (Doc-Before-Commit Protocol):
+   - 在執行 git commit 前，必須先更新 memory/TASKS.md 勾選完成項目與日期。
+   - 若為中斷交接，必須更新 memory/HANDOFF.md 的時間戳記與接手引導。
+   - ⚠️ 所有 Git Commit 訊息必須使用【英文】(Conventional Commits, e.g., feat:, fix:, docs:, chore:)。
+
+2. 🛑 嚴禁未授權推送 (Zero-Push Rule):
+   - 本專案預設為 Local-Only 模式。嚴禁執行 git push (系統設有 pre-push 阻斷)。
+
+3. 🤖 Ollama 自動調用原則 (Auto-Ollama Triggers):
+   - 輸入比對：輸入檔案與 manifest.json 不符時，自動喚醒 Ollama 進行語義分析。
+   - 輸出修復：LaTeX 公式或語法異常時，自動喚醒 Ollama 進行自我修復；修復失敗進 data/needs_review/。
+
+4. 🛡️ 軟硬體前置守衛 (Hardware Safeguards):
+   - 調用大模型前檢查 RAM ≥ 4.0GB、非低電量電池模式，未達標則優雅降級為純規則。
+
+5. 📂 零硬編碼絕對路徑 (Zero Hardcoded Paths):
+   - 嚴禁寫死絕對路徑 (/Users/...)，一律以 ROOT 動態相對錨定，確保搬移目錄零崩潰。
+
+6. 🍎 macOS 原生優先 (macOS-Native Priority):
+   - 優先評估 Apple Vision Framework、sips、Metal/MPS、CoreML 等系統原生能力。
+
+7. 🧪 臨時腳本隔離 (Scratchpad Policy):
+   - 一次性測試程式一律放入 scratch/，不污染正式目錄。
+""")
+
+    # Display current handoff state
+    handoff_file = ROOT / "memory" / "HANDOFF.md"
+    if handoff_file.exists():
+        print("----------------------------------------------------------------------")
+        print("📌 [當前交接狀態摘要 (Latest Handoff Snapshot)]")
+        print("----------------------------------------------------------------------")
+        lines = handoff_file.read_text(encoding="utf-8").splitlines()
+        for line in lines[:20]:
+            print(f"  {line}")
+    print("=" * 70 + "\n")
+
+
+# ==============================================================================
+# 4. SAVE & HANDOFF: Doc-Before-Commit & Safe Git Checkpoints
 # ==============================================================================
 def sync_markdown_dates():
     """Ensures memory/TASKS.md has today's date in header."""
@@ -142,46 +193,53 @@ def sync_markdown_dates():
 
 
 def cmd_save(args):
-    """Saves progress locally, stamping docs first."""
+    """Saves progress locally, stamping docs first. Enforces English commit messages."""
     sync_markdown_dates()
     today = get_current_date()
-    commit_msg = f"[{today}] feat: {args.message}"
+    msg = args.message.strip()
+
+    # Ensure Conventional Commit format in English
+    prefixes = ("feat:", "fix:", "docs:", "refactor:", "test:", "chore:", "style:", "perf:", "wip:")
+    if not msg.lower().startswith(prefixes):
+        commit_msg = f"[{today}] feat: {msg}"
+    else:
+        commit_msg = f"[{today}] {msg}"
 
     subprocess.run(["git", "add", "-A"], cwd=str(ROOT))
     res = subprocess.run(["git", "commit", "-m", commit_msg], cwd=str(ROOT))
     if res.returncode == 0:
-        print(f"\n✅ [Local Git] 已完成代碼與文檔同步存檔：{commit_msg}")
+        print(f"\n✅ [Local Git] Committed (in English): {commit_msg}")
     else:
-        print("\nℹ️ [Local Git] 工作區乾淨，無新變更需要存檔。")
+        print("\nℹ️ [Local Git] Working tree clean, nothing to commit.")
 
 
 def cmd_handoff(args):
-    """Prepares for interruption/class, updating HANDOFF.md with timestamp before commit."""
+    """Prepares for interruption/class, updating HANDOFF.md with timestamp before commit in English."""
     now_ts = get_current_timestamp()
     today = get_current_date()
     handoff_file = ROOT / "memory" / "HANDOFF.md"
 
     if handoff_file.exists():
         content = handoff_file.read_text(encoding="utf-8")
-        # Update latest timestamp
         content = re.sub(
             r"### 🕒 最新交接時間：\d{4}-\d{2}-\d{2} \d{2}:\d{2}",
             f"### 🕒 最新交接時間：{now_ts}",
             content,
         )
         handoff_file.write_text(content, encoding="utf-8")
-        print(f"📝 [Auto-Doc] 已更新 {handoff_file} 時間戳記為 {now_ts}")
+        print(f"📝 [Auto-Doc] Updated {handoff_file} timestamp to {now_ts}")
 
     sync_markdown_dates()
-    commit_msg = f"[{today}] wip(handoff): {args.reason}"
+    reason = args.reason or "pause session before stepping away"
+    commit_msg = f"[{today}] wip(handoff): {reason}"
 
     subprocess.run(["git", "add", "-A"], cwd=str(ROOT))
     res = subprocess.run(["git", "commit", "-m", commit_msg], cwd=str(ROOT))
     if res.returncode == 0:
-        print(f"🎒 [Local Git] 離席存檔成功！已安全記錄當前進度：{commit_msg}")
-        print("您現在可以安心闔上筆電去上課或外出！")
+        print(f"🎒 [Local Git] Handoff saved (in English): {commit_msg}")
+        print("You can safely close your laptop and step away!")
     else:
-        print("🎒 [Local Git] 離席文檔已更新。")
+        print("🎒 [Local Git] Handoff doc updated.")
 
 
 def cmd_publish(args):
@@ -296,6 +354,10 @@ def main():
     # test-ollama-auto-trigger
     p_test = subparsers.add_parser("test-ollama-auto-trigger", help="執行 Ollama 自動喚醒與自我除錯測試")
     p_test.set_defaults(func=cmd_test_ollama_auto_trigger)
+
+    # agent-init
+    p_init = subparsers.add_parser("agent-init", help="AI 對話開場自動簡報，讀取工作守則與交接狀態")
+    p_init.set_defaults(func=cmd_agent_init)
 
     args = parser.parse_args()
     args.func(args)

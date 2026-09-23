@@ -1,9 +1,9 @@
-# 🌟 PROJECT_INIT_STANDARD.md (新專案通用初始化標準指南)
+# 🌟 PROJECT_INIT_STANDARD.md (新專案通用初始化標準指南 - 企業級規範)
 
 > 💡 **使用方法 (How to Use)**：
-> 當您未來開立任何新的軟體、資料科學或 AI 專案時，**只需將本文件內容直接複製貼給 AI Agent**，並下達指令：
+> 當您未來開立任何新的軟體、資料科學、AI Agent 或後端專案時，**只需將本文件內容直接複製貼給 AI Agent**，並下達指令：
 > 
-> *「請閱讀本指南，並嚴格依照本標準在當前工作區中初始化所有必要的資料夾、Markdown 文件、Git 安全鎖與總指揮 run 腳本，完成後向我彙報。」*
+> *「請閱讀本指南，並嚴格依照本標準在當前工作區中初始化所有必要的資料夾、Markdown 文件、Git 安全鎖、軟硬體守衛與總指揮 run 腳本，完成後向我彙報。」*
 
 ---
 
@@ -26,17 +26,24 @@
 15. **根目錄零臨時與非標文檔規範**：根目錄除 README、OPERATIONS、AGENTS、CHANGELOG、PROJECT_INIT_STANDARD 外，嚴禁散落 `ISSUES.md` 或 `OPTIMIZATION_PROPOSAL.md` 等檔案（歷史議題歸 `memory/` 或 `docs/`，提案歸 `docs/`）。
 16. **開案前置軟硬體基線探針 (Hardware Baseline Probe & Guard)**：開案初期必須自動先寫 Python 探針（`src/guards/hardware.py`），精準探測主機 CPU 核心、Apple Silicon 架構、RAM、GPU/MPS、SSD 與電池狀態；開發時兼顧「充分榨乾原生硬體效能」與「嚴格防 OOM/電池耗盡安全守護」。
 17. **開案標配一體化看門狗程式 (Scaffold Autonomous Watchdog)**：專案初始化時必須標配產生守望看門狗（`run.py watchdog`），同時盯住輸入任務隊列與本機硬體健康，實現有任務自動安全啟動。
+18. **SOLID 物件導向架構約束 (SOLID Principles)**：嚴格實施單一職責（SRP）、開放封閉（OCP）、里氏替換（LSP）、介面隔離（ISP）與依賴反轉（DIP），杜絕千行巨石檔案。
+19. **純函數運算與副作用邊界隔離 (Pure Functions & Side-Effect Isolation)**：核心演算法與資料轉換一律寫成無 I/O、無全域狀態的「純函數」；磁碟/網路等副作用收攏於邊界調度器。
+20. **工業級強制型別提示與資料契約 (Type Hints & Dataclasses)**：100% 涵蓋 Type Hints (PEP 484/585)；跨模組業務物件禁止濫用無型別 `dict`，一律使用 `@dataclass(frozen=True)` 或 `Pydantic` 定義契約。
+21. **防衛性編程與原子性檔案 I/O (Defensive Programming & Atomic Writes)**：嚴禁裸抓異常（No bare `except:`）；大檔寫入必須採用「臨時檔寫入 + `os.replace` 原子替換」，杜絕斷電損壞。
+22. **零硬編碼機密與 12-Factor 環境配置 (Zero Hardcoded Secrets & 12-Factor Config)**：嚴禁程式碼寫死金鑰；一律依賴 `.env` 注入，專案標配提交 `.env.example` 樣板。
 
 ---
 
-## 一、 新專案必須建立的標準檔案與目錄結構
+## 一、 新專案必須建立的標準檔案與目錄結構 (專業企業級佈局)
 
 ```text
 my-new-project/
 ├── .git/hooks/pre-push         # 🛑 阻擋未授權 push 的本地安全鎖 (強制 ALLOW_PUSH=1)
-├── .gitignore                  # 🙈 排除 scratch/, logs/, data/state/, data/needs_review/, .env
+├── .gitignore                  # 🙈 排除 scratch/, logs/, data/state/, data/needs_review/, .env, __pycache__/
+├── pyproject.toml              # 📦 現代 Python 打包、依賴管理與工具配置 (ruff, mypy, pytest)
+├── .env.example                # 🔑 12-Factor 環境變數配置範本 (嚴禁提交真實 .env)
 │
-├── README.md                   # 📖 專案總覽
+├── README.md                   # 📖 專案總覽、架構速覽與快速上手
 ├── OPERATIONS.md               # 🚀【冷啟動手冊】30秒啟動步驟、Top 常用指令、疑難急救
 ├── AGENTS.md                   # 🤖【跨 Agent 憲法】意圖指令路由表、行為核心鐵律
 ├── CHANGELOG.md                # 📜【版本日誌】語意化版本與里程碑紀錄 (含發布日期)
@@ -53,9 +60,9 @@ my-new-project/
 │   ├── HANDOFF.md              # 🪪 離席交接卡片（外出/上課前由 AI 自動更新，帶精確時間戳）
 │   └── sessions/               # 🗄️ 跨對話雙軌歸檔 (YYYY-MM-DD-<topic>-summary.md + transcript.md)
 │
-├── docs/                       # 🏛️【靜態工程資產】(提案與歷史議題全部收納於此，不散落根目錄)
+├── docs/                       # 🏛️【靜態工程資產】(提案、架構與歷史議題全部收納於此，不散落根目錄)
 │   ├── STRUCTURE.md            # 🗺️ 專案完整目錄樹地圖與每支程式功能備註
-│   ├── CODING_RULES.md         # 🛡️ 開發守則（日誌三要素、軟硬體守衛、scratch 約定、衝突協議）
+│   ├── CODING_RULES.md         # 🛡️ 開發守則（SOLID、純函數、型別、軟硬體守衛、原子寫入、反模式清單）
 │   ├── ARCHITECTURE.md         # 🏗️ 系統總體架構圖與數據流向
 │   └── adr/                    # 📜 架構決策紀錄 (0001-xxx.md，標記 Accepted / Superseded)
 │
@@ -70,9 +77,20 @@ my-new-project/
 │   │   ├── books/              # 書籍章節輸出
 │   │   └── literature/         # 文獻單篇解析輸出
 │   ├── needs_review/           # 🚨 異常隔離區（信度 < 0.80 或修復失敗，留待人工審核）
-│   └── state/                  # 斷點續傳快照與狀態檔
+│   └── state/                  # 💾 斷點續傳快照與狀態檔
 │
-└── src/                        # 💻【業務核心原始碼】
+├── tests/                      # 🧪【自動化測試體系】
+│   ├── __init__.py             # 動態注入 sys.path，確保任何環境直跑 unittest/pytest
+│   ├── unit/                   # 單元測試 (純函數、模組邏輯，毫秒級無 I/O)
+│   └── integration/            # 整合測試 (管線端到端串接、守衛驗證)
+│
+└── src/                        # 💻【分層業務核心原始碼】(Clean Architecture)
+    └── <package_name>/
+        ├── core/               # 核心領域模型、不變量校驗 (Invariants)
+        ├── guards/             # 軟硬體前置守衛、模型探活與輸入/輸出攔截器
+        ├── parsers/ (或 adapters/) # 實體數據讀寫、PDF/EPUB 解碼、外部 API 轉接
+        ├── pipelines/ (或 services/)# 應用層場景調度、管線串接
+        └── utils/              # 通用無副作用小工具與日誌器
 ```
 
 ---
@@ -142,19 +160,25 @@ my-new-project/
 - 根目錄只允許存在官方標準文檔（README、OPERATIONS、AGENTS、CHANGELOG、PROJECT_INIT_STANDARD）。所有排版分析或問題清單移至 `memory/` 或 `docs/`，所有優化提案與架構設計移至 `docs/`。
 
 ### 鐵律 16：開案前置軟硬體基線探針與保護模組 (Hardware Baseline Probe & Guard Scaffolding)
-- 在任何業務代碼開發前，AI 必須**第一時間自動撰寫 Python 硬體探針模組 (`src/guards/hardware.py`)**，檢測本機硬體基線：
-  - Apple Silicon 晶片類型（M 系列核心、P-Core / E-Core 分佈）。
-  - UMA 統一記憶體大小與當前可用 RAM（動態設定安全門檻，如可用 RAM < 4GB 拒載重度模型防 OOM）。
-  - Apple Metal / MPS GPU 加速支援狀態。
-  - SSD (APFS) 磁碟剩餘空間（確保大於 10GB 始可批次轉檔）。
-  - 電源狀態（電池模式且電量 < 40% 時禁止啟動高耗能模型以保護電池壽命）。
-  - 本地 Ollama 守衛探活與可用模型列表。
-- **雙重使命**：開案初期建立該探針後，後續所有核心模組與演算法必須**優先榨乾 Mac 原生硬體效能**（Metal、Vision、sips），並**全面受硬體安全門檻保護**。
+- 在任何業務代碼開發前，AI 必須**第一時間自動撰寫 Python 硬體探針模組 (`src/guards/hardware.py`)**，檢測本機硬體基線（Apple Silicon 晶片、P/E Core、可用 RAM 門檻、Metal MPS、SSD、電池、Ollama 探活）。開案後所有核心演算法必須優先榨乾 Mac 原生效能，並全面受硬體安全門檻保護。
 
 ### 鐵律 17：開案標配軟硬體一體化看門狗規範 (Integrated Autonomous Watchdog Scaffolding)
-- 凡涉及檔案處理、數據流或 AI 運算的專案，開案時必須在 `run.py` 標配實作 `watchdog` 指令：
-  - 自動持續監聽待處理目錄（如 `data/input/`）。
-  - 來檔時先進行硬體健康巡檢，資源安全時**全自動自主啟動處理**；資源不足時主動告警並平滑降級。
+- 凡涉及檔案處理、數據流或 AI 運算的專案，開案時必須在 `run.py` 標配實作 `watchdog` 指令。自動監聽輸入目錄，來檔時先巡檢硬體，安全時全自動自主啟動，資源不足時主動告警並平滑降級。
+
+### 鐵律 18：SOLID 物件導向設計準則 (SOLID Object-Oriented Design)
+- 類別設計必須遵守五大原則：單一職責（類別 < 300 行）、開放封閉（策略模式擴充）、里氏替換（無破壞性子類別）、介面隔離（精簡 ABC）、依賴反轉（依賴抽象介面而非具體實作）。
+
+### 鐵律 19：純函數運算與副作用分離 (Pure Functions & Side-Effect Isolation)
+- 核心演算法、字串解析、數學處理必須寫成「純函數（無 I/O、無全域狀態、可 100% 冪等測試）」；檔案存取、網路呼叫等副作用集中在邊界調度器。
+
+### 20：現代型別提示與資料契約 (Type Hints & Dataclass Contracts)
+- 100% 標註 Type Hints (PEP 484/585)；跨模組業務物件禁止濫用無型別 `dict`，一律使用 `@dataclass(frozen=True)` 或 `Pydantic` 建立強型別資料契約。
+
+### 21：防衛性編程與原子性檔案寫入 (Defensive Programming & Atomic Writes)
+- 嚴禁裸抓異常（No bare `except:` 或 `except Exception: pass`）；寫入大檔案一律採用「臨時檔寫入 + `os.replace` 原子替換」，杜絕斷電損壞。
+
+### 22：零硬編碼機密與 12-Factor 配置 (Zero Hardcoded Secrets & 12-Factor Config)
+- 嚴禁寫死 API Token、密碼與路徑；一律依賴 `.env` 注入，專案標配提交 `.env.example`。
 
 ---
 
@@ -164,11 +188,13 @@ my-new-project/
 - [ ] 1. 建立 `.git/hooks/pre-push` 並給予執行權限 (`chmod +x`)。
 - [ ] 2. 建立 `memory/`、`docs/`、`scratch/`、`logs/`、`data/input/`、`data/output/`、`data/needs_review/`。
 - [ ] 3. **主動撰寫 Python 軟硬體基線探針與安全守衛模組 (`src/guards/hardware.py` / `src/guards/ollama_guard.py`)**。
-- [ ] 4. 建立 `OPERATIONS.md`，填入該新專案的 30 秒啟動與常用指令。
-- [ ] 5. 建立 `AGENTS.md`，填入該新專案的意圖派發清單與開場喚醒指令。
-- [ ] 6. 建立 `docs/STRUCTURE.md`，標註當前所有模組職責。
-- [ ] 7. 建立 `docs/CODING_RULES.md`，設定該專案的軟硬體門檻與日誌格式。
-- [ ] 8. 建立 `.agent/skills/` 分層技能體系（總入口 + 專屬子技能）。
-- [ ] 9. 在 `run.py` 封裝 `agent-init`、`doctor`、`process`、`save`、`handoff`、`publish`、`watchdog`、`archive-sessions` 等快捷指令。
-- [ ] 10. 主動執行第一次本地 Git 初始化存檔（**使用英文 Commit**）：
+- [ ] 4. 建立 `pyproject.toml` 與 `.env.example`，鎖定環境與依賴版本。
+- [ ] 5. 建立 `tests/` 測試目錄結構 (`__init__.py`, `unit/`, `integration/`)，確保測試直跑。
+- [ ] 6. 建立 `OPERATIONS.md`，填入該新專案的 30 秒啟動與常用指令。
+- [ ] 7. 建立 `AGENTS.md`，填入該新專案的意圖派發清單與開場喚醒指令。
+- [ ] 8. 建立 `docs/STRUCTURE.md`，標註當前所有模組職責。
+- [ ] 9. 建立 `docs/CODING_RULES.md`，設定 SOLID、純函數、型別、軟硬體門檻與日誌格式。
+- [ ] 10. 建立 `.agent/skills/` 分層技能體系（總入口 + 專屬子技能）。
+- [ ] 11. 在 `run.py` 封裝 `agent-init`、`doctor`、`process`、`save`、`handoff`、`publish`、`watchdog`、`archive-sessions` 等快捷指令。
+- [ ] 12. 主動執行第一次本地 Git 初始化存檔（**使用英文 Commit**）：
   `[YYYY-MM-DD] chore: initialize project standard governance and architecture`。

@@ -15,6 +15,10 @@ from book_processor.config import DEFAULT_DICT_PATH
 from book_processor.verification.rules import (
     is_valid_dictionary_word, check_noise_strings, check_heading_ratio,
     check_content_continuity, check_sentence_completeness,
+    check_numeric_coordinate_noise, check_shattered_math,
+    check_infix_math_in_words, check_heading_prose_intrusion,
+    check_table_banner_integrity, check_heading_density,
+    check_excessive_hard_wraps,
 )
 from book_processor.verification.ollama_verifier import OllamaVerifier
 
@@ -110,6 +114,10 @@ class AccuracyVerifier:
         print(f"  • Hyphenated Line Repairs: [PASS] {len(broken_hyphens)} broken line-end hyphens remaining.")
 
         if not noise_pass:
+            results['passed'] = False
+        if not h_pass and not is_front_matter:
+            results['passed'] = False
+        if not vocab_pass and not is_front_matter:
             results['passed'] = False
 
 
@@ -225,7 +233,46 @@ class AccuracyVerifier:
                 print(f"  • Split PDF: [FAIL] Error reading {split_pdf}: {e}")
                 results['passed'] = False
 
-        # 6. Local Ollama AI Semantic Audit (if enabled)
+        # 6. Semantic Meaningfulness & Content Integrity Checks
+        num_noise_res = check_numeric_coordinate_noise(md_content)
+        shat_math_res = check_shattered_math(md_content)
+        infix_sym_res = check_infix_math_in_words(md_content)
+        head_int_res  = check_heading_prose_intrusion(md_content)
+        tbl_ban_res   = check_table_banner_integrity(md_content)
+        head_den_res  = check_heading_density(md_content, total_tokens, is_front_matter)
+        hard_wrap_res = check_excessive_hard_wraps(md_content)
+
+        semantic_pass = (
+            num_noise_res['passed'] and
+            shat_math_res['passed'] and
+            infix_sym_res['passed'] and
+            head_int_res['passed'] and
+            tbl_ban_res['passed'] and
+            head_den_res['passed']
+        )
+
+        results['checks']['semantic'] = {
+            'numeric_noise': num_noise_res,
+            'shattered_math': shat_math_res,
+            'infix_symbols': infix_sym_res,
+            'heading_intrusion': head_int_res,
+            'table_banners': tbl_ban_res,
+            'heading_density': head_den_res,
+            'hard_wraps': hard_wrap_res,
+            'passed': semantic_pass,
+        }
+
+        print(f"  • Semantic Noise & Leaks: {'[PASS]' if num_noise_res['passed'] else '[FAIL]'} ({num_noise_res['count']} numeric coordinate leaks)")
+        print(f"  • Mathematical Integrity: {'[PASS]' if (shat_math_res['passed'] and infix_sym_res['passed']) else '[FAIL]'} (shattered: {shat_math_res['count']}, infix: {infix_sym_res['count']})")
+        print(f"  • Heading Prose Integrity: {'[PASS]' if head_int_res['passed'] else '[FAIL]'} ({head_int_res['count']} heading prose intrusions)")
+        print(f"  • Table Banner Integrity: {'[PASS]' if tbl_ban_res['passed'] else '[FAIL]'} ({tbl_ban_res['count']} collapsed comparison banners)")
+        print(f"  • Heading Hierarchy Density: {'[PASS]' if head_den_res['passed'] else '[FAIL]'} ({head_den_res.get('heading_count', 0)} headings found)")
+        print(f"  • Paragraph Reflow Sanity: {'[PASS]' if hard_wrap_res['passed'] else '[WARN]'} ({hard_wrap_res['unreflowed_paragraphs']} unreflowed blocks)")
+
+        if not semantic_pass:
+            results['passed'] = False
+
+        # 7. Local Ollama AI Semantic Audit (if enabled)
         if self.use_ollama and self.ollama:
             print(f"  [*] Dispatching Local Ollama AI ({self.ollama.model_name}) for semantic & LaTeX audit...")
             ai_res = self.ollama.verify_chapter_semantics(ch_name, md_content)

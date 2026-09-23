@@ -17,6 +17,7 @@ if str(src_dir) not in sys.path:
     sys.path.insert(0, str(src_dir))
 
 __path__ = [str(pkg_dir)]
+__version__ = "3.1.0"
 
 from book_processor.cli import main
 

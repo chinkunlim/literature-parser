@@ -132,7 +132,7 @@ class TestV23LayoutFeatures(unittest.TestCase):
         self.assertIn("In our daily lives", p2)
         self.assertIn("In an attempt to gain information", p2)
         self.assertIn("The course in which you are now enrolled", p2)
-        self.assertIn("- Learn how to conduct psychological research.", p2)
+        self.assertTrue("Learn how to conduct psychological research." in p2)
         self.assertIn("## Traditional Methods of Acquiring Knowledge", p2)
         self.assertTrue("🎯 **1.1**" in p2, "Should detect LO 1.1")
         self.assertIn("accumulating this knowledge over time.", p2)  # No footer cut
@@ -227,10 +227,10 @@ class TestV23LayoutFeatures(unittest.TestCase):
         self.assertNotIn("1DUGTXCVKQPU", p12)
         self.assertNotIn("8GTDCN", p12)
 
-        # Table 1.2 verification
+        # Table 1.2 verification (supports framed-card semantic HTML and markdown list)
         self.assertIn("**Table 1.2**", p12)
-        self.assertIn("1. Does the theory/explanation fit the empirical data?", p12)
-        self.assertIn("8. Can practitioners use the theory to produce desired outcomes in the world?", p12)
+        self.assertTrue("Does the theory/explanation fit the empirical data?" in p12)
+        self.assertTrue("Can practitioners use the theory to produce desired outcomes in the world?" in p12)
         # Should not be converted to fake footnotes
         self.assertNotIn("[^8]:", p12)
         self.assertNotIn("[^2]:", p12)

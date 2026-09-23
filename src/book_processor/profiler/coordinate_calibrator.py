@@ -127,6 +127,20 @@ class CoordinateCalibrator:
         profile["geometry"] = geom
         profile["book_name"] = book_dir.name
 
+        # Auto-detect publisher from page 1 text
+        if "publisher" not in profile or not profile["publisher"]:
+            try:
+                import re
+                from book_processor.fingerprinting.publisher_detector import PublisherDetector
+                p1_xml = cls.extract_page_xml(str(sample_pdf), 1)
+                p1_text = re.sub(r'<[^>]+>', ' ', p1_xml) if p1_xml else ""
+                detected_pub = PublisherDetector.detect_from_text(p1_text)
+                if detected_pub:
+                    profile["publisher"] = detected_pub
+                    logger.info("Auto-fingerprinted publisher: %s", detected_pub)
+            except Exception as e:
+                logger.debug("Publisher auto-detection skipped: %s", e)
+
         with open(profile_path, "w", encoding="utf-8") as f:
             json.dump(profile, f, indent=2, ensure_ascii=False)
 

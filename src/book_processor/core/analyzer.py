@@ -7,6 +7,7 @@ Extracts table of contents from PDF bookmarks or scans page text structures.
 import logging
 import re
 import subprocess
+from pathlib import Path
 import xml.etree.ElementTree as ET
 from book_processor.utils.text_utils import sanitize_filename, format_chapter_title, format_appendix_title
 
@@ -191,6 +192,15 @@ class PDFAnalyzer:
         if len(pages) > 1 and pages[-1] == '':
             pages = pages[:-1]
 
+        # Check document classification first: journals stay single section
+        from book_processor.fingerprinting.document_classifier import DocumentClassifier
+        p1_text = pages[0] if pages else ""
+        classification = DocumentClassifier.classify(total_pages, p1_text)
+        if classification["is_journal"]:
+            doc_name = sanitize_filename(Path(pdf_path).stem)
+            logger.info("Classified as journal article (%s): preserving single section 1..%d", doc_name, total_pages)
+            return [{'start': 1, 'end': total_pages, 'name': doc_name}]
+
         toc_titles = {}
         for p_idx in range(min(20, len(pages))):
             p_text = pages[p_idx]
@@ -248,6 +258,10 @@ class PDFAnalyzer:
                 elif re.match(r'^index\b', lines[0], re.I):
                     if not any(s[1] == 'Index' for s in sections):
                         sections.append((idx, 'Index'))
+
+        if not seen_chapters:
+            doc_name = sanitize_filename(Path(pdf_path).stem)
+            return [{'start': 1, 'end': total_pages, 'name': doc_name}]
 
         sections.sort(key=lambda x: x[0])
 

@@ -38,8 +38,8 @@ def check_noise_strings(content: str) -> list:
     found = []
     for line in content.splitlines():
         line_clean = line.strip()
-        # Skip legitimate bibliographic / abstract records (e.g. PsycINFO Database Record)
-        if re.search(r'\b(?:psycinfo|database record|journal abstract)\b', line_clean, re.I):
+        # Skip legitimate bibliographic / abstract records (e.g. PsycINFO Database Record, APA article meta)
+        if re.search(r'\b(?:psycinfo|database record|journal abstract|american psychological association)\b', line_clean, re.I):
             continue
         # Running header/footer artifacts appear on short standalone lines (<140 chars)
         if line_clean and len(line_clean) < 140:
@@ -209,3 +209,167 @@ def check_sentence_completeness(content: str) -> dict:
         'incomplete_endings': incomplete_endings[:5],
         'incomplete_openings': incomplete_openings[:5],
     }
+
+
+def check_numeric_coordinate_noise(content: str) -> dict:
+    """
+    Detects vector diagram coordinate tick leaks (e.g. '5 2 5 2 5 2' or '20 20 20 20 1 1')
+    that bleed into prose text outside of tables, math blocks, and code fences.
+    """
+    # Strip tables, code fences, and math blocks
+    cleaned = re.sub(r'```.*?```', '', content, flags=re.DOTALL)
+    cleaned = re.sub(r'\$\$.*?\$\$', '', cleaned, flags=re.DOTALL)
+    cleaned = re.sub(r'<table.*?>.*?</table>', '', cleaned, flags=re.DOTALL)
+    cleaned = re.sub(r'<div class="framed-card">.*?</div>', '', cleaned, flags=re.DOTALL)
+    cleaned = re.sub(r'<div class="comparison-card">.*?</div>', '', cleaned, flags=re.DOTALL)
+    cleaned = re.sub(r'<!--.*?-->', '', cleaned, flags=re.DOTALL)
+
+    noise_matches = []
+
+    # 1. Identical repeated number tick runs: e.g. '2 2 2 2 2' or '20 20 20 20'
+    for m in re.finditer(r'\b(\d+)(?:[ \t]+\1){3,}\b', cleaned):
+        noise_matches.append(m.group(0).strip())
+
+    # 2. Alternating repetitive tick runs: e.g. '5 2 5 2 5 2'
+    for m in re.finditer(r'\b(\d+)[ \t]+(\d+)[ \t]+\1[ \t]+\2[ \t]+\1[ \t]+\2\b', cleaned):
+        noise_matches.append(m.group(0).strip())
+
+    # 3. Excessive isolated numbers on a single line (> 7 numbers)
+    for line in cleaned.splitlines():
+        s = line.strip()
+        if re.match(r'^(?:\d{1,3}[ \t]+){7,}\d{1,3}$', s):
+            noise_matches.append(s)
+
+    # 4. Inline coordinate leaks bleeding directly into lowercase prose words
+    for m in re.finditer(r'(?m)\b(?:\d{1,2}[ \t]+){2,}\d{1,2}[ \t]+(?=[a-z]{3,}\b)', cleaned):
+        noise_matches.append(m.group(0).strip())
+
+    return {
+        'passed': len(noise_matches) == 0,
+        'count': len(noise_matches),
+        'examples': noise_matches[:5],
+    }
+
+
+def check_shattered_math(content: str) -> dict:
+    """
+    Detects sequences of isolated 1-2 character lines indicating broken mathematical formulas
+    that were shattered by vertical superscript/subscript offsets.
+    """
+    # Strip markdown lists and code fences
+    cleaned = re.sub(r'```.*?```', '', content, flags=re.DOTALL)
+    cleaned = re.sub(r'<style>.*?</style>', '', cleaned, flags=re.DOTALL)
+
+    shattered_blocks = []
+    for m in re.finditer(r'(?m)(?:^[a-zA-Z0-9\(\)\=\+\-\/\*]\s*$\n?){4,}', cleaned):
+        snippet = m.group(0).replace('\n', ' ')
+        shattered_blocks.append(snippet.strip())
+
+    return {
+        'passed': len(shattered_blocks) == 0,
+        'count': len(shattered_blocks),
+        'examples': shattered_blocks[:5],
+    }
+
+
+def check_infix_math_in_words(content: str) -> dict:
+    """
+    Detects words split by LaTeX math symbol insertions (e.g. 'popula$\\mu$tion').
+    """
+    cleaned = re.sub(r'```.*?```', '', content, flags=re.DOTALL)
+    infix_matches = []
+    for m in re.finditer(r'\b([a-zA-Z]{2,})\$([\\a-zA-Z]+)\$([a-zA-Z]{2,})\b', cleaned):
+        infix_matches.append(m.group(0))
+
+    return {
+        'passed': len(infix_matches) == 0,
+        'count': len(infix_matches),
+        'examples': infix_matches[:5],
+    }
+
+
+def check_heading_prose_intrusion(content: str) -> dict:
+    """
+    Detects headings that have absorbed following body prose sentences due to
+    multi-column order or aggressive cross-page concatenation (length > 80 chars
+    with multiple full sentences).
+    """
+    bad_headings = []
+    for line in content.splitlines():
+        s = line.strip()
+        if s.startswith(('## ', '### ', '#### ')):
+            header_text = s.lstrip('#').strip()
+            # If header is long and contains sentence ending punctuation followed by capital letters
+            if len(header_text) > 85 and re.search(r'[.?!]\s+[A-Z]', header_text):
+                bad_headings.append(header_text[:100] + '...')
+
+    return {
+        'passed': len(bad_headings) == 0,
+        'count': len(bad_headings),
+        'examples': bad_headings[:5],
+    }
+
+
+def check_table_banner_integrity(content: str) -> dict:
+    """
+    Detects comparison tables where 'Strengths' or 'Weaknesses' banners collapsed
+    into the middle of a bullet item or disappeared.
+    """
+    collapsed_banners = []
+    # Pattern: a bullet item containing 'Weaknesses of' or 'Strengths of' mid-text
+    for m in re.finditer(r'(?m)^[-*•]\s+.*?\b(Strengths|Weaknesses|Advantages|Disadvantages)\s+of\s+.*', content):
+        line = m.group(0)
+        if not line.startswith(('- **Strengths', '- **Weaknesses', '- **Advantages', '- **Disadvantages')):
+            collapsed_banners.append(line[:90] + '...')
+
+    return {
+        'passed': len(collapsed_banners) == 0,
+        'count': len(collapsed_banners),
+        'examples': collapsed_banners[:5],
+    }
+
+
+def check_heading_density(content: str, word_count: int, is_front_matter: bool = False) -> dict:
+    """
+    Validates that substantial textbook chapters have sufficient heading hierarchy.
+    """
+    if is_front_matter or word_count < 1000:
+        return {'passed': True, 'heading_count': 0, 'word_count': word_count}
+
+    headings = [l for l in content.splitlines() if l.strip().startswith(('## ', '### '))]
+    passed = len(headings) >= 2
+
+    return {
+        'passed': passed,
+        'heading_count': len(headings),
+        'word_count': word_count,
+    }
+
+
+def check_excessive_hard_wraps(content: str) -> dict:
+    """
+    Detects unwrapped / hard-column wrapped prose where short lines terminate with single
+    newlines instead of reflowing into CommonMark paragraphs.
+    """
+    cleaned = re.sub(r'```.*?```', '', content, flags=re.DOTALL)
+    cleaned = re.sub(r'<table.*?>.*?</table>', '', cleaned, flags=re.DOTALL)
+    cleaned = re.sub(r'<!--.*?-->', '', cleaned, flags=re.DOTALL)
+
+    paras = re.split(r'\n{2,}', cleaned)
+    unreflowed_paras = 0
+
+    for p in paras:
+        lines = [l.strip() for l in p.splitlines() if l.strip()]
+        if len(lines) >= 4:
+            # Check if all lines are ~60-80 chars and not starting with lists/quotes/code
+            if all(not l.startswith(('#', '-', '*', '>', '|', '!')) for l in lines):
+                line_lens = [len(l) for l in lines[:-1]]  # ignore last line
+                if line_lens and all(50 <= ll <= 85 for ll in line_lens):
+                    unreflowed_paras += 1
+
+    # Warning if more than 3 paragraphs remain unreflowed in the chapter
+    return {
+        'passed': unreflowed_paras <= 2,
+        'unreflowed_paragraphs': unreflowed_paras,
+    }
+

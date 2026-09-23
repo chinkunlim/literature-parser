@@ -109,12 +109,94 @@ class MathLaTeXConverter:
         return text
 
     @classmethod
+    def heal_shattered_math(cls, text: str) -> str:
+        r"""
+        Heals shattered formula fragments where vertical offsets (superscripts/subscripts)
+        split math into isolated single-character lines or interleaved words.
+        """
+        if not text:
+            return ""
+
+        # 1. Pearson r formula fragments:
+        # Matches shattered versions like:
+        # Z \n+ Z \n+ ) \n+ sum of the cross products ... n
+        pearson_pattern = (
+            r'(?:Z\s*\n+\s*Z\s*\n+\s*\)\s*\n+)?'
+            r'sum\s+of\s+(?:the\s+)?cross\s+products\s+of\s+the\s+'
+            r'(?:z\s+)?scores\s*(?:\(i\.e\.,\s*)?'
+            r'(?:[ZXY\s\n\)\(\,r\.\:\;]*?)'
+            r'(?:number\s+of\s+cases\s*\n+\s*n|n\s*\n+\s*where)'
+        )
+        text = re.sub(
+            pearson_pattern,
+            lambda m: r'$$\displaystyle r = \dfrac{\text{sum of cross products of } z \text{ scores}}{n} = \dfrac{\sum(Z_X Z_Y)}{n}$$' + '\n\n',
+            text,
+            flags=re.I
+        )
+
+        # 2. Heal isolated single-variable subscript splits:
+        # 'Z \n\n X' -> '$Z_X$', 'Z \n\n Y' -> '$Z_Y$'
+        text = re.sub(r'(?m)^Z\s*\n{1,3}\s*X\s*$', r'$Z_X$', text)
+        text = re.sub(r'(?m)^Z\s*\n{1,3}\s*Y\s*$', r'$Z_Y$', text)
+        text = re.sub(r'(?m)^Z\s*\n{1,3}\s*Z\s*\n{1,3}\s*\)', r'$Z_X Z_Y)$', text)
+
+        # 3. Heal runs of 3+ single-character lines:
+        # e.g., 'X \n Y \n = \n 1' -> '$X Y = 1$'
+        def _collapse_char_lines(m):
+            block = m.group(0)
+            chars = [l.strip() for l in block.splitlines() if l.strip()]
+            joined = ' '.join(chars)
+            return f"${joined}$"
+
+        text = re.sub(
+            r'(?m)(?:^[a-zA-Z0-9\(\)\=\+\-\/\*]\s*$\n?){3,}',
+            _collapse_char_lines,
+            text
+        )
+
+        return text
+
+    @classmethod
+    def repair_symbol_artifacts(cls, text: str) -> str:
+        r"""
+        Repairs symbol collisions:
+        1. Infix Greek symbols inside words (e.g. 'popula$\mu$tion' -> 'population $\mu$')
+        2. Detached exponents (e.g. '$\chi$ 2' -> '$\chi^2$', '$\eta$ 2' -> '$\eta^2$', '$R$ 2' -> '$R^2$')
+        """
+        if not text:
+            return ""
+
+        # Detached superscripts: '$\chi$ 2' -> '$\chi^2$', '$R$ 2' -> '$R^2$'
+        text = re.sub(r'\$([a-zA-Z\\]+)\$\s*(\d+)', r'$\1^{\2}$', text)
+        text = re.sub(r'(?<![a-zA-Z\\])(\\chi|\\eta|R|r)\s*\^?\s*2\b', r'$\1^2$', text)
+
+        # Infix Greek symbols inside English words
+        def _fix_infix(m):
+            prefix = m.group(1)
+            sym = m.group(2)
+            suffix = m.group(3)
+            # Recombine word and place math symbol after it
+            return f"{prefix}{suffix} ${sym}$"
+
+        text = re.sub(
+            r'([a-zA-Z]{2,})\$([\\a-zA-Z]+)\$([a-zA-Z]{2,})',
+            _fix_infix,
+            text
+        )
+
+        return text
+
+    @classmethod
     def format_textbook_equations(cls, text: str) -> str:
         r"""
         Reconstructs common textbook statistical formulas as display LaTeX math.
         Enforces \dfrac and \displaystyle to guarantee uniform 100% font sizing
         without shrinking fraction numerators/denominators.
         """
+        # First heal shattered fragments and repair symbol artifacts
+        text = cls.heal_shattered_math(text)
+        text = cls.repair_symbol_artifacts(text)
+
         # z-score general formula
         text = re.sub(
             r'(?:\*z\*|z)\s+score\s*=\s*(?:raw\s+score\s+mean|raw\s+score\s*-\s*mean)\s+standard\s+deviation\s*=\s*\*?X\*?\s*\*?X\*?\s*\*?SD\*?',
@@ -146,6 +228,7 @@ class MathLaTeXConverter:
             text, flags=re.I
         )
         return text
+
 
     @classmethod
     def ensure_uniform_fraction_sizing(cls, text: str) -> str:
@@ -217,7 +300,9 @@ class MathLaTeXConverter:
     @classmethod
     def process_text(cls, text: str) -> str:
         """Full pipeline for mathematical formula normalization with uniform font sizing."""
+        from book_processor.parsers.math.apa_stats_normalizer import APAStatsNormalizer
         text = cls.convert_symbols(text)
+        text = APAStatsNormalizer.normalize_text(text)
         text = cls.format_textbook_equations(text)
         text = cls.format_statistical_notations(text)
         text = cls.format_display_equations(text)

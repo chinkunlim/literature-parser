@@ -13,6 +13,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from book_processor.parsers.digital_pdf import DigitalPDFParser
 from book_processor.parsers.layout_detector import set_style, generate_markdown_toc
+from book_processor.book_style import build_textbook_css
 from book_processor.parsers.scanned_pdf import ScannedPDFParser
 from book_processor.core.image_manager import ImageManager
 from book_processor.utils.text_utils import stitch_cross_page_continuity
@@ -95,6 +96,10 @@ def convert_chapter(ch_pdf: Path, force: bool = False, book_style: dict = None, 
     ch_images_dir = ch_dir / "images"
     md_out = ch_dir / f"{ch_name}.md"
 
+    if not ch_pdf.exists():
+        print(f"  [⏭️ SKIP] PDF file not found: {ch_pdf.name}")
+        return True
+
     # Checkpoint guard: skip if already converted unless force
     if not force and md_out.exists() and md_out.stat().st_size > 200:
         ch_status = cp.data.get("chapters", {}).get(ch_name, {})
@@ -145,8 +150,9 @@ def convert_chapter(ch_pdf: Path, force: bool = False, book_style: dict = None, 
                 full_md = f"# {ch_name}\n\n{full_md}"
 
         # Insert clickable Table of Contents if configured
-        if s.get("generate_toc", True):
-            toc_block = generate_markdown_toc(full_md)
+        toc_mode = s.get("toc_mode", "open")
+        if s.get("generate_toc", True) and toc_mode != "none":
+            toc_block = generate_markdown_toc(full_md, toc_mode=toc_mode)
             if toc_block and "<summary>📑 <b>Table of Contents</b>" not in full_md:
                 m_h1 = re.search(r'^(#[^\n]+\n+)', full_md)
                 if m_h1:
@@ -192,12 +198,10 @@ def convert_chapter(ch_pdf: Path, force: bool = False, book_style: dict = None, 
                         pg_str = f" *(p. {pg})*" if pg else ""
                         slug   = re.sub(r'[^a-zA-Z0-9]+', '-', t.lower()).strip('-')
                         fc_lines.append(f"<details id=\"flashcard-{slug}\">")
-                        fc_lines.append(f"<summary>📇 **{t}**{pg_str}</summary>")
+                        fc_lines.append(f"<summary>📇 <b>{t}</b>{pg_str}</summary>")
                         fc_lines.append("")
                         if d:
                             fc_lines.append(f"> **Definition:** {d}")
-                            fc_lines.append(">")
-                            fc_lines.append("> *Ask yourself: How does this concept relate to others in the chapter?*")
                         else:
                             loc = f"on p. {pg}" if pg else "in the chapter"
                             fc_lines.append(f"> *This term appears in bold {loc}.*")
@@ -216,7 +220,7 @@ def convert_chapter(ch_pdf: Path, force: bool = False, book_style: dict = None, 
 
         # CSS injection
         if '<style>' not in full_md:
-            full_md = build_css(s) + full_md
+            full_md = build_textbook_css(s) + full_md
 
         # Write output
         with open(md_out, 'w', encoding='utf-8') as f:

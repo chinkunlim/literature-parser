@@ -36,9 +36,11 @@ from book_processor.verification.ollama_verifier import OllamaVerifier
 from book_processor.verification.review_manager import ReviewManager
 from book_processor.verification.layout_healer import LayoutAutoHealer
 from book_processor.style_loader import load_style
+from book_processor.book_style import build_textbook_css
 from book_processor.parsers.layout_detector import set_style as _ld_set_style, generate_markdown_toc
 from book_processor.parsers import digital_pdf as _digital_pdf_mod
 from book_processor.utils.anki_exporter import AnkiExporter
+from book_processor.concurrency import M5WorkerPool
 
 
 logger = logging.getLogger(__name__)
@@ -311,8 +313,9 @@ class BookProcessorOrchestrator:
                 full_md = f"# {ch_name}\n\n{full_md}"
 
         # Insert clickable Table of Contents if configured
-        if _style.get("generate_toc", True):
-            toc_block = generate_markdown_toc(full_md)
+        toc_mode = _style.get("toc_mode", "open")
+        if _style.get("generate_toc", True) and toc_mode != "none":
+            toc_block = generate_markdown_toc(full_md, toc_mode=toc_mode)
             if toc_block and "<summary>📑 <b>Table of Contents</b>" not in full_md:
                 # Place TOC after the first top-level # heading
                 m_h1 = re.search(r'^(#[^\n]+\n+)', full_md)
@@ -359,16 +362,14 @@ class BookProcessorOrchestrator:
                         pg_str = f" *(p. {pg})*" if pg else ""
                         slug   = re.sub(r'[^a-zA-Z0-9]+', '-', t.lower()).strip('-')
 
-                        # All cards use the same Recall-first icon (📇) for uniform UX
+                        # All cards use <b>{t}</b> inside summary so bolding works in standard HTML
                         fc_lines.append(f"<details id=\"flashcard-{slug}\">")
-                        fc_lines.append(f"<summary>📇 **{t}**{pg_str}</summary>")
+                        fc_lines.append(f"<summary>📇 <b>{t}</b>{pg_str}</summary>")
                         fc_lines.append("")
 
                         if d:
-                            # Margin-defined term: definition + elaboration prompt
+                            # Margin-defined term: clean definition without unwanted notes
                             fc_lines.append(f"> **Definition:** {d}")
-                            fc_lines.append(">")
-                            fc_lines.append(f"> *Ask yourself: How does this concept relate to others in the chapter?*")
                         else:
                             # Inline bold term: guide to self-generate
                             loc = f"on p. {pg}" if pg else "in the chapter"
@@ -393,25 +394,7 @@ class BookProcessorOrchestrator:
 
         # Build CSS block from STYLE (only inject once — guard against retry duplication)
         if '<style>' not in full_md:
-            css_lines = ["<style>", "  /* Textbook typographic styling */"]
-            if _style.get("css_justify_body", True):
-                css_lines += [
-                    "  p {",
-                    "    text-align: justify;",
-                    "    text-justify: inter-word;",
-                    "  }",
-                ]
-            heading_align = _style.get("css_heading_align", "left")
-            css_lines += [
-                f"  h1, h2, h3, h4, h5, h6 {{ text-align: {heading_align}; }}",
-            ]
-            bq_align = _style.get("css_blockquote_align", "left")
-            css_lines += [
-                f"  blockquote {{ text-align: {bq_align}; }}",
-                "</style>",
-                "",
-            ]
-            full_md = '\n'.join(css_lines) + '\n' + full_md
+            full_md = build_textbook_css(_style) + full_md
 
 
         # Closed-loop layout auto-healing before syntax invariant checks
@@ -493,7 +476,7 @@ class BookProcessorOrchestrator:
     # =========================================================================
     # STAGE 3 & ALL: Full Book / Smart Resume Engine
     # =========================================================================
-    def process_pdf_book(self, pdf_path: str, target_chapter: str = None, resume: bool = False):
+    def process_pdf_book(self, pdf_path: str, target_chapter: str = None, resume: bool = False, parallel: bool = False):
         QualityInvariantGuard.check_pdf_pre_split(pdf_path)
         book_name = Path(pdf_path).stem
         book_out = os.path.join(self.output_dir, sanitize_filename(book_name))
@@ -518,38 +501,62 @@ class BookProcessorOrchestrator:
 
         print(f"\n{'='*70}\n[PROCESSING BOOK] {book_name} ({len(sections)} sections)\n{'='*70}")
 
+        pending_sections = []
         for idx, sec in enumerate(sections, 1):
-            if self.interrupted:
-                print(f"[!] Process paused at section {sec['name']}. Resume later with: book_processor resume")
-                break
-
-            # Circuit breaker guard
-            if self.circuit_breaker.is_tripped():
-                print(f"\n[🚨 CIRCUIT BREAKER TRIPPED] Multiple consecutive chapters failed verification!")
-                print(f"  Pipeline automatically paused to protect downstream output. Inspect errors before resuming.\n")
-                break
-
             name = sec['name']
-            start = sec['start']
-            end = sec['end']
-
-            # Check resume skip
             if resume and ckpt.is_chapter_verified(name):
                 print(f"  [{idx:02d}/{len(sections):02d}] Skipping already verified chapter: {name}")
                 continue
+            pending_sections.append((idx, sec))
 
-            print(f"\n  [{idx:02d}/{len(sections):02d}] Processing Chapter: {name} (pp. {start}-{end})...")
-            ch_dir = os.path.join(chapters_root, name)
-            os.makedirs(ch_dir, exist_ok=True)
-            ch_pdf = os.path.join(ch_dir, f"{name}.pdf")
+        if parallel and len(pending_sections) > 1 and not target_chapter:
+            print(f"  [⚡ Apple M5 Engine] Launching parallel processing for {len(pending_sections)} chapter(s)...")
+            pool = M5WorkerPool()
 
-            # 1. Split PDF (skip if already exists)
-            if not os.path.exists(ch_pdf) or os.path.getsize(ch_pdf) == 0:
-                PDFSplitter.split_chapter(pdf_path, start, end, ch_pdf)
-            ckpt.update_status(name, split_pdf=True, status='SPLIT')
+            def _process_task(item):
+                if self.interrupted or self.circuit_breaker.is_tripped():
+                    return None
+                i_idx, s_sec = item
+                s_name = s_sec['name']
+                s_start = s_sec['start']
+                s_end = s_sec['end']
+                s_ch_dir = os.path.join(chapters_root, s_name)
+                os.makedirs(s_ch_dir, exist_ok=True)
+                s_ch_pdf = os.path.join(s_ch_dir, f"{s_name}.pdf")
+                if not os.path.exists(s_ch_pdf) or os.path.getsize(s_ch_pdf) == 0:
+                    PDFSplitter.split_chapter(pdf_path, s_start, s_end, s_ch_pdf)
+                ckpt.update_status(s_name, split_pdf=True, status='SPLIT')
+                return self.convert_single_chapter(s_ch_pdf, book_source_pdf=pdf_path)
 
-            # 2. Convert & Auto-Verify (with auto-retry feedback loop)
-            self.convert_single_chapter(ch_pdf, book_source_pdf=pdf_path)
+            pool.execute_parallel(pending_sections, _process_task, desc="M5 Parallel Chapters")
+        else:
+            for idx, sec in pending_sections:
+                if self.interrupted:
+                    print(f"[!] Process paused at section {sec['name']}. Resume later with: book_processor resume")
+                    break
+
+                # Circuit breaker guard
+                if self.circuit_breaker.is_tripped():
+                    print(f"\n[🚨 CIRCUIT BREAKER TRIPPED] Multiple consecutive chapters failed verification!")
+                    print(f"  Pipeline automatically paused to protect downstream output. Inspect errors before resuming.\n")
+                    break
+
+                name = sec['name']
+                start = sec['start']
+                end = sec['end']
+
+                print(f"\n  [{idx:02d}/{len(sections):02d}] Processing Chapter: {name} (pp. {start}-{end})...")
+                ch_dir = os.path.join(chapters_root, name)
+                os.makedirs(ch_dir, exist_ok=True)
+                ch_pdf = os.path.join(ch_dir, f"{name}.pdf")
+
+                # 1. Split PDF (skip if already exists)
+                if not os.path.exists(ch_pdf) or os.path.getsize(ch_pdf) == 0:
+                    PDFSplitter.split_chapter(pdf_path, start, end, ch_pdf)
+                ckpt.update_status(name, split_pdf=True, status='SPLIT')
+
+                # 2. Convert & Auto-Verify (with auto-retry feedback loop)
+                self.convert_single_chapter(ch_pdf, book_source_pdf=pdf_path)
 
         print(f"\n{'='*70}\nBOOK RUN COMPLETE! Progress saved in: {ckpt.md_path}\n{'='*70}\n")
 

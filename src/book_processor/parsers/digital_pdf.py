@@ -12,8 +12,12 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from book_processor.parsers.layout_detector import LayoutDetector
 from book_processor.parsers.math_latex import MathLaTeXConverter
-from book_processor.utils.text_utils import clean_punctuation_spacing, repair_hyphens, clean_page_text_artifacts
 from book_processor.style_loader import load_style
+from book_processor.utils.text_utils import (
+    clean_punctuation_spacing, repair_hyphens, clean_page_text_artifacts,
+    detect_plain_text_headings, reflow_wrapped_lines, repair_drop_caps,
+    format_dialogue_lines, clean_typography_artifacts
+)
 
 logger = logging.getLogger(__name__)
 _STYLE = load_style()
@@ -24,17 +28,39 @@ def set_style(style: dict) -> None:
     global _STYLE
     _STYLE = style
 
-set_active_style = set_style
+import threading
+
+_thread_state = threading.local()
 
 
-class DigitalPDFParser:
+class _ChapterStateMeta(type):
+    """Ensures chapter glossaries and inline terms are strictly thread-local during parallel runs."""
+    @property
+    def _chapter_glossaries(cls):
+        if not hasattr(_thread_state, 'glossaries'):
+            _thread_state.glossaries = []
+        return _thread_state.glossaries
+
+    @_chapter_glossaries.setter
+    def _chapter_glossaries(cls, val):
+        _thread_state.glossaries = val
+
+    @property
+    def _chapter_inline_terms(cls):
+        if not hasattr(_thread_state, 'inline_terms'):
+            _thread_state.inline_terms = []
+        return _thread_state.inline_terms
+
+    @_chapter_inline_terms.setter
+    def _chapter_inline_terms(cls, val):
+        _thread_state.inline_terms = val
+
+
+class DigitalPDFParser(metaclass=_ChapterStateMeta):
     """Extracts structured text from born-digital vector PDFs preserving bold & italic styles."""
 
     set_style = staticmethod(set_style)
     set_active_style = staticmethod(set_style)
-
-    _chapter_glossaries = []        # Margin glossary terms (from outer-column bands)
-    _chapter_inline_terms = []      # Inline bold terms found in body prose
 
     @classmethod
     def reset_chapter_state(cls) -> None:
@@ -51,20 +77,30 @@ class DigitalPDFParser:
     def collect_inline_bold_terms(cls, markdown_text: str, page_num: int) -> None:
         """
         Scans a page's markdown output for **Term** bold markers in body prose
-        and records them as inline glossary candidates.  Terms already present
+        and records them as inline glossary candidates. Terms already present
         in margin glossaries (_chapter_glossaries) are skipped to avoid duplicates.
-        Terms with definition=None get a placeholder prompt in the Flashcard deck.
+        Filters out structural labels, section headers, speakers, and non-terms.
         """
         existing_terms  = {g['term'].lower() for g in cls._chapter_glossaries}
         existing_inline = {g['term'].lower() for g in cls._chapter_inline_terms}
-        # Match **Term** — must start with capital, at least 3 chars, not an ALL-CAPS acronym
-        for m in re.finditer(r'\*\*([A-Z][a-zA-Z][^*]{1,50}?)\*\*', markdown_text):
+
+        NON_TERM_PATTERN = re.compile(
+            r'^(?:Table|Figure|Exhibit|Appendix|Photo|Step|Study\s*Questions?|Criterion|'
+            r'Ask\s*yourself|Leader|Client|Counselor|Speaker|Tip|Note|Important|Caution|'
+            r'Example|Box|Section|Chapter|\d+)',
+            re.I
+        )
+
+        for m in re.finditer(r'\*\*([A-Z][a-zA-Z][^*]{1,40}?)\*\*', markdown_text):
             raw = m.group(1).strip()
-            # Skip heading-style labels (Table 2.1, Figure, etc.) and pure digits
-            if re.match(r'^(?:Table|Figure|Exhibit|Appendix|\d)', raw, re.I):
+            # Skip blacklisted terms, pure uppercase acronyms, or non-term labels
+            if NON_TERM_PATTERN.match(raw):
                 continue
-            if len(raw) < 3 or raw.isupper():
+            if len(raw) < 3 or len(raw) > 35 or raw.isupper():
                 continue
+            if raw.endswith((':', '.', '?', '!', ';', ',')):
+                continue
+
             term_key = raw.lower()
             if term_key not in existing_terms and term_key not in existing_inline:
                 cls._chapter_inline_terms.append({
@@ -74,6 +110,7 @@ class DigitalPDFParser:
                     'source': 'inline_bold',
                 })
                 existing_inline.add(term_key)
+
 
     @classmethod
     def get_chapter_all_terms(cls) -> list:
@@ -196,10 +233,21 @@ class DigitalPDFParser:
                     ['pdftotext', '-layout', '-f', str(page_num), '-l', str(page_num), pdf_path, '-'],
                     stderr=subprocess.DEVNULL, timeout=30
                 ).decode('utf-8', errors='ignore')
-                raw = '\n'.join(re.sub(r'[ \t]{2,}', ' ', l).strip() for l in raw.splitlines())
-                cleaned = clean_page_text_artifacts(raw, page_num=page_num)
+                # 1. Detect plain text headings using raw layout indentation
+                cleaned = detect_plain_text_headings(raw)
+                # 2. Clean page artifacts (running headers / footers)
+                cleaned = clean_page_text_artifacts(cleaned, page_num=page_num)
+                # 3. Clean typography & dingbat bullets
+                cleaned = clean_typography_artifacts(cleaned)
+                # 4. Format counseling dialogues
+                cleaned = format_dialogue_lines(cleaned)
+                # 5. Reflow wrapped lines separating headings, lists, and prose
+                cleaned = reflow_wrapped_lines(cleaned)
+                # 6. Clean punctuation spacing
                 cleaned = clean_punctuation_spacing(cleaned)
+                # 7. Repair hyphens and drop caps
                 cleaned = repair_hyphens(cleaned)
+                cleaned = repair_drop_caps(cleaned)
                 if cleaned:
                     page_elem.clear()
                     return MathLaTeXConverter.process_text(cleaned)
@@ -312,6 +360,8 @@ class DigitalPDFParser:
                 continue
             if re.search(r'\b(?:8GTDCN|1RGTCVKQ|5JGKUCIQQF|UCNGURGTUQP|UGNNUOCP|CUUKUVUYKVJ|1DUGTXCVKQPU|6JGQT|TGGCTEJ|&CVCFTKXGP)\b', txt_raw):
                 continue
+            if re.search(r'This document is copyrighted|intended solely for the personal use|text and data mining, AI training', txt_raw, re.I):
+                continue
 
             # Convert inner XML tags <b> and <i> to Markdown
             raw_inner = ET.tostring(text_el, encoding='utf-8', method='xml').decode('utf-8')
@@ -359,13 +409,16 @@ class DigitalPDFParser:
         merged_same_y = []
         for l in raw_lines:
             top_val, left_val, width_val, size_val, txt_val = l
-            prev_right = (merged_same_y[-1][1] + merged_same_y[-1][2]) if merged_same_y else 0
+            prev_top, prev_left, prev_width, prev_size, prev_txt = merged_same_y[-1] if merged_same_y else (0, 0, 0, 0, '')
+            prev_right = (prev_left + prev_width) if merged_same_y else 0
             gap_from_prev = left_val - prev_right
-            is_different_column = bool(merged_same_y and gap_from_prev > 45 and (
-                (merged_same_y[-1][1] < pw * 0.45 and left_val >= pw * 0.45) or
-                (gap_from_prev > 180)
+            is_different_column = bool(merged_same_y and (
+                (prev_left < pw * 0.48 and left_val >= pw * 0.45) or
+                (prev_left >= pw * 0.45 and left_val < pw * 0.48) or
+                (left_val < prev_left) or
+                (gap_from_prev > 45)
             ))
-            if merged_same_y and abs(merged_same_y[-1][0] - top_val) <= 8 and not is_different_column:
+            if merged_same_y and abs(prev_top - top_val) <= 8 and not is_different_column:
                 prev = merged_same_y.pop()
                 prev_top, prev_left, prev_width, prev_size, prev_txt = prev
                 prev_right = prev_left + prev_width
@@ -387,9 +440,11 @@ class DigitalPDFParser:
         # Separate bottom-of-page footnotes after horizontal merging
         lines, footnotes = LayoutDetector.separate_footnotes(merged_four, ph)
 
+        max_span_top = max([m[0] for m in merged_same_y if m[1] < pw * 0.45 and (m[1] + m[2]) > pw * 0.55] or [0])
+
         # Detect two-column layout (e.g. Appendix answer keys or 2-column pages)
-        left_col = [l for l in lines if l[1] < pw * 0.48]
-        right_col = [l for l in lines if l[1] >= pw * 0.48]
+        left_col = [l for l in lines if l[1] < pw * 0.48 and l[0] > max_span_top]
+        right_col = [l for l in lines if l[1] >= pw * 0.48 and l[0] > max_span_top]
         left_tops = [l[0] for l in left_col]
         right_tops = [l[0] for l in right_col]
         overlap_count = sum(1 for rt in right_tops if any(abs(rt - lt) < 15 for lt in left_tops))
@@ -397,6 +452,7 @@ class DigitalPDFParser:
         if len(left_col) >= 6 and len(right_col) >= 6 and overlap_count >= 5:
             two_col_top = min(min(l[0] for l in left_col if any(abs(l[0] - rt) < 15 for rt in right_tops)),
                               min(l[0] for l in right_col if any(abs(l[0] - lt) < 15 for lt in left_tops)))
+            two_col_top = max(two_col_top, max_span_top + 5)
             header_lines = [l for l in lines if l[0] < two_col_top - 5]
             body_left = [l for l in left_col if l[0] >= two_col_top - 5]
             body_right = [l for l in right_col if l[0] >= two_col_top - 5]
@@ -465,7 +521,10 @@ class DigitalPDFParser:
             if is_h2:
                 flush_p()
                 if blocks and blocks[-1].startswith('## ') and (top - last_top < 75):
-                    blocks[-1] = blocks[-1] + " " + clean_t
+                    if len(blocks[-1]) + len(clean_t) < 80 and not re.search(r'[.?!:]$', blocks[-1]):
+                        blocks[-1] = blocks[-1] + " " + clean_t
+                    else:
+                        blocks.append(f"## {clean_t}")
                 else:
                     blocks.append(f"## {clean_t}")
                 last_top = top
@@ -473,7 +532,10 @@ class DigitalPDFParser:
             elif is_h3:
                 flush_p()
                 if blocks and blocks[-1].startswith('### ') and (top - last_top < 45):
-                    blocks[-1] = blocks[-1] + " " + clean_t
+                    if len(blocks[-1]) + len(clean_t) < 70 and not re.search(r'[.?!:]$', blocks[-1]):
+                        blocks[-1] = blocks[-1] + " " + clean_t
+                    else:
+                        blocks.append(f"### {clean_t}")
                 else:
                     blocks.append(f"### {clean_t}")
                 last_top = top
@@ -761,14 +823,16 @@ class DigitalPDFParser:
         # Prepend top-of-page figures (e.g. Figure 1.1) so they don't split bottom sentences
         for img in top_images:
             img_caption = resolve_caption(img)
-            placed_img_blocks.append(f"![{img_caption}](images/{img['filename']})\n\n*{img_caption}*")
+            fname = img.get('filename', f"{img.get('page', page_num):03d}_img.{img.get('ext', 'png')}")
+            placed_img_blocks.append(f"![{img_caption}](images/{fname})\n\n*{img_caption}*")
 
         for b in final_blocks:
             placed_img_blocks.append(b)
 
         for img in bottom_images:
             img_caption = resolve_caption(img)
-            placed_img_blocks.append(f"![{img_caption}](images/{img['filename']})\n\n*{img_caption}*")
+            fname = img.get('filename', f"{img.get('page', page_num):03d}_img.{img.get('ext', 'png')}")
+            placed_img_blocks.append(f"![{img_caption}](images/{fname})\n\n*{img_caption}*")
 
 
         # Append extracted footnotes at the bottom of the page
@@ -784,7 +848,7 @@ class DigitalPDFParser:
         result_md = MathLaTeXConverter.process_text(full_md)
 
         # Collect inline bold terms for chapter-end Flashcard deck (deduped against margin glossaries)
-        if _STYLE.get("gloss_placement") == "chapter_end":
+        if _STYLE.get("gloss_placement") == "chapter_end" and _STYLE.get("collect_inline_bold", False):
             cls.collect_inline_bold_terms(result_md, page_num)
 
         page_elem.clear()

@@ -62,8 +62,11 @@ class OllamaVerifier:
 
         # Priority fallback list of high-capability models
         candidates = [
-            "qwen2.5:7b", "qwen2.5:14b", "deepseek-r1:8b", "deepseek-r1:14b",
-            "llama3.1:8b", "mistral:7b", "gemma2:9b"
+            "gemma4:12b", "gemma4:latest", "gemma4",
+            "qwen2.5-coder:7b", "qwen2.5:7b", "qwen2.5:14b",
+            "deepseek-r1:8b", "deepseek-r1:14b",
+            "llama3.2-vision:latest", "llama3.1:8b", "llama3:latest",
+            "mistral:7b", "gemma2:9b"
         ]
         for cand in candidates:
             cand_prefix = cand.split(':')[0]
@@ -85,6 +88,7 @@ class OllamaVerifier:
         - LaTeX formula syntax correctness
         - Clean textbook pedagogical structure
         """
+        import re
         if not self.is_available:
             return {
                 "available": False,
@@ -92,18 +96,35 @@ class OllamaVerifier:
                 "feedback": "Local Ollama daemon is offline or inaccessible.",
             }
 
+        # Clean HTML style/metadata blocks to review actual markdown narrative & LaTeX
+        clean_text = re.sub(r'<style>.*?</style>', '', markdown_sample, flags=re.DOTALL)
+        clean_text = re.sub(r'<div class="article-meta">.*?</div>', '', clean_text, flags=re.DOTALL).strip()
+
+        # Find an excerpt that ends cleanly at a sentence or paragraph boundary
+        raw_excerpt = clean_text[:2500].strip()
+        last_boundary = max(raw_excerpt.rfind('.\n'), raw_excerpt.rfind('. '), raw_excerpt.rfind('\n\n'))
+        if last_boundary > 1000:
+            sample_excerpt = raw_excerpt[:last_boundary + 1].strip()
+        else:
+            sample_excerpt = raw_excerpt
+
         prompt = (
-            f"You are an expert textbook editor and academic AI. Review the following extracted textbook section "
-            f"titled '{chapter_title}'. Verify that the text flows naturally, has no broken OCR artifacts, "
-            f"and that any LaTeX formulas ($...$ or $$...$$) are syntactically valid.\n\n"
-            f"Text Sample:\n```markdown\n{markdown_sample[:1500]}\n```\n\n"
+            f"You are an expert academic editor and publication auditor. Review the following extracted paper/textbook section "
+            f"titled '{chapter_title}'. Verify that the prose flows naturally, has no broken OCR artifacts, "
+            f"and that any LaTeX formulas ($...$ or $$...$$) and tables are syntactically valid.\n\n"
+            f"Text Sample:\n```markdown\n{sample_excerpt}\n```\n\n"
             f"Briefly respond with:\n"
             f"1. Quality Rating (Excellent / Good / Needs Attention)\n"
             f"2. Formula & Formatting Feedback\n"
             f"3. Verdict: [PASS] or [REVISE]"
         )
 
-        payload = {"model": self.model_name, "prompt": prompt, "stream": False}
+        payload = {
+            "model": self.model_name,
+            "prompt": prompt,
+            "stream": False,
+            "keep_alive": "30m",
+        }
 
         try:
             req = urllib.request.Request(
@@ -173,6 +194,7 @@ class OllamaVerifier:
             "prompt": prompt,
             "stream": False,
             "format": "json",
+            "keep_alive": "30m",
         }
 
         try:
@@ -269,6 +291,7 @@ class OllamaVerifier:
                 "images": [img_b64],
                 "format": "json",
                 "stream": False,
+                "keep_alive": "30m",
             }
 
             req = urllib.request.Request(

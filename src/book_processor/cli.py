@@ -16,6 +16,7 @@ from book_processor import __version__
 from book_processor.core.orchestrator import BookProcessorOrchestrator
 from book_processor.verification.verifier import AccuracyVerifier
 from book_processor.utils.system import check_dependencies
+from book_processor.config import DEFAULT_OLLAMA_MODEL
 
 
 def main():
@@ -36,7 +37,7 @@ def main():
     p_convert = subparsers.add_parser("convert", help="Convert a single chapter PDF to Markdown + LaTeX, then auto-verify")
     p_convert.add_argument("--pdf", "-p", required=True, help="Path to chapter PDF file")
     p_convert.add_argument("--ollama", action="store_true", help="Enable local Ollama AI audit")
-    p_convert.add_argument("--ollama-model", default="qwen2.5:7b", help="Local Ollama model name")
+    p_convert.add_argument("--ollama-model", default=DEFAULT_OLLAMA_MODEL, help=f"Local Ollama model name (default: {DEFAULT_OLLAMA_MODEL})")
 
     # 3. RUN Subcommand
     p_run = subparsers.add_parser("run", help="Split, convert & auto-verify full book or target chapter")
@@ -45,14 +46,16 @@ def main():
     p_run.add_argument("--input-dir", "-i", default=".", help="Input directory (default: current directory)")
     p_run.add_argument("--output-dir", "-o", default="./output", help="Output directory")
     p_run.add_argument("--ollama", action="store_true", help="Enable local Ollama AI audit")
-    p_run.add_argument("--ollama-model", default="qwen2.5:7b", help="Local Ollama model name")
+    p_run.add_argument("--ollama-model", default=DEFAULT_OLLAMA_MODEL, help=f"Local Ollama model name (default: {DEFAULT_OLLAMA_MODEL})")
+    p_run.add_argument("--parallel", action="store_true", help="Process chapters concurrently utilizing Apple M5 P-Cores")
 
     # 4. RESUME Subcommand
     p_resume = subparsers.add_parser("resume", help="Resume interrupted processing, skipping verified chapters")
     p_resume.add_argument("--file", "-f", required=True, help="Path to book PDF file to resume")
     p_resume.add_argument("--output-dir", "-o", default="./output", help="Output directory")
     p_resume.add_argument("--ollama", action="store_true", help="Enable local Ollama AI audit")
-    p_resume.add_argument("--ollama-model", default="qwen2.5:7b", help="Local Ollama model name")
+    p_resume.add_argument("--ollama-model", default=DEFAULT_OLLAMA_MODEL, help=f"Local Ollama model name (default: {DEFAULT_OLLAMA_MODEL})")
+    p_resume.add_argument("--parallel", action="store_true", help="Process chapters concurrently utilizing Apple M5 P-Cores")
 
     # 5. VERIFY Subcommand
     p_verify = subparsers.add_parser("verify", help="Run content accuracy verification suite")
@@ -60,7 +63,7 @@ def main():
     p_verify.add_argument("--book-dir", "-b", help="Path to book output folder (containing chapters/)")
     p_verify.add_argument("--expected-pages", "-p", type=int, default=None, help="Expected page count for split PDF")
     p_verify.add_argument("--ollama", action="store_true", help="Enable local Ollama AI audit")
-    p_verify.add_argument("--ollama-model", default="qwen2.5:7b", help="Local Ollama model name")
+    p_verify.add_argument("--ollama-model", default=DEFAULT_OLLAMA_MODEL, help=f"Local Ollama model name (default: {DEFAULT_OLLAMA_MODEL})")
 
 
     # 6. DOCTOR Subcommand
@@ -114,7 +117,7 @@ def main():
 
     elif args.subcommand == "resume":
         orchestrator = BookProcessorOrchestrator(output_dir=args.output_dir, use_ollama=args.ollama, ollama_model=args.ollama_model)
-        orchestrator.process_pdf_book(args.file, resume=True)
+        orchestrator.process_pdf_book(args.file, resume=True, parallel=getattr(args, 'parallel', False))
 
     elif args.subcommand == "run":
         orchestrator = BookProcessorOrchestrator(
@@ -130,7 +133,12 @@ def main():
             sys.exit(1)
         for bpath, ext in books:
             if ext == '.pdf':
-                orchestrator.process_pdf_book(bpath, target_chapter=getattr(args, 'chapter', None), resume=False)
+                orchestrator.process_pdf_book(
+                    bpath,
+                    target_chapter=getattr(args, 'chapter', None),
+                    resume=False,
+                    parallel=getattr(args, 'parallel', False)
+                )
             elif ext == '.epub':
                 orchestrator.process_epub_book(bpath)
 

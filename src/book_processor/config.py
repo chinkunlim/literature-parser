@@ -50,9 +50,9 @@ MAX_ALERT_LOG_BYTES = 1_000_000  # 1 MB – rotate when exceeded
 # Local Ollama AI Settings
 # ---------------------------------------------------------------------------
 OLLAMA_API_BASE = "http://localhost:11434"
-DEFAULT_OLLAMA_MODEL = "qwen2.5:7b"               # 32K context, best JSON reliability
-DEFAULT_OLLAMA_VISION_MODEL = "moondream:latest"   # 1.7 GB, Apple Silicon friendly
-OLLAMA_GENERATE_TIMEOUT = 60.0   # seconds; was hard-coded 45 s in ollama_verifier
+DEFAULT_OLLAMA_MODEL = "gemma4:12b"               # User's installed local flagship model
+DEFAULT_OLLAMA_VISION_MODEL = "llama3.2-vision:latest"   # User's installed local multimodal model
+OLLAMA_GENERATE_TIMEOUT = 180.0  # seconds; allows 7b-14b local models sufficient evaluation time
 
 # ---------------------------------------------------------------------------
 # AI Review Confidence

@@ -90,6 +90,16 @@ def load_style(book_output_dir: str = None) -> dict:
                     pub_path = profiles_dir / "publisher_pearson.json"
                 elif "cengage" in pub:
                     pub_path = profiles_dir / "publisher_cengage.json"
+                elif any(k in pub for k in ("apa", "american psychological", "experimental psychology")):
+                    pub_path = profiles_dir / "journal_apa.json"
+                elif any(k in pub for k in ("elsevier", "sciencedirect", "academic press")):
+                    pub_path = profiles_dir / "journal_elsevier.json"
+                elif any(k in pub for k in ("wiley", "blackwell")):
+                    pub_path = profiles_dir / "journal_wiley.json"
+                elif any(k in pub for k in ("springer", "nature", "psychonomic")):
+                    pub_path = profiles_dir / "journal_springer.json"
+                elif any(k in pub for k in ("sage", "association for psychological science", "psychological science")):
+                    pub_path = profiles_dir / "journal_sage.json"
                 else:
                     pub_path = None
 
@@ -99,6 +109,10 @@ def load_style(book_output_dir: str = None) -> dict:
                             pub_data = json.load(pf)
                             if "special_blocks" in pub_data:
                                 style.update(pub_data["special_blocks"])
+                            if "is_journal" in pub_data:
+                                style["is_journal"] = pub_data["is_journal"]
+                            if "column_roles" in pub_data:
+                                style["column_roles"] = pub_data["column_roles"]
                             logger.info("Inherited publisher profile: %s", pub_path.name)
                     except Exception as pe:
                         logger.debug("Failed loading publisher profile: %s", pe)

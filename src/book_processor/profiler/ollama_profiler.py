@@ -119,6 +119,7 @@ def query_ollama_json(prompt: str, model: str = "llama3:latest", url: str = DEFA
         "prompt": prompt,
         "format": "json",
         "stream": False,
+        "keep_alive": "30m",
         "options": {
             "temperature": 0.1
         }

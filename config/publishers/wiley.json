@@ -1,0 +1,10 @@
+{
+  "publisher": "wiley",
+  "name": "Wiley Online Library",
+  "doi_prefixes": ["10.1002", "10.1111"],
+  "running_header_patterns": [
+    "Downloaded from https?://onlinelibrary\\.wiley\\.com",
+    "\\bWiley Online Library\\b"
+  ],
+  "hanging_indent_reference_style": "wiley_apa"
+}

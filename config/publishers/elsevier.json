@@ -1,0 +1,11 @@
+{
+  "publisher": "elsevier",
+  "name": "Elsevier / ScienceDirect",
+  "doi_prefixes": ["10.1016"],
+  "running_header_patterns": [
+    "\\bARTICLE IN PRESS\\b",
+    "\\bJournal of [A-Za-z]+\\b",
+    "\\bwww\\.elsevier\\.com/locate/[a-z]+\\b"
+  ],
+  "hanging_indent_reference_style": "elsevier_apa"
+}

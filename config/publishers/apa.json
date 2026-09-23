@@ -1,0 +1,12 @@
+{
+  "publisher": "apa",
+  "name": "American Psychological Association",
+  "doi_prefixes": ["10.1037"],
+  "running_header_patterns": [
+    "\\bTEST-RETEST CHARACTERISTICS\\b",
+    "\\bEXPERIMENTAL AND CLINICAL PSYCHOPHARMACOLOGY\\b",
+    "\\bAMERICAN PSYCHOLOGICAL ASSOCIATION\\b"
+  ],
+  "author_note_location": "page_1_col_1_bottom",
+  "hanging_indent_reference_style": "apa_7th"
+}

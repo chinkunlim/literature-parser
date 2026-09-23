@@ -507,6 +507,20 @@ class BookProcessorOrchestrator:
     # =========================================================================
     def process_pdf_book(self, pdf_path: str, target_chapter: str = None, resume: bool = False, parallel: bool = False):
         QualityInvariantGuard.check_pdf_pre_split(pdf_path)
+
+        # Check document archetype: dispatch directly to JournalPipeline if academic journal
+        from book_processor.config_manager import ConfigManager
+        archetype = ConfigManager.detect_archetype(pdf_path)
+        if archetype == "journal":
+            from book_processor.pipelines.journal_pipeline import JournalPipeline
+            pipeline = JournalPipeline(
+                output_dir=self.output_dir,
+                processed_dir=self.processed_dir,
+                use_ollama=self.use_ollama,
+                ollama_model=self.ollama_model,
+            )
+            return pipeline.process(pdf_path, is_scanned=self.is_scanned_pdf(pdf_path))
+
         book_name = Path(pdf_path).stem
         book_out = os.path.join(self.output_dir, sanitize_filename(book_name))
         chapters_root = os.path.join(book_out, 'chapters')

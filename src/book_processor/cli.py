@@ -28,6 +28,11 @@ def main():
 
     subparsers = parser.add_subparsers(dest="subcommand", help="Operational Subcommands")
 
+    def add_ollama_args(subparser):
+        subparser.add_argument("--ollama", dest="ollama", action="store_true", default=None, help="Force enable local Ollama AI audit")
+        subparser.add_argument("--no-ollama", dest="ollama", action="store_false", help="Disable local Ollama AI audit")
+        subparser.add_argument("--ollama-model", default=DEFAULT_OLLAMA_MODEL, help=f"Local Ollama model name (default: {DEFAULT_OLLAMA_MODEL})")
+
     # 1. SPLIT Subcommand
     p_split = subparsers.add_parser("split", help="Split entire book into chapter PDFs in seconds (no OCR)")
     p_split.add_argument("--file", "-f", required=True, help="Path to input PDF file")
@@ -36,8 +41,7 @@ def main():
     # 2. CONVERT Subcommand (with auto-verify)
     p_convert = subparsers.add_parser("convert", help="Convert a single chapter PDF to Markdown + LaTeX, then auto-verify")
     p_convert.add_argument("--pdf", "-p", required=True, help="Path to chapter PDF file")
-    p_convert.add_argument("--ollama", action="store_true", help="Enable local Ollama AI audit")
-    p_convert.add_argument("--ollama-model", default=DEFAULT_OLLAMA_MODEL, help=f"Local Ollama model name (default: {DEFAULT_OLLAMA_MODEL})")
+    add_ollama_args(p_convert)
 
     # 3. RUN Subcommand
     p_run = subparsers.add_parser("run", help="Split, convert & auto-verify full book or target chapter")
@@ -45,16 +49,14 @@ def main():
     p_run.add_argument("--chapter", "-c", default=None, help="Target a specific chapter name or number")
     p_run.add_argument("--input-dir", "-i", default=".", help="Input directory (default: current directory)")
     p_run.add_argument("--output-dir", "-o", default="./output", help="Output directory")
-    p_run.add_argument("--ollama", action="store_true", help="Enable local Ollama AI audit")
-    p_run.add_argument("--ollama-model", default=DEFAULT_OLLAMA_MODEL, help=f"Local Ollama model name (default: {DEFAULT_OLLAMA_MODEL})")
+    add_ollama_args(p_run)
     p_run.add_argument("--parallel", action="store_true", help="Process chapters concurrently utilizing Apple M5 P-Cores")
 
     # 4. RESUME Subcommand
     p_resume = subparsers.add_parser("resume", help="Resume interrupted processing, skipping verified chapters")
     p_resume.add_argument("--file", "-f", required=True, help="Path to book PDF file to resume")
     p_resume.add_argument("--output-dir", "-o", default="./output", help="Output directory")
-    p_resume.add_argument("--ollama", action="store_true", help="Enable local Ollama AI audit")
-    p_resume.add_argument("--ollama-model", default=DEFAULT_OLLAMA_MODEL, help=f"Local Ollama model name (default: {DEFAULT_OLLAMA_MODEL})")
+    add_ollama_args(p_resume)
     p_resume.add_argument("--parallel", action="store_true", help="Process chapters concurrently utilizing Apple M5 P-Cores")
 
     # 5. VERIFY Subcommand
@@ -62,8 +64,7 @@ def main():
     p_verify.add_argument("--chapter-dir", "-c", help="Path to specific chapter folder")
     p_verify.add_argument("--book-dir", "-b", help="Path to book output folder (containing chapters/)")
     p_verify.add_argument("--expected-pages", "-p", type=int, default=None, help="Expected page count for split PDF")
-    p_verify.add_argument("--ollama", action="store_true", help="Enable local Ollama AI audit")
-    p_verify.add_argument("--ollama-model", default=DEFAULT_OLLAMA_MODEL, help=f"Local Ollama model name (default: {DEFAULT_OLLAMA_MODEL})")
+    add_ollama_args(p_verify)
 
 
     # 6. DOCTOR Subcommand
@@ -94,6 +95,12 @@ def main():
         # Fallback to 'run' subcommand
         args.subcommand = "run"
 
+    def resolve_ollama(val: bool | None) -> bool:
+        if val is not None:
+            return val
+        from book_processor.utils.system import is_ollama_running
+        return is_ollama_running()
+
     if args.subcommand == "doctor":
         tools = check_dependencies()
         print("\n=== Book Processor System Environment Check ===")
@@ -111,19 +118,19 @@ def main():
         orchestrator.split_book_only(args.file)
 
     elif args.subcommand == "convert":
-        orchestrator = BookProcessorOrchestrator(use_ollama=args.ollama, ollama_model=args.ollama_model)
+        orchestrator = BookProcessorOrchestrator(use_ollama=resolve_ollama(args.ollama), ollama_model=args.ollama_model)
         res = orchestrator.convert_single_chapter(args.pdf)
         sys.exit(0 if res.get('passed') else 1)
 
     elif args.subcommand == "resume":
-        orchestrator = BookProcessorOrchestrator(output_dir=args.output_dir, use_ollama=args.ollama, ollama_model=args.ollama_model)
+        orchestrator = BookProcessorOrchestrator(output_dir=args.output_dir, use_ollama=resolve_ollama(args.ollama), ollama_model=args.ollama_model)
         orchestrator.process_pdf_book(args.file, resume=True, parallel=getattr(args, 'parallel', False))
 
     elif args.subcommand == "run":
         orchestrator = BookProcessorOrchestrator(
             input_dir=getattr(args, 'input_dir', '.'),
             output_dir=getattr(args, 'output_dir', './output'),
-            use_ollama=getattr(args, 'ollama', False),
+            use_ollama=resolve_ollama(getattr(args, 'ollama', None)),
             ollama_model=getattr(args, 'ollama_model', 'qwen2.5:7b')
         )
 
@@ -143,7 +150,7 @@ def main():
                 orchestrator.process_epub_book(bpath)
 
     elif args.subcommand == "verify":
-        verifier = AccuracyVerifier(use_ollama=args.ollama, ollama_model=args.ollama_model)
+        verifier = AccuracyVerifier(use_ollama=resolve_ollama(args.ollama), ollama_model=args.ollama_model)
         if args.chapter_dir:
             res = verifier.verify_chapter(args.chapter_dir, expected_pages=args.expected_pages)
             sys.exit(0 if res['passed'] else 1)

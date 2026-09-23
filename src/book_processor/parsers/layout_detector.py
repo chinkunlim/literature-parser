@@ -68,8 +68,31 @@ class LayoutDetector:
         """
         body_lines = []
         footnote_lines = []
+        author_note_lines = []
         bottom_threshold = page_height * 0.85
         in_footnote = False
+        is_journal = bool(_STYLE and _STYLE.get("is_journal_article"))
+
+        # Pre-detect author note cluster in column 1 bottom (APA and academic journals)
+        author_note_items = set()
+        if is_journal:
+            note_start_idx = -1
+            for idx, item in enumerate(lines_with_pos):
+                if item[0] >= page_height * 0.65 and item[1] < 450:
+                    txt = item[-1]
+                    if re.search(r'Correspondence concerning|Author Note\b|This research was supported|We thank\b|^[A-Z][a-zA-Z\s\.\,]+,\s+Center for\b|^[A-Z][a-zA-Z\s\.\,]+,\s+Department of\b', txt, re.I):
+                        note_start_idx = idx
+                        while note_start_idx > 0:
+                            prev_item = lines_with_pos[note_start_idx - 1]
+                            if prev_item[1] < 450 and abs(lines_with_pos[note_start_idx][0] - prev_item[0]) < 25:
+                                note_start_idx -= 1
+                            else:
+                                break
+                        break
+            if note_start_idx != -1:
+                for item in lines_with_pos[note_start_idx:]:
+                    if item[1] < 450 and item[0] >= lines_with_pos[note_start_idx][0] - 5:
+                        author_note_items.add(id(item))
 
         for item in lines_with_pos:
             top = item[0]
@@ -77,6 +100,11 @@ class LayoutDetector:
             size = item[-2]
             text = item[-1]
             s = text.strip()
+
+            if id(item) in author_note_items:
+                author_note_lines.append(s)
+                continue
+
             # Check if line is at the bottom of the page and starts with a digit/bracket
             if top >= bottom_threshold and size <= 12.5:
                 m = re.match(cls.FOOTNOTE_NUMBER_PATTERN, s)
@@ -92,6 +120,10 @@ class LayoutDetector:
                     continue
             in_footnote = False
             body_lines.append(item)
+
+        if author_note_lines:
+            note_content = " ".join(author_note_lines)
+            footnote_lines.append(f"## Author Note & Acknowledgments\n\n{note_content}")
 
         return body_lines, footnote_lines
 
@@ -493,7 +525,10 @@ class LayoutDetector:
         if not pdf_path:
             return [], set()
 
-        img_dir = Path(pdf_path).parent / 'images'
+        if _STYLE and _STYLE.get("images_dir"):
+            img_dir = Path(_STYLE["images_dir"])
+        else:
+            img_dir = Path(pdf_path).parent / 'images'
         img_dir.mkdir(exist_ok=True)
 
         extracted_images = []

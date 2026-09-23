@@ -1,0 +1,36 @@
+{
+  "archetype": "journal",
+  "name": "Academic Journal Article",
+  "features": {
+    "is_journal_article": true,
+    "has_toc": false,
+    "has_learning_objectives": false,
+    "has_concept_map": false,
+    "has_margin_glossaries": false,
+    "has_anki_export": false,
+    "has_end_of_chapter": false,
+    "allow_blockquotes": false,
+    "two_column_priority": true,
+    "hanging_indent_references": true,
+    "academic_css": true
+  },
+  "geometry": {
+    "header_cut_ratio": 0.08,
+    "footer_cut_ratio": 0.06,
+    "gutter_min_width": 20.0,
+    "span_min_width_ratio": 0.48
+  },
+  "sections": [
+    "Abstract",
+    "Keywords",
+    "Introduction",
+    "Method",
+    "Methods",
+    "Results",
+    "Discussion",
+    "Conclusions",
+    "References",
+    "Author Note",
+    "Acknowledgments"
+  ]
+}

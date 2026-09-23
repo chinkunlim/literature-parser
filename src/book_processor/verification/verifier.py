@@ -55,14 +55,18 @@ class AccuracyVerifier:
         print(f"\n{'='*70}\n[VERIFYING ACCURACY] Chapter: {ch_name}\n{'='*70}")
 
         # 1. Locate Markdown file
-        md_files = list(ch_path.glob("*.md"))
-        if not md_files:
-            print("  [FAIL] No Markdown file found in chapter folder.")
-            results['passed'] = False
-            results['checks']['markdown_exists'] = False
-            return results
-
-        md_file = md_files[0]
+        canonical_md = ch_path / f"{ch_name}.md"
+        if canonical_md.exists():
+            md_file = canonical_md
+        else:
+            candidates = [f for f in ch_path.glob("*.md") if f.name != "processing_status.md"]
+            if candidates:
+                md_file = candidates[0]
+            else:
+                print("  [FAIL] No Markdown file found in chapter folder.")
+                results['passed'] = False
+                results['checks']['markdown_exists'] = False
+                return results
         with open(md_file, 'r', encoding='utf-8', errors='ignore') as f:
             md_content = f.read()
 
@@ -83,7 +87,12 @@ class AccuracyVerifier:
                 try:
                     import json
                     with open(p, 'r', encoding='utf-8') as pf:
-                        is_journal = json.load(pf).get("is_journal", False)
+                        data = json.load(pf)
+                        is_journal = (
+                            data.get("is_journal", False)
+                            or data.get("archetype") == "journal"
+                            or data.get("features", {}).get("is_journal_article", False)
+                        )
                         if is_journal:
                             break
                 except Exception:

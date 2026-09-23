@@ -1,0 +1,34 @@
+{
+  "archetype": "textbook",
+  "name": "University Textbook",
+  "features": {
+    "is_journal_article": false,
+    "has_toc": true,
+    "has_learning_objectives": true,
+    "has_concept_map": true,
+    "has_margin_glossaries": true,
+    "has_anki_export": true,
+    "has_end_of_chapter": true,
+    "allow_blockquotes": true,
+    "two_column_priority": false,
+    "hanging_indent_references": false,
+    "academic_css": false
+  },
+  "geometry": {
+    "header_cut_ratio": 0.04,
+    "footer_cut_ratio": 0.05,
+    "odd_page_margin_x": [0.65, 1.0],
+    "even_page_margin_x": [0.0, 0.35]
+  },
+  "eoc_heading_patterns": [
+    "^Key Terms and Concepts\\b",
+    "^Related Internet Sites\\b",
+    "^Practice Test\\b",
+    "^Challenge Exercises\\b",
+    "^Summary\\b",
+    "^Review Questions\\b",
+    "^Discussion Questions\\b",
+    "^Critical Thinking\\b",
+    "^Further Reading\\b"
+  ]
+}

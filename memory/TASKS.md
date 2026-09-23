@@ -26,6 +26,7 @@
 - [x] [2026-09-24] 實現軟硬體一體化智慧看門狗 (`run.py watchdog`)，歸檔 `ISSUES.md` 與 `OPTIMIZATION_PROPOSAL.md` 至 `docs/`，並將第 14、15 條鐵律寫入標準
 - [x] [2026-09-24] 將開案前置軟硬體基線探針 (鐵律 16) 與開案標配看門狗 (鐵律 17) 寫入 `PROJECT_INIT_STANDARD.md`
 - [x] [2026-09-24] 升級 `PROJECT_INIT_STANDARD.md` 至 22 大核心鐵律與企業級目錄骨幹，深度擴充 `docs/CODING_RULES.md` 納入 SOLID 原則、純函數與原子 I/O 規範
+- [x] [2026-09-24] 確立 CODING_RULES 雙層繼承架構（通用基線+領域擴充）與六大黃金時機同步矩陣（同步MD/Git/對話歸檔），同步升級標準至 24 大鐵律
 
 ---
 

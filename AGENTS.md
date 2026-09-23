@@ -76,6 +76,21 @@
 ### 8. 🔄 治理標準持續自我迭代協議 (Self-Updating Standard Directive)
 - 每次使用者對專案提出任何新的規則、格式約束或流程改進時，**AI 必須無條件主動同步更新 `PROJECT_INIT_STANDARD.md` 與 `AGENTS.md`**，確保未來所有專案都能自動享有最新標準。
 
+### 9. 📐 CODING_RULES 雙層繼承架構 (Two-Tier Rule Architecture)
+- `docs/CODING_RULES.md` 嚴格採雙層結構：
+  - **第一部：通用軟體工程基線**（所有專案 100% 通用，包含 SOLID、純函數、強型別 Dataclass、原子寫入、異常防呆）。
+  - **第二部：本專案專屬領域擴充**（本專案特化規則，如 Apple Vision、Ollama 守衛、LaTeX 括號檢驗、`literature` 命名）。
+- 其他專案開案時直接繼承第一部，領域規則只寫在第二部，永不污染通用基線。
+
+### 10. ⏱️ 全生命週期同步與存檔時機矩陣 (The 6 Golden Triggers)
+所有 AI 必須嚴格遵照以下節奏執行文檔同步、Git 提交與會話歸檔：
+1. **開場喚醒**：跑 `run.py agent-init` 讀檔簡報，不 commit、不備份。
+2. **架構異動**：即時更新 `docs/STRUCTURE.md`，隨功能一併 commit。
+3. **規則更新**：即時同步 `docs/CODING_RULES.md`、`AGENTS.md` 與 `PROJECT_INIT_STANDARD.md`，小步 commit。
+4. **功能完成**：在 `memory/TASKS.md` 勾選並標註日期，跑 `run.py save "<English_msg>"` commit。
+5. **離席暫停** ⭐：使用者說去上課/暫停時，更新 `memory/HANDOFF.md`，跑 `run.py handoff "<reason>"`，**立即執行 `run.py archive-sessions` 產出摘要與紀錄**。
+6. **里程碑發布** ⭐：更新 `CHANGELOG.md`，跑 `run.py publish "<notes>"`，**立即執行 `run.py archive-sessions` 進行全量雙軌封存**。
+
 ---
 
 ## 三、 臨時實驗室規範 (Scratchpad Policy)

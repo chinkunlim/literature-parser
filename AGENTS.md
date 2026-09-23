@@ -43,6 +43,15 @@
 - 在實作方案前，AI 必須檢索 `docs/adr/` 中所有狀態為 `[Status: Accepted]` 的決策。
 - 若使用者的指令或當前的修改方案與歷史決策產生衝突，**嚴禁自行偷偷修改**，必須立即暫停並向使用者主動發問確認。
 
+### 5. 🍎 macOS 原生能力與硬體協同優先原則 (macOS-Native Synergy Directive)
+- **嚴禁盲目只推薦跨平台的重型第三方套件**：AI 在規劃技術方案時，若運行環境為 macOS（特別是 Apple Silicon 晶片），**必須主動評估並優先推薦 macOS 內建或原生更出色的框架與工具**。
+- **具體評估對照範例**：
+  - **文字識別/OCR**：主動評估 **Apple Vision Framework (`VNRecognizeTextRequest`)**。相較於肥大的 PaddleOCR / Tesseract，Vision 框架為系統內建、零依賴、調用神經網路引擎 (ANE)，辨識速度極快且近乎零記憶體負擔。
+  - **圖像轉換與處理**：優先考慮內建 **`sips`** 或 Core Graphics，避免動輒依賴龐大的外掛庫。
+  - **PDF 解析與渲染**：評估 **Quartz / PDFKit** 原生 API。
+  - **模型推理與加速**：優先評估 **Metal / MPS (Metal Performance Shaders)** 與 **CoreML**。
+- **原則**：只要 macOS 內建/原生功能的表現、耗電量或記憶體佔用更優秀，AI 必須主動向使用者提出該方案的優劣對比與整合建議。
+
 ---
 
 ## 三、 臨時實驗室規範 (Scratchpad Policy)

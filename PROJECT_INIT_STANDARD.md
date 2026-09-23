@@ -75,6 +75,9 @@ my-new-project/
 ### 鐵律 4：草稿隔離規範 (Scratchpad Discipline)
 - 所有臨時試跑程式、測試腳本一律放在 `scratch/`。嚴禁污染根目錄與 `src/`。
 
+### 鐵律 5：macOS 原生能力與硬體協同優先原則 (macOS-Native Priority)
+- 在 macOS (尤其是 Apple Silicon) 開發時，AI 嚴禁只盲目推薦跨平台重型套件。必須主動評估並優先建議 macOS 內建/原生功能（如 Apple Vision Framework OCR、Metal/MPS、sips、CoreML 等）。若原生方案效能更高、記憶體更省、體驗更好，必須主動向使用者提出！
+
 ---
 
 ## 三、 開案一鍵初始化檢查清單 (AI Checklist)

@@ -86,3 +86,18 @@ logger.error(
 
 - 任何 AI Agent 在規劃或修改程式碼時，必須先檢索 `docs/adr/` 中所有 `[Status: Accepted]` 的決策。
 - 若發現當前需求或做法與既有 ADR 衝突，**嚴禁自行決定推翻**，必須立即向使用者主動發問，經使用者確認後始得修改。
+
+---
+
+## 8. macOS 原生能力與硬體加速優先準則 (macOS-Native Optimization)
+
+在 Apple Silicon (M1/M2/M3/M4/M5) 環境中開發時，AI 必須主動評估並優先建議 macOS 的內建技術生態：
+
+1. **文字辨識與 OCR 評估**：
+   - 優先評估調用系統原生 **Apple Vision Framework**。透過 Python PyObjC (`Vision.VNRecognizeTextRequest`) 或 Swift CLI 調用，可直接利用 Apple Neural Engine (ANE)，省去下載 2GB+ 的 PaddleOCR/PyTorch 權重，且辨識速度快、極度省電。
+2. **影像處理與格式轉換**：
+   - 優先評估內建命令列工具 **`sips`**（Scriptable Image Processing System）與 Core Graphics，避免額外安裝肥大依賴。
+3. **運算加速與記憶體共享**：
+   - 充分利用 Apple Silicon 統一記憶體架構（Unified Memory），模型載入與加速優先使用 **Metal Performance Shaders (MPS)** 與 **CoreML**。
+4. **主動建議責任**：
+   - 若某項任務有表現更優、資源消耗更低的 macOS 原生解法，AI 有義務主動向使用者提出架構建議，而非默默採用通用但笨重的第三方套件。

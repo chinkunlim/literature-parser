@@ -33,6 +33,12 @@
 22. **零硬編碼機密與 12-Factor 環境配置 (Zero Hardcoded Secrets & 12-Factor Config)**：嚴禁程式碼寫死金鑰；一律依賴 `.env` 注入，專案標配提交 `.env.example` 樣板。
 23. **CODING_RULES 雙層繼承架構規範 (Universal Base + Domain Overlay)**：開發規範統一採雙層結構：第一部為所有專案 100% 通用的高品質軟體工程基線；第二部為本專案專屬之領域擴充。新專案繼承第一部，領域規則只擴充在第二部，通用基線永不被污染。
 24. **全生命週期同步與存檔時機矩陣 (Lifecycle Synchronization & Archiving Matrix)**：明確定義「何時該更哪個 MD、何時該 Commit、何時該備份會話與生成摘要」，告別混亂與碎片化。
+25. **全局連帶影響自動審計 (System-Wide Ripple Audit)**：改動一處，AI 自動向外排查所有連帶受影響的代碼、測試、文檔地圖與配置，杜絕改 A 壞 B 或代碼與文檔脫節。
+26. **過渡產物即時收斂與零技術包袱 (Instant Legacy Debt Pruning)**：重構、遷移或升級後，舊代碼、舊目錄、臨時檔案必須在同一個動作中清理或歸檔至 `scratch/` 或 `docs/`，禁止等待使用者提醒。
+27. **雙軌高密度摘要先行標準 (Executive Summary First Protocol)**：對話總結嚴控在 100 行以內，包含「需求背景、重大決策、具體檔案變更、踩坑修復、下一步接手」，先給總結，後附完整原汁原味問答（Transcript）。
+28. **秒級純函數單元測試標準 (Sub-Second Unit Test Baseline)**：核心單元測試必須純函數化、無 I/O，全量單元測試執行時間嚴格控制在 1 秒以內，讓 Pre-Save Test Gate 零等待感。
+29. **本地優先與完全離線主權 (Local-First & Offline Sovereignty)**：核心業務功能必須具備完全離線運行的能力，依賴外部雲端或大模型的模組必須具備本地 Mock 或純語法優雅降級。
+30. **一鍵開案自動化腳手架 (`run.py init-project`)**：將開案指南腳本化，提供 `run.py init-project <dir>` 一鍵在 3 秒內自動建立符合本標準的所有資料夾、Git 安全鎖、軟硬體守衛、雙層代碼規範與 run 指揮腳本。
 
 ---
 

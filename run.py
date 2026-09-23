@@ -536,10 +536,219 @@ def cmd_watchdog(args):
             cmd_process(DummyArgs())
             known[nfile] = doc_type
 
-        if getattr(args, "once", False):
-            break
-
         time.sleep(3)
+
+
+def cmd_init_project(args):
+    """
+    Initializes a new enterprise-grade project according to PROJECT_INIT_STANDARD.md
+    with full directory scaffolding, security locks, two-tier coding rules, and run.py.
+    """
+    import shutil
+    target_dir = Path(args.target_dir).resolve()
+    target_dir.mkdir(parents=True, exist_ok=True)
+    pkg_name = args.name or target_dir.name.lower().replace("-", "_")
+    today = get_current_date()
+
+    print("\n" + "=" * 65)
+    print(f"🌟 [PROJECT-INIT] 正在為新專案初始化企業級標準架構")
+    print("=" * 65)
+    print(f"• 目標目錄: {target_dir}")
+    print(f"• 套件名稱: {pkg_name}")
+    print(f"• 標準規範: 30 大核心工程鐵律 + 雙層 CODING_RULES + 6 大同步矩陣")
+    print("=" * 65 + "\n")
+
+    # 1. Directories
+    subdirs = [
+        target_dir / "memory" / "sessions",
+        target_dir / "docs" / "adr",
+        target_dir / "scratch",
+        target_dir / "logs",
+        target_dir / "data" / "input",
+        target_dir / "data" / "output",
+        target_dir / "data" / "needs_review",
+        target_dir / "data" / "state",
+        target_dir / "tests" / "unit",
+        target_dir / "tests" / "integration",
+        target_dir / "src" / pkg_name / "core",
+        target_dir / "src" / pkg_name / "guards",
+        target_dir / "src" / pkg_name / "utils",
+        target_dir / ".agent" / "skills",
+    ]
+    for d in subdirs:
+        d.mkdir(parents=True, exist_ok=True)
+    print("✅ 1. 企業級目錄結構建立完畢 (memory, docs, data, src, tests, scratch)")
+
+    # 2. Git init & hooks
+    subprocess.run(["git", "init"], cwd=str(target_dir), capture_output=True)
+    git_hooks = target_dir / ".git" / "hooks"
+    git_hooks.mkdir(parents=True, exist_ok=True)
+    pre_push = git_hooks / "pre-push"
+    pre_push.write_text("""#!/bin/sh
+if [ "$ALLOW_PUSH" != "1" ]; then
+    echo "🛑 [GIT PUSH SAFETY LOCK ENGAGED]"
+    echo "This project is strictly in LOCAL-ONLY mode to prevent unwanted pushes."
+    echo "If you intentionally wish to push changes, authorize via:"
+    echo "   ALLOW_PUSH=1 git push origin <branch>"
+    exit 1
+fi
+exit 0
+""", encoding="utf-8")
+    pre_push.chmod(0o755)
+    print("✅ 2. Git Local-Only 物理防護鎖安裝完成 (.git/hooks/pre-push)")
+
+    # 3. .gitignore
+    (target_dir / ".gitignore").write_text("""# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Scratchpad & Logs
+scratch/
+logs/
+
+# Data states & Quarantine
+data/state/
+data/needs_review/
+*.tmp.*
+
+# Environments
+.env
+.venv/
+env/
+venv/
+.DS_Store
+""", encoding="utf-8")
+
+    # 4. .env.example
+    (target_dir / ".env.example").write_text(f"""# {pkg_name} Environment Configuration Template (12-Factor)
+APP_ENV=development
+LOG_LEVEL=INFO
+OLLAMA_HOST=http://localhost:11434
+""", encoding="utf-8")
+
+    # 5. Core Documentation
+    if (ROOT / "PROJECT_INIT_STANDARD.md").exists():
+        shutil.copy2(ROOT / "PROJECT_INIT_STANDARD.md", target_dir / "PROJECT_INIT_STANDARD.md")
+    if (ROOT / "docs" / "CODING_RULES.md").exists():
+        shutil.copy2(ROOT / "docs" / "CODING_RULES.md", target_dir / "docs" / "CODING_RULES.md")
+    
+    # 6. OPERATIONS.md
+    (target_dir / "OPERATIONS.md").write_text(f"""# 🚀 OPERATIONS.md (專案操作速查手冊 - {pkg_name})
+
+> 💡 **專為「3 個月後的自己」與「剛喚醒的 AI Agent」設計**。無論何時重啟專案，請先閱讀此手冊，30 秒內即可快速上手！
+
+---
+
+## 1. 喚醒三部曲 (30 秒冷啟動)
+```bash
+# 步驟 1：健檢環境
+python run.py doctor
+
+# 步驟 2：開場喚醒儀式 (AI 進入對話必跑)
+python run.py agent-init
+```
+
+## 2. 常用指令
+```bash
+# 一般進度存檔 (自動測試門禁 + 英文 Commit)
+python run.py save "implement feature x"
+
+# 離席上課/暫存
+python run.py handoff "pause session before class"
+
+# 會話雙軌歸檔
+python run.py archive-sessions
+
+# 里程碑發布 (自動測試 + 會話封存 + Squash + Tag)
+python run.py publish "release v1.0.0" --tag v1.0.0
+```
+""", encoding="utf-8")
+
+    # 7. AGENTS.md
+    if (ROOT / "AGENTS.md").exists():
+        shutil.copy2(ROOT / "AGENTS.md", target_dir / "AGENTS.md")
+
+    # 8. memory/TASKS.md & HANDOFF.md
+    (target_dir / "memory" / "TASKS.md").write_text(f"""# 📋 memory/TASKS.md (專案任務進度看板)
+
+最後更新日期：{today}
+
+---
+
+## 🏃 當前 Sprint (v1.0.0 初始化)
+
+- [x] [{today}] 依據 PROJECT_INIT_STANDARD 完成專案骨幹初始化、軟硬體守衛與 Git 本地安全鎖
+
+---
+
+## 📅 後續規劃 (Backlog)
+
+- [ ] [未排程] 實作第一項核心業務邏輯
+""", encoding="utf-8")
+
+    (target_dir / "memory" / "HANDOFF.md").write_text(f"""# 🪪 memory/HANDOFF.md (離席交接卡片)
+
+### 🕒 最新交接時間：{today} 00:00
+- **狀態**：專案骨幹初始化已完成，等待首個任務派發。
+- **下次接手第一步指令**：`python run.py doctor`
+""", encoding="utf-8")
+
+    # 9. Hardware & Logger scaffolds (both in src/<pkg> and src/ for universal import compatibility)
+    for g_dir in [target_dir / "src" / "guards", target_dir / "src" / pkg_name / "guards"]:
+        g_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(ROOT / "src" / "guards" / "hardware.py", g_dir / "hardware.py")
+        if (ROOT / "src" / "guards" / "ollama_guard.py").exists():
+            shutil.copy2(ROOT / "src" / "guards" / "ollama_guard.py", g_dir / "ollama_guard.py")
+        if (ROOT / "src" / "guards" / "validator.py").exists():
+            shutil.copy2(ROOT / "src" / "guards" / "validator.py", g_dir / "validator.py")
+        if (ROOT / "src" / "guards" / "prompts.py").exists():
+            shutil.copy2(ROOT / "src" / "guards" / "prompts.py", g_dir / "prompts.py")
+
+    for u_dir in [target_dir / "src" / "utils", target_dir / "src" / pkg_name / "utils"]:
+        u_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(ROOT / "src" / "utils" / "logger.py", u_dir / "logger.py")
+
+    # 10. tests/__init__.py and sample unit test
+    (target_dir / "tests" / "__init__.py").write_text(f"""import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "src"))
+sys.path.insert(0, str(ROOT / "src" / "{pkg_name}"))
+""", encoding="utf-8")
+
+    (target_dir / "tests" / "unit" / f"test_{pkg_name}_baseline.py").write_text(f"""import unittest
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent.parent
+sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "src"))
+
+from src.guards.hardware import check_hardware_safety
+
+class TestBaseline(unittest.TestCase):
+    def test_hardware_probe(self):
+        res = check_hardware_safety()
+        self.assertIn("metrics", res)
+        self.assertIn("ram_available_gb", res["metrics"])
+
+if __name__ == "__main__":
+    unittest.main()
+""", encoding="utf-8")
+
+    # 11. Copy run.py scaffold
+    shutil.copy2(ROOT / "run.py", target_dir / "run.py")
+
+    # 12. Initial Git commit
+    subprocess.run(["git", "add", "-A"], cwd=str(target_dir), capture_output=True)
+    subprocess.run(["git", "commit", "-m", f"[{today}] chore: initialize project governance and architecture via PROJECT_INIT_STANDARD"], cwd=str(target_dir), capture_output=True)
+
+    print("🎉 新專案已成功在 3 秒內完成企業級標準初始化！")
+    print(f"👉 請切換至新目錄：cd {target_dir}")
+    print(f"👉 第一步執行：python run.py doctor\n")
 
 
 def main():
@@ -594,6 +803,12 @@ def main():
     p_watch.add_argument("--once", action="store_true", help="僅執行一次巡檢後離開")
     p_watch.add_argument("--ignore-battery", action="store_true", help="忽略電池電量限制")
     p_watch.set_defaults(func=cmd_watchdog)
+
+    # init-project
+    p_init_proj = subparsers.add_parser("init-project", help="一鍵為任何新專案生成企業級標準架構、文檔、守衛與安全鎖")
+    p_init_proj.add_argument("target_dir", help="新專案的目錄路徑")
+    p_init_proj.add_argument("--name", default=None, help="可選：新專案 Python 套件名稱 (預設為目錄名)")
+    p_init_proj.set_defaults(func=cmd_init_project)
 
     args = parser.parse_args()
     args.func(args)

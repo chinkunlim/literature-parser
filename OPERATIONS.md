@@ -63,7 +63,20 @@ uv run python run.py watchdog
 
 ---
 
-## 3. 常見狀況與疑難排解 (Troubleshooting)
+## 3. 開發存檔與會話封存六大節奏 (The 6 Golden Triggers)
+
+| 時機點 | 觸發事件 | 該改哪個 MD？ | Git 指令 | 會話歸檔 (`archive-sessions`) |
+| :--- | :--- | :--- | :--- | :--- |
+| **1. 開場喚醒** | 接收新任務 | 唯讀讀取 `HANDOFF.md`, `TASKS.md` | ❌ 不 Commit | ❌ 不歸檔 |
+| **2. 架構異動** | 檔案/模組增刪 | 即時更新 `docs/STRUCTURE.md` | `run.py save "<msg>"` | ❌ 不歸檔 |
+| **3. 規則調整** | 流程/約束更新 | 更新 `CODING_RULES.md`, `PROJECT_INIT_STANDARD.md` | `run.py save "<msg>"` | ❌ 不歸檔 |
+| **4. 功能完成** | 單元測試通過 | 勾選 `memory/TASKS.md` | `run.py save "<msg>"` | ❌ 不歸檔 |
+| **5. 離席暫停** ⭐ | 上課/外出/暫停 | 刷新 `memory/HANDOFF.md` | `run.py handoff "<reason>"` | **⭐ 立即執行** |
+| **6. 里程碑結案** ⭐| 版本發布/大交接 | 更新 `CHANGELOG.md`, `TASKS.md` | `run.py publish "<notes>"` | **⭐ 立即執行** |
+
+---
+
+## 4. 常見狀況與疑難排解 (Troubleshooting)
 
 ### Q1: 終端機顯示 `[Warning] Battery Mode Detected` 或 `Low Battery`？
 - **原因**：筆電處於電池模式且電量偏低。

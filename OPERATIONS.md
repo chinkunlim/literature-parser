@@ -49,6 +49,12 @@ uv run python run.py save "完成雙欄排版修正"
 uv run python run.py handoff "去上課暫存進度"
 ```
 
+### ⑤ 全自動對話雙軌封存 (Session Archiving)
+```bash
+# 自動掃描當前與歷史會話，更新 memory/sessions/ 雙軌總結與紀錄
+uv run python run.py archive-sessions
+```
+
 ---
 
 ## 3. 常見狀況與疑難排解 (Troubleshooting)

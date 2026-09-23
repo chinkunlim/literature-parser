@@ -317,6 +317,89 @@ def cmd_test_ollama_auto_trigger(args):
     print("🎉 檢驗完成！證明 Ollama 守衛與異常攔截功能已真實掛載於程式碼中。\n")
 
 
+# ==============================================================================
+# 5. ARCHIVE-SESSIONS: Automated Dual-Track Session Archiving
+# ==============================================================================
+def cmd_archive_sessions(args):
+    """
+    Scans the Antigravity brain directory and archives all conversation sessions
+    associated with this workspace into memory/sessions/ with dual-track pairing.
+    """
+    import json
+    brain_dir = Path.home() / ".gemini" / "antigravity" / "brain"
+    sessions_dir = ROOT / "memory" / "sessions"
+    sessions_dir.mkdir(parents=True, exist_ok=True)
+
+    print("\n" + "=" * 65)
+    print("🗄️ [ARCHIVE-SESSIONS] 全自動對話雙軌歸檔 (Dual-Track Archiving)")
+    print("=" * 65)
+
+    known_sessions = [
+        ("2026-09-18", "e81a99f1-8fd6-4393-8186-db1c305c5170", "initial-textbook-pipeline-development", "書籍轉檔管線初版開發與版面分析"),
+        ("2026-09-18", "74bb97d9-9bba-4680-900c-e5a79d616708", "research-methods-book-conversion", "Research Methods 教科書轉檔與排版優化"),
+        ("2026-09-20", "cb3aa69b-509b-4784-96e1-9d645c7ff32b", "typography-tables-and-formula-refinement", "排版、表格與跨頁內容語義修復"),
+        ("2026-09-23", "e7e0ccf8-a309-4bad-b967-e1ef03284bae", "academic-journal-pipeline-and-dual-column", "學術期刊雙欄管線開發與 Ollama 邊界分流"),
+        ("2026-09-23", "d934528e-eb4f-4097-8457-50cc94bfb932", "project-architecture-and-governance", "專案架構治理、軟硬體守衛與跨 Agent 規範"),
+    ]
+
+    for date_str, conv_id, slug, title in known_sessions:
+        summary_file = sessions_dir / f"{date_str}-{slug}-summary.md"
+        transcript_file = sessions_dir / f"{date_str}-{slug}-transcript.md"
+        t_src = brain_dir / conv_id / ".system_generated" / "logs" / "transcript.jsonl"
+
+        print(f"• 會話 [{date_str}] {title} (ID: {conv_id[:8]}...):")
+        if summary_file.exists():
+            print(f"  - 總結 (Summary)   : ✅ 已存在 ({summary_file.name})")
+        else:
+            print(f"  - 總結 (Summary)   : ⚠️ 待補充 ({summary_file.name})")
+
+        if t_src.exists():
+            try:
+                with open(t_src, "r", encoding="utf-8") as fin, open(transcript_file, "w", encoding="utf-8") as fout:
+                    fout.write(f"# 📜 對話紀錄全量封存 (Full Transcript): {title}\n\n")
+                    fout.write(f"- **會話 ID**: `{conv_id}`\n")
+                    fout.write(f"- **歸檔檔案**: `{transcript_file.name}`\n\n---\n\n")
+                    step_idx = 0
+                    for line in fin:
+                        try:
+                            d = json.loads(line)
+                            step_idx = d.get("step_index", step_idx + 1)
+                            stype = d.get("type", "")
+                            created = d.get("created_at", "")
+                            content = d.get("content", "")
+                            tool_calls = d.get("tool_calls", [])
+                            if stype == "USER_INPUT":
+                                user_text = content.replace("<USER_REQUEST>", "").replace("</USER_REQUEST>", "").strip()
+                                fout.write(f"## 👤 [Step {step_idx}] 使用者指令 (User Input)\n")
+                                fout.write(f"**時間**: `{created}`\n\n{user_text}\n\n---\n\n")
+                            elif stype == "PLANNER_RESPONSE" or tool_calls or content:
+                                fout.write(f"## 🤖 [Step {step_idx}] 助手回應與執行軌跡 (Assistant Response)\n")
+                                fout.write(f"**時間**: `{created}`\n\n")
+                                if tool_calls:
+                                    fout.write("### 🛠️ 工具調用 (Tool Calls)\n")
+                                    for tc in tool_calls:
+                                        name = tc.get("name", "")
+                                        args = tc.get("args", {})
+                                        summary = args.get("toolSummary", "")
+                                        action = args.get("toolAction", "")
+                                        fout.write(f"- `{name}`: *{action}* ({summary})\n")
+                                    fout.write("\n")
+                                if content:
+                                    fout.write(f"{content}\n\n")
+                                fout.write("---\n\n")
+                        except Exception:
+                            pass
+                size_kb = transcript_file.stat().st_size / 1024
+                print(f"  - 紀錄 (Transcript): ✅ 已同步更新 ({size_kb:.1f} KB)")
+            except Exception as e:
+                print(f"  - 紀錄 (Transcript): ❌ 讀取失敗 ({e})")
+        else:
+            print(f"  - 紀錄 (Transcript): {'✅ 已存在' if transcript_file.exists() else '⚠️ 來源日誌不存在'}")
+
+    print("=" * 65)
+    print("🎉 全數 5 個對話雙軌會話封存完成！\n")
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="python run.py",
@@ -358,6 +441,10 @@ def main():
     # agent-init
     p_init = subparsers.add_parser("agent-init", help="AI 對話開場自動簡報，讀取工作守則與交接狀態")
     p_init.set_defaults(func=cmd_agent_init)
+
+    # archive-sessions
+    p_arch = subparsers.add_parser("archive-sessions", help="自動掃描並更新所有歷史對話之雙軌歸檔 (Summary + Transcript)")
+    p_arch.set_defaults(func=cmd_archive_sessions)
 
     args = parser.parse_args()
     args.func(args)

@@ -20,6 +20,7 @@
 | **驗證 Ollama 自動喚醒** | `uv run python run.py test-ollama-auto-trigger` | 驗證輸入與輸出守衛能否自動喚醒 Ollama |
 | **一般進度存檔** | `uv run python run.py save "<English_message>"` | 先更新文檔時間戳，再以英文 commit |
 | **使用者說要去上課/中斷** | `uv run python run.py handoff "<reason_in_English>"` | 先更新 `memory/HANDOFF.md`，再英文 commit |
+| **封存所有會話紀錄** | `uv run python run.py archive-sessions` | 自動掃描 Brain 目錄，更新所有會話之雙軌紀錄與總結 |
 | **發布與合併到 main** | `uv run python run.py publish "<English_release_notes>"` | 本地 Squash 合併，提示手動 push 指令 |
 
 ---

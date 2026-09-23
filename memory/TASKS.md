@@ -17,6 +17,7 @@
 - [x] [2026-09-23] 建立通用新專案開案範本 (`PROJECT_INIT_STANDARD.md`)
 - [x] [2026-09-23] 將歷史全對話脈絡濃縮歸檔至 `memory/sessions/`
 - [x] [2026-09-24] 強化低信度自動隔離與對話工作階段雙軌歸檔 (`data/needs_review/`, `memory/sessions/`)
+- [x] [2026-09-24] 補齊專案歷史 5 個對話之雙軌歸檔與全自動會話封存指令 (archive-sessions)
 
 ---
 

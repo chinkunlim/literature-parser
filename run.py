@@ -89,13 +89,15 @@ def cmd_process(args):
     # Determine pipeline by directory convention or flag
     doc_type = args.type
     if not doc_type:
-        path_str = str(filepath.resolve())
-        if "journals" in path_str or "papers" in path_str:
-            doc_type = "journal"
+        path_str = str(filepath.resolve()).lower()
+        if "literature" in path_str or "journals" in path_str or "papers" in path_str:
+            doc_type = "literature"
         elif "books" in path_str:
             doc_type = "book"
         else:
             doc_type = "book"  # default fallback
+    elif doc_type == "journal":
+        doc_type = "literature"  # normalize journal to literature
 
     print(f"\n🚀 啟動處理管線: [{doc_type.upper()}] 檔案: {filepath.name}")
 
@@ -105,11 +107,11 @@ def cmd_process(args):
         print(f"🛑 硬體空間不足拒絕啟動: {'; '.join(hw['reasons'])}")
         sys.exit(1)
 
-    output_base = Path("data/output") / ("books" if doc_type == "book" else "journals")
+    output_base = Path("data/output") / ("books" if doc_type == "book" else "literature")
     output_base.mkdir(parents=True, exist_ok=True)
 
     print(f"• 輸出目標資料夾: {output_base}")
-    print(f"• 呼叫對應領域管線: src/book_processor/pipelines/{'textbook_pipeline' if doc_type == 'book' else 'journal_pipeline'}.py")
+    print(f"• 呼叫對應領域管線: src/book_processor/pipelines/{'textbook_pipeline' if doc_type == 'book' else 'literature_pipeline'}.py")
 
     # Delegate to existing core CLI with appropriate arguments
     cli_cmd = [
@@ -413,9 +415,9 @@ def main():
     p_doc.set_defaults(func=cmd_doctor)
 
     # process
-    p_proc = subparsers.add_parser("process", help="處理單一書籍或期刊")
+    p_proc = subparsers.add_parser("process", help="處理單一書籍或學術文獻")
     p_proc.add_argument("file", help="輸入檔案路徑 (PDF/EPUB)")
-    p_proc.add_argument("--type", choices=["book", "journal"], default=None, help="強制指定處理類型")
+    p_proc.add_argument("--type", choices=["book", "literature", "journal"], default=None, help="強制指定處理類型 (book 或 literature)")
     p_proc.add_argument("--ignore-battery", action="store_true", help="忽略電池電量限制")
     p_proc.set_defaults(func=cmd_process)
 

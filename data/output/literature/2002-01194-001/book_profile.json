@@ -1,0 +1,59 @@
+{
+  "geometry": {
+    "page_width": 894.0,
+    "page_height": 1192.0,
+    "header_cut_ratio": 0.04,
+    "footer_cut_ratio": 0.04,
+    "odd_page_margin_x": [
+      0.65,
+      1.0
+    ],
+    "even_page_margin_x": [
+      0.0,
+      0.35
+    ]
+  },
+  "book_name": "2002-01194-001",
+  "publisher": "American Psychological Association",
+  "is_journal": true,
+  "special_blocks": {
+    "has_concept_map": false,
+    "has_margin_glossary": false,
+    "lo_pattern": "^\\d+\\.\\d+",
+    "eoc_heading_patterns": [
+      "^References\\b",
+      "^Author Note\\b"
+    ]
+  },
+  "discovered_blocks": [
+    {
+      "type": "callout",
+      "keyword": "danger or harm while also providing an opportunity to obtain some",
+      "style": "box",
+      "count": 1
+    },
+    {
+      "type": "callout",
+      "keyword": "Note.",
+      "style": "box",
+      "count": 6
+    },
+    {
+      "type": "lo_format",
+      "format_name": "digit_dot_digit",
+      "pattern": "^\\d+\\.\\d+"
+    },
+    {
+      "type": "eoc_section",
+      "heading": "References",
+      "count": 1
+    }
+  ],
+  "column_roles": {
+    "even_left": "body",
+    "even_right": "body",
+    "odd_left": "body",
+    "odd_right": "margin_glossary"
+  },
+  "scan_complete": true
+}

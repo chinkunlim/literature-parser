@@ -16,7 +16,7 @@
 | **新對話喚醒 / 接手專案** | `uv run python run.py agent-init` | **對話開場必跑**：自動簡報守則與交接狀態 |
 | **環境健檢 / 診斷** | `uv run python run.py doctor` | 檢查 RAM、電池、SSD、Ollama、模型 |
 | **轉換書籍** | `uv run python run.py process data/input/books/<filename>` | 自動啟動書籍章節切分與文意縫合 |
-| **轉換學術期刊 / 論文** | `uv run python run.py process data/input/journals/<filename>` | 自動啟動雙欄排版、摘要與文獻解析 |
+| **轉換學術文獻 / 論文** | `uv run python run.py process data/input/literature/<filename>` | 自動啟動雙欄排版、摘要與文獻解析 |
 | **驗證 Ollama 自動喚醒** | `uv run python run.py test-ollama-auto-trigger` | 驗證輸入與輸出守衛能否自動喚醒 Ollama |
 | **一般進度存檔** | `uv run python run.py save "<English_message>"` | 先更新文檔時間戳，再以英文 commit |
 | **使用者說要去上課/中斷** | `uv run python run.py handoff "<reason_in_English>"` | 先更新 `memory/HANDOFF.md`，再英文 commit |
@@ -68,6 +68,12 @@
   - `memory/sessions/YYYY-MM-DD-<topic>-transcript.md`：**完整對話紀錄**（有疑問時深挖原始問答）。
 - **異常無條件隔離**：
   - 任何 Ollama 處理失敗、超時、或信度評估 < 0.80 的瑕疵，**一律自動拋入 `data/needs_review/` 隔離存檔**，絕不中斷主批次管線。
+
+### 7. ⚡ AI 全自動主動執行原則 (Agent Proactive Execution Protocol)
+- **嚴禁消極在對話框中輸出指令叫使用者去終端機跑**：凡是可以程式化、腳本化執行的操作（如環境檢查 `doctor`、開場簡報 `agent-init`、轉檔執行 `process`、文檔更新、Git 本地提交 `save`/`handoff`、對話歸檔 `archive-sessions`），**AI 必須直接調用終端工具主動執行**，向使用者展示執行輸出與診斷結果。
+
+### 8. 🔄 治理標準持續自我迭代協議 (Self-Updating Standard Directive)
+- 每次使用者對專案提出任何新的規則、格式約束或流程改進時，**AI 必須無條件主動同步更新 `PROJECT_INIT_STANDARD.md` 與 `AGENTS.md`**，確保未來所有專案都能自動享有最新標準。
 
 ---
 

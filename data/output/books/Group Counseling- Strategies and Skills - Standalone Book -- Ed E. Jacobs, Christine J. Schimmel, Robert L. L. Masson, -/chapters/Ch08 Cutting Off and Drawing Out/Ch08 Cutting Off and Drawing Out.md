@@ -1,0 +1,634 @@
+<style>
+  /* Textbook typographic styling */
+  p {
+    text-align: justify;
+    text-justify: inter-word;
+  }
+  h1, h2, h3, h4, h5, h6 { text-align: left; }
+  blockquote { text-align: left; }
+
+  /* Textbook Plum Table & Card Styling */
+  .textbook-table-wrapper, .comparison-card, .framed-card {
+    margin: 1.8em 0;
+    border: 1px solid #e5cfdc;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .table-caption, .card-caption, .framed-card-header {
+    padding: 10px 14px;
+    font-size: 0.95em;
+    font-weight: 600;
+    background: #ffffff;
+    border-bottom: 2px solid #842959;
+  }
+  .textbook-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+  }
+  .textbook-table th {
+    background: #842959;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 10px 12px;
+    text-align: left;
+  }
+  .textbook-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid #f0e6ec;
+    vertical-align: top;
+  }
+  .textbook-table tr.category-header td {
+    background: #f7f0f4;
+    font-weight: bold;
+    color: #842959;
+    padding: 8px 12px;
+    border-top: 1px solid #e5cfdc;
+    border-bottom: 1px solid #e5cfdc;
+  }
+  .table-footer-notes td, tr.table-notes td {
+    font-size: 0.85em;
+    color: #666666;
+    background: #fafafa;
+    border-top: 1px solid #e5cfdc;
+    padding: 8px 12px;
+  }
+  /* Comparison Card (Strengths & Weaknesses) */
+  .banner-header {
+    background: #842959;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 8px 14px;
+    font-size: 0.9em;
+    letter-spacing: 0.3px;
+  }
+  .banner-weaknesses .banner-header {
+    background: #73224d;
+  }
+  .banner-list, .framed-card-body {
+    margin: 0;
+    padding: 12px 20px 16px 36px;
+    background: #faf7f9;
+  }
+  .banner-list li, .framed-card-body li {
+    margin-bottom: 6px;
+    line-height: 1.5;
+    color: #2b1b24;
+  }
+  /* Counseling Dialogue / Transcript Styling */
+  .dialogue-block {
+    margin: 1.4em 0;
+    padding: 12px 18px;
+    background: #fdfbf7;
+    border-left: 4px solid #b38867;
+    border-radius: 0 6px 6px 0;
+  }
+  .dialogue-speaker {
+    font-weight: bold;
+    color: #5c3d2e;
+  }
+</style>
+
+# Ch08 Cutting Off and Drawing Out
+
+<details open>
+<summary>📑 <b>Table of Contents</b></summary>
+
+  - [Cutting Off](#cutting-off)
+  - [Timing](#timing)
+  - [Use of Voice](#use-of-voice)
+  - [Clarifying](#clarifying)
+  - [Nonverbal Signals](#nonverbal-signals)
+- [GROUP COUNSELING SKILLS: Cutting Off](#group-counseling-skills-cutting-off)
+- [Cutting Off a Member Who Has the Focus](#cutting-off-a-member-who-has-the-focus)
+  - [Examples](#examples)
+  - [Examples](#examples)
+  - [Examples](#examples)
+  - [B HG](#b-hg)
+  - [Examples](#examples)
+- [Other Situations Calling for Cutting-Off Skills](#other-situations-calling-for-cutting-off-skills)
+  - [Examples](#examples)
+  - [Examples](#examples)
+  - [Examples](#examples)
+  - [Examples](#examples)
+- [GROUP COUNSELING SKILLS: Cutting Off](#group-counseling-skills-cutting-off)
+  - [Examples](#examples)
+  - [Practice](#practice)
+  - [Examples](#examples)
+- [Reasons for Silent Members](#reasons-for-silent-members)
+  - [Examples](#examples)
+  - [Examples](#examples)
+  - [Examples](#examples)
+- [Direct Method for Drawing Out Members](#direct-method-for-drawing-out-members)
+  - [Examples](#examples)
+  - [Drawing Out Delicately](#drawing-out-delicately)
+  - [Examples](#examples)
+- [Use of Dyads for Drawing Out Members](#use-of-dyads-for-drawing-out-members)
+- [Use of Rounds for Drawing Out Members](#use-of-rounds-for-drawing-out-members)
+  - [Examples](#examples)
+- [Use of Written Exercises for Drawing Out Members](#use-of-written-exercises-for-drawing-out-members)
+  - [Examples](#examples)
+  - [BH SG](#bh-sg)
+- [GROUP COUNSELING SKILLS: Drawing Out Using Movement](#group-counseling-skills-drawing-out-using-movement)
+  - [Practice](#practice)
+  - [Examples](#examples)
+  - [Concluding Comments](#concluding-comments)
+  - [Activities](#activities)
+
+</details>
+
+
+<!-- Page 1 -->
+Cutting Off and Drawing Out
+
+### Cutting Off
+
+To lead an_effective group, a leader must be willing       and able to cut off members when necessary. Of all the skills we present in this book, cutting off is probably the hardest to use because leaders often fear that they will hurt a member's feelings or that members will become angry. In addition, the skill is difficult because, when growing up, we do not learn to stop others from talking when theirremarks are boring, long-winded, or inappropriate. However, a group leader 1s responsible for ensuring positive group outcomes, and when group members’ comments are counterproductive, the leader should intervene. Cutting off is the term we use to describe a leader stopping a member from talking (Harvill, Masson, & Jacobs, 1983; Masson & Jacobs, 1980). Other terms used to describe this skill are blocking (Corey, Corey, & Corey, 2009; Day, 2007; Trotzer, 2006) and intervening (Dyer & Vriend, 1980). Although cutting off may sound as if we are advocating that the leader be rude or authoritarian in the group, we are not. There are simply instances when the leader must interrupt a member to protect other members or to move the group in a better direction. There are two broad situations when the leader will want to use cutting-off skills: (1) when a member has the floor but is either rambling, storytelling, or avoiding going deeper; (2) when_a member is saying something inappropriate. Before discussing these, we want to mention a number o Important points regarding cutting off.
+
+<!-- Page 2 -->
+### Timing
+
+Perhaps the most important thing to understand about cutting off is that it has to be timed properly. The leader should stop members before they ramble too long, argue for an extended period, or offer unhelpful advice. On the other hand, leaders will want to make sure they are not interrupting a legitimate and worthwhile comment; this can anger and frustrate members. Unfortunately, there is no way to spell out exactly when the leader should cut off someone, because each situation is different. Experience and feedback from members will probably be the leader’s best teacher.
+
+### Use of Voice
+
+Voice tone, pitch, and inflection have a lot to do with how effective a leader is in using cutting-off skills. If the leader seems critical, gruff, or angry, members are likely to react in a negative way. When cutting off, the goal is not to criticize or humiliate but rather to stop something that is not helpful. It is important to remember that members are usually not consciously giving the leader or other members a hard time; rather, they don’t understand or have not yet learned how to be productive group members.
+
+### Clarifying
+
+It is important in the first session to explain to the members that you will at times cut off certain discussions for various reasons. Often, the leader also explains at the time of cutting off why he is doing it. Explaining is a good practice because confusion and anger can result if someone feels cut off for no apparent reason. Some may think it is because the leader does not like them or that their opinions don’t matter. Others may assume that they should not speak unless asked to do so. Of course, there will be many instances when the leader chooses not to offer an immediate explanation for cutting someone off—for example, if the leader feels it is important to move on immediately.
+
+### Nonverbal Signals
+
+Sometimes the leader’s avoiding eye contact can serve as a signal to let a member know that he wants the member to stop. Some members will wrap up once they notice the leader not looking at them. Another technique the leader can use is to signal the member with his hand to stop. Just a slight gesture—such as one used by a traffic officer—is sometimes enough to cue the member to wind down.
+
+SP               I I       IE       SEE       ET EE   I   ES         SS          TD
+
+## GROUP COUNSELING SKILLS: Cutting Off
+
+Watch videos 8.1 and 8.2 for a discussion of cutting off and three segments where the leader used cutting-off skills. enn
+
+<!-- Page 3 -->
+## Cutting Off a Member Who Has the Focus
+
+of the Group In any group, there are times when a group focuses on a member who 1s rambling, not getting to the point, or avoiding exploring an issue at a deeper level. Some members drone on and on, totally oblivious to the negative effect that their rambling is having on others. If left unchecked,             these members      often drain the energy and enthusiasm present in other members. Therefore, the leader has to use some kind of cutting-off technique. The leader has three possible decisions regarding cutting off in a situation where a member has the attention of the group. The leader can (1) cut and stay with the person, (2) cut and stay with the topic, or (3) cut and leave the person and topic.
+
+Cut and Stay with the Person     Many times, the leader sees value in interrupting and keeping the focus on a member. There are a number of techniques that can be used.
+
+1. Ask a question. The leader, using a kind voice, can cut off amember                 by asking a focusing type question, such as any of the following:
+- How can the group help you with this?
+
+#     If we give you 10 more minutes to talk about this, what would be helpful?
+
+- You seem to be rambling and the group wants to help you with this.
+
+What is your point? Where are you going with this?
+
+- Are you just telling us about this or are you asking the group for some help? bo. Ask the person clarifying questions. The leader may interrupt and either ask or have the members ask some questions to break up the monologue of the ram- bler. The leader will want to be sure that the questions are not ones that encour- age more storytelling.
+
+### Examples
+
+Dante:    (Who has been telling stories   for a couple of minutes about her alcoholic father and is not expressing her feelings) And another thing he did was...
+**LEADER:** Just a second here. Let us ask you some questions about you and your dad. I want each of you to think of something you can ask Danie that will get her to explore more deeply her feelings about her situation. One question I want to ask is, “How much do you blame yourself for his drinking?”
+
+Danie:       And another thing he did was...
+**LEADER:** Just a second here. Let us ask you some questions about you and your dad. I want each of you to think of something you can ask Danie that
+
+<!-- Page 4 -->
+will get her to explore more deeply her feelings about her situation. Who has a question to ask?
+Mautk:     I do. How can we help you? All you do is come here and tell us stories. Do you really want help?
+Danie:     I[ think I do. But what I was going to say...
+**Leaver:** Hold on, Danie. Who else has a question?
+Lee:   Is there anything we can do to get you to quit denying that your father is an alcoholic?
+Danie:     (Tearing up) | don’t want him to be alcoholic. I really need help.
+
+BH
+
+3. Have the person do some focused activity (perhaps with chairs, drama, or some expe- niential activity). Using the example of Danie, the leader could put a chair in front of Danie, ask her to pretend that her father is sitting there, and ask her to have a conversation with him. Or the leader could ask Danie to act out one of the scenes she has been describing, using members of the group to play her father and other family members. (Often reenactment of scenes triggers emotional reactions.) The leader could try many other activities. The point is that the leader has stopped Danie’s storytelling, kept the focus on her, and tried to deepen the focus.
+4. Have the person comment to each member (from her seat, or have the person sit in front of each of the members). At times, having the member who is working repeat statements or questions to other group members can encourage them to go deeper with their thoughts and emotions.
+
+### Examples
+
+**Leaper:** Danie, let me get you to do this. I want you to turn to Lilly and ” complete the following sentence: “When Dad drinks, I
+Dante:     (Looks at Lilly, who is sitting next to her) When Dad drinks, I feel that it 1s my fault.
+**Leaver:** Now look at Amos and start with the same phrase.
+Danie:     When   Dad drinks, I feel I should do something.
+**Leaver:** Turn to Tomika and start with the same phrase.
+Dante:     When Dad drinks, I get scared that someone will get hurt. I feel I have to protect my little sister. (Begins to cry)
+**Leaper:** Stay with those feelings.
+
+5. Have the members give the person feedback. If the member 1s not benefiting from talking, the leader can interrupt by asking the other members to give some feedback.
+
+<!-- Page 5 -->
+### Examples
+
+**Leaver:** Danie, I want to stop you for a second, and I am going to ask the group for some feedback. What do you think Danie is trying to say?
+**Harvey:** | think she is trying to say that she doesn’t know what to do, but she thinks she should do something. She is doing what I used to do, which is take responsibility for the family and the drinking because no one else was trying to fix the problem.
+
+**LeapeR:** What do you think Danie needs to explore but is avoiding?
+Sonya:   She seems to feel bad about herself, but she won’t talk about it. Danie, you are blaming yourself, and it is not your fault!
+Danie:   (Head down, softly crying) But why does it feel like it is?
+
+### B HG
+
+6. Have the members role-play the person. Allowing group members to role-play the working member can provide insight to the member of focus by showing how they are appearing to the group. This can allow for a great deal of insight on the part of the working member.
+
+### Examples
+
+**Leaver:** Who can become Danie? Try with your voice and body to be her. Who can do this?
+**Monica:** | think I can. (With head hanging and with a weak voice) My dad came home last night and started in on us.
+Dane:   Is that how I really look and sound? No wonder I feel so bad.
+
+The leader can even ask the member who is playing Danie a number of deepening questions. If a member can role-play Danie well, this can prove to be very enlightening to her. This activity and the previous one, where feedback was given, can be valuable, because the focus stays on the member, but the member stops talking in order to listen and watch. Some members actually can benefit more by listening to themselves being discussed than by talking. These are just some of the techniques that can be used to cut off and stay with the person. With experience, leaders develop a number of ways to interrupt and stay focused on a member who is rambling or making nonproductive comments.
+
+<!-- Page 6 -->
+GROUP     COUNSELING      SKILLS:     Cutting Off—Staying with the Member
+
+View video 8.3 where the leader cuts off the member but stays with her.
+
+Cut and Stay with the Topic        There will be times when the leader will want to shift the focus away from the member who is talking but stay with the topic. When    the leader makes     the decision   to intervene   in this manner,   the member often does not feel so cut off. Using the example of Danie, the leader might say:
+**Leaper:** Danie, let me get other members’ comments about their relationships with their parents. Can any of you relate to what Danie is saying? Cut and Leave the Person and the Topic         Inevitably, there will be times when the leader will need to cut off and redirect the group because it is off on a tan- gent or it 1s time to start closing the group. In such instances, the leader might say something like:
+**LEADER:** I think we need to move     on. | want to shift our attention to an exercise that I think you will find interesting. The important thing to understand from this discussion is that you have choices when you are thinking about cutting off.
+
+## Other Situations Calling for Cutting-Off Skills
+
+There are a number of situations when a leader may want to use the skill of cutting off. We discuss seven of them: When a member’s comments conflict with the group’s purpose When a member is saying something hurtful When a member is saying something inaccurate When the leader wants to shift the focus When it is near the end of the session When members are arguing See When members are rescuing other members ON A, te
+
+When a Member’s       Comments      Conflict with the Group’s Purpose          One of the main uses of cutting off is to ensure that the group’s content fits with its purpose. Whenever a member’s comments are not in line with the group’s purpose or when the group is discussing a nonproductive or unrelated topic, the leader should use cutting off to refocus the group on a more relevant issue. Too   often, when   a member      talks on an irrelevant topic, the leader lets that person continue indefinitely. Instead, the leader should say something like:
+
+<!-- Page 7 -->
+**Leaver:** Let me interrupt. I think we have gotten away from the purpose of the group. I’d like us to get back to our task, which is...
+
+When a Member Is Saying Something Hurtful Extreme, value-laden comments about certain issues also need to be cut off. Members may attempt to lecture others about such things as the evils of having an affair or an abortion. A member may want to comment at length about how organized religion is a harmful institution and should be banned or about how divorce is the ultimate failure, and all marriages can be saved. These types of comments usually represent one particular member’s point of view and have the potential of being hurtful. To let that member continue would be a mistake on the part of the leader, especially because other group members could be greatly offended. There are times in support, counseling, and therapy groups when a member begins to make very critical comments to another member. The leader must cut these off.
+
+### Examples
+
+Kirk:... and Ijust feel that it is important that I share this. I have not been completely honest here. You see, my lover is not a she, but actually is a he—that is, I am gay.
+Bos:   That’s disgusting!! I think...
+**LEADER:** Wait a second. Bob, that is your issue. I want to stay with Kirk and his feelings.
+
+The leader should block Bob’s comments because the comments were going to be hurtful. Some beginning leaders let a member like Bob continue because they are not comfortable cutting off. This could be harmful to a disclosing member and the group in general.
+
+GROUP        COUNSELING       SKILLS:    Cutting Off Harmful Comments
+
+View video 8.1 again and think about the harm that would have occurred if the leader had not cut off when she did.
+
+When a Member Is Saying Something Inaccurate           In discussion, education, and task groups, comments can be made that are inaccurate, misleading, or inappropriate. For example, in an education group about birth control, a member might say, “The pill should never be used because it has been proven to cause cancer. I have two friends now who are suffering from its side effects. Let me tell <!-- Page 8 -->
+you about them.” The leader would want to use cutting-off skills to correct this member’s exaggerated statements. Whenever something is being said that is not accurate, the leader should not feel that he has to wait until the person is finished before commenting. In fact, it is best to cut off “speeches” that are not beneficial to the group as soon as the leader identifies them as such. In counseling, therapy, and growth groups, it is especially important to listen for inappropriate comments or advice because members can say things harmful to others. For instance, a member might say to another, “I think you should divorce her immediately. Any woman who won’t go to church with her husband is not a good woman.” In this situation, the leader needs to cut off the member for giving inappropriate advice. A common phenomenon in many groups is the guaranteeing of someone’s behavior. That is, a member will say to another, “If you do X, then your wife (son, boss, parents) will do Y.” It is important that the leader not let anyone make promises about how another person will think, feel, or behave. Here are some examples of such promises:
+
+- Ifyou get mad a couple of times, she’ll change. You just need to let her know who is boss.
+*         Go home and tell your mom you're sorry for what you did. She’ll understand, and all will be fine.
+
+In these examples, members are promising some behavior over which they have no control. The leader should cut off any comments similar to this. One cardinal rule for leaders and members to follow is, Do not guarantee anyone’s behavior other than your own. Human behavior is highly unpredictable.
+
+### Examples
+
+The group is composed of stepparents who are sharing feelings and experiences about their particular situations in the hope of discovering new ways of coping.
+Jim: My stepson, Jeff, seems to prevent himself from getting emotionally close to me because of his loyalty to his biological father.
+Epcar:           (Dogmatically) You should spend more time with him, Jim. If you'll limit his time with his father and use it for the two of you, he’ll grow to love you more. That’s what I did with my stepson, and it’s working out okay. I guarantee you that Jeff will respect...
+**Leaver:** (Interrupting) Edgar, let me stop you here to say a couple of things. First, I appreciate your attempt to help. I’m glad that it is working out well between you and your stepson. I’m not so sure that your -      particular method will work for Jim and Jeff. What Jeff is experiencing is actually a very common and normal thing. Many stepchildren experience divided loyalty between their absent parent and the new
+
+<!-- Page 9 -->
+stepparent. Each of you may want to think about this issue as it applies to your children... In this example, the leader was aware that Edgar was making guarantees to Jim based on his own experience and that his advice was not appropriate.
+
+When the Leader Wants to Shift the Focus       Frequently, when a topic has been thoroughly covered or the focus has been held on one member too long, the leader’s task is to shift the focus. Sometimes, a natural break occurs in the interaction, and the shift is easy. At other times, the leader will need to use cutting-off skills to accomplish the shift.
+
+### Examples
+
+This is a growth group for high school girls. The topic of discussion is love relationships. While Amy is telling a story about her sister, the leader notices that Sherry seems to want to speak.
+Amy: [Ijust don’t understand. Tom and Cindy got along so well in the beginning. They were so happy together. They could talk to each other about anything. I thought it was for keeps, but after a couple of months, things were not so rosy. I think they maintained the relationship for several months because they kept hoping they could regain what they once had. Let me give you an example. They were... (The leader notices that Sherry is listening intently and nodding her head in agreement.)
+**LEADER:** Amy, let me stop you before you really get into the story, unless this applies to something in your own relationship history. (Amy shakes her head indicating that it is not personal.) It seems that Sherry is reacting to what you are saying, and I want to give her a chance to comment. Sherry, would you like to offer some comments?
+**SHERRY:** Oh, yes. What Amy was saying about the relationship being so good at first and then changing also happened to me. My boyfriend and I ended our relationship a week ago. It just seemed that we suddenly had nothing in common anymore. |... In this example, the leader decides to cut off Amy and shift to Sherry for two reasons. First, although Amy was telling an interesting story, she appeared to have no personal investment in the topic. Second, Sherry appeared interested in the discussion and seemed to relate to it personally.
+
+The members have been discussing their families of origin. The discussion has been going on for about 10 minutes, and the members still seem to be on the <!-- Page 10 -->
+surface. The leader decides that the family sculpture exercise would be a way to get members to really focus on their home environments. The members are cur- rently having a superficial discussion about vacations they had with their parents when they were young.
+**LeaperR:** Let me jump in here. I’d like to make this discussion about families more meaningful. An exercise that I have used before and one that is quite helpful in getting you to look at how you were affected by your early family experiences is called “Family Sculpture.” This involves having you pick members of the group to represent your family as it was when you were growing up.... In this example, the leader cut off the discussion, moving to a structured activity to funnel the group from merely conversational to insightful reflections.
+
+When It Is Near the End of the Session         There are two situations when cutting off is necessary near the end of a session. When leading a group with a designated ending time, the leader sometimes has to cut off members to allow time for summarizing and ending the group promptly. It is very important to have enough time to close the group, and sometimes the only way to do this is by cutting off what is going on. The second situation is when a member brings up an emotional issue with little time remaining in the session. A skilled leader will quickly cut off the member before he gets too far into his issue. Obviously, this is a difficult situation to handle, but there are times when there is not enough time for dealing with the concern.
+
+### Examples
+
+There are approximately 10 minutes left in the first session of a group of adults who were adopted when they were young and who are now trying to find their biological mothers. Tracy starts to talk about her fears and the problems her search has already caused.
+**Tracy:** (In a distressed voice) I am so afraid that my search is going to end in nothing. I have so much anxiety and worry. I have three choices now aincolier.
+**Leaver:** (Using an understanding voice) Tracy, could I ask you to hold that until we meet next week? What you have to say is so important and I don’t think we have enough time now to really deal with your issue, and we need to stop in about 5 minutes. Now, in the few minutes left, I’d like us to summarize tonight and get different reactions to this first session. I think we are off to a good start.
+
+<!-- Page 11 -->
+In this example, Tracy’s concern is obviously a sensitive and personal one, and the leader is wise to hold off on it until the next session. The leader also does the right thing by cutting her off quickly before the momentum of the group shifts to Tracy’s anxiety and worry.
+
+When Members Are Arguing                Any time people come together to form a group there is the potential for arguments. Members usually leave it to the leader to stop arguments; if left on their own, some members would spend the entire session arguing. Therefore, the leader has to intervene and come up with better ways of discussing or resolving issues. Ordinarily, it is best to cut off arguments quickly because they are usually not productive and are often detrimental to the group. Arguments do nothing to build cohesion and can erode trust. Arguments can also set a negative tone for the group and use up time that can be spent in a much more productive manner. In a few situations, a leader might allow an argument to continue for a short period. For example, the leader may want to observe the argument and then focus on process instead of content to help the members learn about their style of interacting and arguing. A good rule to follow is, Don’t let members argue unless it is productive in some way for them or the group. When members are arguing, the leader can use the following techniques:
+
+- Cut off and focus on process by discussing what is happening in the group.
+- Cut offand focus on content by getting some of the nonvolatile members to discuss the issue.
+- Cut off and focus on content by asking the volatile members to continue the discussion but tone down their remarks.
+- Cut off and focus on content by discussing the issue calmly herself.
+- Cut off and shift the focus to a new      issue.
+
+m          EXAMPLE
+
+The group is composed of clients at a mental health center. Members are discuss- ing their different living arrangements; it is the third session.
+Rita: | live in a communal-type situation with three men and four women.
+Sam:   (Bolts upright) I think that’s disgusting!
+Rita:        What do you mean by that?
+Sam:   I mean I think that’s wrong—God didn’t put us on this earth to live ade in sin!
+Rita:        Who says it’s a sin?
+
+<!-- Page 12 -->
+**SAM:** God does! In the Bible...
+**Leaver:** (Calmly) Hold on. Let me say something to everyone. Maybe I haven’t touched enough on the subject of attacking one another. Our purpose here is not to judge whether others are right or wrong in their actions or beliefs but rather to listen to the variety of ideas expressed and learn about differences in the way people live. Human relationships require listening without judging. I hope in this group you will learn to get along with people who are different from you. Rita, you were Savio es
+
+In this example, the leader recognizes that the exchange is not productive. The leader decides to make a brief comment on the purpose of the group, which serves both to cut off the rapidly escalating argument and to inform the members that making moral judgments about the actions of others is inappropriate. By speaking in a calm way, the leader is able to defuse the hostile tone being created.
+
+## GROUP COUNSELING SKILLS: Cutting Off
+
+View video 1.1 again and watch what happens when the leader does not cut off. Note the tension that develops. Remember, the purpose of this segment is to demonstrate poor leadership skills.
+
+When Members Are Rescuing Other Members           Some members occasionally present a helpless, “poor me” self-portrait where they present themselves as victims      of their environment.   When     this happens,    other members      often want to rescue them by saying certain soothing things or by offering all kinds of advice. This usually sounds something like, “It'll be okay; everything is going to work out” or “Don’t cry; things will get better.” This kind of member comment is usually not productive because it tends to reinforce the “working” member’s belief that he is helpless.
+
+### Examples
+
+A group of recently divorced women is meeting for the purpose of support.
+Auce:     (Crying) I’m just no good to anyone. I’m not pretty and obviously not interesting. The divorce was all my fault. Pm sure no one will ever ask me out.
+Terri:    (Patronizingly) There, there, Alice. (Patting her on the arm) Everything will be okay. There are lots of men out there who are just waiting for <!-- Page 13 -->
+someone like you to come along. There’s no need to cry. I’ll bet your husband...
+**LeapER:** Wait a minute, Terri. (To the entire group) Helping someone doesn’t always involve making them feel better immediately. Alice, I’m not sure if you are asking for help orjust telling us your current feelings. The leader quickly stepped in to prevent Terri from rescuing Alice, because Alice is not making any attempt to improve her situation but, rather, is wallowing in self-pity. In essence, there is no indication from Alice that she really wants to work on her issues. The leader should get such an agreement from her; otherwise, Alice might simply manipulate the group with her “‘poor me” routine.
+
+Certainly it is desirable for members to help each other, but there is a difference between helping and rescuing. Leaders often mistakenly allow rescuing when such behavior should be cut off. A similar mistake is to allow members to hug or touch another who is crying because of a “poor me” attitude. This kind of physical support can serve to reinforce the “I’m weak” position taken by that member. With experience, the leader will come to recognize when it is appropriate to stop rescuing behavior and when it is appropriate to offer support and caring touch.
+
+### Practice
+
+In this section, you will have the opportunity to practice what you’ve learned. Four examples follow, to which you may respond in your own words. Read each one and think about what you would say and why; you may want to write out your responses. Each example is discussed after it is presented.
+
+### Examples
+
+The group is composed of prisoners, all of whom have committed violent acts against others. The purpose of the group is to help members overcome their inability to control their anger. The members are talking about events during the past month that have triggered their anger. Don has been talking for the past 90 seconds, and as he ruminates    about an event, he becomes      angrier and angrier.
+
+**Don:** And then that @!_#!_just looked at me and grinned, and I knew I couldn't do a thing about it. If he’d been out on the street, I would have fixed him. The next time that @_#!_ pulls that on me, I’m...
+
+Think about what you would say if you were the leader. Your goal would be to stop Don from continuing to speak, because he seems to be escalating his anger. Take some time here to formulate one or two different ways to handle this situation. Here are some possible cutting-off responses:
+
+<!-- Page 14 -->
+**Leaver:** Don, let me break in here if Imay. (Looks at all members)   | want to talk about something I am sensing in the group. I think many of you have short fuses like Don’s; when the fuse goes, there is an explosion, and that explosion gets you into trouble—namely, prison. I hope we can lengthen those fuses so that you can stay out of trouble and not hurt anyone unnecessarily. How could Don have stayed calmer in that situation?
+**LEADER:** Don, do you want help with this and if so, how can we be of help?
+**LEADER:** Don, you obviously lost it in this situation. | want you to turn to Bill and tell him one thing you could have done to avoid becoming so angry. These are some possible responses. Yours may have been different but equally as effective. The important thing to note in this example is that the member is getting more and more agitated, and Don’s comments are not helpful to himself or to other members. This is a definite signal that some form of cutting off is needed.
+
+This group is composed of middle school students whose parents are divorced. The leader has been encouraging members to share any feelings they have about their family situation.
+
+**SaRAH:** I’ve just been hoping that Mom and Dad will get back together. Mom is seeing another guy named Dave, and I just can’t stand him. He always kisses me, and it just makes me sick. Sometimes when Dave is there, I sit in my room and cry, wishing that my dad would come back.
+Mike:     Your dad was a drunk! Why would you think about him? Anyone would be better than him. I remember when he took us to the HOOn   ale 5.
+
+What would you say if you were the leader? Stop and think ofa couple of responses. Here are some possible responses:
+
+- Leaper: Mike, stop. Let’s stay with Sarah and her feelings.
+- Leaper: Mike, let me stop you because I don’t think you are tuned into Sarah very well. Sarah, say some more about how you are feeling.
+- Leaper:    Mike, hang on for a second. We need to work with Sarah and then maybe even talk about how everyone in the group can learn to be more sensitive to others. I do want you, Mike, to think about whether you were coming from Sarah’s viewpoint or yours. Sarah, let’s get back to you.
+- Leaper: Mike, rather than focus on Sarah’s dad, I’d like to work with you on your comments because you often tend to say things that are not sensitive to the member who is sharing. Have others of you noticed that Mike tends to do this? Sarah, we will come back to you, but I do think it is important for Mike to get some feedback.
+
+<!-- Page 15 -->
+The leader certainly needs to cut Mike off and then to decide whether to focus on Sarah or. Mike. Probably the better person to focus on is Sarah. The leader could also use the incident as a way to talk about being more sensitive to others when commenting. Some leaders might mistakenly get angry at Mike and hold the focus on him and his behavior, thus leaving Sarah, who is in pain. The last response is one where the focus is held on Mike.
+
+This is a weekend growth group composed of married couples whose goal is to discuss and eliminate problem areas in their marriages. Couples have been sharing about their hobbies and vacations. One couple, Mary and Tom, are now arguing about problems around taking their vacations.
+Tom:     Why do we have this insurmountable difference over where to go on vacations? You always demand that we see your parents.
+**Mary:** That’s because we only see my parents once a year, but we practically live with yours. Besides, all you want to do on vacation is fish or camp, and you know I hate that! You are so uncaring and unfair! Why don’t you care about me?
+Tom:     Don’t start that again. You always do this! What would you do if you were leading this group? Take a moment and think of two or three different responses. Some leaders might make the mistake of allowing the argument to continue. It is apparent that the couple has fought over this issue a number of times. There are several things the leader could say:
+**LEADER:** Let me stop you because I don’t think you are hearing each other. (To the group) What do some of you think is going on with Tom and Mary? (This holds the focus on Tom and Mary but gets others involved and stops the useless arguing.)
+**LEADER:** I want you to stop because it doesn’t seem that you are getting any- where. I want the two of you to listen to others who have probably had similar problems. Have any of you had problems like this? (The leader is second-guessing that other couples have had problems over vacations.)
+**LEADER:** | want to ask you something. Why do the two of you get nowhere with this argument? Think about it. What is happening to each of you as you talk? (This holds the focus on them and will probably involve other members, because the focus has shifted to communication patterns.)
+**Leaper:** | want to try something here that I think may help you see what you do to each other. I need someone to play Tom and someone to play Mary, and I want you to act out this argument. Tom, you and Mary just watch. I think you'll learn something. Who can play either Tom or Mary? (Cutting off stops the arguing and shifts to a role-play that
+
+<!-- Page 16 -->
+should generate more involvement for all members. Tom and Mary should especially benefit.)
+
+This group is composed of high school seniors. Its purpose is to discuss various situations that young adults face once they leave high school.
+**LeaDerR:** (To start the session) What did you find out about loans and credit? Did any of you ask your parents or friends about this?
+Larry: [| did. I found out a lot about loans and interest and how that all works. (Larry goes on for a couple ofminutes.)
+**Leaver:** How about others of you? What did you find out about the different places to borrow money?
+Larry:    Oh, I found out that there were a number of places. They are... (Larry goes on for a couple of minutes.)
+**LEADER:** (Notices that members seem to be tuning out)
+
+It is a good bet that Larry’s constant replies are affecting the other members. Any time a leader allows a member to dominate a group, the other members usually share less and feel less involved. This is especially true when the dominant member is not saying particularly interesting things but rather seems to be talking due to anxiety or a need for attention. How would you respond if you were the leader? Take a minute and think ofa couple of responses. Listed below are some of the options available to the leader:
+Leaper: Larry, let me cut in and stop you to give other members a chance to speak. Others of you, what reactions do you have? Leape_r: Larry, I want you to hold off on your comments until others have shared.
+Leaper: Larry, I notice that you are always ready to speak first. ’m wondering if that has any significance, and I’m also wondering if you’d like some feedback from the group on how they feel about your always commenting. (This shifts the focus to Larry, and the leader would want to do this only if she thought Larry would benefit from feedback. Often, the leader can tell by the members’ nonverbal reactions how they are feeling about the talker.)
+
+Drawing Out If cuttirrg off is the most essential skill a leader needs to know, then drawing out is probably the second most important skill. A skilled group leader understands when and how to draw out members. Drawing out is the term we use to refer to <!-- Page 17 -->
+the skill of eliciting group members’ comments. Throughout this section, we discuss various reasons for drawing members out and how to accomplish this effectively.
+
+Reasons for Drawing Members Out One of the main reasons for drawing out is to get greater involvement from the group members, because one of the benefits of being in a group is to hear different ideas from the members. Another major reason for drawing out is to help members who have a difficult time sharing in a group. In most groups, there is usually a member who has trouble talking in front of others. If at all possible, a leader should try to draw out all the members during the early stage of the group—ideally, during the first session. Getting members to talk early in the life of the group can ease some of the anxiety about speaking in the group. The longer a shy or reluctant person waits to make his first contribution, the harder it will be. In addition, involving members during the beginning stage reduces tension in another way—if a member remains quiet for an extended period, the other members usually begin to wonder why. They sometimes imagine that the quiet member doesn’t like the group or that he feels superior. By drawing out all members, the leader can often prevent members from making up what others are thinking and feeling. Getting a member to go deeper is a form of drawing out that is very helpful to members in support, growth, counseling, and therapy groups. Some members will share but not really explore a problem in depth; that is, they stay on the surface. People usually gain more when they explore “uncharted waters.”
+
+## Reasons for Silent Members
+
+Most leaders consider using drawing-out skills when members are silent. Understanding the reasons for silence is necessary because drawing out is not warranted for all types of silence. A leader often has to decide if drawing out is needed. The following is a list of reasons why members may be silent.
+
+Fear/anxiety               Not prepared Thinking or processing     Confused Quiet by nature            Lack of trust or commitment to the group Not mentally present       Intimidation by a dominant member or leader
+
+Fear/Anxiety   Even when members desperately want to speak, they sometimes do not because they are afraid of what other members might think. They conjure up images of people laughing at them, turning away in disgust, or thinking, “What a stupid fool.” Drawing out these individuals is very important because they need to realize they are, in fact, imagining how the group will respond. Drawing out is difficult because the members may feel picked on unless the leader 1s careful.
+
+<!-- Page 18 -->
+### Examples
+
+In this example, the leader of an ongoing therapy group knows why Frank is in the group (from the intake interview) and knows that he is afraid to share what he did.
+
+**Leaper:** Frank, you have not shared why you are here. My hunch is that you are afraid of what others are going to think of you. All I can say is that we are not here to judge you or anyone else; rather, we are here to help. Would all of you agree? (Members nod) Also, Frank, the way you are going to help yourself is by talking about it.
+FRANK:      It’s hard to face anyone. I don’t know why I did it.
+**Leaper:** | know you don’t, and I hope that by sharing here and in individual counseling, you will come to understand yourself better.
+Frank:      (Looking at the floor) Well, V1l try. I know that all of you will think this is horrible, but I exposed myself to these teenage girls last month.
+**Leaver:** (After glancing at the members’ faces and seeing that they are concerned for Frank) Frank, if you will look up you will see that no one here is thinking you are the scum of the earth like you seem to think. In this example, the leader felt confident about how the members would react because he had been meeting with the group for a number of weeks. Even in a situation like this one, however, the leader cannot absolutely guar- antee how the members will react and should be prepared for a negative reaction. If this leader felt Frank could not handle negative feedback, he would avoid drawing him out—or at least have been fully prepared to deal with the various comments.
+
+Thinking or Processing A second reason for silence is that members are thinking about or processing the group interaction. Most frequently, this occurs immediately following an exercise or some intense work on the part of a member. Usually the leader can, by scanning the room, pick up on the facial expressions of members who seem to be really thinking or experiencing something. This kind of silence is productive,      because   the members   need   time to reflect and think. However, such silences can become prolonged, and sometimes a member who is ready to speak is a little hesitant to do so. Usually, the leader can sense when members are on the verge of speaking and can often elicit their comments through a simple head nod or hand gesture. The leader also has a number ofpossible drawing-out statements that could be used:
+
+- Go ahead.
+- It looks as though you are thinking. Would you like to share your thoughts?
+
+<!-- Page 19 -->
+- You seem to be reacting to something. Is there anything you would like to share?
+- Jt seems that you were relating to our discussion on
+
+Quiet by Nature A third reason for silence is that some members are quiet people. They grew up listening more than speaking and are not in the habit of saying much, even to family and friends. It is important for the leader to assess this and not attempt drawing out if it is going to make the member uncomfortable. However, it is important to realize that, if it is done with caution and forethought, drawing out may help this type of member say more in the group.
+
+### Examples
+
+In this example the leader decides to try to draw out Lucinda, who has contributed very little during the first three sessions of an education/growth group on improving communications.
+
+Leaver:      I'd like to get a number of you to share your reactions to the model, and then we will practice some. Speaking up does seem to be diffi- cult, and knowing these different categories can be helpful. (In a gen- tle, caring voice) Lucinda, | realize that you are a rather quiet person. Did the model give you any additional understanding of yourself?
+**Lucinpa:** It is true that | am rather quiet. | am the quietest in my family.
+Leaver:   Do you know why you were quiet?
+**Lucinpa:** Because it wasn’t safe to talk and my sisters were mean and no one seemed to want to hear what I had to say.
+Leaper: [| think it is safe here in group and we do want to hear what you have to say (Members’ heads nod).
+**Lucinpa:** I guess it is a habit. I'd like to not be so quiet.
+Leaver:   And we'd like to hear from you.
+
+In cases where the leader understands that a certain member is quiet by nature, it would be important that the group be made aware of this so they don’t harbor negative feelings toward the quiet member.
+
+Not Mentally Present     Some members are silent because they are not mentally present. Their thoughts are on things outside the group, such as their term papers, financial worries, or children. Allowing these members a couple of minutes to talk about what is on their minds can help them focus on the group.
+
+<!-- Page 20 -->
+### Examples
+
+The leader has noticed that Phil has been silent for the first 20 minutes of the group and decides to draw him out.
+**LeaperR:** Phil, you have been quiet. Is there something on your mind?
+Pum:    Well, yes, I guess I am not with it today. My father is at the doctor’s right now because he has a spot on his lung, and they are supposed to tell him what it is.
+**Leaver:** Even though this is not really in line with our purpose, if you would like to take 5 minutes or so to talk about that, we could. Obviously, it is a Major concern.
+Puri:   But this group is about career planning and job interviewing.
+**Leaver:** | realize that, and I think we can spare 5 minutes. Also, if we allow you some time, then you may be able to focus a little more on what we are talking about here.
+
+Not Prepared       I[n certain groups, members may not be prepared; thus, they will be silent. In discussion, education, and task groups in particular, there are often out-of-group assignments to complete before the next session. A member who has not completed the assignment will probably not be as involved. Drawing out these members in an effort to combat their silence will be largely unsuccessful. What is needed instead is a way to motivate the members to do the assigned work.
+
+Confusion    Members may also be silent because they are confused. Rather than speaking up or asking for clarification when they are unsure about what is going on in the group, some members will remain silent. It 1s good for the leader to be aware of this kind of silence because, when mem- bers are confused, they often withdraw or get annoyed with the leader. If the leader thinks the members are being silent for this reason, the following might be an appropriate comment:
+**Leaper:** | have noticed that some of you have been quieter than usual. I was wondering—is it because you might be confused because things have kind of jumped around?
+
+Lack of Trust or Commitment to the Group    Members are often silent if they don’t want to be in the group and have no commitment to what is happening. This lack of commitment is common in nonvolunteer groups, such as-groups for drunk drivers, prisoners, or adolescents in group homes. Another reason for silence is that members don’t trust the leader or some of the other members in the group. When there is little trust, members will tend to be relatively silent.
+
+<!-- Page 21 -->
+Intimidation by a Dominant Member or Leader              A final reason for members’ silence is because the leader or one of the members tends to dominate, causing others to sit back and listen rather than contribute. Also, in situations where one person dominates, members may have found that, when they have tried to speak, they were interrupted by the dominating person, and the leader did nothing. There will be some instances in which a member is silent and the leader has no idea why. In these situations, the leader may choose to ask the member directly, put himself in a dyad with the silent member and then ask, or wait until the end of the session to ask.
+
+## Direct Method for Drawing Out Members
+
+The most direct method of drawing out members is to ask them if they would like to comment or if they have any reactions to what is taking place.
+
+### Examples
+
+This group is composed of high school teachers who are discussing the current guidelines for handling behavior problems in the classroom. Ron, who 1s usually very verbal, has not spoken.
+
+**LEADER:** Ron, we've discussed many new procedures, and several ideas have been offered. Is there anything that you would like to offer at this time?
+Ron:   Well, yes, I have one idea that I think could work. It deals with...
+
+This group is composed of members who have AIDS. One member has died recently; John, his close friend, has been very quiet.
+**Leaver:** (Very calmly and supportively) John, you have been very quiet this ses- sion. I can only guess that it may have to do with Ted’s death. Is there any way we can help?
+Joun:   Well, yeah, I really do think about Ted a lot—especially on group night. I...
+
+### Drawing Out Delicately
+
+Sometimes, drawing out is a real art. The skilled leader is able to get a member to talk, share, or express herself without feeling forced or pressured. The challenge is to be able to invite members to share but to give them a number of ways to decline at the same time. The idea is to give members permission to speak— possibly even gently encouraging them to do so—without alienating them. Beginning leaders often make <!-- Page 22 -->
+the mistake of putting people on the spot when they are trying to get them to speak. For example, such a leader might say, “Marvin, what do you think?” or “Cheryl, you have been quiet—why don’t you share your ideas?” In certain situations, this type of probe would be totally acceptable, but if Marvin and Cheryl were not ready to speak, they would certainly feel on the spot. The art of drawing out is evident when one is able to allow “outs” for the members while getting most of them to join in and share. One way to provide an out is to call on two or three members instead of just one. Then the leader can use her eyes to see if one of those members seems willing to speak. Focusing one’s eyes for too long on a member can make him feel as though he were under a spotlight, so the leader will not want to gaze at just one member for any length of time. By looking at the member for a brief moment, the leader can invite the member to speak with her eyes. By shifting her eyes, the leader gives the member an out and relieves him of any pressure beyond that caused by having his name mentioned. (This slight pressure would be intentional because the leader would be trying to draw the member out.) Two other components of drawing out are the leader’s voice and attitude. At no time should the leader use a tone of voice that could be interpreted as condescending. The leader should never ridicule or embarrass a member for not being an active participant but rather should try to understand that member and then, if it seems appropriate, try to draw him out. Two examples follow. The first one illustrates how not to draw out; the leader puts a member on the spot and does not give her an easy way out. The second example illustrates a more effective way to use the skill.
+
+### Examples
+
+The group is composed of high school seniors who are about to graduate. They have been discussing plans for after graduation. It is near the end of the session, and one of the members, Jackie, has not spoken.
+**Leaver:** (In a demanding tone) Jackie, why haven’t you said anything? Would you like to tell us about your plans? (The leader maintains eye contact with Jackie. All members of the group have their eyes on her.)
+
+This is the same group and situation as in the preceding example.
+
+**Leaver:** (Tentatively) Jackie, I’ve noticed that you have been silent this session. I am not sure if you would like to comment or not. Certainly, we'd like to hear from you if you feel comfortable. (Shifts his eyes to scan the group) Who would like to comment on anything that they are thinking about? (The leader watches to see whether Jackie seems to want to talk.) In the first example, the leader comes on too strong. Also, the leader puts Jackie on the spot by maintaining eye contact and directing the group’s attention to her. If Jackie is quiet because of discomfort, the leader’s behavior can only increase that dis- comfort. Another error lies in not giving Jackie a choice whether or not to participate.
+
+<!-- Page 23 -->
+In the second example, the leader is tentative in his approach and does not focus the group on Jackie. In fact, the leader acknowledges that Jackie has not spoken, invites her to do so if she wishes, and then moves on. Because of this, Jackie feels no unnecessary pressure to speak. Assume that Jackie is pregnant and 1s considering whether to share this in the group—the leader in the second example has a much better chance of drawing her out than the leader in the first example.
+
+GROUP        COUNSELING       SKILLS:   Drawing Out
+
+Go to the video on drawing out (8.4, 8.5) and hear a discussion regarding drawing out. Watch a demonstration of the nght and wrong way to draw out.
+
+## Use of Dyads for Drawing Out Members
+
+Dyads can be used when members seem to be rather quiet and take a long time to warm up. When members are paired and given directions to discuss something of interest, the inevitable result is that the two individuals will talk to each other. The energy generated is often sufficient to stimulate comments in the large group from members who might otherwise have been silent. When the dyad is completed, the leader may use any of the following responses to draw out members:
+
+- Who would like to comment on what you discussed?
+- What are your reactions to discussing?
+- What did you learn by discussing                         with your partner?
+- Please comment on any thoughts or feelings you may be having.
+- Joe, what did the two of you discuss?
+- Chandra, what did you learn in your dyad?
+
+These questions are usually nonthreatening, because the members are warmed up as a result of the dyads. Also, the members will usually have something to say, because they were just discussing the issue. Another way the dyad can be used to draw out a member is for the leader to pair up with the member he wants to draw out. By talking with this member, the leader can often encourage him to share in the larger group, or at the least, the leader can find out why the member has been silent. It is appropriate for the leader to ask a member why he does not talk much. However, it is usually best to do so privately.
+
+## Use of Rounds for Drawing Out Members
+
+Rounds are another very useful technique for getting silent members to say something, because in a round, the leader is asking everyone to comment without singling out any one member. Most members are willing to share a word, phrase, number, or brief comment.
+
+<!-- Page 24 -->
+Another way to draw out a member through a round is to end the round on the person to be drawn out. In this way, the leader can more easily ask the member questions because he is the last to comment in the round, and the focus must shift from the round because it is complete.
+
+### Examples
+
+The group is composed of women who are single parents. All group members have been actively involved in the discussion except Beth. Interest in the current topic is beginning to wane, so the leader decides to shift the focus to a new topic that may add energy and get Beth involved.
+**LeapeER:** Okay, if we’re finished with this issue, I’d like to shift the focus. In a word or a phrase, what is the hardest thing about being a single parent? Think about that for a moment; then I’m going to get everyone to comment.    (After about 10 seconds) Jamie, in a word or a short phrase, what is toughest for you? (Jamie is seated next to Beth who has been quiet and the leader wants to draw out. Starting the round next to Beth and going the opposite direction means that the round will end on Beth.)
+Jamie:   It’s finding time for myself.
+Satty:   (Also seated next to Jamie) Being both parents!
+Jane:    Money—making ends meet. Mo.ty:       Dating and not feeling guilty.
+BetH:    Not feeling appreciated by anyone.
+**Leaper:** What exactly do you mean by not being appreciated?
+Betu:    My teenage daughter doesn’t appreciate any of my          sacrifices or efforts. She blames me for the divorce.
+**Leaver:** I believe others here struggle with that. Could you say a little more about your feelings and your daughter’s feelings?
+Beto:    Well, my daughter... In this example, the leader chooses to focus on Beth and purposely has the round end on her. The leader then draws her out by asking some follow up questions.
+
+## Use of Written Exercises for Drawing Out Members
+
+Another method of drawing out is to have members complete a writing task. Writing tasks can be making lists, answering some questions, or completing sentences. Drawing out in this manner is non-threatening because the leader merely asks members       what they wrote.     With   the answers    in front of them, members usually do not mind being asked to share their responses. Also, when the leader <!-- Page 25 -->
+calls on members, it does not seem as if the spotlight is on them but simply that the leader wants them to share their written answers. If you have a number of quiet members, we strongly recommend the use of written exercises. When members can read what they have written they often get over their fears of speaking in a group.
+
+GROUP       COUNSELING        SKILLS:   Drawing Out Using Sentence Completion 7) Go to video 8.6 to see a demonstration          of the use of writing to draw out a member.
+
+Use of Eyes to Draw Out Another component of drawing out that we have alluded to in the earlier examples is the use of the leader’s eyes. It is often possible to elicit comments from members by establishing eye contact with them and holding that contact for a few seconds. The leader’s eyes are especially useful in drawing out members who are waiting to talk. By acknowledging people with his eyes and possibly a slight nod, the leader can often get them to comment. Or, if someone else is talking, the leader can cue others with his eyes and a slight nod indicating that they will be next to speak. One way to draw out a member while giving her an out 1s by maintaining a lot of eye contact with that member while speaking to the entire group.
+
+### Examples
+
+LeapDErR:   (Looking mainly at Carol) Is there anyone else who wants to comment on his or her relationship? (Scans the group, then looks again to Carol. When Carol does not seem to be ready to respond, the leader shifts his eyes to other group members.) If this is done skillfully, Carol would feel gentle pressure to speak, but the lea- der’s broad request for comments allows Carol to refrain if she chooses. The leader has to believe in Carol’s right not to speak. That is, if the leader is really trying to force Carol to talk, staring at her will cause her to feel singled out, and she will not hear the leader’s words but rather the intent, which would sound to her like, “Carol, SPEAK!”
+
+### BH SG
+
+Use of Movement to Draw Out Another way to draw out members is to use movement exercises. The reason for this is that often times quiet members will participate and the leader can draw <!-- Page 26 -->
+them out by asking them why they positioned themselves where they did or why they took the pose that they did. We discuss movement exercises in greater detail in Chapter 10.
+
+## GROUP COUNSELING SKILLS: Drawing Out Using Movement
+
+Go to video 8.7 to see a demonstration    of the use of movement     to draw out a member.
+
+Additional Comments Regarding Drawing Out It is important to assess how much a particular individual needs to talk. Sometimes leaders mistakenly believe that it is important for all members to speak up equally. Some members find it comfortable and beneficial to participate verbally at only a minimal level, yet they learn a great deal. The rule is, Don’t draw out unless it seems needed. Also, before drawing out a reluctant member, it is important to consider the kind of response the member will get from other members. If the tone of the group is such that the leader feels a negative response 1s possible, drawing out has to be done carefully or not at all because the member may be too uncomfortable. There are some members you may not want to draw out. Beginning leaders think they should always draw out uncommitted members, and this often 1s not the best option. When   drawn out, uncommitted     members    will frequently resist the efforts of the leader and the other members and try to create a negative tone. We suggest that leaders be careful with uncommitted members and members who do not seem focused at the beginning of the session. You may choose to run the group as planned, choosing not to draw out members who don’t seem focused. Frequently, the interaction and comments of the other members will help get those members aboard, which means that no drawing out is necessary.
+
+### Practice
+
+As in the previous section on cutting off, you now have an opportunity to practice. Think of various drawing-out responses to the following three examples. You may want to write down your responses and then compare them to ours, which follow each example.
+
+### Examples
+
+The group is composed of seven women who are patients in the mental health unit of a community hospital. The group meets daily. All the members have been there for at least a week except for Ambuja, who has been in the hospital <!-- Page 27 -->
+only 3 days. Ambuja has commented only when asked, and each time she has said very little. She is in the hospital because she attempted suicide. How would you try to draw her out if you were the leader? Take a minute and think of some different ways to draw out and then check our suggestions below. Jot down a couple of responses before continuing.
+
+**LeaDER:** Ambuja, you have not said too much yet in the group. I think you would probably find it helpful to share some ofyour thoughts, feelings, and reactions to being here in the hospital. I do think we can be of help to you if you will just open up to us.
+
+In this method, the leader asks Ambuja directly if she wants to share. It is important to note that the leader keeps commenting after initially urging Ambuja to talk. These additional comments let the leader observe Ambuja’s reaction; if she seems resistant or afraid, the leader may move on by saying something like, “Well, Ambuja, it seems like that would be too uncomfortable. We'll move on and hopefully you'll share later.” A second way to draw Ambuja out is to use a round that ends on her. The leader could ask the members to comment in a word or phrase on how they are feeling now about whatever it was that brought them to the hospital. Assume four others have commented before Mary.
+
+Mary:      I’m doing better. My family was here yesterday.
+Dor:   I understand why I am so depressed. Being here has really helped.
+**AmsyjaA:** I am doing okay.
+**Leaver:** What do you mean when you say you are doing okay?
+**Amsuja:** Things don’t seem as bad as they did.
+**Leaper:** Maybe you can tell us a little about how it was.
+**AmpByja:** I think I would like to. The reason I am here is because...
+
+Still another way the leader might get Ambuja to participate would be to focus on the topic of suicide, because Ambuja has attempted suicide.
+**Leaper:** A number of you have mentioned that you were depressed or lonely. I'd like to talk about how you have chosen to handle those feelings. I know for some of you, suicide may have been considered or even attempted.
+Mary: I have never thought of suicide, but I sometimes feel that life really stinks. I didn’t know how to deal with my feelings, but things are getting better.
+**Leaper:** Ambuja, what about you? I know a little about your history although I do not know many of the details.
+**Amesuya:** Well, uh, I tried suicide because I have been so lonely since my hus- band left me. The feelings are...
+
+<!-- Page 28 -->
+This group is composed of six ministers who are on a weekend retreat to discuss the stresses and strains of being a minister. During a discussion about the effects that being a minister has on families, both Mike and Jake have been exceptionally quiet and look troubled. How would you, as the leader, try to draw these people out? Take a minute to think of at least two different ways to draw them out before continuing. In this situation, the leader may guess that the ministers who are quiet are having problems at home. The leader must decide whether to draw both out at the same time or just one of them. To draw both out, the leader could say something like:
+
+**Leaper:** Mike, I can’t help but notice that both you and Jake have been quiet since we started the discussion about families. (Looking at both of them) Would either of you like to comment? If the leader wanted to draw out only one of them, he could address that person directly:
+**LeapDeR:** Jake, you seem to be thinking about what we are saying. My guess is you are thinking about your family situation. The leader would choose to draw out only one member if it appeared that one was in greater need or if the other did not seem ready to share. By focusing on the one member,    the leader could later draw out the other when he seemed more open to sharing. The leader could also use an exercise that would get at the ministers’ feelings about their families.
+**LEADER:** On a 1-10 scale, with 10 being very stressful and 1 being not stressful, how would each ofyou rate the stress that the ministry has caused your family?
+
+This group is composed of five college women who are discussing values as part of Mental Health Week. The discussion 1s about premarital sex. Helen has been quiet the entire session. Carolyn has shared with the group that she is not a virgin and now has her head down as April talks about how she plans to save herself for her husband because it is God’s way. Susan and Janice have shared some of their thoughts but have not commented personally on their feelings about premarital sex. They seem to be uncomfortable as they listen to April. How would you continue the discussion if you were the leader? Take a moment and think of acouple ways to draw out the other members. The leader probably would want to stop April from talking, because other members seem to be reacting to what she is saying. The leader would then need to decide whether or not to draw out Carolyn, who is obviously feeling bad. If the leader decides to do so, she could say something like this:
+**LEADER:** Carolyn, it is important for you to realize that what April is saying is her opinion. Other members feel differently. When she was talking, I could not help but notice your reaction. What were you thinking or feeling?
+
+<!-- Page 29 -->
+The leader could also choose to draw out Janice and Susan, because their opi- nions might differ from April’s. Drawing them out first could make it easier to later draw out Helen and Carolyn. If the leader senses that Carolyn is feeling quite bad, she would probably shift the focus to Carolyn. Because the leader could see that the other members differed with April, he could use a brief exercise to elicit comments from others. This would also serve as a way to cut off April.
+**Leaver:** I want each of you to complete this sentence: “For me, sex is 29
+
+This exercise enables the leader to hear from Helen, Janice, Susan, and Carolyn and makes it easier to draw out those members because the leader can simply ask them about their responses.
+
+### Concluding Comments
+
+Cutting off and drawing out are essential skills for good group leading. Knowing how and when to draw out and cut off members improves the quality of the group because the leader is able to get more involvement from the members. Cutting off allows the leader to make sure that the content of the group fits with the purpose. Cutting-off skills are needed to hold, shift, and deepen the focus. It is important to understand when cutting off a member, the leader can choose to cut and stay with the member, cut and stay with the topic but not the member, or cut and leave the topic and the member. Many situations require that the leader use cutting-off skills, including when a member’s comments are hurtful, off track, or inaccurate; when      the focus needs to shift; when   members are arguing or rescuing other members; or when the group is near the end and the leader does not want to start a new topic. Members are silent for a number of reasons including being fearful, not mentally present, not prepared, confused, bored, not committed, or intimidated. By understanding why members are silent, the leader can better choose how and when to draw out certain members. Rounds, dyads, and written responses are three excellent ways to draw out members.
+
+### Activities
+
+1.   In groups or classes, observe the cutting-off skills of the teacher or leader.
+
+Observe if the teacher/leader waited too long to cut off. What skills from this chapter would you have used to handle the different situations if you were the teacher or leader? wo   In classes or groups, observe the drawing-out skills of the teacher or leader. Observe if the teacher or leader waited too long to draw out or if she let a few people dominate the discussion. What skills from this chapter would you have used to handle the different situations if you were the teacher/leader?
+
+<!-- Page 30 -->
+1.    View videos 3.2, 3.3, and 5.1 and watch how the leader had to use cutting-off skills. a. What would have happened if the leader had let the discussion continue in each of the videos? b. Think about how clarity of purpose and cutting off go together in the three videos. c. Note how in video 5.1 the session could have turned into a debate about whether the war was the right thing to be doing.
+2.    View video 6.3 again. a. How did the leader draw out other members? Was that helpful?
+3.    View videos 8.4 and 8.5 again. a. Note the differences in the two approaches. b. What did the leader do to get the male member talking? c. What are your thoughts about the delicate timing and art of drawing out?

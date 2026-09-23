@@ -28,12 +28,12 @@ uv run python run.py process data/input/books/your_book.pdf
 ```
 *系統將自動執行：目錄解析 ➔ 章節拆分 ➔ 雙頁文意縫合 ➔ OCR/LaTeX 處理 ➔ Ollama 驗證 ➔ 輸出至 `data/output/books/`。*
 
-### ② 處理學術論文 / 期刊 (Journal & Paper Pipeline)
-將論文 PDF 放入 `data/input/journals/`，執行：
+### ② 處理學術文獻 / 論文 (Literature Pipeline)
+將論文 PDF 放入 `data/input/literature/`，執行：
 ```bash
-uv run python run.py process data/input/journals/nature_paper.pdf
+uv run python run.py process data/input/literature/nature_paper.pdf
 ```
-*系統將自動執行：雙欄排版切割 ➔ 摘要 (Abstract) 提取 ➔ 參考文獻結構化解析 ➔ 輸出至 `data/output/journals/`。*
+*系統將自動執行：雙欄帶狀排版流動 ➔ 摘要 (Abstract) 提取 ➔ APA/IEEE 參考文獻結構化解析 ➔ 輸出至 `data/output/literature/`。*
 
 ### ③ 執行 Ollama 自動喚醒與自我除錯測試 (自檢驗收)
 ```bash

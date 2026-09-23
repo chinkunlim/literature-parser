@@ -1,0 +1,18 @@
+{
+  "chapter": "Appendix",
+  "has_mindmap": false,
+  "table_count": 0,
+  "flashcard_count": 0,
+  "has_math_arrows": false,
+  "audited_pages": [
+    {
+      "page": 1,
+      "feature": "concept_map_and_lo",
+      "image": "Appendix_p01.png",
+      "lo_format_valid": false,
+      "mermaid_valid": true
+    }
+  ],
+  "quality_score": 8.5,
+  "status": "PASSED"
+}

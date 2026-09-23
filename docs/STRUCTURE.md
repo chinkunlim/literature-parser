@@ -19,12 +19,15 @@ books-project/
 ├── PROJECT_INIT_STANDARD.md        # 🌟 [通用標準] 未來新專案直接丟給 AI 開案的通用模板
 ├── run.py                          # 🛠️ [總指揮中心] agent-init, doctor, process, save, handoff, publish, test 指令入口
 │
+├── .agent/skills/                  # 🧠 [技能分層架構]
+│   ├── document-processor/         # 👑 [總調度技能] 環境健檢、文檔特徵感知、子技能派發、雙軌審計
+│   ├── textbook-processor/         # 📖 [領域子技能] 長篇教科書、章節切分、文意縫合、Anki 卡片
+│   └── literature-processor/       # 📑 [領域子技能] 學術文獻、雙欄帶狀流動、摘要與參考文獻解析
+│
 ├── memory/                         # ⚡ [動態記憶層] (追蹤當前狀態、交接與歷史精華)
 │   ├── TASKS.md                    # 📋 當前 Sprint 任務進度看板與驗收狀態
 │   ├── HANDOFF.md                  # 🪪 離席交接卡片 (去上課前 1 分鐘更新，下個 AI 接手點)
-│   └── sessions/                   # 🗄️ 跨 Agent 參考用的對話歸檔
-│       ├── 2026-09-23-complete-architecture-and-standards.md  # 濃縮精華摘要
-│       └── FULL_CONVERSATION_TRANSCRIPT.md                    # 完整歷史對話紀錄 (2.6MB)
+│   └── sessions/                   # 🗄️ 全歷史對話雙軌歸檔 (Summary + Transcript)
 │
 ├── docs/                           # 🏛️ [靜態工程資產] (提交 Git 的永久規範)
 │   ├── STRUCTURE.md                # 🗺️ [即本檔案] 完整檔案地圖與每個模組的功能備註
@@ -37,13 +40,13 @@ books-project/
 ├── scratch/                        # 🧪 [臨時實驗室] 一次性測試腳本，不入 Git，保持代碼庫純淨
 ├── logs/                           # 📋 [診斷日誌] 結構化詳細日誌輸出 (Where + Why + How)
 │
-├── data/                           # 📥 [資料流核心] 雙軌實體路由與隔離防呆 (向前相容歷史 inbox/output)
-│   ├── input/                      # 原始待處理檔案
-│   │   ├── books/                  # 📚 專門存放書籍 (PDF/EPUB) ➔ 自動啟動書籍管線
-│   │   └── journals/               # 📑 專門存放學術期刊/論文 (PDF) ➔ 自動啟動雙欄管線
+├── data/                           # 📥 [資料流核心] 雙軌實體路由與隔離防呆 (無 inbox/output 殘留)
+│   ├── input/                      # 原始待處理實體檔案
+│   │   ├── books/                  # 📚 專門存放長篇書籍 (PDF/EPUB) ➔ 自動啟動書籍管線
+│   │   └── literature/             # 📑 專門存放學術文獻/論文 (PDF) ➔ 自動啟動雙欄文獻管線
 │   ├── output/                     # 產出的筆記型 Markdown
 │   │   ├── books/                  # 輸出按章節切分之 Obsidian 筆記
-│   │   └── journals/               # 輸出含 Abstract、雙欄還原與文獻之論文筆記
+│   │   └── literature/             # 輸出含 Abstract、雙欄還原與文獻之論文筆記
 │   ├── needs_review/               # 🚨 [人機隔離區] 遇疑難公式或壞頁自動存於此，不卡死主程序
 │   └── state/                      # 💾 斷點續傳快照、TOC 預覽與 Dashboard 狀態
 │
@@ -52,11 +55,11 @@ books-project/
 │   │   ├── hardware.py             # RAM/電池/SSD/MPS 檢測防線
 │   │   ├── ollama_guard.py         # Ollama 連線探活、自動喚醒與優雅降級
 │   │   ├── prompts.py              # 📝 集中預設的固定提示詞 (LaTeX 修復、Manifest 校驗、論文雙欄)
-│   │   └── validator.py            # 輸入 JSON 比對與輸出異常自動喚醒 Ollama
+│   │   └── validator.py            # 輸入 JSON 比對與輸出異常自動喚醒 Ollama (信度 < 0.80 自動隔離)
 │   ├── utils/                      # 🛠️ 通用工具
 │   │   └── logger.py               # 結構化診斷日誌工具
 │   └── book_processor/             # ⚙️ 既有書籍與期刊處理核心引擎
-│       ├── pipelines/              # 管線層 (textbook_pipeline, journal_pipeline)
+│       ├── pipelines/              # 管線層 (textbook_pipeline, literature_pipeline)
 │       ├── parsers/                # 解析層 (PDF, EPUB, LaTeX, 雙欄版面)
 │       ├── verification/           # 檢驗層 (OllamaVerifier, rules)
 │       └── core/                   # 核心調度 (orchestrator, splitter, inout)
@@ -66,11 +69,11 @@ books-project/
 
 ---
 
-## 歷史資料夾相容性說明 (Legacy Folder Compatibility)
+## 歷史資料夾清理與遷移說明 (Legacy Folder Clean-up)
 
-1. **`inbox/` 與 `processed/`**：
-   - 歷史建立的收件夾與已處理夾。目前其內部書籍與期刊已透過相對符號連結（Symlink）映射至標準的 `data/input/books/` 與 `data/input/journals/`，無佔用額外硬碟空間，且既有腳本仍可順暢讀取。
-2. **`output/`**：
-   - 歷史產出的轉檔結果已透過相對符號連結（Symlink）分類歸納至 `data/output/books/` 與 `data/output/journals/`。
-3. **`scratch/`**：
-   - 原散落在根目錄的臨時性 xml 檔案 (`scratch_p8.xml`, `stdout.xml`) 已全數移入 `scratch/` 隔離，保持根目錄整潔。
+1. **`inbox/`、`processed/` 與 `output/` 徹底退役**：
+   - 歷史建立的過渡資料夾已全數刪除。
+   - 所有實體 PDF/EPUB 檔案與已生成結果，已完整物理遷移至 `data/input/books/`、`data/input/literature/`、`data/output/books/` 與 `data/output/literature/`。
+   - 專案根目錄全面保持整潔純淨，杜絕路徑混淆與孤兒檔案。
+2. **`scratch/`**：
+   - 臨時性 xml 檔案 (`scratch_p8.xml`, `stdout.xml`) 及一次性測試程式全數收納於 `scratch/`。

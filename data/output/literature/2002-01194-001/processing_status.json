@@ -1,0 +1,19 @@
+{
+  "book_title": "2002-01194-001",
+  "created_at": "2026-09-23 10:57:51",
+  "last_updated": "2026-09-23 10:57:58",
+  "chapters": {
+    "2002-01194-001": {
+      "start_page": 1,
+      "end_page": 10,
+      "total_pages": 10,
+      "status": "VERIFIED",
+      "split_pdf": true,
+      "markdown_generated": true,
+      "images_count": 2,
+      "verification_pass": true,
+      "accuracy_percent": 92.55,
+      "last_updated": "2026-09-23 10:57:58"
+    }
+  }
+}

@@ -18,6 +18,10 @@
 - [x] [2026-09-23] 將歷史全對話脈絡濃縮歸檔至 `memory/sessions/`
 - [x] [2026-09-24] 強化低信度自動隔離與對話工作階段雙軌歸檔 (`data/needs_review/`, `memory/sessions/`)
 - [x] [2026-09-24] 補齊專案歷史 5 個對話之雙軌歸檔與全自動會話封存指令 (archive-sessions)
+- [x] [2026-09-24] 徹底物理遷移並刪除根目錄過渡資料夾 (`inbox/`, `processed/`, `output/`)
+- [x] [2026-09-24] 將學術期刊全面標準化升級為學術文獻 (`journal` -> `literature`)
+- [x] [2026-09-24] 建立三層技能體系 (`.agent/skills/`: `document-processor`, `textbook-processor`, `literature-processor`)
+- [x] [2026-09-24] 將 AI 主動執行、文獻命名、乾淨根目錄與自更新協議永久寫入 `PROJECT_INIT_STANDARD.md`
 
 ---
 

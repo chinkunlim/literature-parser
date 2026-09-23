@@ -1,0 +1,35 @@
+---
+name: literature-processor
+description: Specialized sub-skill for converting academic literature (journal articles, conference papers, preprints) into high-fidelity Markdown with two-column band flow, abstract extraction, and reference parsing.
+---
+
+# 📑 Literature Processor Sub-Skill (學術文獻專屬子技能)
+
+本技能為專門處理各類學術文獻（Academic Literature，涵蓋期刊論文 Journal Articles、會議論文 Conference Papers、預印本 Preprints、學術報告）的專屬子技能，由 `document-processor` 總調度技能調派。
+
+---
+
+## 🎯 核心適用場景
+- 來源文件：獨立單篇學術論文（PDF），通常為 5~40 頁，具備摘要、雙欄排版、IMRAD 架構與參考文獻。
+- 輸入目錄：`data/input/literature/<filename>`
+- 輸出目錄：`data/output/literature/<article_id_or_title>/`
+
+---
+
+## ⚙️ 專屬處理核心流程
+1. **單篇原子性處理 (Atomic Processing)**：
+   - 不進行章節切分（No Chapter Splitting），整篇視為不可分割之學術作品。
+   - 提取並結構化作者姓名、所屬機構（Affiliation）、DOI 與對應作者資訊。
+2. **雙欄帶狀排版流動 (Two-Column Band Flow Engine)**：
+   - 絕非傳統由上而下掃描。垂直切分左欄與右欄閱讀邊界，左欄讀畢後順序銜接右欄。
+   - 針對跨欄大標題、全寬圖表（Full-width Figures/Tables），自動偵測並維持全頁寬帶狀流動。
+3. **學術版面噪訊過濾 (Academic Noise Filter)**：
+   - 自動識別並剔除 APA、IEEE、Elsevier、Springer 等出版社之頁緣浮水印、版權聲明與重複頁首頁尾。
+4. **IMRAD 標題解析與參考文獻解析 (Hanging-Indent References)**：
+   - 規範化 Introduction, Method, Results, Discussion 等核心區塊層級。
+   - 專屬懸掛縮排解析器：結構化解析 `[1]`, `(Smith et al., 2020)` 等參考文獻清單為清晰 Markdown 列表。
+5. **學術排版 CSS 注入**：
+   - 自動嵌入 `<style>` 樣式（Times New Roman 字型、兩端對齊、論文表格邊界優化）。
+6. **自癒與隔離機制**：
+   - LaTeX 數學公式（如統計統計值 $F(1, 24) = 4.32, p < .05$）標準化修復。
+   - 遇異常或信度 $< 0.80$，自動隔離至 `data/needs_review/`。

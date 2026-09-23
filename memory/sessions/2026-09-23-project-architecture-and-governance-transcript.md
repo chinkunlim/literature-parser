@@ -8386,3 +8386,1961 @@ Please note that the above snippet only shows the MODIFIED lines from the last c
 
 ---
 
+## 🤖 [Step 361] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:04:49Z`
+
+Created At: 2026-09-24T00:04:49+08:00
+Completed At: 2026-09-24T00:05:25+08:00
+
+The command exited with code 0.
+Output:
+
+=================================================================
+🗄️ [ARCHIVE-SESSIONS] 全自動對話雙軌歸檔 (Dual-Track Archiving)
+=================================================================
+• 會話 [2026-09-18] 書籍轉檔管線初版開發與版面分析 (ID: e81a99f1...):
+  - 總結 (Summary)   : ✅ 已存在 (2026-09-18-initial-textbook-pipeline-development-summary.md)
+  - 紀錄 (Transcript): ✅ 已同步更新 (6086.5 KB)
+• 會話 [2026-09-18] Research Methods 教科書轉檔與排版優化 (ID: 74bb97d9...):
+  - 總結 (Summary)   : ✅ 已存在 (2026-09-18-research-methods-book-conversion-summary.md)
+  - 紀錄 (Transcript): ✅ 已同步更新 (1732.8 KB)
+• 會話 [2026-09-20] 排版、表格與跨頁內容語義修復 (ID: cb3aa69b...):
+  - 總結 (Summary)   : ✅ 已存在 (2026-09-20-typography-tables-and-formula-refinement-summary.md)
+  - 紀錄 (Transcript): ✅ 已同步更新 (1023.6 KB)
+• 會話 [2026-09-23] 學術期刊雙欄管線開發與 Ollama 邊界分流 (ID: e7e0ccf8...):
+  - 總結 (Summary)   : ✅ 已存在 (2026-09-23-academic-journal-pipeline-and-dual-column-summary.md)
+  - 紀錄 (Transcript): ✅ 已同步更新 (2532.4 KB)
+• 會話 [2026-09-23] 專案架構治理、軟硬體守衛與跨 Agent 規範 (ID: d934528e...):
+  - 總結 (Summary)   : ✅ 已存在 (2026-09-23-project-architecture-and-governance-summary.md)
+  - 紀錄 (Transcript): ✅ 已同步更新 (396.9 KB)
+=================================================================
+🎉 全數 5 個對話雙軌會話封存完成！
+
+
+
+
+---
+
+## 🤖 [Step 362] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:05:30Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `run_command`: *"Checking git status"* ("Check git status")
+
+---
+
+## 🤖 [Step 363] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:05:30Z`
+
+Created At: 2026-09-24T00:05:30+08:00
+Completed At: 2026-09-24T00:05:30+08:00
+
+The command exited with code 0.
+Output:
+On branch main
+Your branch is ahead of 'origin/main' by 17 commits.
+  (use "git push" to publish your local commits)
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   memory/sessions/2026-09-18-initial-textbook-pipeline-development-transcript.md
+	modified:   memory/sessions/2026-09-23-project-architecture-and-governance-transcript.md
+	modified:   run.py
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	memory/sessions/2026-09-18-research-methods-book-conversion-summary.md
+	memory/sessions/2026-09-18-research-methods-book-conversion-transcript.md
+	memory/sessions/2026-09-20-typography-tables-and-formula-refinement-summary.md
+	memory/sessions/2026-09-20-typography-tables-and-formula-refinement-transcript.md
+	memory/sessions/2026-09-23-academic-journal-pipeline-and-dual-column-summary.md
+	memory/sessions/2026-09-23-academic-journal-pipeline-and-dual-column-transcript.md
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+
+
+---
+
+## 🤖 [Step 364] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:05:33Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `view_file`: *"Viewing AGENTS.md action dispatch table"* ("View action dispatch table")
+
+---
+
+## 🤖 [Step 365] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:05:33Z`
+
+Created At: 2026-09-24T00:05:33+08:00
+Completed At: 2026-09-24T00:05:33+08:00
+File Path: `file:///Users/limchinkun/Desktop/books/AGENTS.md`
+Total Lines: 76
+Total Bytes: 5858
+Showing lines 15 to 35
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+15: | :--- | :--- | :--- |
+16: | **新對話喚醒 / 接手專案** | `uv run python run.py agent-init` | **對話開場必跑**：自動簡報守則與交接狀態 |
+17: | **環境健檢 / 診斷** | `uv run python run.py doctor` | 檢查 RAM、電池、SSD、Ollama、模型 |
+18: | **轉換書籍** | `uv run python run.py process data/input/books/<filename>` | 自動啟動書籍章節切分與文意縫合 |
+19: | **轉換學術期刊 / 論文** | `uv run python run.py process data/input/journals/<filename>` | 自動啟動雙欄排版、摘要與文獻解析 |
+20: | **驗證 Ollama 自動喚醒** | `uv run python run.py test-ollama-auto-trigger` | 驗證輸入與輸出守衛能否自動喚醒 Ollama |
+21: | **一般進度存檔** | `uv run python run.py save "<English_message>"` | 先更新文檔時間戳，再以英文 commit |
+22: | **使用者說要去上課/中斷** | `uv run python run.py handoff "<reason_in_English>"` | 先更新 `memory/HANDOFF.md`，再英文 commit |
+23: | **發布與合併到 main** | `uv run python run.py publish "<English_release_notes>"` | 本地 Squash 合併，提示手動 push 指令 |
+24: 
+25: ---
+26: 
+27: ## 二、 核心五大鐵律 (Core Directives)
+28: 
+29: ### 1. 🛑 嚴禁未經授權 Push (Zero-Push Rule)
+30: - 本專案預設為 **Local-Only 模式**。
+31: - 所有 AI Agent 嚴禁在終端機執行任何形式的 `git push`（系統已配置 Pre-push Hook 阻斷）。
+32: - 唯有使用者明確要求發布，且附帶 `ALLOW_PUSH=1` 授權時方可進行。
+33: 
+34: ### 2. 📝 提交前強制文檔同步與【全英文 Commit】(Doc-Before-Commit & English Protocol)
+35: - **嚴禁只 commit 程式碼而遺漏文檔！**
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+---
+
+## 🤖 [Step 366] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:05:35Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `replace_file_content`: *"Updating AGENTS.md table"* ("Add archive-sessions to action table")
+
+---
+
+## 🤖 [Step 367] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:05:35Z`
+
+Created At: 2026-09-24T00:05:35+08:00
+Completed At: 2026-09-24T00:05:35+08:00
+The following changes were made by the replace_file_content tool to: /Users/limchinkun/Desktop/books/AGENTS.md. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -20,6 +20,7 @@
+ | **驗證 Ollama 自動喚醒** | `uv run python run.py test-ollama-auto-trigger` | 驗證輸入與輸出守衛能否自動喚醒 Ollama |
+ | **一般進度存檔** | `uv run python run.py save "<English_message>"` | 先更新文檔時間戳，再以英文 commit |
+ | **使用者說要去上課/中斷** | `uv run python run.py handoff "<reason_in_English>"` | 先更新 `memory/HANDOFF.md`，再英文 commit |
++| **封存所有會話紀錄** | `uv run python run.py archive-sessions` | 自動掃描 Brain 目錄，更新所有會話之雙軌紀錄與總結 |
+ | **發布與合併到 main** | `uv run python run.py publish "<English_release_notes>"` | 本地 Squash 合併，提示手動 push 指令 |
+ 
+ ---
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.
+
+---
+
+## 🤖 [Step 368] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:05:39Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `view_file`: *"Viewing OPERATIONS.md lines 40-55"* ("View OPERATIONS.md commands")
+
+---
+
+## 🤖 [Step 369] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:05:39Z`
+
+Created At: 2026-09-24T00:05:39+08:00
+Completed At: 2026-09-24T00:05:39+08:00
+File Path: `file:///Users/limchinkun/Desktop/books/OPERATIONS.md`
+Total Lines: 73
+Total Bytes: 3350
+Showing lines 40 to 55
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+40: uv run python run.py test-ollama-auto-trigger
+41: ```
+42: 
+43: ### ④ 日常本地存檔與離席交接 (Git Local-Only)
+44: ```bash
+45: # 一般進度存檔（自動更新文檔時間戳並 commit）
+46: uv run python run.py save "完成雙欄排版修正"
+47: 
+48: # 要去上課或外出中斷（自動更新 memory/HANDOFF.md 並 commit）
+49: uv run python run.py handoff "去上課暫存進度"
+50: ```
+51: 
+52: ---
+53: 
+54: ## 3. 常見狀況與疑難排解 (Troubleshooting)
+55: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+---
+
+## 🤖 [Step 370] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:05:43Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `replace_file_content`: *"Updating OPERATIONS.md"* ("Add archive-sessions to OPERATIONS.md")
+
+---
+
+## 🤖 [Step 371] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:05:43Z`
+
+Created At: 2026-09-24T00:05:43+08:00
+Completed At: 2026-09-24T00:05:43+08:00
+The following changes were made by the replace_file_content tool to: /Users/limchinkun/Desktop/books/OPERATIONS.md. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -49,6 +49,12 @@
+ uv run python run.py handoff "去上課暫存進度"
+ ```
+ 
++### ⑤ 全自動對話雙軌封存 (Session Archiving)
++```bash
++# 自動掃描當前與歷史會話，更新 memory/sessions/ 雙軌總結與紀錄
++uv run python run.py archive-sessions
++```
++
+ ---
+ 
+ ## 3. 常見狀況與疑難排解 (Troubleshooting)
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.
+
+---
+
+## 🤖 [Step 372] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:05:46Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `view_file`: *"Viewing TASKS.md"* ("View TASKS.md")
+
+---
+
+## 🤖 [Step 373] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:05:46Z`
+
+Created At: 2026-09-24T00:05:46+08:00
+Completed At: 2026-09-24T00:05:46+08:00
+File Path: `file:///Users/limchinkun/Desktop/books/memory/TASKS.md`
+Total Lines: 28
+Total Bytes: 1523
+Showing lines 1 to 28
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # 📋 memory/TASKS.md (專案任務進度看板)
+2: 
+3: 最後更新日期：2026-09-24
+4: 
+5: ---
+6: 
+7: ## 🏃 當前 Sprint (v1.0.0-rc1 專案治理與守衛上線)
+8: 
+9: - [x] [2026-09-23] 梳理專案核心需求與淘汰 OpenClaw 冗餘檔案
+10: - [x] [2026-09-23] 設計跨 Agent 協同規範 (`AGENTS.md`) 與冷啟動手冊 (`OPERATIONS.md`)
+11: - [x] [2026-09-23] 建立雙軌實體資料夾與隔離防呆區 (`data/input/`, `data/output/`, `data/needs_review/`)
+12: - [x] [2026-09-23] 撰寫軟硬體守衛模組 (`src/guards/hardware.py` - RAM/電池/SSD/MPS)
+13: - [x] [2026-09-23] 撰寫 Ollama 自動喚醒、模型檢查與優雅降級守衛 (`src/guards/ollama_guard.py`)
+14: - [x] [2026-09-23] 撰寫輸入 JSON 驗證與輸出異常自動除錯攔截器 (`src/guards/validator.py`)
+15: - [x] [2026-09-23] 實作命令總入口 `run.py` (支援 doctor、process、save、handoff 等)
+16: - [x] [2026-09-23] 安裝 Git 物理防手滑鎖 (`.git/hooks/pre-push`)
+17: - [x] [2026-09-23] 建立通用新專案開案範本 (`PROJECT_INIT_STANDARD.md`)
+18: - [x] [2026-09-23] 將歷史全對話脈絡濃縮歸檔至 `memory/sessions/`
+19: - [x] [2026-09-24] 強化低信度自動隔離與對話工作階段雙軌歸檔 (`data/needs_review/`, `memory/sessions/`)
+20: 
+21: ---
+22: 
+23: ## 📅 後續規劃 (Backlog)
+24: 
+25: - [ ] [未排程] 實作 `dashboard/` 視覺化儀表板（讀取 `data/state/status.json`）
+26: - [ ] [未排程] 新增專門適配 IEEE / ACM 雙欄論文的進階版面範本
+27: - [ ] [未排程] 優化長篇書籍跨章節概念雙鏈自動關聯 (Obsidian Graph 支援)
+28: 
+The above content shows the entire, complete file contents of the requested file.
+
+
+---
+
+## 🤖 [Step 374] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:05:50Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `replace_file_content`: *"Updating TASKS.md"* ("Update TASKS.md with completed task")
+
+---
+
+## 🤖 [Step 375] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:05:50Z`
+
+Created At: 2026-09-24T00:05:50+08:00
+Completed At: 2026-09-24T00:05:50+08:00
+The following changes were made by the replace_file_content tool to: /Users/limchinkun/Desktop/books/memory/TASKS.md. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -17,6 +17,7 @@
+ - [x] [2026-09-23] 建立通用新專案開案範本 (`PROJECT_INIT_STANDARD.md`)
+ - [x] [2026-09-23] 將歷史全對話脈絡濃縮歸檔至 `memory/sessions/`
+ - [x] [2026-09-24] 強化低信度自動隔離與對話工作階段雙軌歸檔 (`data/needs_review/`, `memory/sessions/`)
++- [x] [2026-09-24] 補齊專案歷史 5 個對話之雙軌歸檔與全自動會話封存指令 (archive-sessions)
+ 
+ ---
+ 
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.
+
+---
+
+## 🤖 [Step 376] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:05:53Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `run_command`: *"Saving commit with all 5 archives"* ("Commit 5 conversation archives")
+
+---
+
+## 🤖 [Step 377] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:05:53Z`
+
+Created At: 2026-09-24T00:05:53+08:00
+Completed At: 2026-09-24T00:05:57+08:00
+
+The command exited with code 0.
+Output:
+[main 61ed902] [2026-09-24] feat: add archive-sessions command and restore all 5 conversation archives
+ 12 files changed, 240012 insertions(+), 42331 deletions(-)
+ create mode 100644 memory/sessions/2026-09-18-research-methods-book-conversion-summary.md
+ create mode 100644 memory/sessions/2026-09-18-research-methods-book-conversion-transcript.md
+ create mode 100644 memory/sessions/2026-09-20-typography-tables-and-formula-refinement-summary.md
+ create mode 100644 memory/sessions/2026-09-20-typography-tables-and-formula-refinement-transcript.md
+ create mode 100644 memory/sessions/2026-09-23-academic-journal-pipeline-and-dual-column-summary.md
+ create mode 100644 memory/sessions/2026-09-23-academic-journal-pipeline-and-dual-column-transcript.md
+
+✅ [Local Git] Committed (in English): [2026-09-24] feat: add archive-sessions command and restore all 5 conversation archives
+
+
+
+---
+
+## 🤖 [Step 378] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:06:02Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `run_command`: *"Checking git status"* ("Check working tree status")
+
+---
+
+## 🤖 [Step 379] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:06:02Z`
+
+Created At: 2026-09-24T00:06:02+08:00
+Completed At: 2026-09-24T00:06:02+08:00
+
+The command exited with code 0.
+Output:
+On branch main
+Your branch is ahead of 'origin/main' by 18 commits.
+  (use "git push" to publish your local commits)
+
+nothing to commit, working tree clean
+
+
+
+---
+
+## 🤖 [Step 380] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:06:04Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `run_command`: *"Updating handoff sheet"* ("Run handoff command")
+
+---
+
+## 🤖 [Step 381] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:06:04Z`
+
+Created At: 2026-09-24T00:06:04+08:00
+Completed At: 2026-09-24T00:06:06+08:00
+
+The command exited with code 0.
+Output:
+📝 [Auto-Doc] Updated /Users/limchinkun/Desktop/books/memory/HANDOFF.md timestamp to 2026-09-24 00:06
+[main b51a8d4] [2026-09-24] wip(handoff): all 5 conversation archives restored and lifecycle automation documented
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+🎒 [Local Git] Handoff saved (in English): [2026-09-24] wip(handoff): all 5 conversation archives restored and lifecycle automation documented
+You can safely close your laptop and step away!
+
+
+
+---
+
+## 🤖 [Step 382] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:06:10Z`
+
+我們已經為您深挖底層系統，成功尋獲並補齊了**全部 5 個歷史對話**的雙軌存檔；同時也為您完整梳理了專案中「**所有自動化功能清單與其生命週期觸發順序**」。
+
+---
+
+### 一、 5 個對話已全數歸檔至 `memory/sessions/`
+
+我們先前只看到 2 份，是因為系統初始只建立了第 1 次開案與當前這一次的紀錄。經掃描 Antigravity Brain 底層工作區，已將本專案在您的電腦上實際發生的 **5 個完整對話** 全部提取，並按「**先讀 Executive Summary 高密度總結，有疑問再深挖 Transcript 原始紀錄**」雙軌配對完成：
+
+| 編號 | 日期與會話 ID | 核心主題 (Topic) | 總結檔案 (Summary) | 完整紀錄 (Transcript) |
+| :---: | :--- | :--- | :--- | :--- |
+| **#1** | **2026-09-16**<br>`e81a99f1...` | **書籍轉檔管線初版開發與版面分析**<br>（PDF/EPUB 圖片文字抽取、章節拆分範例） | [`2026-09-18-*-summary.md`](file:///Users/limchinkun/Desktop/books/memory/sessions/2026-09-18-initial-textbook-pipeline-development-summary.md) | `initial-textbook-pipeline-development-transcript.md` (6.0 MB) |
+| **#2** | **2026-09-18**<br>`74bb97d9...` | **Research Methods 教科書實測與排版優化**<br>（Table 1.1/1.2/2.1 附註誤判修復、跨頁段落縫合、章末名詞解釋與 Anki） | [`2026-09-18-*-summary.md`](file:///Users/limchinkun/Desktop/books/memory/sessions/2026-09-18-research-methods-book-conversion-summary.md) | `research-methods-book-conversion-transcript.md` (1.7 MB) |
+| **#3** | **2026-09-20**<br>`cb3aa69b...` | **字體粗體突兀、斑馬紋表格與語意內容自檢**<br>（字型階層平滑化、HTML 複雜表格 fallback、程式語意合理性審計） | [`2026-09-20-*-summary.md`](file:///Users/limchinkun/Desktop/books/memory/sessions/2026-09-20-typography-tables-and-formula-refinement-summary.md) | `typography-tables-and-formula-refinement-transcript.md` (1.0 MB) |
+| **#4** | **2026-09-23 (早)**<br>`e7e0ccf8...` | **學術期刊雙欄管
+<truncated 4231 bytes>
+進入輸出目錄前。
+- **自動化動作**：
+  1. **語法與公式檢驗**：檢查 KaTeX 括號閉合、表格欄位是否對齊。
+  2. **自動自癒 (Self-Healing)**：若發現損壞公式，自動喚醒本地 Ollama 嘗試修復。
+  3. **無條件隔離 (Quarantine to `data/needs_review/`)**：
+     - 若修復失敗、語法仍不合格，或**信度評估 $< 0.80$**。
+     - 自動生成診斷報告寫入 `data/needs_review/<issue_type>_<hash>.md`，**主轉檔管線不報錯中斷，繼續處理後續頁面**。
+
+---
+
+#### 階段 5：進度保存與離席交接（開發過程中或去上課時）
+- **觸發時機**：
+  - 開發完一個功能時 ➔ 執行 `run.py save "<English_msg>"`。
+  - 使用者要去上課/中斷時 ➔ 執行 `run.py handoff "<reason_in_English>"`.
+- **自動化動作**：
+  1. **Doc-Before-Commit**：自動在 [`memory/TASKS.md`](file:///Users/limchinkun/Desktop/books/memory/TASKS.md) 或 [`memory/HANDOFF.md`](file:///Users/limchinkun/Desktop/books/memory/HANDOFF.md) 刷上當前日期與時間戳記（`YYYY-MM-DD HH:MM`）。
+  2. **強制全英文 Commit**：自動將訊息轉換為 Conventional Commit 格式（如 `[2026-09-24] wip(handoff): ...`），杜絕中文 Commit。
+
+---
+
+#### 階段 6：會話雙軌封存與安全發布（階段里程碑完成時）
+- **觸發時機**：一整天工作結束、完成大功能、或準備發布時。
+- **自動化動作**：
+  1. **雙軌對話封存**：執行 `python3 run.py archive-sessions`，自動從系統 Brain 提取最新 Transcript 並對齊 Executive Summary。
+  2. **本地發布 (Publish)**：執行 `python3 run.py publish "<notes>"` 本地 Squash Merge 到 `main`。
+  3. **物理防推鎖 (Pre-push Lock)**：物理阻斷任何意外的 `git push`，唯有帶入 `ALLOW_PUSH=1` 才能發布至 GitHub。
+
+---
+
+### 三、 總結與目前狀態
+目前專案的 5 大對話皆已雙軌就緒，程式碼與工作樹完全 Clean（19 個 Local Commits，全部符合英文規範），各項自動化功能均已就位！
+
+---
+
+## 👤 [Step 383] 使用者指令 (User Input)
+**時間**: `2026-09-23T16:07:46Z`
+
+很多東西都要自動執行，不要我手動執行，例如讀完md後，會自動執行必須執行的py檔案。
+skills是不是分成總的skills（要用textbook還是journal，journal這個詞，用literature替代會不會比較標準？）
+目前還看到/Users/limchinkun/Desktop/books/inbox，這些應該移除的folder，為什麼沒有處理？
+確保我每次提要求，你都會自動更新PROJECT_INIT_STANDARD.md
+
+<ADDITIONAL_METADATA>
+The current local time is: 2026-09-24T00:07:46+08:00.
+</ADDITIONAL_METADATA>
+
+---
+
+## 🤖 [Step 384] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:07:52Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `run_command`: *"Listing legacy and data directories"* ("List directory contents")
+
+---
+
+## 🤖 [Step 385] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:07:53Z`
+
+Created At: 2026-09-24T00:07:53+08:00
+Completed At: 2026-09-24T00:07:54+08:00
+
+The command exited with code 0.
+Output:
+data:
+total 0
+drwxr-xr-x@  6 limchinkun  staff   192 Sep 23 23:36 .
+drwxr-xr-x@ 32 limchinkun  staff  1024 Sep 23 23:54 ..
+drwxr-xr-x@  4 limchinkun  staff   128 Sep 23 23:36 input
+drwxr-xr-x@  5 limchinkun  staff   160 Sep 24 00:01 needs_review
+drwxr-xr-x@  4 limchinkun  staff   128 Sep 23 23:36 output
+drwxr-xr-x@  2 limchinkun  staff    64 Sep 23 23:36 state
+
+inbox:
+total 179016
+drwxr-xr-x@ 10 limchinkun  staff       320 Sep 23 22:21 .
+drwxr-xr-x@ 32 limchinkun  staff      1024 Sep 23 23:54 ..
+-rw-r--r--@  1 limchinkun  staff         0 Sep 18 23:51 .gitkeep
+-rw-r--r--@  1 limchinkun  staff    107747 Sep 20 09:34 Group Counseling- Strategies and Skills - Standalone Book -- Ed E. Jacobs, Christine J. Schimmel, Robert L. L. Masson, -- ( WeLib.org )-21_1.png
+-rw-r--r--@  1 limchinkun  staff   2192903 Sep 20 09:35 Group Counseling- Strategies and Skills - Standalone Book -- Ed E. Jacobs, Christine J. Schimmel, Robert L. L. Masson, -- ( WeLib.org )-21_2.png
+-rw-r--r--@  1 limchinkun  staff    111885 Sep 20 09:35 Group Counseling- Strategies and Skills - Standalone Book -- Ed E. Jacobs, Christine J. Schimmel, Robert L. L. Masson, -- ( WeLib.org )-22_1.png
+-rw-r--r--@  1 limchinkun  staff   3281707 Sep 20 09:35 Group Counseling- Strategies and Skills - Standalone Book -- Ed E. Jacobs, Christine J. Schimmel, Robert L. L. Masson, -- ( WeLib.org )-22_2.png
+-rw-r--r--@  1 limchinkun  staff  30199296 Sep 11 00:03 Group Counseling- Strategies and Skills - Standalone Book -- Ed E. Jacobs, Christine J. Schimmel, Robert L. L. Masson, -- ( WeLib.org ).pdf
+-rw-------@  1 limchinkun  staff  55749806 Sep 11 00:05 Groups- Process and Practice, Loose-Leaf Version -- Marianne Schneider Corey; Gerald Corey; Cindy Corey -- ( WeLib.org ).pdf
+drwxr-xr-x@  5 limchinkun  staff       160 Sep 23 21:21 images
+
+output:
+total 32
+drwxr-xr-x@ 11 limchinkun  staff    352 Sep 23 22:21 .
+drwxr-xr-x@ 32 limchinkun  staff   1024 Sep 23 23:54 ..
+-rw-r--r--@  1 limchinkun  staff  14340 Sep 23 13:06 .DS_Store
+-rw-r--r--@  1 limchinkun  staff      0 Sep 18 23:51 .gitkeep
+drwxr-xr-x@  8 limchinkun  staff    256 Sep 23 11:01 2002-01194-001
+drwxr-xr-x@  8 limchinkun  staff    256 Sep 23 22:51 2008-17521-013
+drwxr-xr-x@  6 limchinkun  staff    192 Sep 20 17:11 Group Counseling- Strategies and Skills - Standalone Book -- Ed E. Jacobs, Christine J. Schimmel, Robert L. L. Masson, -
+drwxr-xr-x@  5 limchinkun  staff    160 Sep 20 17:11 Groups- Process and Practice, Loose-Leaf Version -- Marianne Schneider Corey; Gerald Corey; Cindy Corey -- ( WeLib.org )
+drwxr-xr-x@  8 limchinkun  staff    256 Sep 23 22:51 Journal of Adolescence - 2003 - Lejuez - Evaluation of the Balloon Analogue Risk Task BART as a predictor of adolescent
+drwxr-xr-x@  7 limchinkun  staff    224 Sep 23 23:00 Research Methods, Design, and Analysis 13th ed
+drwxr-xr-x@  5 limchinkun  staff    160 Sep 20 17:12 Research-Methods-in-Psychology-1641401901
+
+processed:
+total 21240
+drwxr-xr-x@ 10 limchinkun  staff      320 Sep 23 22:46 .
+drwxr-xr-x@ 32 limchinkun  staff     1024 Sep 23 23:54 ..
+-rw-r--r--@  1 limchinkun  staff     6148 Sep 17 22:20 .DS_Store
+-rw-r--r--@  1 limchinkun  staff        0 Sep 18 23:51 .gitkeep
+-rw-r--r--@  1 limchinkun  staff   109471 Sep 23 09:53 2002-01194-001.pdf
+-rw-r--r--@  1 limchinkun  staff    83171 Sep 23 09:54 2008-17521-013.pdf
+-rw-r--r--@  1 limchinkun  staff    86151 Sep 23 09:55 Journal of Adolescence - 2003 - Lejuez - Evaluation of the Balloon Analogue Risk Task  BART  as a predictor of adolescent.pdf
+-rw-r--r--@  1 limchinkun  staff  6215317 Sep 10 14:35 Research Methods, Design, and Analysis 13th ed.pdf
+-rw-r--r--@  1 limchinkun  staff  4360954 Sep 14 22:21 Research-Methods-in-Psychology-1641401901.epub
+drwxr-xr-x@  3 limchinkun  staff       96 Sep 23 22:46 images
+
+
+
+---
+
+## 🤖 [Step 386] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:07:57Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `run_command`: *"Listing data/input and data/output"* ("List data subdirectories")
+
+---
+
+## 🤖 [Step 387] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:07:57Z`
+
+Created At: 2026-09-24T00:07:57+08:00
+Completed At: 2026-09-24T00:07:58+08:00
+
+The command exited with code 0.
+Output:
+data/input:
+total 0
+drwxr-xr-x@ 4 limchinkun  staff  128 Sep 23 23:36 .
+drwxr-xr-x@ 6 limchinkun  staff  192 Sep 23 23:36 ..
+drwxr-xr-x@ 6 limchinkun  staff  192 Sep 23 23:54 books
+drwxr-xr-x@ 5 limchinkun  staff  160 Sep 23 23:54 journals
+
+data/output:
+total 0
+drwxr-xr-x@ 4 limchinkun  staff  128 Sep 23 23:36 .
+drwxr-xr-x@ 6 limchinkun  staff  192 Sep 23 23:36 ..
+drwxr-xr-x@ 6 limchinkun  staff  192 Sep 23 23:54 books
+drwxr-xr-x@ 5 limchinkun  staff  160 Sep 23 23:55 journals
+
+
+
+---
+
+## 🤖 [Step 388] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:08:00Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `run_command`: *"Listing data subfolders details"* ("Inspect symlinks or files")
+
+---
+
+## 🤖 [Step 389] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:08:00Z`
+
+Created At: 2026-09-24T00:08:00+08:00
+Completed At: 2026-09-24T00:08:00+08:00
+
+The command exited with code 0.
+Output:
+data/input/books:
+total 0
+drwxr-xr-x@ 6 limchinkun  staff  192 Sep 23 23:54 .
+drwxr-xr-x@ 4 limchinkun  staff  128 Sep 23 23:36 ..
+lrwxr-xr-x@ 1 limchinkun  staff  154 Sep 23 23:54 Group Counseling- Strategies and Skills - Standalone Book -- Ed E. Jacobs, Christine J. Schimmel, Robert L. L. Masson, -- ( WeLib.org ).pdf -> ../../../inbox/Group Counseling- Strategies and Skills - Standalone Book -- Ed E. Jacobs, Christine J. Schimmel, Robert L. L. Masson, -- ( WeLib.org ).pdf
+lrwxr-xr-x@ 1 limchinkun  staff  139 Sep 23 23:54 Groups- Process and Practice, Loose-Leaf Version -- Marianne Schneider Corey; Gerald Corey; Cindy Corey -- ( WeLib.org ).pdf -> ../../../inbox/Groups- Process and Practice, Loose-Leaf Version -- Marianne Schneider Corey; Gerald Corey; Cindy Corey -- ( WeLib.org ).pdf
+lrwxr-xr-x@ 1 limchinkun  staff   69 Sep 23 23:54 Research Methods, Design, and Analysis 13th ed.pdf -> ../../../processed/Research Methods, Design, and Analysis 13th ed.pdf
+lrwxr-xr-x@ 1 limchinkun  staff   65 Sep 23 23:54 Research-Methods-in-Psychology-1641401901.epub -> ../../../processed/Research-Methods-in-Psychology-1641401901.epub
+
+data/input/journals:
+total 0
+drwxr-xr-x@ 5 limchinkun  staff  160 Sep 23 23:54 .
+drwxr-xr-x@ 4 limchinkun  staff  128 Sep 23 23:36 ..
+lrwxr-xr-x@ 1 limchinkun  staff   37 Sep 23 23:54 2002-01194-001.pdf -> ../../../processed/2002-01194-001.pdf
+lrwxr-xr-x@ 1 limchinkun  staff   37 Sep 23 23:54 2008-17521-013.pdf -> ../../../processed/2008-17521-013.pdf
+lrwxr-xr-x@ 1 limchinkun  staff  144 Sep 23 23:54 Journal of Adolescence - 2003 - Lejuez - Evaluation of the Balloon Analogue Risk Task  BART  as a predictor of adolescent.pdf -> ../../../processed/Journal of Adolescence - 2003 - Lejuez - Evaluation of the Balloon Analogue Risk Task  BART  as a predictor of adolescent.pdf
+
+data/output/books:
+total 0
+drwxr-xr-x@ 6 limchinkun  staff  192 Sep 23 23:54 .
+drwxr-xr-x@ 4 limchinkun  staff  128 Sep 23 23:36 ..
+lrwxr-xr-x@ 1 limchinkun  staff  136 Sep 23 23:54 Group Counseling- Strategies and Skills - Standalone Book -- Ed E. Jacobs, Christine J. Schimmel, Robert L. L. Masson, - -> ../../../output/Group Counseling- Strategies and Skills - Standalone Book -- Ed E. Jacobs, Christine J. Schimmel, Robert L. L. Masson, -
+lrwxr-xr-x@ 1 limchinkun  staff  136 Sep 23 23:54 Groups- Process and Practice, Loose-Leaf Version -- Marianne Schneider Corey; Gerald Corey; Cindy Corey -- ( WeLib.org ) -> ../../../output/Groups- Process and Practice, Loose-Leaf Version -- Marianne Schneider Corey; Gerald Corey; Cindy Corey -- ( WeLib.org )
+lrwxr-xr-x@ 1 limchinkun  staff   62 Sep 23 23:54 Research Methods, Design, and Analysis 13th ed -> ../../../output/Research Methods, Design, and Analysis 13th ed
+lrwxr-xr-x@ 1 limchinkun  staff   57 Sep 23 23:54 Research-Methods-in-Psychology-1641401901 -> ../../../output/Research-Methods-in-Psychology-1641401901
+
+data/output/journals:
+total 0
+drwxr-xr-x@ 5 limchinkun  staff  160 Sep 23 23:55 .
+drwxr-xr-x@ 4 limchinkun  staff  128 Sep 23 23:36 ..
+lrwxr-xr-x@ 1 limchinkun  staff   30 Sep 23 23:55 2002-01194-001 -> ../../../output/2002-01194-001
+lrwxr-xr-x@ 1 limchinkun  staff   30 Sep 23 23:55 2008-17521-013 -> ../../../output/2008-17521-013
+lrwxr-xr-x@ 1 limchinkun  staff  135 Sep 23 23:55 Journal of Adolescence - 2003 - Lejuez - Evaluation of the Balloon Analogue Risk Task BART as a predictor of adolescent -> ../../../output/Journal of Adolescence - 2003 - Lejuez - Evaluation of the Balloon Analogue Risk Task BART as a predictor of adolescent
+
+
+
+---
+
+## 🤖 [Step 390] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:08:07Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `list_dir`: *"Listing .agent/skills directory"* ("List existing skills")
+
+---
+
+## 🤖 [Step 391] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:08:10Z`
+
+Created At: 2026-09-24T00:08:10+08:00
+Completed At: 2026-09-24T00:08:10+08:00
+{"name":"book-processor", "isDir":true}
+
+Summary: This directory contains 1 subdirectories and 0 files.
+
+---
+
+## 🤖 [Step 392] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:08:14Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `list_dir`: *"Listing book-processor skill"* ("Inspect skill contents")
+
+---
+
+## 🤖 [Step 393] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:08:14Z`
+
+Created At: 2026-09-24T00:08:14+08:00
+Completed At: 2026-09-24T00:08:15+08:00
+{"name":"SKILL.md", "sizeBytes":"8886"}
+
+Summary: This directory contains 0 subdirectories and 1 files.
+
+---
+
+## 🤖 [Step 394] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:08:18Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `view_file`: *"Viewing SKILL.md"* ("View SKILL.md content")
+
+---
+
+## 🤖 [Step 395] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:08:18Z`
+
+Created At: 2026-09-24T00:08:18+08:00
+Completed At: 2026-09-24T00:08:18+08:00
+File Path: `file:///Users/limchinkun/Desktop/books/.agent/skills/book-processor/SKILL.md`
+Total Lines: 171
+Total Bytes: 8886
+Showing lines 1 to 100
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: ---
+2: name: book-processor
+3: description: Enterprise-grade PDF and EPUB textbook conversion tool. Performs high-fidelity Markdown extraction with uniform LaTeX math, neural layout OCR, automated multi-metric verification, content continuity stitching, cross-book noise learning, Anki flashcard generation, and local AI review.
+4: ---
+5: 
+6: # Book Processor Skill
+7: 
+8: This skill provides comprehensive instructions for autonomous AI agents to convert academic textbooks (born-digital PDFs, scanned PDFs, and EPUBs) into high-fidelity, student-ready structured Markdown with uniform LaTeX formulas, pedagogical figure extraction, active recall flashcards, and self-healing quality verification.
+9: 
+10: ---
+11: 
+12: ## When to Use
+13: 
+14: Activate this skill whenever the user or system needs to:
+15: - Convert textbooks or academic PDFs/EPUBs into structured Markdown.
+16: - Extract high-resolution illustrations and pedagogical vector figures without junk backgrounds or full-page scans.
+17: - Normalize mathematical and statistical formulas to standardized LaTeX (`\dfrac` and `\displaystyle`).
+18: - Generate Mermaid concept mindmaps, formatted learning objectives, and callouts.
+19: - Export active-recall flashcard decks for Anki (`<Chapter>_flashcards.tsv`) and collapsible details (`<details id="flashcard-...">`).
+20: - Verify extraction quality (vocabulary ratio, noise filter, heading balance, LaTeX delimiter parity, cross-page continuity).
+21: - Safely resume interrupted book conversion runs without re-converting already `VERIFIED` chapters.
+22: - Diagnose 
+<truncated 2297 bytes>
+ir, adjusts noise regex, re-converts affected page
+64:    │  • Human-in-the-Loop Desk: Remaining issues surfaced via `review -b <book_dir>`
+65:    │    for fast, one-click interactive review without manual page-by-page auditing
+66:    │
+67:    ▼
+68: [Automated Archival]
+69:    • When 100% of chapters pass verification, the source book is moved to processed/
+70: ```
+71: 
+72: ---
+73: 
+74: ## Direct Terminal / Command-Line (Cmd) Execution Guide
+75: 
+76: All commands can be executed directly from your terminal (`Terminal.app`, `bash`, `zsh`, `cmd.exe`, or `PowerShell`) in the project root (`/Users/.../books`):
+77: 
+78: ### 1. Direct Batch Conversion (High Throughput)
+79: ```bash
+80: # Convert all chapters of a specific book directory (forces overwrite)
+81: python3 batch_convert.py -b "output/Research Methods, Design, and Analysis 13th ed" --force
+82: python3 batch_convert.py -b "output/Group Counseling- Strategies and Skills - Standalone Book -- Ed E. Jacobs, Christine J. Schimmel, Robert L. L. Masson, -" --force
+83: python3 batch_convert.py -b "output/Groups- Process and Practice, Loose-Leaf Version -- Marianne Schneider Corey; Gerald Corey; Cindy Corey -- ( WeLib.org )" --force
+84: 
+85: # Convert ALL books currently under output/ in one pass
+86: python3 batch_convert.py --all-books --force
+87: 
+88: # Target a single chapter or start from a prefix
+89: python3 batch_convert.py -b "output/<Book>" --only "Ch01"
+90: python3 batch_convert.py -b "output/<Book>" --from "Ch05"
+91: 
+92: # Run visual quality auditor across all chapters of a book (scores 1-10)
+93: python3 batch_convert.py -b "output/<Book>" --audit
+94: 
+95: # Run layout feature scanner (learning objectives, tables, concept maps)
+96: python3 batch_convert.py -b "output/<Book>" --scan
+97: ```
+98: 
+99: ### 2. Unified Orchestrator CLI (`book_processor.py`)
+100: ```bash
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+---
+
+## 🤖 [Step 396] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:08:22Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `run_command`: *"Cleaning old symlinks"* ("Clean up symlinks in data directory")
+
+---
+
+## 🤖 [Step 397] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:08:26Z`
+
+Created At: 2026-09-24T00:08:26+08:00
+Completed At: 2026-09-24T00:08:26+08:00
+
+The command exited with code 0.
+Output:
+Old symlinks cleaned.
+
+
+
+---
+
+## 🤖 [Step 398] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:08:33Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `run_command`: *"Migrating legacy folders"* ("Move files to data/ and remove legacy folders")
+
+---
+
+## 🤖 [Step 399] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:08:33Z`
+
+Created At: 2026-09-24T00:08:33+08:00
+Completed At: 2026-09-24T00:08:33+08:00
+
+The command exited with code 0.
+Output:
+Moving inbox: Group Counseling- Strategies and Skills - Standalone Book -- Ed E. Jacobs, Christine J. Schimmel, Robert L. L. Masson, -- ( WeLib.org )-22_2.png -> data/input/books/
+Moving inbox: Group Counseling- Strategies and Skills - Standalone Book -- Ed E. Jacobs, Christine J. Schimmel, Robert L. L. Masson, -- ( WeLib.org )-22_1.png -> data/input/books/
+Moving inbox: Groups- Process and Practice, Loose-Leaf Version -- Marianne Schneider Corey; Gerald Corey; Cindy Corey -- ( WeLib.org ).pdf -> data/input/books/
+Moving inbox: images -> data/input/books/
+Moving inbox: Group Counseling- Strategies and Skills - Standalone Book -- Ed E. Jacobs, Christine J. Schimmel, Robert L. L. Masson, -- ( WeLib.org )-21_2.png -> data/input/books/
+Moving inbox: Group Counseling- Strategies and Skills - Standalone Book -- Ed E. Jacobs, Christine J. Schimmel, Robert L. L. Masson, -- ( WeLib.org )-21_1.png -> data/input/books/
+Moving inbox: Group Counseling- Strategies and Skills - Standalone Book -- Ed E. Jacobs, Christine J. Schimmel, Robert L. L. Masson, -- ( WeLib.org ).pdf -> data/input/books/
+Moving processed: 2002-01194-001.pdf -> literature/
+Moving processed: Journal of Adolescence - 2003 - Lejuez - Evaluation of the Balloon Analogue Risk Task  BART  as a predictor of adolescent.pdf -> literature/
+Moving processed: 2008-17521-013.pdf -> literature/
+Moving processed: Research-Methods-in-Psychology-1641401901.epub -> books/
+Moving processed: Research Methods, Design, and Analysis 13th ed.pdf -> books/
+Moving output: Journal of Adolescence - 2003 - Lejuez - Evaluation of the Balloon Analogue Risk Task BART as a predictor of adolescent -> literature/
+Moving output: Group Counseling- Strategies and Skills - Standalone Book -- Ed E. Jacobs, Christine J. Schimmel, Robert L. L. Masson, - -> books/
+Moving output: 2008-17521-013 -> literature/
+Moving output: 2002-01194-001 -> literature/
+Moving output: Groups- Process and Practice, Loose-Leaf Version -- Marianne Schneider Corey; Gerald Corey; Cindy Corey -- ( WeLib.org ) -> books/
+Moving output: Research Methods, Design, and Analysis 13th ed -> books/
+Moving output: Research-Methods-in-Psychology-1641401901 -> books/
+Migration complete!
+
+
+
+---
+
+## 🤖 [Step 400] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:08:36Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `run_command`: *"Checking legacy folders removal"* ("Verify inbox/processed/output removal")
+
+---
+
+## 🤖 [Step 401] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:08:36Z`
+
+Created At: 2026-09-24T00:08:36+08:00
+Completed At: 2026-09-24T00:08:36+08:00
+
+The command exited with code 0.
+Output:
+All legacy folders successfully removed!
+
+
+
+---
+
+## 🤖 [Step 402] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:08:40Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `run_command`: *"Listing data subdirectories"* ("Verify data structure")
+
+---
+
+## 🤖 [Step 403] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:08:40Z`
+
+Created At: 2026-09-24T00:08:40+08:00
+Completed At: 2026-09-24T00:08:40+08:00
+
+The command exited with code 0.
+Output:
+data/input:
+total 0
+drwxr-xr-x@  4 limchinkun  staff  128 Sep 24 00:08 .
+drwxr-xr-x@  6 limchinkun  staff  192 Sep 23 23:36 ..
+drwxr-xr-x@ 11 limchinkun  staff  352 Sep 24 00:08 books
+drwxr-xr-x@  5 limchinkun  staff  160 Sep 24 00:08 literature
+
+data/output:
+total 0
+drwxr-xr-x@ 4 limchinkun  staff  128 Sep 24 00:08 .
+drwxr-xr-x@ 6 limchinkun  staff  192 Sep 23 23:36 ..
+drwxr-xr-x@ 6 limchinkun  staff  192 Sep 24 00:08 books
+drwxr-xr-x@ 5 limchinkun  staff  160 Sep 24 00:08 literature
+
+
+
+---
+
+## 🤖 [Step 404] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:08:43Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `run_command`: *"Checking pipelines directory"* ("List files in pipelines")
+
+---
+
+## 🤖 [Step 405] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:08:43Z`
+
+Created At: 2026-09-24T00:08:43+08:00
+Completed At: 2026-09-24T00:08:43+08:00
+
+The command exited with code 0.
+Output:
+total 56
+drwxr-xr-x@  7 limchinkun  staff    224 Sep 23 22:43 .
+drwxr-xr-x@ 19 limchinkun  staff    608 Sep 23 22:38 ..
+-rw-r--r--@  1 limchinkun  staff    602 Sep 23 22:42 __init__.py
+drwxr-xr-x@  6 limchinkun  staff    192 Sep 23 22:51 __pycache__
+-rw-r--r--@  1 limchinkun  staff   1989 Sep 23 22:41 base_pipeline.py
+-rw-r--r--@  1 limchinkun  staff  10211 Sep 23 22:50 journal_pipeline.py
+-rw-r--r--@  1 limchinkun  staff   4519 Sep 23 22:42 textbook_pipeline.py
+
+
+
+---
+
+## 🤖 [Step 406] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:08:48Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `view_file`: *"Viewing journal_pipeline.py"* ("View journal pipeline header")
+
+---
+
+## 🤖 [Step 407] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:08:48Z`
+
+Created At: 2026-09-24T00:08:48+08:00
+Completed At: 2026-09-24T00:08:48+08:00
+File Path: `file:///Users/limchinkun/Desktop/books/src/book_processor/pipelines/journal_pipeline.py`
+Total Lines: 236
+Total Bytes: 10211
+Showing lines 1 to 60
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: """
+2: Academic Journal Article Pipeline (JournalPipeline)
+3: ===================================================
+4: Dedicated, modular processing pipeline for single-article academic journal PDFs.
+5: Completely separated from textbook logic:
+6:   - No Chapter Splitting (treats paper as a single atomic document)
+7:   - No Table of Contents (TOC) injection
+8:   - No Learning Objectives (🎯) or Concept Maps
+9:   - No Margin Glossaries or Anki flashcards
+10:   - Universal Two-Column Band Flow Engine
+11:   - Universal Hanging-Indent Reference List Parser
+12:   - IMRAD Headings & Emergent Sections Resolver
+13:   - Academic Typographic CSS Injection
+14:   - Closed-Loop Multi-Metric Verification + Ollama Auto-Healing
+15: """
+16: 
+17: import json
+18: import logging
+19: import os
+20: import re
+21: import tempfile
+22: from pathlib import Path
+23: from typing import Any, Dict, List, Optional
+24: 
+25: from book_processor.pipelines.base_pipeline import BasePipeline
+26: from book_processor.config_manager import ConfigManager
+27: from book_processor.core.invariants import QualityInvariantGuard
+28: from book_processor.core.image_manager import ImageManager
+29: from book_processor.core.analyzer import PDFAnalyzer
+30: from book_processor.parsers.digital_pdf import DigitalPDFParser
+31: import book_processor.parsers.digital_pdf as _digital_pdf_mod
+32: from book_processor.parsers.scanned_pdf import ScannedPDFParser
+33: from book_processor.parsers.layout_detector import set_style as _ld_set_style, load_style
+34: from book_processor.parsers.journal.imrad_resolver import IMRADResolver
+35: from book_processor.parsers.journal.reference_parser import ReferenceParser
+36: from book_processor.verification.verifier import AccuracyVerifier
+37: from book_processor.verification.ollama_healer import OllamaHealer
+38: from book_processor.utils.text_utils import sanitize_filename, stitch_cross_page_continuity
+39: 
+40: logger = logging.getLogger(__name__)
+41: 
+42: # Standard academic styling injected into journal Markdown
+43: ACADEMIC_JOURNAL_CSS = """<style>
+44: /* Academic Journal Layout Stylesheet */
+45: body {
+46:   font-family: 'Times New Roman', Times, serif;
+47:   line-height: 1.5;
+48:   text-align: justify;
+49: }
+50: h1 {
+51:   text-align: center;
+52:   margin-top: 1.5em;
+53:   margin-bottom: 0.5em;
+54: }
+55: table {
+56:   width: 100%;
+57:   max-width: 100%;
+58:   border-collapse: collapse;
+59:   margin: 1.5em 0;
+60:   display: table !important;
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+---
+
+## 🤖 [Step 408] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:08:51Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `write_to_file`: *"Creating literature_pipeline.py"* ("Create literature pipeline file")
+
+---
+
+## 🤖 [Step 409] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:08:51Z`
+
+Created At: 2026-09-24T00:08:51+08:00
+Completed At: 2026-09-24T00:08:51+08:00
+Created file file:///Users/limchinkun/Desktop/books/src/book_processor/pipelines/literature_pipeline.py with requested content.
+If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+
+---
+
+## 🤖 [Step 410] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:08:53Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `view_file`: *"Viewing cmd_process in run.py"* ("View cmd_process routing logic")
+
+---
+
+## 🤖 [Step 411] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:08:53Z`
+
+Created At: 2026-09-24T00:08:53+08:00
+Completed At: 2026-09-24T00:08:53+08:00
+File Path: `file:///Users/limchinkun/Desktop/books/run.py`
+Total Lines: 455
+Total Bytes: 21601
+Showing lines 80 to 130
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+80: # ==============================================================================
+81: # 2. PROCESS: Convention-based Routing & Pipeline Execution
+82: # ==============================================================================
+83: def cmd_process(args):
+84:     filepath = Path(args.file)
+85:     if not filepath.exists():
+86:         print(f"🛑 錯誤：找不到指定的輸入檔案: {filepath}")
+87:         sys.exit(1)
+88: 
+89:     # Determine pipeline by directory convention or flag
+90:     doc_type = args.type
+91:     if not doc_type:
+92:         path_str = str(filepath.resolve())
+93:         if "journals" in path_str or "papers" in path_str:
+94:             doc_type = "journal"
+95:         elif "books" in path_str:
+96:             doc_type = "book"
+97:         else:
+98:             doc_type = "book"  # default fallback
+99: 
+100:     print(f"\n🚀 啟動處理管線: [{doc_type.upper()}] 檔案: {filepath.name}")
+101: 
+102:     # Run quick hardware check
+103:     hw = check_hardware_safety(ignore_battery=args.ignore_battery)
+104:     if not hw["safe_for_batch_ocr"]:
+105:         print(f"🛑 硬體空間不足拒絕啟動: {'; '.join(hw['reasons'])}")
+106:         sys.exit(1)
+107: 
+108:     output_base = Path("data/output") / ("books" if doc_type == "book" else "journals")
+109:     output_base.mkdir(parents=True, exist_ok=True)
+110: 
+111:     print(f"• 輸出目標資料夾: {output_base}")
+112:     print(f"• 呼叫對應領域管線: src/book_processor/pipelines/{'textbook_pipeline' if doc_type == 'book' else 'journal_pipeline'}.py")
+113: 
+114:     # Delegate to existing core CLI with appropriate arguments
+115:     cli_cmd = [
+116:         sys.executable, "-m", "book_processor.cli", "run",
+117:         "--file", str(filepath),
+118:         "--output-dir", str(output_base),
+119:     ]
+120:     if hw["safe_for_heavy_llm"]:
+121:         cli_cmd.append("--ollama")
+122: 
+123:     logger.info(f"Executing: {' '.join(cli_cmd)}")
+124:     res = subprocess.run(cli_cmd)
+125:     if res.returncode == 0:
+126:         print(f"\n✅ 處理完成！結果已儲存至 {output_base}")
+127:     else:
+128:         print(f"\n⚠️ 處理過程中遇到警告或錯誤，請檢視 logs/process.log 或 data/needs_review/")
+129: 
+130: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+---
+
+## 🤖 [Step 412] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:08:59Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `replace_file_content`: *"Updating run.py cmd_process"* ("Standardize to literature pipeline")
+
+---
+
+## 🤖 [Step 413] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:08:59Z`
+
+Created At: 2026-09-24T00:08:59+08:00
+Completed At: 2026-09-24T00:09:00+08:00
+The following changes were made by the replace_file_content tool to: /Users/limchinkun/Desktop/books/run.py. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -89,9 +89,9 @@
+     # Determine pipeline by directory convention or flag
+     doc_type = args.type
+     if not doc_type:
+-        path_str = str(filepath.resolve())
+-        if "journals" in path_str or "papers" in path_str:
+-            doc_type = "journal"
++        path_str = str(filepath.resolve()).lower()
++        if "literature" in path_str or "journals" in path_str or "papers" in path_str:
++            doc_type = "literature"
+         elif "books" in path_str:
+             doc_type = "book"
+         else:
+@@ -98,3 +98,5 @@
++    elif doc_type == "journal":
++        doc_type = "literature"  # normalize journal to literature
+ 
+     print(f"\n🚀 啟動處理管線: [{doc_type.upper()}] 檔案: {filepath.name}")
+ 
+@@ -103,11 +103,11 @@
+         print(f"🛑 硬體空間不足拒絕啟動: {'; '.join(hw['reasons'])}")
+         sys.exit(1)
+ 
+-    output_base = Path("data/output") / ("books" if doc_type == "book" else "journals")
++    output_base = Path("data/output") / ("books" if doc_type == "book" else "literature")
+     output_base.mkdir(parents=True, exist_ok=True)
+ 
+     print(f"• 輸出目標資料夾: {output_base}")
+-    print(f"• 呼叫對應領域管線: src/book_processor/pipelines/{'textbook_pipeline' if doc_type == 'book' else 'journal_pipeline'}.py")
++    print(f"• 呼叫對應領域管線: src/book_processor/pipelines/{'textbook_pipeline' if doc_type == 'book' else 'literature_pipeline'}.py")
+ 
+     # Delegate to existing core CLI with appropriate arguments
+     cli_cmd = [
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.
+
+---
+
+## 🤖 [Step 414] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:09:02Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `view_file`: *"Viewing subparsers in run.py"* ("View run.py subparser definition")
+
+---
+
+## 🤖 [Step 415] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:09:02Z`
+
+Created At: 2026-09-24T00:09:02+08:00
+Completed At: 2026-09-24T00:09:03+08:00
+File Path: `file:///Users/limchinkun/Desktop/books/run.py`
+Total Lines: 457
+Total Bytes: 21744
+Showing lines 415 to 440
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+415:     p_doc.set_defaults(func=cmd_doctor)
+416: 
+417:     # process
+418:     p_proc = subparsers.add_parser("process", help="處理單一書籍或期刊")
+419:     p_proc.add_argument("file", help="輸入檔案路徑 (PDF/EPUB)")
+420:     p_proc.add_argument("--type", choices=["book", "journal"], default=None, help="強制指定處理類型")
+421:     p_proc.add_argument("--ignore-battery", action="store_true", help="忽略電池電量限制")
+422:     p_proc.set_defaults(func=cmd_process)
+423: 
+424:     # save
+425:     p_save = subparsers.add_parser("save", help="日常本地存檔 (先更新文檔日期後 commit)")
+426:     p_save.add_argument("message", help="Commit 說明")
+427:     p_save.set_defaults(func=cmd_save)
+428: 
+429:     # handoff
+430:     p_hand = subparsers.add_parser("handoff", help="離席交接存檔 (更新 HANDOFF.md 後 commit)")
+431:     p_hand.add_argument("reason", default="外出/上課暫存", nargs="?", help="離席原因")
+432:     p_hand.set_defaults(func=cmd_handoff)
+433: 
+434:     # publish
+435:     p_pub = subparsers.add_parser("publish", help="本地發布並合併至 main 分支")
+436:     p_pub.add_argument("message", help="發布版本說明")
+437:     p_pub.set_defaults(func=cmd_publish)
+438: 
+439:     # test-ollama-auto-trigger
+440:     p_test = subparsers.add_parser("test-ollama-auto-trigger", help="執行 Ollama 自動喚醒與自我除錯測試")
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+---
+
+## 🤖 [Step 416] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:09:07Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `replace_file_content`: *"Updating run.py subparser"* ("Update process choices to include literature")
+
+---
+
+## 🤖 [Step 417] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:09:07Z`
+
+Created At: 2026-09-24T00:09:07+08:00
+Completed At: 2026-09-24T00:09:07+08:00
+The following changes were made by the replace_file_content tool to: /Users/limchinkun/Desktop/books/run.py. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -415,9 +415,9 @@
+     p_doc.set_defaults(func=cmd_doctor)
+ 
+     # process
+-    p_proc = subparsers.add_parser("process", help="處理單一書籍或期刊")
++    p_proc = subparsers.add_parser("process", help="處理單一書籍或學術文獻")
+     p_proc.add_argument("file", help="輸入檔案路徑 (PDF/EPUB)")
+-    p_proc.add_argument("--type", choices=["book", "journal"], default=None, help="強制指定處理類型")
++    p_proc.add_argument("--type", choices=["book", "literature", "journal"], default=None, help="強制指定處理類型 (book 或 literature)")
+     p_proc.add_argument("--ignore-battery", action="store_true", help="忽略電池電量限制")
+     p_proc.set_defaults(func=cmd_process)
+ 
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.
+
+---
+
+## 🤖 [Step 418] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:09:13Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `write_to_file`: *"Creating textbook-processor skill"* ("Create textbook processor skill")
+
+---
+
+## 🤖 [Step 419] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:09:13Z`
+
+Created At: 2026-09-24T00:09:13+08:00
+Completed At: 2026-09-24T00:09:14+08:00
+Created file file:///Users/limchinkun/Desktop/books/.agent/skills/textbook-processor/SKILL.md with requested content.
+If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+
+---
+
+## 🤖 [Step 420] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:09:19Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `write_to_file`: *"Creating literature-processor skill"* ("Create literature processor skill")
+
+---
+
+## 🤖 [Step 421] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:09:19Z`
+
+Created At: 2026-09-24T00:09:19+08:00
+Completed At: 2026-09-24T00:09:19+08:00
+Created file file:///Users/limchinkun/Desktop/books/.agent/skills/literature-processor/SKILL.md with requested content.
+If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+
+---
+
+## 🤖 [Step 422] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:09:24Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `write_to_file`: *"Creating document-processor skill"* ("Create master document processor skill")
+
+---
+
+## 🤖 [Step 423] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:09:24Z`
+
+Created At: 2026-09-24T00:09:24+08:00
+Completed At: 2026-09-24T00:09:24+08:00
+Created file file:///Users/limchinkun/Desktop/books/.agent/skills/document-processor/SKILL.md with requested content.
+If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+
+---
+
+## 🤖 [Step 424] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:09:29Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `write_to_file`: *"Updating book-processor SKILL.md"* ("Update book processor skill file")
+
+---
+
+## 🤖 [Step 425] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:09:29Z`
+
+Created At: 2026-09-24T00:09:29+08:00
+Completed At: 2026-09-24T00:09:29+08:00
+Created file file:///Users/limchinkun/Desktop/books/.agent/skills/book-processor/SKILL.md with requested content.
+If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+
+---
+
+## 🤖 [Step 426] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:09:32Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `view_file`: *"Viewing PROJECT_INIT_STANDARD.md"* ("Inspect current project init standard")
+
+---
+
+## 🤖 [Step 427] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:09:32Z`
+
+Created At: 2026-09-24T00:09:32+08:00
+Completed At: 2026-09-24T00:09:32+08:00
+File Path: `file:///Users/limchinkun/Desktop/books/PROJECT_INIT_STANDARD.md`
+Total Lines: 122
+Total Bytes: 9014
+Showing lines 1 to 122
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # 🌟 PROJECT_INIT_STANDARD.md (新專案通用初始化標準指南)
+2: 
+3: > 💡 **使用方法 (How to Use)**：
+4: > 當您未來開立任何新的軟體、資料科學或 AI 專案時，**只需將本文件內容直接複製貼給 AI Agent**，並下達指令：
+5: > 
+6: > *「請閱讀本指南，並嚴格依照本標準在當前工作區中初始化所有必要的資料夾、Markdown 文件、Git 安全鎖與總指揮 run 腳本，完成後向我彙報。」*
+7: 
+8: ---
+9: 
+10: ## 🎯 核心工程哲學 (The Core Philosophy)
+11: 
+12: 1. **零冷啟動成本**：任何時候回到專案，任何人/AI 只要看 `OPERATIONS.md`，30 秒內即可開始跑指令。
+13: 2. **開場喚醒儀式 (Agent-Init)**：任何 AI 在對話第一步必須執行 `python run.py agent-init`，自動讀取工作守則與交接狀態。
+14: 3. **防 AI 幻覺與幽靈修復**：拒絕口頭宣稱「已修復」，所有改動必須有實體執行日誌與測試通過證據。
+15: 4. **Local-Only 安全保護**：預設封鎖所有遠端 Git Push，代碼存檔在本地，安全有保證。
+16: 5. **先更文檔後 Commit**：嚴禁只提交代碼而留下過期文檔，所有紀錄必須強制帶上日期（`YYYY-MM-DD`）。
+17: 6. **全英文 Commit 規範**：所有 Git Commit 訊息嚴格使用英文（Conventional Commits 格式）。
+18: 7. **人機協同守門人 (HITL)**：疑難雜症進隔離區 (`needs_review/`)，避免 AI 自作聰明無限卡死。
+19: 8. **零硬編碼絕對路徑 (Zero Hardcoded Paths)**：嚴禁寫死 `/Users/...`。一律使用以當前檔
+<truncated 5959 bytes>
+acOS (尤其是 Apple Silicon) 開發時，AI 嚴禁只盲目推薦跨平台重型套件。必須主動評估並優先建議 macOS 內建/原生功能（如 Apple Vision Framework OCR、Metal/MPS、sips、CoreML 等）。若原生方案效能更高、記憶體更省、體驗更好，必須主動向使用者提出！
+101: 
+102: ### 鐵律 8：會話雙軌歸檔與瑕疵全隔離協議 (Dual-Track Archiving & Mandatory Quarantine)
+103: - AI 離席交接（`handoff`）或重大結案（`publish`）時，必須自動配對產生：
+104:   - `memory/sessions/YYYY-MM-DD-<topic>-summary.md`：**高密度總結**（先看這個掌握決策與結果）。
+105:   - `memory/sessions/YYYY-MM-DD-<topic>-transcript.md`：**完整對話紀錄**（有疑問時深挖問答細節）。
+106: - 任何模型處理失敗、超時、或信度 < 0.80 的瑕疵，一律自動拋入 `data/needs_review/` 隔離存檔，絕不卡死主批次程序。
+107: 
+108: ---
+109: 
+110: ## 三、 開案一鍵初始化檢查清單 (AI Checklist)
+111: 
+112: 任何 AI Agent 在接收到本指南後，必須按以下清單逐一檢查並向使用者回報：
+113: - [ ] 1. 建立 `.git/hooks/pre-push` 並給予執行權限 (`chmod +x`)。
+114: - [ ] 2. 建立 `memory/`、`docs/`、`scratch/`、`logs/`、`data/` 等目錄結構。
+115: - [ ] 3. 建立 `OPERATIONS.md`，填入該新專案的 30 秒啟動與常用指令。
+116: - [ ] 4. 建立 `AGENTS.md`，填入該新專案的意圖派發清單與開場喚醒指令。
+117: - [ ] 5. 建立 `docs/STRUCTURE.md`，標註當前所有模組職責。
+118: - [ ] 6. 建立 `docs/CODING_RULES.md`，設定該專案的軟硬體門檻與日誌格式。
+119: - [ ] 7. 在 `run.py` 封裝 `agent-init`、`doctor`、`save`、`handoff`、`publish` 等快捷指令。
+120: - [ ] 8. 執行第一次本地 Git 初始化存檔（**使用英文 Commit**）：
+121:   `[YYYY-MM-DD] chore: initialize project standard governance and architecture`。
+122: 
+The above content shows the entire, complete file contents of the requested file.
+
+
+---
+
+## 🤖 [Step 428] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:09:39Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `replace_file_content`: *"Updating PROJECT_INIT_STANDARD.md"* ("Add rules 9-13 to project standard")
+
+---
+
+## 🤖 [Step 429] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:09:45Z`
+
+Created At: 2026-09-24T00:09:45+08:00
+Completed At: 2026-09-24T00:09:45+08:00
+The following changes were made by the replace_file_content tool to: /Users/limchinkun/Desktop/books/PROJECT_INIT_STANDARD.md. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -17,7 +17,142 @@
+ 6. **全英文 Commit 規範**：所有 Git Commit 訊息嚴格使用英文（Conventional Commits 格式）。
+ 7. **人機協同守門人 (HITL)**：疑難雜症進隔離區 (`needs_review/`)，避免 AI 自作聰明無限卡死。
+ 8. **零硬編碼絕對路徑 (Zero Hardcoded Paths)**：嚴禁寫死 `/Users/...`。一律使用以當前檔案動態推導的相對路徑，保證專案整體移動至任何資料夾或電腦時 100% 正常運作。
+-9. **macOS 原生能力與硬體協同優先**：在 Mac (尤其是 Apple Silicon) 環境下，優先評估系統內建功能（如 Apple Vision Framework、`sips`、Metal/MPS、CoreML），拒絕盲目推薦笨重跨平台套件。
++10. **全自動主動執行 (Proactive Execution)**：AI 讀完需求或文檔後，必須主動調用工具執行對應 Python 腳本，嚴禁只把指令印在對話框叫使用者手動跑。
++11. **領域命名標準化 (`literature`)**：學術領域統一採用 `literature`，涵蓋期刊、論文、預印本與報告。
++12. **根目錄零雜質原則**：全面廢除 `inbox`/`processed`/`output` 等過渡目錄，實體資料一律唯一歸屬於 `data/input/<domain>/` 與 `data/output/<domain>/`。
++13. **標準持續自我迭代協議**：使用者每次提出治理新要求，AI 必須立即自動更新本指南，確保未來所有新專案皆享有一致最新標準。
++
++---
++
++## 一、 新專案必須建立的標準檔案與目錄結構
++
++```text
++my-new-project/
++├── .git/hooks/pre-push         # 🛑 阻擋未授權 push 的本地安全鎖 (強制 ALLOW_PUSH=1)
++├── .gitignore                  # 🙈 排除 scratch/, logs/, data/state/, data/needs_review/, .env
+
+<truncated 8158 bytes>
+能涵蓋多元處理場景，Agent Skills 必須採分層模式：
++  - **Master Orchestrator (總調度技能)**：負責安全健檢、環境探活、文檔特徵識別與任務分派。
++  - **Domain Sub-Skills (領域專屬子技能)**：各領域（如 `textbook` 與 `literature`）各自封裝專屬解析策略，互不干擾。
++
++### 鐵律 13：標準自更新協議 (Self-Updating Standard Protocol)
++- 每次使用者對專案治理提出任何新的規格、要求或改進方向時，**AI 必須第一時間同步更新 `PROJECT_INIT_STANDARD.md`**，確保未來任何新專案開案時，都自動繼承這套最新、最嚴謹的架構標準！
++
++---
++
++## 三、 開案一鍵初始化檢查清單 (AI Checklist)
++
++任何 AI Agent 在接收到本指南後，必須按以下清單逐一檢查並主動執行，最後向使用者回報：
++- [ ] 1. 建立 `.git/hooks/pre-push` 並給予執行權限 (`chmod +x`)。
++- [ ] 2. 建立 `memory/`、`docs/`、`scratch/`、`logs/`、`data/input/`、`data/output/`、`data/needs_review/`。
++- [ ] 3. 建立 `OPERATIONS.md`，填入該新專案的 30 秒啟動與常用指令。
++- [ ] 4. 建立 `AGENTS.md`，填入該新專案的意圖派發清單與開場喚醒指令。
++- [ ] 5. 建立 `docs/STRUCTURE.md`，標註當前所有模組職責。
++- [ ] 6. 建立 `docs/CODING_RULES.md`，設定該專案的軟硬體門檻與日誌格式。
++- [ ] 7. 建立 `.agent/skills/` 分層技能體系（總入口 + 專屬子技能）。
++- [ ] 8. 在 `run.py` 封裝 `agent-init`、`doctor`、`save`、`handoff`、`publish`、`archive-sessions` 等快捷指令。
++- [ ] 9. 主動執行第一次本地 Git 初始化存檔（**使用英文 Commit**）：
++  `[YYYY-MM-DD] chore: initialize project standard governance and architecture`。
+ 
+ ---
+ 
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.
+
+---
+
+## 🤖 [Step 430] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:09:50Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `view_file`: *"Viewing AGENTS.md action table"* ("View action dispatch table")
+
+---
+
+## 🤖 [Step 431] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:09:50Z`
+
+Created At: 2026-09-24T00:09:50+08:00
+Completed At: 2026-09-24T00:09:51+08:00
+File Path: `file:///Users/limchinkun/Desktop/books/AGENTS.md`
+Total Lines: 77
+Total Bytes: 6006
+Showing lines 15 to 30
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+15: | :--- | :--- | :--- |
+16: | **新對話喚醒 / 接手專案** | `uv run python run.py agent-init` | **對話開場必跑**：自動簡報守則與交接狀態 |
+17: | **環境健檢 / 診斷** | `uv run python run.py doctor` | 檢查 RAM、電池、SSD、Ollama、模型 |
+18: | **轉換書籍** | `uv run python run.py process data/input/books/<filename>` | 自動啟動書籍章節切分與文意縫合 |
+19: | **轉換學術期刊 / 論文** | `uv run python run.py process data/input/journals/<filename>` | 自動啟動雙欄排版、摘要與文獻解析 |
+20: | **驗證 Ollama 自動喚醒** | `uv run python run.py test-ollama-auto-trigger` | 驗證輸入與輸出守衛能否自動喚醒 Ollama |
+21: | **一般進度存檔** | `uv run python run.py save "<English_message>"` | 先更新文檔時間戳，再以英文 commit |
+22: | **使用者說要去上課/中斷** | `uv run python run.py handoff "<reason_in_English>"` | 先更新 `memory/HANDOFF.md`，再英文 commit |
+23: | **封存所有會話紀錄** | `uv run python run.py archive-sessions` | 自動掃描 Brain 目錄，更新所有會話之雙軌紀錄與總結 |
+24: | **發布與合併到 main** | `uv run python run.py publish "<English_release_notes>"` | 本地 Squash 合併，提示手動 push 指令 |
+25: 
+26: ---
+27: 
+28: ## 二、 核心五大鐵律 (Core Directives)
+29: 
+30: ### 1. 🛑 嚴禁未經授權 Push (Zero-Push Rule)
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+---
+
+## 🤖 [Step 432] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:09:55Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `view_file`: *"Viewing AGENTS.md end"* ("View rules in AGENTS.md")
+
+---
+
+## 🤖 [Step 433] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:09:55Z`
+
+Created At: 2026-09-24T00:09:55+08:00
+Completed At: 2026-09-24T00:09:56+08:00
+File Path: `file:///Users/limchinkun/Desktop/books/AGENTS.md`
+Total Lines: 77
+Total Bytes: 6006
+Showing lines 55 to 77
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+55: ### 5. 🍎 macOS 原生能力與硬體協同優先原則 (macOS-Native Synergy Directive)
+56: - **嚴禁盲目只推薦跨平台的重型第三方套件**：AI 在規劃技術方案時，若運行環境為 macOS（特別是 Apple Silicon 晶片），**必須主動評估並優先推薦 macOS 內建或原生更出色的框架與工具**。
+57: - **具體評估對照範例**：
+58:   - **文字識別/OCR**：主動評估 **Apple Vision Framework (`VNRecognizeTextRequest`)**。相較於肥大的 PaddleOCR / Tesseract，Vision 框架為系統內建、零依賴、調用神經網路引擎 (ANE)，辨識速度極快且近乎零記憶體負擔。
+59:   - **圖像轉換與處理**：優先考慮內建 **`sips`** 或 Core Graphics，避免動輒依賴龐大的外掛庫。
+60:   - **PDF 解析與渲染**：評估 **Quartz / PDFKit** 原生 API。
+61:   - **模型推理與加速**：優先評估 **Metal / MPS (Metal Performance Shaders)** 與 **CoreML**。
+62: - **原則**：只要 macOS 內建/原生功能的表現、耗電量或記憶體佔用更優秀，AI 必須主動向使用者提出該方案的優劣對比與整合建議。
+63: 
+64: ### 6. 🗄️ 會話雙軌歸檔與全自動隔離協議 (Automated Session Archiving & Quarantine)
+65: - **自動歸檔時機**：每次使用者表示「要去上課/中斷」執行 `run.py handoff`，或「完成大功能」執行結案存檔時。
+66: - **雙軌配對歸檔格式**：
+67:   - `memory/sessions/YYYY-MM-DD-<topic>-summary.md`：**高密度總結**（先看這個，掌握決策與結果）。
+68:   - `memory/sessions/YYYY-MM-DD-<topic>-transcript.md`：**完整對話紀錄**（有疑問時深挖原始問答）。
+69: - **異常無條件隔離**：
+70:   - 任何 Ollama 處理失敗、超時、或信度評估 < 0.80 的瑕疵，**一律自動拋入 `data/needs_review/` 隔離存檔**，絕不中斷主批次管線。
+71: 
+72: ---
+73: 
+74: ## 三、 臨時實驗室規範 (Scratchpad Policy)
+75: - 開發或除錯過程中所撰寫的一次性測試腳本、臨時試跑程式，**一律存放在 `scratch/` 目錄下**（例如 `scratch/test_math_regex.py`）。
+76: - **嚴禁** 將臨時腳本隨意散落在根目錄或 `src/` 中。
+77: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+---
+
+## 🤖 [Step 434] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:10:00Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `replace_file_content`: *"Updating AGENTS.md table"* ("Update table to literature")
+
+---
+
+## 🤖 [Step 435] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:10:00Z`
+
+Created At: 2026-09-24T00:10:00+08:00
+Completed At: 2026-09-24T00:10:00+08:00
+The following changes were made by the replace_file_content tool to: /Users/limchinkun/Desktop/books/AGENTS.md. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -16,7 +16,7 @@
+ | **新對話喚醒 / 接手專案** | `uv run python run.py agent-init` | **對話開場必跑**：自動簡報守則與交接狀態 |
+ | **環境健檢 / 診斷** | `uv run python run.py doctor` | 檢查 RAM、電池、SSD、Ollama、模型 |
+ | **轉換書籍** | `uv run python run.py process data/input/books/<filename>` | 自動啟動書籍章節切分與文意縫合 |
+-| **轉換學術期刊 / 論文** | `uv run python run.py process data/input/journals/<filename>` | 自動啟動雙欄排版、摘要與文獻解析 |
++| **轉換學術文獻 / 論文** | `uv run python run.py process data/input/literature/<filename>` | 自動啟動雙欄排版、摘要與文獻解析 |
+ | **驗證 Ollama 自動喚醒** | `uv run python run.py test-ollama-auto-trigger` | 驗證輸入與輸出守衛能否自動喚醒 Ollama |
+ | **一般進度存檔** | `uv run python run.py save "<English_message>"` | 先更新文檔時間戳，再以英文 commit |
+ | **使用者說要去上課/中斷** | `uv run python run.py handoff "<reason_in_English>"` | 先更新 `memory/HANDOFF.md`，再英文 commit |
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.
+
+---
+
+## 🤖 [Step 436] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:10:04Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `view_file`: *"Viewing AGENTS.md end lines"* ("View end lines of AGENTS.md")
+
+---
+
+## 🤖 [Step 437] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:10:04Z`
+
+Created At: 2026-09-24T00:10:04+08:00
+Completed At: 2026-09-24T00:10:04+08:00
+File Path: `file:///Users/limchinkun/Desktop/books/AGENTS.md`
+Total Lines: 77
+Total Bytes: 6008
+Showing lines 60 to 77
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+60:   - **PDF 解析與渲染**：評估 **Quartz / PDFKit** 原生 API。
+61:   - **模型推理與加速**：優先評估 **Metal / MPS (Metal Performance Shaders)** 與 **CoreML**。
+62: - **原則**：只要 macOS 內建/原生功能的表現、耗電量或記憶體佔用更優秀，AI 必須主動向使用者提出該方案的優劣對比與整合建議。
+63: 
+64: ### 6. 🗄️ 會話雙軌歸檔與全自動隔離協議 (Automated Session Archiving & Quarantine)
+65: - **自動歸檔時機**：每次使用者表示「要去上課/中斷」執行 `run.py handoff`，或「完成大功能」執行結案存檔時。
+66: - **雙軌配對歸檔格式**：
+67:   - `memory/sessions/YYYY-MM-DD-<topic>-summary.md`：**高密度總結**（先看這個，掌握決策與結果）。
+68:   - `memory/sessions/YYYY-MM-DD-<topic>-transcript.md`：**完整對話紀錄**（有疑問時深挖原始問答）。
+69: - **異常無條件隔離**：
+70:   - 任何 Ollama 處理失敗、超時、或信度評估 < 0.80 的瑕疵，**一律自動拋入 `data/needs_review/` 隔離存檔**，絕不中斷主批次管線。
+71: 
+72: ---
+73: 
+74: ## 三、 臨時實驗室規範 (Scratchpad Policy)
+75: - 開發或除錯過程中所撰寫的一次性測試腳本、臨時試跑程式，**一律存放在 `scratch/` 目錄下**（例如 `scratch/test_math_regex.py`）。
+76: - **嚴禁** 將臨時腳本隨意散落在根目錄或 `src/` 中。
+77: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+---
+
+## 🤖 [Step 438] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:10:09Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `replace_file_content`: *"Updating AGENTS.md rules"* ("Add proactive execution and self-updating directives")
+
+---
+
+## 🤖 [Step 439] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:10:09Z`
+
+Created At: 2026-09-24T00:10:09+08:00
+Completed At: 2026-09-24T00:10:09+08:00
+The following changes were made by the replace_file_content tool to: /Users/limchinkun/Desktop/books/AGENTS.md. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -69,6 +69,12 @@
+ - **異常無條件隔離**：
+   - 任何 Ollama 處理失敗、超時、或信度評估 < 0.80 的瑕疵，**一律自動拋入 `data/needs_review/` 隔離存檔**，絕不中斷主批次管線。
+ 
++### 7. ⚡ AI 全自動主動執行原則 (Agent Proactive Execution Protocol)
++- **嚴禁消極在對話框中輸出指令叫使用者去終端機跑**：凡是可以程式化、腳本化執行的操作（如環境檢查 `doctor`、開場簡報 `agent-init`、轉檔執行 `process`、文檔更新、Git 本地提交 `save`/`handoff`、對話歸檔 `archive-sessions`），**AI 必須直接調用終端工具主動執行**，向使用者展示執行輸出與診斷結果。
++
++### 8. 🔄 治理標準持續自我迭代協議 (Self-Updating Standard Directive)
++- 每次使用者對專案提出任何新的規則、格式約束或流程改進時，**AI 必須無條件主動同步更新 `PROJECT_INIT_STANDARD.md` 與 `AGENTS.md`**，確保未來所有專案都能自動享有最新標準。
++
+ ---
+ 
+ ## 三、 臨時實驗室規範 (Scratchpad Policy)
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.
+
+---
+
+## 🤖 [Step 440] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:10:11Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `view_file`: *"Viewing OPERATIONS.md lines 20-40"* ("View process commands in OPERATIONS.md")
+
+---
+
+## 🤖 [Step 441] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:10:11Z`
+
+Created At: 2026-09-24T00:10:11+08:00
+Completed At: 2026-09-24T00:10:11+08:00
+File Path: `file:///Users/limchinkun/Desktop/books/OPERATIONS.md`
+Total Lines: 79
+Total Bytes: 3541
+Showing lines 20 to 40
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+20: ---
+21: 
+22: ## 2. 最常用的日常指令 (Top 4 Commands)
+23: 
+24: ### ① 處理書籍 (Book Pipeline)
+25: 將 PDF 或 EPUB 放入 `data/input/books/`，執行：
+26: ```bash
+27: uv run python run.py process data/input/books/your_book.pdf
+28: ```
+29: *系統將自動執行：目錄解析 ➔ 章節拆分 ➔ 雙頁文意縫合 ➔ OCR/LaTeX 處理 ➔ Ollama 驗證 ➔ 輸出至 `data/output/books/`。*
+30: 
+31: ### ② 處理學術論文 / 期刊 (Journal & Paper Pipeline)
+32: 將論文 PDF 放入 `data/input/journals/`，執行：
+33: ```bash
+34: uv run python run.py process data/input/journals/nature_paper.pdf
+35: ```
+36: *系統將自動執行：雙欄排版切割 ➔ 摘要 (Abstract) 提取 ➔ 參考文獻結構化解析 ➔ 輸出至 `data/output/journals/`。*
+37: 
+38: ### ③ 執行 Ollama 自動喚醒與自我除錯測試 (自檢驗收)
+39: ```bash
+40: uv run python run.py test-ollama-auto-trigger
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+---
+
+## 🤖 [Step 442] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:10:15Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `replace_file_content`: *"Updating OPERATIONS.md"* ("Update journal to literature in OPERATIONS.md")
+
+---
+
+## 🤖 [Step 443] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:10:15Z`
+
+Created At: 2026-09-24T00:10:15+08:00
+Completed At: 2026-09-24T00:10:15+08:00
+The following changes were made by the replace_file_content tool to: /Users/limchinkun/Desktop/books/OPERATIONS.md. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -28,12 +28,12 @@
+ ```
+ *系統將自動執行：目錄解析 ➔ 章節拆分 ➔ 雙頁文意縫合 ➔ OCR/LaTeX 處理 ➔ Ollama 驗證 ➔ 輸出至 `data/output/books/`。*
+ 
+-### ② 處理學術論文 / 期刊 (Journal & Paper Pipeline)
+-將論文 PDF 放入 `data/input/journals/`，執行：
+-```bash
+-uv run python run.py process data/input/journals/nature_paper.pdf
+-```
+-*系統將自動執行：雙欄排版切割 ➔ 摘要 (Abstract) 提取 ➔ 參考文獻結構化解析 ➔ 輸出至 `data/output/journals/`。*
++### ② 處理學術文獻 / 論文 (Literature Pipeline)
++將論文 PDF 放入 `data/input/literature/`，執行：
++```bash
++uv run python run.py process data/input/literature/nature_paper.pdf
++```
++*系統將自動執行：雙欄帶狀排版流動 ➔ 摘要 (Abstract) 提取 ➔ APA/IEEE 參考文獻結構化解析 ➔ 輸出至 `data/output/literature/`。*
+ 
+ ### ③ 執行 Ollama 自動喚醒與自我除錯測試 (自檢驗收)
+ ```bash
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.
+
+---
+
+## 🤖 [Step 444] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:10:20Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `view_file`: *"Viewing docs/STRUCTURE.md"* ("Inspect STRUCTURE.md")
+
+---
+
+## 🤖 [Step 445] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:10:20Z`
+
+Created At: 2026-09-24T00:10:20+08:00
+Completed At: 2026-09-24T00:10:20+08:00
+File Path: `file:///Users/limchinkun/Desktop/books/docs/STRUCTURE.md`
+Total Lines: 77
+Total Bytes: 5750
+Showing lines 1 to 77
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # 🗺️ docs/STRUCTURE.md (專案目錄地圖與功能備註)
+2: 
+3: > 💡 **重要規範**：所有參與專案的開發者與 AI Agent，嚴禁隨意在未經許可的位置新增頂層目錄。新增任何新檔案時，必須先查閱本地圖並於變更後同步更新！
+4: 
+5: ---
+6: 
+7: ## 專案完整目錄樹 (Directory Tree)
+8: 
+9: ```text
+10: books-project/
+11: │
+12: ├── .git/hooks/pre-push             # 🛑 [Git安全鎖] 攔截一切未經授權的 git push，確保 Local-Only
+13: ├── .gitignore                      # 🙈 排除 scratch/, logs/, data/state/, __pycache__/ 等暫存
+14: │
+15: ├── README.md                       # 📖 [專案總覽] 專案定位、核心特點與快速介紹
+16: ├── OPERATIONS.md                   # 🚀 [冷啟動指南] 30秒喚醒、Top 4 常用指令、疑難排除 (人與新AI專用)
+17: ├── AGENTS.md                       # 🤖 [跨Agent憲法] Codex/Claude 意圖指令路由表、行為五大鐵律
+18: ├── CHANGELOG.md                    # 📜 [版本日誌] 紀錄歷史與里程碑變更 (由 walkthrough 提煉)
+19: ├── PROJECT_INIT_STANDARD.md        # 🌟 [通用標準] 未來新專案直接丟給 AI 開案的通用模板
+20: ├── run.py                          # 🛠️ [總指揮中心] agent-init, doctor, process, save, handoff, publish, test 指令入口
+21: │
+22: ├── memory/                         # ⚡ [動態記憶層] (追蹤當前狀態、交接與歷史精華)
+23: │   ├── TASKS.md                    # 📋 當前 Sprint 任務進度
+<truncated 2482 bytes>
+ds/                     # 🛡️ 守衛防線
+52: │   │   ├── hardware.py             # RAM/電池/SSD/MPS 檢測防線
+53: │   │   ├── ollama_guard.py         # Ollama 連線探活、自動喚醒與優雅降級
+54: │   │   ├── prompts.py              # 📝 集中預設的固定提示詞 (LaTeX 修復、Manifest 校驗、論文雙欄)
+55: │   │   └── validator.py            # 輸入 JSON 比對與輸出異常自動喚醒 Ollama
+56: │   ├── utils/                      # 🛠️ 通用工具
+57: │   │   └── logger.py               # 結構化診斷日誌工具
+58: │   └── book_processor/             # ⚙️ 既有書籍與期刊處理核心引擎
+59: │       ├── pipelines/              # 管線層 (textbook_pipeline, journal_pipeline)
+60: │       ├── parsers/                # 解析層 (PDF, EPUB, LaTeX, 雙欄版面)
+61: │       ├── verification/           # 檢驗層 (OllamaVerifier, rules)
+62: │       └── core/                   # 核心調度 (orchestrator, splitter, inout)
+63: │
+64: └── dashboard/                      # 📊 [預留模組] 未來視覺化儀表板 (讀取 data/state/status.json)
+65: ```
+66: 
+67: ---
+68: 
+69: ## 歷史資料夾相容性說明 (Legacy Folder Compatibility)
+70: 
+71: 1. **`inbox/` 與 `processed/`**：
+72:    - 歷史建立的收件夾與已處理夾。目前其內部書籍與期刊已透過相對符號連結（Symlink）映射至標準的 `data/input/books/` 與 `data/input/journals/`，無佔用額外硬碟空間，且既有腳本仍可順暢讀取。
+73: 2. **`output/`**：
+74:    - 歷史產出的轉檔結果已透過相對符號連結（Symlink）分類歸納至 `data/output/books/` 與 `data/output/journals/`。
+75: 3. **`scratch/`**：
+76:    - 原散落在根目錄的臨時性 xml 檔案 (`scratch_p8.xml`, `stdout.xml`) 已全數移入 `scratch/` 隔離，保持根目錄整潔。
+77: 
+The above content shows the entire, complete file contents of the requested file.
+
+
+---
+
+## 🤖 [Step 446] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:10:28Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `replace_file_content`: *"Updating STRUCTURE.md"* ("Update STRUCTURE.md with new structure and cleanup notes")
+
+---
+
+## 🤖 [Step 447] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:10:28Z`
+
+Created At: 2026-09-24T00:10:28+08:00
+Completed At: 2026-09-24T00:10:28+08:00
+The following changes were made by the replace_file_content tool to: /Users/limchinkun/Desktop/books/docs/STRUCTURE.md. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -19,12 +19,15 @@
+ ├── PROJECT_INIT_STANDARD.md        # 🌟 [通用標準] 未來新專案直接丟給 AI 開案的通用模板
+ ├── run.py                          # 🛠️ [總指揮中心] agent-init, doctor, process, save, handoff, publish, test 指令入口
+ │
++├── .agent/skills/                  # 🧠 [技能分層架構]
++│   ├── document-processor/         # 👑 [總調度技能] 環境健檢、文檔特徵感知、子技能派發、雙軌審計
++│   ├── textbook-processor/         # 📖 [領域子技能] 長篇教科書、章節切分、文意縫合、Anki 卡片
++│   └── literature-processor/       # 📑 [領域子技能] 學術文獻、雙欄帶狀流動、摘要與參考文獻解析
++│
+ ├── memory/                         # ⚡ [動態記憶層] (追蹤當前狀態、交接與歷史精華)
+ │   ├── TASKS.md                    # 📋 當前 Sprint 任務進度看板與驗收狀態
+ │   ├── HANDOFF.md                  # 🪪 離席交接卡片 (去上課前 1 分鐘更新，下個 AI 接手點)
+-│   └── sessions/                   # 🗄️ 跨 Agent 參考用的對話歸檔
+-│       ├── 2026-09-23-complete-architecture-and-standards.md  # 濃縮精華摘要
+-│       └── FULL_CONVERSATION_TRANSCRIPT.md                    # 完整歷史對話紀錄 (2.6MB)
++│   └── sessions/                   # 🗄️ 全歷史對話雙軌歸檔 (Summary + Transcript)
+ │
+ ├── docs/                           # 🏛️ [靜態工程資產] (提交 Git 的永久規範)
+ │   ├── STRUCTURE.md                # 🗺️ [即本檔案] 完整檔案地圖與每個模組的功能備註
+@@ 
+<truncated 2533 bytes>
+ 既有書籍與期刊處理核心引擎
+-│       ├── pipelines/              # 管線層 (textbook_pipeline, journal_pipeline)
++│       ├── pipelines/              # 管線層 (textbook_pipeline, literature_pipeline)
+ │       ├── parsers/                # 解析層 (PDF, EPUB, LaTeX, 雙欄版面)
+ │       ├── verification/           # 檢驗層 (OllamaVerifier, rules)
+ │       └── core/                   # 核心調度 (orchestrator, splitter, inout)
+@@ -63,12 +63,12 @@
+ 
+ ---
+ 
+-## 歷史資料夾相容性說明 (Legacy Folder Compatibility)
+-
+-1. **`inbox/` 與 `processed/`**：
+-   - 歷史建立的收件夾與已處理夾。目前其內部書籍與期刊已透過相對符號連結（Symlink）映射至標準的 `data/input/books/` 與 `data/input/journals/`，無佔用額外硬碟空間，且既有腳本仍可順暢讀取。
+-2. **`output/`**：
+-   - 歷史產出的轉檔結果已透過相對符號連結（Symlink）分類歸納至 `data/output/books/` 與 `data/output/journals/`。
+-3. **`scratch/`**：
+-   - 原散落在根目錄的臨時性 xml 檔案 (`scratch_p8.xml`, `stdout.xml`) 已全數移入 `scratch/` 隔離，保持根目錄整潔。
++## 歷史資料夾清理與遷移說明 (Legacy Folder Clean-up)
++
++1. **`inbox/`、`processed/` 與 `output/` 徹底退役**：
++   - 歷史建立的過渡資料夾已全數刪除。
++   - 所有實體 PDF/EPUB 檔案與已生成結果，已完整物理遷移至 `data/input/books/`、`data/input/literature/`、`data/output/books/` 與 `data/output/literature/`。
++   - 專案根目錄全面保持整潔純淨，杜絕路徑混淆與孤兒檔案。
++2. **`scratch/`**：
++   - 臨時性 xml 檔案 (`scratch_p8.xml`, `stdout.xml`) 及一次性測試程式全數收納於 `scratch/`。
+ 
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.
+
+---
+
+## 🤖 [Step 448] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:10:31Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `view_file`: *"Viewing TASKS.md"* ("Inspect TASKS.md")
+
+---
+
+## 🤖 [Step 449] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:10:31Z`
+
+Created At: 2026-09-24T00:10:31+08:00
+Completed At: 2026-09-24T00:10:31+08:00
+File Path: `file:///Users/limchinkun/Desktop/books/memory/TASKS.md`
+Total Lines: 29
+Total Bytes: 1637
+Showing lines 1 to 29
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # 📋 memory/TASKS.md (專案任務進度看板)
+2: 
+3: 最後更新日期：2026-09-24
+4: 
+5: ---
+6: 
+7: ## 🏃 當前 Sprint (v1.0.0-rc1 專案治理與守衛上線)
+8: 
+9: - [x] [2026-09-23] 梳理專案核心需求與淘汰 OpenClaw 冗餘檔案
+10: - [x] [2026-09-23] 設計跨 Agent 協同規範 (`AGENTS.md`) 與冷啟動手冊 (`OPERATIONS.md`)
+11: - [x] [2026-09-23] 建立雙軌實體資料夾與隔離防呆區 (`data/input/`, `data/output/`, `data/needs_review/`)
+12: - [x] [2026-09-23] 撰寫軟硬體守衛模組 (`src/guards/hardware.py` - RAM/電池/SSD/MPS)
+13: - [x] [2026-09-23] 撰寫 Ollama 自動喚醒、模型檢查與優雅降級守衛 (`src/guards/ollama_guard.py`)
+14: - [x] [2026-09-23] 撰寫輸入 JSON 驗證與輸出異常自動除錯攔截器 (`src/guards/validator.py`)
+15: - [x] [2026-09-23] 實作命令總入口 `run.py` (支援 doctor、process、save、handoff 等)
+16: - [x] [2026-09-23] 安裝 Git 物理防手滑鎖 (`.git/hooks/pre-push`)
+17: - [x] [2026-09-23] 建立通用新專案開案範本 (`PROJECT_INIT_STANDARD.md`)
+18: - [x] [2026-09-23] 將歷史全對話脈絡濃縮歸檔至 `memory/sessions/`
+19: - [x] [2026-09-24] 強化低信度自動隔離與對話工作階段雙軌歸檔 (`data/needs_review/`, `memory/sessions/`)
+20: - [x] [2026-09-24] 補齊專案歷史 5 個對話之雙軌歸檔與全自動會話封存指令 (archive-sessions)
+21: 
+22: ---
+23: 
+24: ## 📅 後續規劃 (Backlog)
+25: 
+26: - [ ] [未排程] 實作 `dashboard/` 視覺化儀表板（讀取 `data/state/status.json`）
+27: - [ ] [未排程] 新增專門適配 IEEE / ACM 雙欄論文的進階版面範本
+28: - [ ] [未排程] 優化長篇書籍跨章節概念雙鏈自動關聯 (Obsidian Graph 支援)
+29: 
+The above content shows the entire, complete file contents of the requested file.
+
+
+---
+
+## 🤖 [Step 450] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:10:37Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `replace_file_content`: *"Updating TASKS.md"* ("Add completed tasks to TASKS.md")
+
+---
+
+## 🤖 [Step 451] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:10:37Z`
+
+Created At: 2026-09-24T00:10:37+08:00
+Completed At: 2026-09-24T00:10:37+08:00
+The following changes were made by the replace_file_content tool to: /Users/limchinkun/Desktop/books/memory/TASKS.md. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -18,6 +18,10 @@
+ - [x] [2026-09-23] 將歷史全對話脈絡濃縮歸檔至 `memory/sessions/`
+ - [x] [2026-09-24] 強化低信度自動隔離與對話工作階段雙軌歸檔 (`data/needs_review/`, `memory/sessions/`)
+ - [x] [2026-09-24] 補齊專案歷史 5 個對話之雙軌歸檔與全自動會話封存指令 (archive-sessions)
++- [x] [2026-09-24] 徹底物理遷移並刪除根目錄過渡資料夾 (`inbox/`, `processed/`, `output/`)
++- [x] [2026-09-24] 將學術期刊全面標準化升級為學術文獻 (`journal` -> `literature`)
++- [x] [2026-09-24] 建立三層技能體系 (`.agent/skills/`: `document-processor`, `textbook-processor`, `literature-processor`)
++- [x] [2026-09-24] 將 AI 主動執行、文獻命名、乾淨根目錄與自更新協議永久寫入 `PROJECT_INIT_STANDARD.md`
+ 
+ ---
+ 
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.
+
+---
+
+## 🤖 [Step 452] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:10:41Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `run_command`: *"Running test-ollama-auto-trigger"* ("Run auto trigger test")
+
+---
+
+## 🤖 [Step 453] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:10:41Z`
+
+Created At: 2026-09-24T00:10:41+08:00
+Completed At: 2026-09-24T00:10:42+08:00
+
+The command exited with code 0.
+Output:
+
+=================================================================
+🧪 [TEST] Ollama 自動除錯與輸入校驗自我檢驗 (Self-Drill)
+=================================================================
+• [情境 1: 輸出異常自動攔截] 正在注入損壞的 LaTeX 公式...
+  原始損壞代碼: \frac{a}{b + \sqrt{c
+[2026-09-24 00:10:42] [WARNING] [OllamaGuard] 
+⚠️  [DIAGNOSTIC WARNING]
+  • WHERE: OllamaGuard.safe_generate
+  • WHY:   Hardware guard tripped: Available RAM (0.14 GB) is lower than safe threshold (4.0 GB).
+  • FIX:   Close unused applications or connect AC charger.
+[2026-09-24 00:10:42] [WARNING] [Validator] 
+⚠️  [DIAGNOSTIC WARNING]
+  • WHERE: ValidatorGuard.quarantine_issue (LaTeX Math Error)
+  • WHY:   Hardware constraint: Available RAM (0.14 GB) is lower than safe threshold (4.0 GB). (Confidence: 0.00)
+  • FIX:   Issue quarantined to /Users/limchinkun/Desktop/books/data/needs_review/latex_math_error_25893.md for human inspection.
+  ℹ️ [隔離防呆啟動] 無法自動修復或處於降級模式，已自動隔離至: /Users/limchinkun/Desktop/books/data/needs_review/latex_math_error_25893.md
+
+• [情境 2: 輸入校驗自動攔截] 注入缺少章節的測試檔案...
+[2026-09-24 00:10:42] [WARNING] [Validator] 
+⚠️  [DIAGNOSTIC WARNING]
+  • WHERE: ValidatorGuard.validate_input_manifest
+  • WHY:   Manifest mismatch found: 1 discrepancies.
+  • FIX:   Review input folder or let Ollama generate repair plan.
+[2026-09-24 00:10:42] [WARNING] [OllamaGuard] 
+⚠️  [DIAGNOSTIC WARNING]
+  • WHERE: OllamaGuard.safe_generate
+  • WHY:   Hardware guard tripped: Available RAM (0.14 GB) is lower than safe threshold (4.0 GB).
+  • FIX:   Close unused applications or connect AC charger.
+  ✅ [輸入校驗防線觸發] 成功偵測到結構不符: ["Missing expected item from manifest: 'ch2_advanced.pdf'"]
+  🤖 [Ollama 診斷反饋]: Ollama unavailable for diagnosis....
+=================================================================
+🎉 檢驗完成！證明 Ollama 守衛與異常攔截功能已真實掛載於程式碼中。
+
+
+
+
+---
+
+## 🤖 [Step 454] 助手回應與執行軌跡 (Assistant Response)
+**時間**: `2026-09-23T16:10:46Z`
+
+### 🛠️ 工具調用 (Tool Calls)
+- `run_command`: *"Running archive-sessions"* ("Archive conversation sessions")
+
+---
+

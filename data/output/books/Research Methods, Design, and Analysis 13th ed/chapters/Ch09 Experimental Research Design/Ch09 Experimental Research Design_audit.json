@@ -1,0 +1,24 @@
+{
+  "chapter": "Ch09 Experimental Research Design",
+  "has_mindmap": true,
+  "table_count": 1,
+  "flashcard_count": 54,
+  "has_math_arrows": true,
+  "audited_pages": [
+    {
+      "page": 1,
+      "feature": "concept_map_and_lo",
+      "image": "Ch09 Experimental Research Design_p01.png",
+      "lo_format_valid": false,
+      "mermaid_valid": true
+    },
+    {
+      "page": 1,
+      "feature": "table",
+      "image": "Ch09 Experimental Research Design_p01.png",
+      "verified": true
+    }
+  ],
+  "quality_score": 9.0,
+  "status": "PASSED"
+}

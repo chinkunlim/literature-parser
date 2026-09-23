@@ -1,0 +1,18 @@
+{
+  "chapter": "Glossary",
+  "has_mindmap": false,
+  "table_count": 0,
+  "flashcard_count": 386,
+  "has_math_arrows": false,
+  "audited_pages": [
+    {
+      "page": 1,
+      "feature": "concept_map_and_lo",
+      "image": "Glossary_p01.png",
+      "lo_format_valid": false,
+      "mermaid_valid": false
+    }
+  ],
+  "quality_score": 6.5,
+  "status": "WARNING"
+}

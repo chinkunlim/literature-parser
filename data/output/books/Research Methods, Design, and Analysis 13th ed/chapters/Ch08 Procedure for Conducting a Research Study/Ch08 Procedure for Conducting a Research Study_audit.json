@@ -1,0 +1,24 @@
+{
+  "chapter": "Ch08 Procedure for Conducting a Research Study",
+  "has_mindmap": true,
+  "table_count": 1,
+  "flashcard_count": 15,
+  "has_math_arrows": false,
+  "audited_pages": [
+    {
+      "page": 1,
+      "feature": "concept_map_and_lo",
+      "image": "Ch08 Procedure for Conducting a Research Study_p01.png",
+      "lo_format_valid": false,
+      "mermaid_valid": true
+    },
+    {
+      "page": 1,
+      "feature": "table",
+      "image": "Ch08 Procedure for Conducting a Research Study_p01.png",
+      "verified": true
+    }
+  ],
+  "quality_score": 9.0,
+  "status": "PASSED"
+}

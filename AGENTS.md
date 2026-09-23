@@ -91,6 +91,16 @@
 5. **離席暫停** ⭐：使用者說去上課/暫停時，更新 `memory/HANDOFF.md`，跑 `run.py handoff "<reason>"`，**立即執行 `run.py archive-sessions` 產出摘要與紀錄**。
 6. **里程碑發布** ⭐：更新 `CHANGELOG.md`，跑 `run.py publish "<notes>"`，**立即執行 `run.py archive-sessions` 進行全量雙軌封存**。
 
+### 11. ⚙️ 八大自動化機制與觸發防線 (The 8 Autonomous Triggers)
+1. **存檔測試門禁**：`run.py save` 自動秒級執行 `unittest`，測試未全數通過自動攔截 Commit。
+2. **發布前全流程門禁**：`run.py publish` 自動執行全量測試 ➔ 自動會話歸檔 ➔ 清理過期暫存 ➔ Squash Merge。
+3. **Ollama 背景喚醒**：模型服務離線時自動啟動 `ollama serve`，失敗自動啟用純規則優雅降級。
+4. **硬體受限平滑降級**：RAM < 4GB、低電量電池模式或 SSD < 10GB 時自動降級大模型調用。
+5. **看門狗來檔自動轉檔**：`run.py watchdog` 監聽到新檔案自動檢查硬體並派發轉檔管線。
+6. **瑕疵自動修復與隔離**：LaTeX 語法錯誤或置信度 < 0.80 自動嘗試修復，失敗拋入 `data/needs_review/`。
+7. **過期暫存自動清理**：`doctor`、`save`、`publish` 自動清理上次異常中斷殘留的 `*.tmp.*` 暫存檔。
+8. **依賴環境自動同步**：`pyproject.toml` 異動或缺套件時自動執行 `uv sync` 對齊環境。
+
 ---
 
 ## 三、 臨時實驗室規範 (Scratchpad Policy)

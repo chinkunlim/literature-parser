@@ -27,6 +27,7 @@
 - [x] [2026-09-24] 將開案前置軟硬體基線探針 (鐵律 16) 與開案標配看門狗 (鐵律 17) 寫入 `PROJECT_INIT_STANDARD.md`
 - [x] [2026-09-24] 升級 `PROJECT_INIT_STANDARD.md` 至 22 大核心鐵律與企業級目錄骨幹，深度擴充 `docs/CODING_RULES.md` 納入 SOLID 原則、純函數與原子 I/O 規範
 - [x] [2026-09-24] 確立 CODING_RULES 雙層繼承架構（通用基線+領域擴充）與六大黃金時機同步矩陣（同步MD/Git/對話歸檔），同步升級標準至 24 大鐵律
+- [x] [2026-09-24] 確立八大自動化機制與確定性觸發防線 (The 8 Autonomous Triggers)，在 run.py 實裝存檔測試門禁、發布自動全流程與暫存自動清理，並同步規範至 PROJECT_INIT_STANDARD 與 AGENTS
 
 ---
 

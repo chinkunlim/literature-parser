@@ -142,7 +142,24 @@ my-new-project/
 
 ---
 
-## 四、 開案一鍵初始化檢查清單 (AI Checklist)
+## 四、 專案全自動化操作與觸發時機規範 (The 8 Autonomous Triggers)
+
+為確保專案在無人值守或 AI 協同開發時具備極致的穩定性與自動化，以下 8 大操作必須設定確定性自動觸發時機：
+
+| 編號 | 自動化操作項目 | 具體觸發時機 (When to Trigger) | 自動執行的動作 (Automated Action) |
+| :--- | :--- | :--- | :--- |
+| **1** | **存檔前自動測試門禁** (Pre-Save Test Gate) | 每次執行 `run.py save` 進行本地代碼提交時 | 自動秒級執行 `python -m unittest discover tests`；若有失敗立即阻斷 Commit 並顯示報錯，全數通過才放行。 |
+| **2** | **發布前全流程自動門禁** (Pre-Publish Pipeline) | 每次執行 `run.py publish` 發布正式里程碑時 | 依序自動執行：(1) 全量單元測試 ➔ (2) 會話雙軌歸檔 (`archive-sessions`) ➔ (3) 清理過期暫存檔 ➔ (4) Squash Merge 到 main。 |
+| **3** | **Ollama 斷線背景自動喚醒** (Auto-Wake Ollama) | 需要調用模型但 Port 11434 離線時 | 自動背景啟動 `ollama serve`，等待 3 秒重試；若成功則無縫對接，若失敗自動切換為純規則優雅降級。 |
+| **4** | **硬體受限自動平滑降級** (Hardware Degradation) | 啟動高算力處理前（RAM < 4GB、低電量電池模式、SSD < 10GB） | 自動關閉本地大模型深層掃描，切換為輕量純規則 Regex；若磁碟空間不足則拒絕大批次切圖並於日誌發出警報。 |
+| **5** | **看門狗來檔自動轉檔** (Watchdog Ingestion) | 常駐 `run.py watchdog` 偵測到 `data/input/` 目錄出現新檔案時 | 先巡檢軟硬體安全 ➔ 自動識別書籍或文獻 ➔ 派發至專屬管線轉檔 ➔ 輸出至 `data/output/` ➔ 標記已處理防重複。 |
+| **6** | **瑕疵自動自我修復與隔離** (Self-Healing & Quarantine) | LaTeX 括號破損、OCR 置信度 < 0.80、或目錄不符 `manifest.json` 時 | 打包上下文自動呼叫模型修復 1 次；若修復失敗或處於降級狀態，自動拋入 `data/needs_review/` 隔離存檔，主流程不卡死。 |
+| **7** | **過期暫存與當機殘留自動清理** (Temp Auto-Pruning) | 每次執行 `run.py doctor`、`run.py save` 或 `run.py publish` 時 | 自動掃描並刪除上次程式當機或中斷殘留的 `*.tmp.*` 原子寫入暫存檔，保持磁碟乾淨。 |
+| **8** | **依賴異動環境自動同步** (Dependency Auto-Sync) | `pyproject.toml` 被修改，或執行時捕捉到 `ModuleNotFoundError` 時 | AI 自動執行 `uv sync`，重新對齊虛擬環境依賴，杜絕缺套件報錯。 |
+
+---
+
+## 五、 開案一鍵初始化檢查清單 (AI Checklist)
 
 任何 AI Agent 在接收到本指南後，必須按以下清單逐一檢查並主動執行，最後向使用者回報：
 - [ ] 1. 建立 `.git/hooks/pre-push` 並給予執行權限 (`chmod +x`)。

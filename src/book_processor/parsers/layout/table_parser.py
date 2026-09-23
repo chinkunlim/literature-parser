@@ -116,8 +116,17 @@ class TableParser:
         for t in text_elements:
             txt = ''.join(t.itertext()).strip()
             m = re.match(r'^(?:Table|TABLE)\s+(\d+[\.\d]*)$', txt)
-            if m and float(t.attrib.get('height', 0)) >= 18:
-                table_headers.append((t, m.group(1)))
+            if m:
+                h = float(t.attrib.get('height', 0))
+                top_v = float(t.attrib.get('top', 0))
+                left_v = float(t.attrib.get('left', 0))
+                if h >= 10:
+                    followers = [f for f in text_elements if abs(float(f.attrib.get('top', 0)) - top_v) <= 5 and float(f.attrib.get('left', 0)) > left_v]
+                    if followers:
+                        f_txt = ''.join(followers[0].itertext()).strip()
+                        if f_txt.startswith((',', '.', ';', 'is', 'shows', 'was', 'reveals', 'indicates', 'demonstrates')):
+                            continue
+                    table_headers.append((t, m.group(1)))
 
         for head_t, t_num in table_headers:
             h_top = float(head_t.attrib.get('top', 0))
@@ -170,18 +179,40 @@ class TableParser:
             if not row_candidates:
                 continue
 
-            # Check if this is a multi-column grid table (e.g. Table 2.1)
+            # Check if this is a multi-column grid table (e.g. Table 2.1 or Table 1)
             top_band = sorted(set(float(t.attrib.get('top', 0)) for t in row_candidates if float(t.attrib.get('top', 0)) - h_top <= 60))
             is_grid = False
             first_top = top_band[0] if top_band else 0.0
             header_cells = []
+            col_bounds = []
+            header_titles = []
             if top_band:
-                header_cells = [t for t in row_candidates if abs(float(t.attrib.get('top', 0)) - first_top) <= 6]
-                header_cells.sort(key=lambda x: float(x.attrib.get('left', 0)))
-                if len(header_cells) >= 2:
-                    col_bounds = [float(c.attrib.get('left', 0)) for c in header_cells]
-                    if all(c2 - c1 >= 60 for c1, c2 in zip(col_bounds, col_bounds[1:])):
-                        is_grid = True
+                raw_header_cells = [t for t in row_candidates if abs(float(t.attrib.get('top', 0)) - first_top) <= 6]
+                raw_header_cells.sort(key=lambda x: float(x.attrib.get('left', 0)))
+                # Pre-merge adjacent horizontal fragments within 15pt (e.g. 'M', '(', 's.d.', ')')
+                merged_headers = []
+                for c in raw_header_cells:
+                    c_left = float(c.attrib.get('left', 0))
+                    c_w = float(c.attrib.get('width', 0))
+                    c_txt = ''.join(c.itertext()).strip()
+                    if merged_headers and (c_left - (merged_headers[-1]['left'] + merged_headers[-1]['width']) <= 15):
+                        merged_headers[-1]['text'] += (' ' if c_left - (merged_headers[-1]['left'] + merged_headers[-1]['width']) > 3 else '') + c_txt
+                        merged_headers[-1]['width'] = (c_left + c_w) - merged_headers[-1]['left']
+                        merged_headers[-1]['elements'].append(c)
+                    else:
+                        merged_headers.append({'left': c_left, 'width': c_w, 'text': c_txt, 'elements': [c]})
+
+                if len(merged_headers) >= 2:
+                    col_bounds = [m['left'] for m in merged_headers]
+                    # Check if there is a leftmost variable/label column before the first header cell
+                    leftmost_row_left = min([float(t.attrib.get('left', 0)) for t in row_candidates if float(t.attrib.get('top', 0)) > first_top + 6] or [9999.0])
+                    if leftmost_row_left < col_bounds[0] - 40:
+                        col_bounds.insert(0, leftmost_row_left)
+                        header_titles = [''] + [m['text'] for m in merged_headers]
+                    else:
+                        header_titles = [m['text'] for m in merged_headers]
+                    header_cells = [elem for m in merged_headers for elem in m['elements']]
+                    is_grid = True
 
             clean_title = title.strip()
             clean_title = re.sub(r'^\*\*(.+?)\*\*$', r'\1', clean_title)
@@ -215,15 +246,16 @@ class TableParser:
                     # Stop if gap between consecutive table rows exceeds 35pt
                     if d_top - curr_row_top > 35.0:
                         break
-                    # Allow footnote lines starting with *
-                    if not d_txt.startswith('*'):
+                    # Allow footnote lines starting with * or Note
+                    if not re.match(r'^(?:\*|Note\b)', d_txt, re.I):
                         if d_left < (col_bounds[0] + col_bounds[1]) / 2 and (d_left + d_w > col0_max_x or d_w > 250.0):
                             break
                     grid_data.append(d)
                     curr_row_top = max(curr_row_top, d_top)
 
-                row_starts = sorted(set(float(d.attrib.get('top', 0)) for d in grid_data if get_col_idx(float(d.attrib.get('left', 0))) == 0 and not ''.join(d.itertext()).strip().startswith('*')))
-                header_titles = [''.join(c.itertext()).strip() for c in header_cells]
+                row_starts = sorted(set(float(d.attrib.get('top', 0)) for d in grid_data if get_col_idx(float(d.attrib.get('left', 0))) == 0 and not re.match(r'^(?:\*|Note\b)', ''.join(d.itertext()).strip(), re.I)))
+                if not header_titles:
+                    header_titles = [''.join(c.itertext()).strip() for c in header_cells]
 
                 grid_consumed = list(table_consumed) + header_cells
                 fn_texts = []
@@ -236,7 +268,7 @@ class TableParser:
                         d_top = float(d.attrib.get('top', 0))
                         d_left = float(d.attrib.get('left', 0))
                         d_txt = ''.join(d.itertext()).strip()
-                        if d_txt.startswith('*'):
+                        if re.match(r'^(?:\*|Note\b)', d_txt, re.I):
                             if d not in grid_consumed:
                                 fn_texts.append(d_txt)
                                 grid_consumed.append(d)
@@ -252,7 +284,7 @@ class TableParser:
                 # Also collect any remaining footnote in grid_data
                 for d in grid_data:
                     d_txt = ''.join(d.itertext()).strip()
-                    if d_txt.startswith('*') and len(d_txt) > 2 and d not in grid_consumed:
+                    if re.match(r'^(?:\*|Note\b)', d_txt, re.I) and len(d_txt) > 2 and d not in grid_consumed:
                         fn_texts.append(d_txt)
                         grid_consumed.append(d)
 

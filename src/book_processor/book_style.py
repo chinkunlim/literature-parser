@@ -139,8 +139,53 @@ STYLE: dict = {
 
 
 def build_textbook_css(style: dict) -> str:
-    """Generates comprehensive textbook styling CSS to inject into chapter markdown."""
+    """Generates comprehensive typographic styling CSS to inject into markdown."""
     s = style or {}
+    if s.get("is_journal_article"):
+        return (
+            "<style>\n"
+            "  /* Academic Journal Typographic Styling */\n"
+            "  p {\n"
+            "    text-align: justify;\n"
+            "    text-justify: inter-word;\n"
+            "    line-height: 1.65;\n"
+            "    margin-bottom: 1em;\n"
+            "  }\n"
+            "  h1, h2, h3, h4, h5, h6 {\n"
+            "    text-align: left;\n"
+            "    font-weight: 700;\n"
+            "  }\n"
+            "  h1 { margin-top: 1.2em; margin-bottom: 0.6em; }\n"
+            "  h2 { margin-top: 1.6em; margin-bottom: 0.6em; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }\n"
+            "  h3 { margin-top: 1.3em; margin-bottom: 0.5em; }\n"
+            "  h4 { margin-top: 1.1em; margin-bottom: 0.4em; }\n"
+            "  blockquote {\n"
+            "    border-left: 4px solid #0056b3;\n"
+            "    padding: 10px 18px;\n"
+            "    margin: 1.4em 0;\n"
+            "    background: #f8f9fa;\n"
+            "    color: #333;\n"
+            "  }\n"
+            "  table {\n"
+            "    width: auto;\n"
+            "    max-width: 100%;\n"
+            "    border-collapse: collapse;\n"
+            "    margin: 1.8em 0;\n"
+            "    font-size: 0.88em;\n"
+            "  }\n"
+            "  th, td {\n"
+            "    padding: 8px 10px;\n"
+            "    border-bottom: 1px solid #ddd;\n"
+            "    text-align: left;\n"
+            "  }\n"
+            "  th {\n"
+            "    font-weight: bold;\n"
+            "    border-top: 1px solid #333;\n"
+            "    border-bottom: 1px solid #333;\n"
+            "  }\n"
+            "</style>\n\n"
+        )
+
     primary = s.get("primary_theme_color", "#842959")
     cat_bg = s.get("category_bg_color", "#f7f0f4")
     card_bg = s.get("card_bg_color", "#faf7f9")

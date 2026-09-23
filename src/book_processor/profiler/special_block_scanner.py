@@ -102,6 +102,24 @@ class SpecialBlockScanner:
             logger.info("SpecialBlockScanner: profile already complete, skipping scan.")
             return profile
 
+        # For academic journals: bypass concept maps, LOs, and margin glossaries
+        if profile.get("is_journal"):
+            profile.setdefault("special_blocks", {})
+            profile["special_blocks"]["has_concept_map"] = False
+            profile["special_blocks"]["has_margin_glossary"] = False
+            profile["special_blocks"]["lo_pattern"] = None
+            profile["special_blocks"]["eoc_heading_patterns"] = [r"^References\b", r"^Author Note\b"]
+            profile["column_roles"] = {
+                "even_left": "body",
+                "even_right": "body",
+                "odd_left": "body",
+                "odd_right": "body",
+            }
+            profile["scan_complete"] = True
+            self._save_profile(profile)
+            logger.info("SpecialBlockScanner: journal profile initialized with clean academic defaults.")
+            return profile
+
         discovered_blocks: List[Dict] = list(profile.get("discovered_blocks", []))
         existing_keywords = {b["keyword"] for b in discovered_blocks if b.get("keyword")}
         existing_types    = {b["type"] for b in discovered_blocks}

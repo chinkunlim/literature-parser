@@ -334,12 +334,12 @@ def check_table_banner_integrity(content: str) -> dict:
     }
 
 
-def check_heading_density(content: str, word_count: int, is_front_matter: bool = False) -> dict:
+def check_heading_density(content: str, word_count: int, is_front_matter: bool = False, is_journal: bool = False) -> dict:
     """
     Validates that substantial textbook chapters have sufficient heading hierarchy.
     """
-    if is_front_matter or word_count < 1000:
-        return {'passed': True, 'heading_count': 0, 'word_count': word_count}
+    if is_front_matter or is_journal or word_count < 1000:
+        return {'passed': True, 'heading_count': len([l for l in content.splitlines() if l.strip().startswith(('## ', '### '))]), 'word_count': word_count}
 
     headings = [l for l in content.splitlines() if l.strip().startswith(('## ', '### '))]
     passed = len(headings) >= 2

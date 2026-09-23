@@ -12,6 +12,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from book_processor.parsers.layout_detector import LayoutDetector
 from book_processor.parsers.math_latex import MathLaTeXConverter
+from book_processor.parsers.math.apa_stats_normalizer import APAStatsNormalizer
 from book_processor.style_loader import load_style
 from book_processor.fingerprinting.document_classifier import DocumentClassifier
 from book_processor.utils.text_utils import (
@@ -129,9 +130,25 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
         return combined
 
     @staticmethod
-    def _is_running_header(top: float, ph: float) -> bool:
-        """Determines if a text element is part of the top running header (top 4%)."""
-        return top < ph * 0.04
+    def _is_running_header(top: float, ph: float, txt: str = "", font_size: float = 12.0) -> bool:
+        """Determines if a text element is part of the top running header."""
+        if font_size >= 18.0:
+            return False
+        if top < ph * 0.04:
+            return True
+        if top < ph * 0.11:
+            clean = txt.strip()
+            if re.match(r'^\d+$', clean):
+                return True
+            if re.search(r'\b(?:ARTICLE IN PRESS|Journal of [A-Za-z]+|EXPERIMENTAL AND CLINICAL PSYCHOPHARMACOLOGY)\b', clean, re.I):
+                return True
+            if re.search(r'\bTEST-RETEST CHARACTERISTICS\b', clean):
+                return True
+            if re.search(r'\b(?:et al\.\s*/|WHITE,\s*LEJUEZ,\s*AND\s*DE\s*WIT|Downloaded from https?://)\b', clean, re.I):
+                return True
+            if clean.isupper() and len(clean) > 5 and font_size <= 14.0:
+                return True
+        return False
 
     @staticmethod
     def _is_running_footer(top: float, ph: float, txt: str, footer_ratio: float = 0.06) -> bool:
@@ -334,8 +351,8 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
         vec_images, vec_consumed = LayoutDetector.extract_vector_figures(page_elem, fonts, pdf_path, page_num, pw, ph)
         page_images = list(page_images) + vec_images
 
-        # 7. Pre-extract End-of-Chapter Sections (e.g. Pages 16-17)
-        eoc_sections, eoc_consumed = LayoutDetector.extract_end_of_chapter_sections(page_elem, fonts, pw, ph, page_num)
+        # 7. Pre-extract End-of-Chapter Sections (e.g. Pages 16-17; textbooks only)
+        eoc_sections, eoc_consumed = LayoutDetector.extract_end_of_chapter_sections(page_elem, fonts, pw, ph, page_num) if not is_journal else ([], set())
 
         all_consumed = lo_consumed | map_consumed | tbl_consumed | ex_consumed | g_consumed | vec_consumed | eoc_consumed
 
@@ -347,16 +364,21 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
 
             top = float(text_el.attrib.get('top', '0'))
             left = float(text_el.attrib.get('left', '0'))
+            w = float(text_el.attrib.get('width', '0'))
             font_id = text_el.attrib.get('font', '')
             font_info = fonts.get(font_id, {'is_bold': False, 'is_italic': False, 'is_math': False, 'family': '', 'size': 12})
 
-            # Check running header (top 4%)
-            if cls._is_running_header(top, ph):
+            txt_raw = ''.join(text_el.itertext()).strip()
+            # Check running header (top 4% to 11%)
+            if cls._is_running_header(top, ph, txt_raw, font_info.get('size', 12)):
                 continue
             # Check running footer: drop if pure page number digit or copyright at bottom 6%
-            txt_raw = ''.join(text_el.itertext()).strip()
             footer_ratio = _STYLE.get("footer_cut_ratio", 0.06)
             if cls._is_running_footer(top, ph, txt_raw, footer_ratio):
+                continue
+
+            # Filter rotated or vertical margin watermarks
+            if w == 0 and (left < pw * 0.10 or left > pw * 0.90):
                 continue
 
             # Filter unmapped vector font noise strings
@@ -365,7 +387,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 continue
             if re.search(r'\b(?:8GTDCN|1RGTCVKQ|5JGKUCIQQF|UCNGURGTUQP|UGNNUOCP|CUUKUVUYKVJ|1DUGTXCVKQPU|6JGQT|TGGCTEJ|&CVCFTKXGP)\b', txt_raw):
                 continue
-            if re.search(r'This document is copyrighted|intended solely for the personal use|text and data mining|AI training|allied publishers|disseminated broadly|All rights, including for text', txt_raw, re.I):
+            if re.search(r'This document is copyrighted|intended solely for the personal use|text and data mining|AI training|allied publishers|disseminated broadly|All rights, including for text|American Psychological Association|American Psychological|reserved\.?', txt_raw, re.I):
                 continue
 
             # Convert inner XML tags <b> and <i> to Markdown
@@ -409,71 +431,121 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
         if not raw_lines and not map_md and not lo_md and not page_tables and not eoc_sections and not page_exhibits:
             return ""
 
-        # Merge horizontal line fragments that have nearly identical Y coordinates
-        raw_lines.sort(key=lambda x: (round(x[0] / 8) * 8, x[1]))
-        merged_same_y = []
-        for l in raw_lines:
-            top_val, left_val, width_val, size_val, txt_val = l
-            prev_top, prev_left, prev_width, prev_size, prev_txt = merged_same_y[-1] if merged_same_y else (0, 0, 0, 0, '')
-            prev_right = (prev_left + prev_width) if merged_same_y else 0
-            gap_from_prev = left_val - prev_right
-            is_different_column = bool(merged_same_y and (
-                (prev_left < pw * 0.48 and left_val >= pw * 0.45) or
-                (prev_left >= pw * 0.45 and left_val < pw * 0.48) or
-                (left_val < prev_left) or
-                (gap_from_prev > 45)
-            ))
-            if merged_same_y and abs(prev_top - top_val) <= 8 and not is_different_column:
-                prev = merged_same_y.pop()
-                prev_top, prev_left, prev_width, prev_size, prev_txt = prev
-                prev_right = prev_left + prev_width
-                gap = left_val - prev_right
-                # Detect inline graphical arrows (e.g. smoking -> tissue damage -> lung cancer or as in A -> B)
-                is_arrow = False
-                if 18 <= gap <= 60:
-                    if re.search(r'\b(?:arrows?|relationship as follows|meaning causes|causes?|as in [A-Z])\b', prev_txt, re.I) or \
-                       re.search(r'^(?:lung cancer|tissue damage|[B-Z]\b|[B-Z]\))', txt_val, re.I):
-                        is_arrow = True
-                separator = r" $\rightarrow$ " if is_arrow else " "
-                new_text = prev_txt + separator + txt_val
-                new_width = (left_val + width_val) - prev_left
-                merged_same_y.append((prev_top, prev_left, new_width, max(prev_size, size_val), new_text))
+        # Baseline clustering: cluster text elements within 4.5pt vertically into baseline lines
+        raw_lines.sort(key=lambda x: x[0])
+        clusters = []
+        for item in raw_lines:
+            matched_c = None
+            for c in clusters:
+                c_top = sum(x[0] for x in c) / len(c)
+                if abs(c_top - item[0]) <= 5.0:
+                    matched_c = c
+                    break
+            if matched_c is not None:
+                matched_c.append(item)
             else:
-                merged_same_y.append((top_val, left_val, width_val, size_val, txt_val))
+                clusters.append([item])
 
-        merged_four = [(m[0], m[1], m[3], m[4]) for m in merged_same_y]
+        # Merge horizontal line fragments in each baseline cluster
+        merged_same_y = []
+        for c in clusters:
+            c_sorted = sorted(c, key=lambda x: x[1])
+            cur_line = []
+            for item in c_sorted:
+                top_val, left_val, width_val, size_val, txt_val = item
+                if not cur_line:
+                    cur_line = [top_val, left_val, width_val, size_val, txt_val]
+                else:
+                    prev_top, prev_left, prev_width, prev_size, prev_txt = cur_line
+                    prev_right = prev_left + prev_width
+                    gap = left_val - prev_right
+                    is_diff_col = (gap > 20) and ((prev_left < pw * 0.48 and left_val >= pw * 0.48) or (gap > 60 and left_val < prev_left))
+                    if is_diff_col:
+                        merged_same_y.append(tuple(cur_line))
+                        cur_line = [top_val, left_val, width_val, size_val, txt_val]
+                    else:
+                        is_arrow = False
+                        if 18 <= gap <= 60:
+                            if re.search(r'\b(?:arrows?|relationship as follows|meaning causes|causes?|as in [A-Z])\b', prev_txt, re.I) or \
+                               re.search(r'^(?:lung cancer|tissue damage|[B-Z]\b|[B-Z]\))', txt_val, re.I):
+                                is_arrow = True
+                        separator = r" $\rightarrow$ " if is_arrow else " "
+                        new_width = (left_val + width_val) - prev_left
+                        new_txt = prev_txt + separator + txt_val
+                        cur_line = [min(prev_top, top_val), prev_left, new_width, max(prev_size, size_val), new_txt]
+            if cur_line:
+                merged_same_y.append(tuple(cur_line))
+
         # Separate bottom-of-page footnotes after horizontal merging
-        lines, footnotes = LayoutDetector.separate_footnotes(merged_four, ph)
+        lines, footnotes = LayoutDetector.separate_footnotes(merged_same_y, ph)
 
-        max_span_top = max([m[0] for m in merged_same_y if m[1] < pw * 0.45 and (m[1] + m[2]) > pw * 0.55] or [0])
+        gutter_left = pw * 0.42
+        gutter_right = pw * 0.58
 
-        # Detect two-column layout (e.g. Appendix answer keys or 2-column pages)
-        left_col = [l for l in lines if l[1] < pw * 0.48 and l[0] > max_span_top]
-        right_col = [l for l in lines if l[1] >= pw * 0.48 and l[0] > max_span_top]
-        left_tops = [l[0] for l in left_col]
-        right_tops = [l[0] for l in right_col]
-        overlap_count = sum(1 for rt in right_tops if any(abs(rt - lt) < 15 for lt in left_tops))
+        classified = []
+        for item in lines:
+            top, left, width, size, text = item[0], item[1], item[2], item[3], item[4]
+            right = left + width
+            if left < gutter_left and right > gutter_right and width > pw * 0.48:
+                cls_type = 'span'
+            elif left < pw * 0.48:
+                cls_type = 'left'
+            else:
+                cls_type = 'right'
+            classified.append((top, left, size, text, cls_type))
 
-        if len(left_col) >= 6 and len(right_col) >= 6 and overlap_count >= 5:
-            two_col_top = min(min(l[0] for l in left_col if any(abs(l[0] - rt) < 15 for rt in right_tops)),
-                              min(l[0] for l in right_col if any(abs(l[0] - lt) < 15 for lt in left_tops)))
-            two_col_top = max(two_col_top, max_span_top + 5)
-            header_lines = [l for l in lines if l[0] < two_col_top - 5]
-            body_left = [l for l in left_col if l[0] >= two_col_top - 5]
-            body_right = [l for l in right_col if l[0] >= two_col_top - 5]
-            ordered_lines = (
-                sorted(header_lines, key=lambda x: (x[0], x[1])) +
-                sorted(body_left, key=lambda x: (x[0], x[1])) +
-                sorted(body_right, key=lambda x: (x[0], x[1]))
-            )
+        left_count = sum(1 for c in classified if c[4] == 'left')
+        right_count = sum(1 for c in classified if c[4] == 'right')
+
+        if left_count >= 5 and right_count >= 5:
+            # Multi-column page: group spanning elements into bands
+            span_intervals = []
+            for top, left, size, text, cls_type in classified:
+                if cls_type == 'span':
+                    span_intervals.append((top, top + size * 1.5))
+
+            merged_spans = []
+            for s, e in sorted(span_intervals):
+                if not merged_spans or s > merged_spans[-1][1] + 25:
+                    merged_spans.append([s, e])
+                else:
+                    merged_spans[-1][1] = max(merged_spans[-1][1], e)
+
+            boundaries = [0.0]
+            for s, e in merged_spans:
+                boundaries.append(s - 2)
+                boundaries.append(e + 2)
+            boundaries.append(ph + 100)
+
+            ordered_lines = []
+            for i in range(0, len(boundaries) - 1, 2):
+                b_start, b_end = boundaries[i], boundaries[i+1]
+                in_band = [c for c in classified if b_start <= c[0] < b_end]
+                lefts = [c for c in in_band if c[4] == 'left']
+                rights = [c for c in in_band if c[4] == 'right']
+                if len(lefts) >= 2 and len(rights) >= 2:
+                    ordered_lines.extend([(c[0], c[1], c[2], c[3]) for c in sorted(lefts, key=lambda x: (x[0], x[1]))])
+                    ordered_lines.extend([(c[0], c[1], c[2], c[3]) for c in sorted(rights, key=lambda x: (x[0], x[1]))])
+                else:
+                    ordered_lines.extend([(c[0], c[1], c[2], c[3]) for c in sorted(in_band, key=lambda x: (x[0], x[1]))])
+
+                if i + 1 < len(boundaries) - 1:
+                    s_start, s_end = boundaries[i+1], boundaries[i+2]
+                    in_span = [c for c in classified if s_start <= c[0] < s_end]
+                    ordered_lines.extend([(c[0], c[1], c[2], c[3]) for c in sorted(in_span, key=lambda x: (x[0], x[1]))])
         else:
-            ordered_lines = sorted(lines, key=lambda x: (x[0], x[1]))
+            ordered_lines = sorted([(l[0], l[1], l[3], l[4]) for l in lines], key=lambda x: (x[0], x[1]))
 
-        # Detect base body size and indent
+        # Detect base body size and column-relative base margins
         body_sizes = [l[2] for l in ordered_lines if 11 <= l[2] <= 16]
         body_size = max(set(body_sizes), key=body_sizes.count) if body_sizes else 14.0
-        body_lefts = [l[1] for l in ordered_lines if abs(l[2] - body_size) < 1.0 and len(l[3]) > 30]
-        base_left = min(body_lefts) if body_lefts else 0.0
+
+        left_col_lefts = [l[1] for l in ordered_lines if l[1] < gutter_left and abs(l[2] - body_size) < 1.0 and len(l[3]) > 30]
+        col1_base_left = min(left_col_lefts) if left_col_lefts else 0.0
+        base_left = col1_base_left
+
+        right_col_lefts = [l[1] for l in ordered_lines if l[1] >= gutter_left and abs(l[2] - body_size) < 1.0 and len(l[3]) > 30]
+        col2_base_left = min(right_col_lefts) if right_col_lefts else 0.0
 
         blocks = []
         curr_p = []
@@ -484,12 +556,21 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             nonlocal curr_p, curr_p_lefts
             if curr_p:
                 p_text = clean_punctuation_spacing(' '.join(curr_p))
-                # True blockquote has ALL lines indented significantly (>= 30pt from base_left)
-                if curr_p_lefts and all(l - base_left >= 30 for l in curr_p_lefts) and len(p_text) > 40:
+                # True blockquote has ALL lines indented significantly (>= 25pt) from their respective column base (textbooks only)
+                is_bq = False
+                if not is_journal and curr_p_lefts and len(p_text) > 40:
+                    indents = []
+                    for l_val in curr_p_lefts:
+                        base = col2_base_left if (col2_base_left and l_val >= gutter_left - 20) else col1_base_left
+                        indents.append(l_val - base)
+                    if all(ind >= 25 for ind in indents):
+                        is_bq = True
+                if is_bq:
                     p_text = f"> {p_text}"
                 blocks.append(p_text)
                 curr_p = []
                 curr_p_lefts = []
+
 
 
         for top, left, size, text in ordered_lines:
@@ -497,12 +578,26 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 text = re.sub(r'Association or one of its allied publishers\.?', '', text)
                 text = re.sub(r'AI training, and similar technologies, are reserved\.?', '', text)
                 text = re.sub(r'This article is intended solely for the personal use.*?publisher\.?', '', text)
+                text = re.sub(r'ARTICLE IN PRESS\b', '', text)
+                text = re.sub(r'American Psychological Association\.?', '', text)
+                text = re.sub(r'All rights, including for text and data mining.*', '', text)
+                text = APAStatsNormalizer.normalize_text(text)
             clean_t = re.sub(r'[*_]', '', text).strip()
+            if not clean_t:
+                continue
 
-            # Check if major section heading (size >= 28)
-            is_h2 = (size >= 28.0 and len(clean_t) < 100)
-            # Check if subsection heading (20 <= size < 28) or Chapter N in Appendix
-            is_h3 = (20.0 <= size < 28.0 and len(clean_t) < 80) or bool(re.match(r'^(?:\*\*)?Chapter\s+\d+(?:\*\*)?$', text.strip(), re.I))
+            # Check if major section heading (size >= 28 or journal academic section heading)
+            is_journal_head = is_journal and (
+                clean_t in ('Abstract', 'Method', 'Methods', 'Results', 'Discussion', 'References', 'Conclusion', 'Conclusions') or
+                bool(re.match(r'^\d+\.\s+[A-Z]', clean_t))
+            )
+            is_journal_subhead = is_journal and (
+                bool(re.match(r'^\d+\.\d+\.?\s+[A-Z]', clean_t)) or
+                (clean_t in ('Participants', 'Procedure', 'Data Analysis', 'Measures', 'Apparatus', 'Statistical Analysis'))
+            )
+            is_h2 = (size >= 28.0 and len(clean_t) < 100) or is_journal_head
+            # Check if subsection heading (20 <= size < 28) or Chapter N in Appendix or journal subhead
+            is_h3 = ((20.0 <= size < 28.0 and len(clean_t) < 80) or bool(re.match(r'^(?:\*\*)?Chapter\s+\d+(?:\*\*)?$', text.strip(), re.I))) or is_journal_subhead
             # Check if objective heading (1.1 Compare ...) - only for textbooks
             is_obj = not is_journal and bool(re.match(r'^(?:\*\*)?\d+\.\d+(?:\*\*)?(?:\s+|$)', text.strip()))
 
@@ -606,7 +701,8 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
 
             # Paragraph splitting on indentation or spacing (never split if continuing with lowercase letter)
             is_lowercase = bool(clean_t and clean_t[0].islower())
-            is_indent = (left - base_left >= 18) and abs(size - body_size) < 1.5 and not is_lowercase
+            cur_base = col2_base_left if (col2_base_left and left >= gutter_left - 20) else col1_base_left
+            is_indent = (left - cur_base >= 18) and abs(size - body_size) < 1.5 and not is_lowercase
             # If current line has the same left indentation as previous line (e.g. blockquote), don't split
             if curr_p_lefts and abs(left - curr_p_lefts[-1]) <= 6:
                 is_indent = False

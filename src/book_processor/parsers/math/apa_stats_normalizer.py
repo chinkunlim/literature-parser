@@ -18,15 +18,15 @@ class APAStatsNormalizer:
         re.I
     )
 
-    # 2. t-tests: t(84) = 2.45, p < .05
+    # 2. t-tests: t(84) = 2.45, p < .05 or t(1, 38) = 0.85
     T_PATTERN = re.compile(
-        r'\bt\s*\(\s*(\d+)\s*\)\s*=\s*([-\d\.]+)(?:,\s*p\s*([<>=])\s*([\.\d]+))?',
+        r'\bt\s*\(\s*(\d+)(?:\s*,\s*(\d+))?\s*\)\s*([<>=])\s*([+\-]?\s*[-\d\.]+)(?:,\s*p\s*([<>=])\s*([\.\d]+))?',
         re.I
     )
 
-    # 3. Correlations: r = .45, r(84) = .45, p < .01
+    # 3. Correlations: r = .45, r(84) = .45, r = +.77, p < .01, r = + .77
     R_PATTERN = re.compile(
-        r'\br(?:\s*\(\s*(\d+)\s*\))?\s*=\s*([-\d\.]+)(?:,\s*p\s*([<>=])\s*([\.\d]+))?',
+        r'\br(?:\s*\(\s*(\d+)\s*\))?\s*=\s*([+\-]?\s*[\.\d]+)(?:,\s*p\s*([<>=])\s*([\.\d]+))?',
         re.I
     )
 
@@ -88,6 +88,20 @@ class APAStatsNormalizer:
 
         res = text
 
+        # Map font-encoded and OCR mathematical symbols
+        symbol_map = {
+            '⫽': '=',
+            '⫹': '+',
+            '⬍': '<',
+            'ⱕ': r'\le ',
+            '␳': r'\rho',
+            'ⴱ': '*',
+            '¼': '=',
+            '⫾': r'\pm ',
+        }
+        for sym, repl in symbol_map.items():
+            res = res.replace(sym, repl)
+
         # Normalize M = x, SD = y -> $M = x, SD = y$
         res = cls.M_SD_PATTERN.sub(r'$M = \1, SD = \2$', res)
 
@@ -101,20 +115,29 @@ class APAStatsNormalizer:
 
         # Normalize t-tests
         def replace_t(m):
-            df, val, pop, pval = m.groups()
+            df1, df2, op, val, pop, pval = m.groups()
+            df_str = f"{df1}, {df2}" if df2 else f"{df1}"
             if pop and pval:
-                return f"$t({df}) = {val}, p {pop} {pval}$"
-            return f"$t({df}) = {val}$"
+                return f"$t({df_str}) {op} {val}, p {pop} {pval}$"
+            return f"$t({df_str}) {op} {val}$"
         res = cls.T_PATTERN.sub(replace_t, res)
 
-        # Normalize correlations: r = .xx or r(df) = .xx
+        # Normalize correlations: r = .xx or r(df) = .xx, or r = +.77, r = + .77
         def replace_r(m):
             df, val, pop, pval = m.groups()
+            val = val.replace(' ', '')
             df_str = f"({df})" if df else ""
             if pop and pval:
                 return f"$r{df_str} = {val}, p {pop} {pval}$"
             return f"$r{df_str} = {val}$"
         res = cls.R_PATTERN.sub(replace_r, res)
+
+        # Normalize rho correlations: \rho = +.71 or rho = + .71
+        res = re.sub(
+            r'(?:\\rho|\brho)\s*=\s*([+\-]?\s*[\.\d]+)(?:,\s*p\s*([<>=])\s*([\.\d]+))?',
+            lambda m: f"$\\rho = {m.group(1).replace(' ', '')}" + (f", p {m.group(2)} {m.group(3)}$" if m.group(2) else "$"),
+            res
+        )
 
         # Normalize Delta R^2
         res = cls.DELTA_R2_PATTERN.sub(r'$\\Delta R^2 = \1$', res)

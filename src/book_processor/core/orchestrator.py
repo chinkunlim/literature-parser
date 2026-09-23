@@ -39,8 +39,10 @@ from book_processor.style_loader import load_style
 from book_processor.book_style import build_textbook_css
 from book_processor.parsers.layout_detector import set_style as _ld_set_style, generate_markdown_toc
 from book_processor.parsers import digital_pdf as _digital_pdf_mod
+import json
 from book_processor.utils.anki_exporter import AnkiExporter
 from book_processor.concurrency import M5WorkerPool
+from book_processor.fingerprinting.document_classifier import DocumentClassifier
 
 
 logger = logging.getLogger(__name__)
@@ -256,11 +258,24 @@ class BookProcessorOrchestrator:
         book_dir = ch_dir.parent.parent
         learner = AdaptiveLearner(str(book_dir))
 
+        # Check document classification (journal vs textbook)
+        is_journal_doc = DocumentClassifier.is_journal_article(str(ch_pdf)) or (book_source_pdf and DocumentClassifier.is_journal_article(str(book_source_pdf)))
+
         # Auto-calibrate geometry and scan special blocks on first chapter run if profile missing
         book_profile_path = book_dir / "book_profile.json"
         if not book_profile_path.exists():
             try:
                 CoordinateCalibrator.calibrate_and_save_profile(book_dir, ch_pdf)
+                if is_journal_doc:
+                    try:
+                        with open(book_profile_path, 'r', encoding='utf-8') as f_prof:
+                            prof_data = json.load(f_prof)
+                        prof_data["is_journal"] = True
+                        with open(book_profile_path, 'w', encoding='utf-8') as f_prof:
+                            json.dump(prof_data, f_prof, indent=2)
+                    except Exception as e:
+                        logger.debug("Failed updating is_journal in profile: %s", e)
+
                 scanner = SpecialBlockScanner(book_dir)
                 scanner.scan_and_update([ch_pdf], max_pages_per_chapter=10)
             except Exception as e:
@@ -268,6 +283,11 @@ class BookProcessorOrchestrator:
 
         # Load per-book style (merges global defaults with book-level override if present)
         _style = load_style(str(book_dir))
+        if is_journal_doc:
+            _style["is_journal_article"] = True
+            _style["generate_toc"] = False
+            _style["gloss_placement"] = "none"
+            _style["prepend_chapter_title_if_missing"] = False
         _ld_set_style(_style)
         _digital_pdf_mod._STYLE = _style
 
@@ -308,13 +328,22 @@ class BookProcessorOrchestrator:
                     md_parts.append(f"<!-- Page {p} -->\n{p_md}")
 
         full_md = '\n\n'.join(md_parts).strip()
-        if _style.get("prepend_chapter_title_if_missing", True):
+        if is_journal_doc:
+            # Promote the main article title to # (H1) if only ### was assigned
+            if not re.search(r'^\s*#\s+[^\n]+', full_md):
+                m_first_h = re.search(r'###\s+([^\n]+)(?:\n+###\s+([^\n]+))?', full_md)
+                if m_first_h:
+                    t1 = m_first_h.group(1).strip()
+                    t2 = m_first_h.group(2).strip() if m_first_h.group(2) else ""
+                    combined_title = f"{t1} {t2}".strip()
+                    full_md = full_md[:m_first_h.start()] + f"# {combined_title}" + full_md[m_first_h.end():]
+        elif _style.get("prepend_chapter_title_if_missing", True):
             if not re.search(r'^\s*#+\s*(?:PART|CHAPTER|\d+|Introduction)', full_md, re.I) and not re.search(r'^\s*<!--.*?-->\s*#+\s*', full_md, re.I):
                 full_md = f"# {ch_name}\n\n{full_md}"
 
         # Insert clickable Table of Contents if configured
         toc_mode = _style.get("toc_mode", "open")
-        if _style.get("generate_toc", True) and toc_mode != "none":
+        if not is_journal_doc and _style.get("generate_toc", True) and toc_mode != "none":
             toc_block = generate_markdown_toc(full_md, toc_mode=toc_mode)
             if toc_block and "<summary>📑 <b>Table of Contents</b>" not in full_md:
                 # Place TOC after the first top-level # heading
@@ -557,6 +586,17 @@ class BookProcessorOrchestrator:
 
                 # 2. Convert & Auto-Verify (with auto-retry feedback loop)
                 self.convert_single_chapter(ch_pdf, book_source_pdf=pdf_path)
+
+        # Mirror chapter markdown to root directory if single section or journal article
+        if len(sections) == 1:
+            sec_name = sections[0]['name']
+            src_md = os.path.join(chapters_root, sec_name, f"{sec_name}.md")
+            dst_md = os.path.join(book_out, f"{sanitize_filename(book_name)}.md")
+            if os.path.exists(src_md):
+                try:
+                    shutil.copy2(src_md, dst_md)
+                except Exception as e:
+                    logger.debug("Failed copying root markdown: %s", e)
 
         print(f"\n{'='*70}\nBOOK RUN COMPLETE! Progress saved in: {ckpt.md_path}\n{'='*70}\n")
 

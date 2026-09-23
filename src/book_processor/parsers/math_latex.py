@@ -16,11 +16,12 @@ GREEK_MAP = {
     'Δ': r'\Delta', 'Σ': r'\Sigma', 'Ω': r'\Omega'
 }
 
-# Math operators to LaTeX mappings
 MATH_SYMBOLS = {
     '≤': r'\le', '≥': r'\ge', '≠': r'\neq', '≈': r'\approx',
     '±': r'\pm', '×': r'\times', '÷': r'\div', '∑': r'\sum',
-    '∏': r'\prod', '√': r'\sqrt', '∞': r'\infty', '∫': r'\int'
+    '∏': r'\prod', '√': r'\sqrt', '∞': r'\infty', '∫': r'\int',
+    '⫽': '=', '⫹': '+', '⬍': '<', 'ⱕ': r'\le',
+    '␳': r'\rho', 'ⴱ': '*', '¼': '=', '⫾': r'\pm'
 }
 
 # Combined character→latex map for run-grouping

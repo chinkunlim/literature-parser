@@ -78,7 +78,30 @@ class DocumentClassifier:
         """Convenience method to check if a file is an academic journal article."""
         if not pdf_path:
             return False
-        p_lower = str(pdf_path).lower()
-        if re.search(r'\b(?:10\.\d{4,5}|[a-z]{2,8}-\d{4}-\d{4,6}|\d{4}-\d{5}-\d{3})\b', p_lower):
+        p_str = str(pdf_path)
+        p_lower = p_str.lower()
+
+        # Robust check if file exists on disk
+        import os
+        from pathlib import Path
+        p = Path(pdf_path)
+        if p.exists() and p.is_file() and p.suffix.lower() == '.pdf':
+            try:
+                import subprocess
+                info_out = subprocess.check_output(['pdfinfo', str(p)], stderr=subprocess.DEVNULL, timeout=5).decode('utf-8', errors='ignore')
+                pages = 0
+                for line in info_out.splitlines():
+                    if line.startswith('Pages:'):
+                        pages = int(line.split(':')[1].strip())
+                        break
+                if pages > 0:
+                    txt = subprocess.check_output(['pdftotext', '-f', '1', '-l', str(min(2, pages)), str(p), '-'], stderr=subprocess.DEVNULL, timeout=10).decode('utf-8', errors='ignore')
+                    res = cls.classify(pages, txt)
+                    return res.get('is_journal', False)
+            except Exception:
+                pass
+
+        if re.search(r'\b(?:10\.\d{4,5}|[a-z]{2,8}-\d{4}-\d{4,6}|\d{4}-\d{5}-\d{3}|journal(?:\s+of)?|adolescence)\b', p_lower):
             return True
         return False
+

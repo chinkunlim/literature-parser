@@ -71,7 +71,11 @@ class LayoutDetector:
         bottom_threshold = page_height * 0.85
         in_footnote = False
 
-        for top, left, size, text in lines_with_pos:
+        for item in lines_with_pos:
+            top = item[0]
+            left = item[1]
+            size = item[-2]
+            text = item[-1]
             s = text.strip()
             # Check if line is at the bottom of the page and starts with a digit/bracket
             if top >= bottom_threshold and size <= 12.5:
@@ -87,7 +91,7 @@ class LayoutDetector:
                         footnote_lines[-1] += " " + s
                     continue
             in_footnote = False
-            body_lines.append((top, left, size, text))
+            body_lines.append(item)
 
         return body_lines, footnote_lines
 

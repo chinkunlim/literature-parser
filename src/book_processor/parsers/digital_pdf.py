@@ -13,6 +13,7 @@ from pathlib import Path
 from book_processor.parsers.layout_detector import LayoutDetector
 from book_processor.parsers.math_latex import MathLaTeXConverter
 from book_processor.style_loader import load_style
+from book_processor.fingerprinting.document_classifier import DocumentClassifier
 from book_processor.utils.text_utils import (
     clean_punctuation_spacing, repair_hyphens, clean_page_text_artifacts,
     detect_plain_text_headings, reflow_wrapped_lines, repair_drop_caps,
@@ -258,18 +259,22 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             except Exception as e:
                 logger.debug("pdftotext fallback failed on page %d: %s", page_num, e)
 
-        # 1. Pre-extract Learning Objectives
-        try:
-            lo_md, lo_consumed = LayoutDetector.extract_learning_objectives(page_elem, fonts)
-        except Exception as e:
-            logger.warning("extract_learning_objectives failed on page %d: %s", page_num, e)
-            lo_md, lo_consumed = "", set()
+        is_journal = _STYLE.get("is_journal_article", False) or DocumentClassifier.is_journal_article(pdf_path)
+
+        # 1. Pre-extract Learning Objectives (textbooks only)
+        lo_md, lo_consumed = "", set()
+        if not is_journal:
+            try:
+                lo_md, lo_consumed = LayoutDetector.extract_learning_objectives(page_elem, fonts)
+            except Exception as e:
+                logger.warning("extract_learning_objectives failed on page %d: %s", page_num, e)
+                lo_md, lo_consumed = "", set()
 
         # 2. Pre-extract Concept Map (Only if page has Learning Objectives or chapter title on page 1)
-        # Never run concept map on back-matter sections (Appendix, Glossary, Index, References)
+        # Never run concept map on back-matter sections or journal articles
         pdf_path_lower = pdf_path.lower()
         sec_rules = _STYLE.get("section_rules", {})
-        skip_concept_map = False
+        skip_concept_map = is_journal
         if any(k in pdf_path_lower for k in ("appendix", "glossary", "index", "reference")):
             skip_concept_map = True
         for sec_name, rules in sec_rules.items():
@@ -488,14 +493,18 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
 
 
         for top, left, size, text in ordered_lines:
+            if is_journal:
+                text = re.sub(r'Association or one of its allied publishers\.?', '', text)
+                text = re.sub(r'AI training, and similar technologies, are reserved\.?', '', text)
+                text = re.sub(r'This article is intended solely for the personal use.*?publisher\.?', '', text)
             clean_t = re.sub(r'[*_]', '', text).strip()
 
             # Check if major section heading (size >= 28)
             is_h2 = (size >= 28.0 and len(clean_t) < 100)
             # Check if subsection heading (20 <= size < 28) or Chapter N in Appendix
             is_h3 = (20.0 <= size < 28.0 and len(clean_t) < 80) or bool(re.match(r'^(?:\*\*)?Chapter\s+\d+(?:\*\*)?$', text.strip(), re.I))
-            # Check if objective heading (1.1 Compare ...)
-            is_obj = bool(re.match(r'^(?:\*\*)?\d+\.\d+(?:\*\*)?\s+', text))
+            # Check if objective heading (1.1 Compare ...) - only for textbooks
+            is_obj = not is_journal and bool(re.match(r'^(?:\*\*)?\d+\.\d+(?:\*\*)?(?:\s+|$)', text.strip()))
 
             # Check if continuation of previous objective banner
             if blocks and re.search(r'[-*>] 🎯', blocks[-1]) and (last_top is not None and top - last_top < 30):

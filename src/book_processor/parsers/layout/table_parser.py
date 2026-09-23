@@ -348,6 +348,67 @@ class TableParser:
                 })
                 continue
 
+            # Check if this is Archetype 2: Comparison Card Table (e.g. Strengths and Weaknesses)
+            banner_nodes = [
+                t for t in row_candidates
+                if re.match(r'^(?:Strengths|Weaknesses|Advantages|Disadvantages)\s+of\b', ''.join(t.itertext()).strip(), re.I)
+            ]
+            if len(banner_nodes) >= 1 or re.search(r'\b(?:Strengths\s+and\s+Weaknesses|Advantages\s+and\s+Disadvantages)\b', clean_title, re.I):
+                row_candidates.sort(key=lambda x: (float(x.attrib.get('top', 0)), float(x.attrib.get('left', 0))))
+                banner_sections = []
+                current_banner_title = ""
+                current_banner_items = []
+                grid_consumed = list(table_consumed)
+
+                for t in row_candidates:
+                    txt = ''.join(t.itertext()).strip()
+                    if not txt:
+                        continue
+                    m_b = re.match(r'^(?:Strengths|Weaknesses|Advantages|Disadvantages)\s+of\b.*', txt, re.I)
+                    if m_b:
+                        if current_banner_title or current_banner_items:
+                            banner_sections.append((current_banner_title, current_banner_items))
+                        current_banner_title = txt
+                        current_banner_items = []
+                        grid_consumed.append(t)
+                    else:
+                        is_bullet = bool(re.match(r'^[•\-\*]\s*', txt))
+                        if is_bullet:
+                            clean_it = re.sub(r'^[•\-\*]\s*', '', txt).strip()
+                            current_banner_items.append(clean_it)
+                            grid_consumed.append(t)
+                        elif current_banner_items:
+                            current_banner_items[-1] += " " + txt
+                            grid_consumed.append(t)
+                        elif current_banner_title:
+                            current_banner_items.append(txt)
+                            grid_consumed.append(t)
+
+                if current_banner_title or current_banner_items:
+                    banner_sections.append((current_banner_title, current_banner_items))
+
+                if len(banner_sections) >= 1 and sum(len(it) for _, it in banner_sections) >= 2:
+                    card_lines = [tbl_header, "", '<div class="comparison-card">']
+                    for b_title, b_items in banner_sections:
+                        b_cls = "banner-weaknesses" if any(w in b_title.lower() for w in ('weakness', 'disadvantage', 'con')) else "banner-strengths"
+                        card_lines.append(f'  <div class="{b_cls}">')
+                        if b_title:
+                            card_lines.append(f'    <div class="banner-header">{b_title}</div>')
+                        card_lines.append('    <ul class="banner-list">')
+                        for it in b_items:
+                            clean_it = re.sub(r'\s+', ' ', it).strip()
+                            card_lines.append(f'      <li>{clean_it}</li>')
+                        card_lines.append('    </ul>')
+                        card_lines.append('  </div>')
+                    card_lines.append('</div>')
+
+                    consumed.update(grid_consumed)
+                    tables.append({
+                        'top': h_top,
+                        'markdown': '\n'.join(card_lines)
+                    })
+                    continue
+
             row_candidates.sort(key=lambda x: (float(x.attrib.get('top', 0)), float(x.attrib.get('left', 0))))
             items = []
             curr_item = []

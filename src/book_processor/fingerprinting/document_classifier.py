@@ -72,3 +72,13 @@ class DocumentClassifier:
             "confidence": 0.60,
             "reason": "Standard single document"
         }
+
+    @classmethod
+    def is_journal_article(cls, pdf_path: str = None) -> bool:
+        """Convenience method to check if a file is an academic journal article."""
+        if not pdf_path:
+            return False
+        p_lower = str(pdf_path).lower()
+        if re.search(r'\b(?:10\.\d{4,5}|[a-z]{2,8}-\d{4}-\d{4,6}|\d{4}-\d{5}-\d{3})\b', p_lower):
+            return True
+        return False

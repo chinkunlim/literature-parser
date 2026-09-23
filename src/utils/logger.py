@@ -10,7 +10,8 @@ import logging
 from pathlib import Path
 from datetime import datetime
 
-LOG_DIR = Path("logs")
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+LOG_DIR = PROJECT_ROOT / "logs"
 LOG_DIR.mkdir(exist_ok=True)
 DEFAULT_LOG_FILE = LOG_DIR / "process.log"
 

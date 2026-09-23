@@ -133,7 +133,7 @@ def cmd_process(args):
 # ==============================================================================
 def sync_markdown_dates():
     """Ensures memory/TASKS.md has today's date in header."""
-    tasks_file = Path("memory/TASKS.md")
+    tasks_file = ROOT / "memory" / "TASKS.md"
     if tasks_file.exists():
         content = tasks_file.read_text(encoding="utf-8")
         today = get_current_date()
@@ -147,8 +147,8 @@ def cmd_save(args):
     today = get_current_date()
     commit_msg = f"[{today}] feat: {args.message}"
 
-    subprocess.run(["git", "add", "-A"])
-    res = subprocess.run(["git", "commit", "-m", commit_msg])
+    subprocess.run(["git", "add", "-A"], cwd=str(ROOT))
+    res = subprocess.run(["git", "commit", "-m", commit_msg], cwd=str(ROOT))
     if res.returncode == 0:
         print(f"\n✅ [Local Git] 已完成代碼與文檔同步存檔：{commit_msg}")
     else:
@@ -159,7 +159,7 @@ def cmd_handoff(args):
     """Prepares for interruption/class, updating HANDOFF.md with timestamp before commit."""
     now_ts = get_current_timestamp()
     today = get_current_date()
-    handoff_file = Path("memory/HANDOFF.md")
+    handoff_file = ROOT / "memory" / "HANDOFF.md"
 
     if handoff_file.exists():
         content = handoff_file.read_text(encoding="utf-8")
@@ -175,8 +175,8 @@ def cmd_handoff(args):
     sync_markdown_dates()
     commit_msg = f"[{today}] wip(handoff): {args.reason}"
 
-    subprocess.run(["git", "add", "-A"])
-    res = subprocess.run(["git", "commit", "-m", commit_msg])
+    subprocess.run(["git", "add", "-A"], cwd=str(ROOT))
+    res = subprocess.run(["git", "commit", "-m", commit_msg], cwd=str(ROOT))
     if res.returncode == 0:
         print(f"🎒 [Local Git] 離席存檔成功！已安全記錄當前進度：{commit_msg}")
         print("您現在可以安心闔上筆電去上課或外出！")

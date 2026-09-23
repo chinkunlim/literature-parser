@@ -101,3 +101,21 @@ logger.error(
    - 充分利用 Apple Silicon 統一記憶體架構（Unified Memory），模型載入與加速優先使用 **Metal Performance Shaders (MPS)** 與 **CoreML**。
 4. **主動建議責任**：
    - 若某項任務有表現更優、資源消耗更低的 macOS 原生解法，AI 有義務主動向使用者提出架構建議，而非默默採用通用但笨重的第三方套件。
+
+---
+
+## 9. 零硬編碼絕對路徑與專案可攜性規範 (Zero Hardcoded Absolute Paths)
+
+為保證整個專案資料夾被任意移動（例如從 Desktop 移到 Documents、隨身碟、或另一台電腦）時**絕不崩潰**，所有代碼必須嚴格遵守以下路徑規範：
+
+1. **嚴禁寫死系統使用者絕對路徑**：
+   - 嚴禁在程式碼、配置檔或測試腳本中寫死 `/Users/username/...` 或 `C:\Users\...`。
+2. **統一使用動態相對錨定**：
+   - 所有內部檔案路徑定位，必須以當前程式檔案位置動態推導專案根目錄：
+     ```python
+     # 標準範例：保證搬移目錄後 100% 正常
+     PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+     CONFIG_PATH = PROJECT_ROOT / "config" / "settings.yaml"
+     ```
+3. **終端機執行彈性**：
+   - 無論使用者是在專案根目錄下指令，還是從深層子目錄呼叫 `python ../run.py`，程式皆能精準找到對應的 `data/`、`logs/` 與 `memory/` 目錄。

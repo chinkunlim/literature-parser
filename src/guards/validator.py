@@ -15,7 +15,8 @@ from src.utils.logger import get_diagnostic_logger
 from src.guards.ollama_guard import OllamaGuard
 
 logger = get_diagnostic_logger("Validator")
-QUARANTINE_DIR = Path("data/needs_review")
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+QUARANTINE_DIR = PROJECT_ROOT / "data" / "needs_review"
 
 
 class ValidatorGuard:

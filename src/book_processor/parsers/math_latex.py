@@ -298,9 +298,24 @@ class MathLaTeXConverter:
         }
 
     @classmethod
+    def escape_currency_dollars(cls, text: str) -> str:
+        r"""
+        Escapes literal currency amounts and non-math triple dollar signs so KaTeX doesn't misparse them.
+        e.g., '$3', '$50', '$$$' -> r'\$3', r'\$50', r'\$\$\$'
+        """
+        if not text:
+            return ""
+        # 1. Escape runs of $$$ (e.g. "Collect $$$")
+        text = re.sub(r'(?<!\\)\${3,}', lambda m: r'\$' * len(m.group(0)), text)
+        # 2. Escape currency amounts like $3, $5, $100, $25.50 when not inside LaTeX math
+        text = re.sub(r'(?<!\\)\$(?=\d+(?:[\.,]\d+)?\b(?!\$))', r'\\$', text)
+        return text
+
+    @classmethod
     def process_text(cls, text: str) -> str:
         """Full pipeline for mathematical formula normalization with uniform font sizing."""
         from book_processor.parsers.math.apa_stats_normalizer import APAStatsNormalizer
+        text = cls.escape_currency_dollars(text)
         text = cls.convert_symbols(text)
         text = APAStatsNormalizer.normalize_text(text)
         text = cls.format_textbook_equations(text)
@@ -308,3 +323,4 @@ class MathLaTeXConverter:
         text = cls.format_display_equations(text)
         text = cls.ensure_uniform_fraction_sizing(text)
         return text
+

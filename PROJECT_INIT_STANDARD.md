@@ -24,6 +24,8 @@
 13. **標準持續自我迭代協議**：使用者每次提出治理新要求，AI 必須立即自動更新本指南，確保未來所有新專案皆享有一致最新標準。
 14. **智慧軟硬體一體化看門狗**：監控待處理目錄新檔案的同時，必須結合 RAM/SSD/電池即時巡檢，來檔即轉且硬體受限時自動降級。
 15. **根目錄零臨時與非標文檔規範**：根目錄除 README、OPERATIONS、AGENTS、CHANGELOG、PROJECT_INIT_STANDARD 外，嚴禁散落 `ISSUES.md` 或 `OPTIMIZATION_PROPOSAL.md` 等檔案（歷史議題歸 `memory/` 或 `docs/`，提案歸 `docs/`）。
+16. **開案前置軟硬體基線探針 (Hardware Baseline Probe & Guard)**：開案初期必須自動先寫 Python 探針（`src/guards/hardware.py`），精準探測主機 CPU 核心、Apple Silicon 架構、RAM、GPU/MPS、SSD 與電池狀態；開發時兼顧「充分榨乾原生硬體效能」與「嚴格防 OOM/電池耗盡安全守護」。
+17. **開案標配一體化看門狗程式 (Scaffold Autonomous Watchdog)**：專案初始化時必須標配產生守望看門狗（`run.py watchdog`），同時盯住輸入任務隊列與本機硬體健康，實現有任務自動安全啟動。
 
 ---
 
@@ -139,6 +141,21 @@ my-new-project/
 ### 鐵律 15：根目錄零臨時與非標文檔規範 (Zero Ad-Hoc Markdown Files in Root)
 - 根目錄只允許存在官方標準文檔（README、OPERATIONS、AGENTS、CHANGELOG、PROJECT_INIT_STANDARD）。所有排版分析或問題清單移至 `memory/` 或 `docs/`，所有優化提案與架構設計移至 `docs/`。
 
+### 鐵律 16：開案前置軟硬體基線探針與保護模組 (Hardware Baseline Probe & Guard Scaffolding)
+- 在任何業務代碼開發前，AI 必須**第一時間自動撰寫 Python 硬體探針模組 (`src/guards/hardware.py`)**，檢測本機硬體基線：
+  - Apple Silicon 晶片類型（M 系列核心、P-Core / E-Core 分佈）。
+  - UMA 統一記憶體大小與當前可用 RAM（動態設定安全門檻，如可用 RAM < 4GB 拒載重度模型防 OOM）。
+  - Apple Metal / MPS GPU 加速支援狀態。
+  - SSD (APFS) 磁碟剩餘空間（確保大於 10GB 始可批次轉檔）。
+  - 電源狀態（電池模式且電量 < 40% 時禁止啟動高耗能模型以保護電池壽命）。
+  - 本地 Ollama 守衛探活與可用模型列表。
+- **雙重使命**：開案初期建立該探針後，後續所有核心模組與演算法必須**優先榨乾 Mac 原生硬體效能**（Metal、Vision、sips），並**全面受硬體安全門檻保護**。
+
+### 鐵律 17：開案標配軟硬體一體化看門狗規範 (Integrated Autonomous Watchdog Scaffolding)
+- 凡涉及檔案處理、數據流或 AI 運算的專案，開案時必須在 `run.py` 標配實作 `watchdog` 指令：
+  - 自動持續監聽待處理目錄（如 `data/input/`）。
+  - 來檔時先進行硬體健康巡檢，資源安全時**全自動自主啟動處理**；資源不足時主動告警並平滑降級。
+
 ---
 
 ## 三、 開案一鍵初始化檢查清單 (AI Checklist)
@@ -146,11 +163,12 @@ my-new-project/
 任何 AI Agent 在接收到本指南後，必須按以下清單逐一檢查並主動執行，最後向使用者回報：
 - [ ] 1. 建立 `.git/hooks/pre-push` 並給予執行權限 (`chmod +x`)。
 - [ ] 2. 建立 `memory/`、`docs/`、`scratch/`、`logs/`、`data/input/`、`data/output/`、`data/needs_review/`。
-- [ ] 3. 建立 `OPERATIONS.md`，填入該新專案的 30 秒啟動與常用指令。
-- [ ] 4. 建立 `AGENTS.md`，填入該新專案的意圖派發清單與開場喚醒指令。
-- [ ] 5. 建立 `docs/STRUCTURE.md`，標註當前所有模組職責。
-- [ ] 6. 建立 `docs/CODING_RULES.md`，設定該專案的軟硬體門檻與日誌格式。
-- [ ] 7. 建立 `.agent/skills/` 分層技能體系（總入口 + 專屬子技能）。
-- [ ] 8. 在 `run.py` 封裝 `agent-init`、`doctor`、`process`、`save`、`handoff`、`publish`、`watchdog`、`archive-sessions` 等快捷指令。
-- [ ] 9. 主動執行第一次本地 Git 初始化存檔（**使用英文 Commit**）：
+- [ ] 3. **主動撰寫 Python 軟硬體基線探針與安全守衛模組 (`src/guards/hardware.py` / `src/guards/ollama_guard.py`)**。
+- [ ] 4. 建立 `OPERATIONS.md`，填入該新專案的 30 秒啟動與常用指令。
+- [ ] 5. 建立 `AGENTS.md`，填入該新專案的意圖派發清單與開場喚醒指令。
+- [ ] 6. 建立 `docs/STRUCTURE.md`，標註當前所有模組職責。
+- [ ] 7. 建立 `docs/CODING_RULES.md`，設定該專案的軟硬體門檻與日誌格式。
+- [ ] 8. 建立 `.agent/skills/` 分層技能體系（總入口 + 專屬子技能）。
+- [ ] 9. 在 `run.py` 封裝 `agent-init`、`doctor`、`process`、`save`、`handoff`、`publish`、`watchdog`、`archive-sessions` 等快捷指令。
+- [ ] 10. 主動執行第一次本地 Git 初始化存檔（**使用英文 Commit**）：
   `[YYYY-MM-DD] chore: initialize project standard governance and architecture`。

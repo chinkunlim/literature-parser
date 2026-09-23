@@ -22,6 +22,7 @@
 - [x] [2026-09-24] 將學術期刊全面標準化升級為學術文獻 (`journal` -> `literature`)
 - [x] [2026-09-24] 建立三層技能體系 (`.agent/skills/`: `document-processor`, `textbook-processor`, `literature-processor`)
 - [x] [2026-09-24] 將 AI 主動執行、文獻命名、乾淨根目錄與自更新協議永久寫入 `PROJECT_INIT_STANDARD.md`
+- [x] [2026-09-24] 徹底移除根目錄過渡腳本 (`verify_accuracy.py`, `batch_convert.py`, `book_processor.py`) 並優化單元測試相依路徑
 
 ---
 

@@ -12,7 +12,9 @@ import json
 import os
 import tempfile
 import unittest
+import sys
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from book_processor.config_manager import ConfigManager, deep_merge
 from book_processor.parsers.journal.reference_parser import ReferenceParser

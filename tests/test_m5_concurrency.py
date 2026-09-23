@@ -3,6 +3,10 @@ Tests for Apple M5 Hardware-Aware Concurrency Engine
 ====================================================
 """
 
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+
 import unittest
 from unittest.mock import patch
 from book_processor.concurrency.m5_worker_pool import (

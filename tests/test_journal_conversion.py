@@ -1,3 +1,7 @@
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+
 import unittest
 from book_processor.fingerprinting.document_classifier import DocumentClassifier
 from book_processor.parsers.math.apa_stats_normalizer import APAStatsNormalizer

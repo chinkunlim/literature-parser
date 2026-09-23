@@ -43,6 +43,19 @@ def get_current_timestamp() -> str:
     return datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
 
+def clean_dangling_tmp_files() -> int:
+    """Scans and removes leftover *.tmp.* files from interrupted atomic writes."""
+    pruned = 0
+    for p in ROOT.rglob("*.tmp.*"):
+        if p.is_file() and not any(part in (".git", ".venv", "node_modules") for part in p.parts):
+            try:
+                p.unlink()
+                pruned += 1
+            except Exception:
+                pass
+    return pruned
+
+
 # ==============================================================================
 # 1. DOCTOR: System Health & Pre-flight Diagnostics
 # ==============================================================================
@@ -69,6 +82,13 @@ def cmd_doctor(args):
         print(f"• 推薦啟用模型         : 🤖 {service['selected_model'] or '無 (請執行 ollama pull qwen2.5:7b)'}")
     else:
         print(f"• 服務狀態 (Port 11434): ⚠️ [OFFLINE] 離線 (將自動啟用純語法規則降級模式)")
+
+    # 3. Clean temporary files
+    pruned = clean_dangling_tmp_files()
+    if pruned > 0:
+        print(f"\n• 暫存檔案自動清理     : 🧹 [CLEAN] 已自動清理 {pruned} 個過期暫存檔 (*.tmp.*)")
+    else:
+        print(f"\n• 暫存檔案自動清理     : ✅ [PASS] 磁碟環境無殘留暫存檔")
 
     print("=" * 65)
     if hw["safe_for_heavy_llm"] and service["alive"] and service["selected_model"]:
@@ -195,7 +215,18 @@ def sync_markdown_dates():
 
 
 def cmd_save(args):
-    """Saves progress locally, stamping docs first. Enforces English commit messages."""
+    """Saves progress locally, stamping docs first. Enforces English commit messages and test gate."""
+    # 1. Clean dangling tmp files
+    clean_dangling_tmp_files()
+
+    # 2. Automated test gate (fast check)
+    if (ROOT / "tests").exists():
+        res_test = subprocess.run([sys.executable, "-m", "unittest", "discover", "tests"], cwd=str(ROOT), capture_output=True)
+        if res_test.returncode != 0:
+            print("\n🛑 [COMMIT 攔截] 單元測試未通過！為杜絕幽靈修復與代碼腐化，已自動阻止提交。")
+            print(res_test.stderr.decode("utf-8") or res_test.stdout.decode("utf-8"))
+            sys.exit(1)
+
     sync_markdown_dates()
     today = get_current_date()
     msg = args.message.strip()
@@ -245,15 +276,32 @@ def cmd_handoff(args):
 
 
 def cmd_publish(args):
-    """Squash merges to main and prints authorized push instructions."""
+    """Squash merges to main and prints authorized push instructions with automated gates."""
     print("\n📦 [PUBLISH] 準備打包發布里程碑...")
     today = get_current_date()
     release_msg = f"[{today}] release: {args.message}"
 
-    # Check current branch
+    # 1. Automated Test Gate
+    print("\n🧪 [Gate 1] 執行發布前全量自動化單元測試門禁 (Automated Test Gate)...")
+    res_test = subprocess.run([sys.executable, "-m", "unittest", "discover", "tests"], cwd=str(ROOT))
+    if res_test.returncode != 0:
+        print("\n🛑 [發布中斷] 單元測試未全數通過，發布已被安全阻斷！請修復測試後再試。")
+        sys.exit(1)
+    print("✅ 單元測試全數通過 (100% PASS)！")
+
+    # 2. Automated Session Archiving
+    print("\n🗄️ [Gate 2] 執行會話雙軌全量封存 (Auto-Archiving Sessions)...")
+    cmd_archive_sessions(args)
+
+    # 3. Clean Dangling Tmp Files
+    pruned = clean_dangling_tmp_files()
+    if pruned > 0:
+        print(f"🧹 [Gate 3] 已自動清理 {pruned} 個過期暫存檔 (*.tmp.*)")
+
+    # 4. Check current branch and squash merge
     branch_out = subprocess.check_output(["git", "branch", "--show-current"], text=True).strip()
     if branch_out != "main":
-        print(f"• 目前在分支 [{branch_out}]，執行切換至 main 並 Squash Merge...")
+        print(f"\n• 目前在分支 [{branch_out}]，執行切換至 main 並 Squash Merge...")
         subprocess.run(["git", "checkout", "main"])
         subprocess.run(["git", "merge", branch_out, "--squash"])
         subprocess.run(["git", "commit", "-m", release_msg])

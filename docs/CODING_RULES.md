@@ -123,3 +123,26 @@ logger.error(
      ```
 3. **終端機執行彈性**：
    - 無論使用者是在專案根目錄下指令，還是從深層子目錄呼叫 `python ../run.py`，程式皆能精準找到對應的 `data/`、`logs/` 與 `memory/` 目錄。
+
+---
+
+## 10. 疑難瑕疵全自動隔離規範 (Mandatory Quarantine Protocol)
+
+任何由 Ollama、OCR 或解析器產生的瑕疵，嚴禁中斷主批次管線或默默吞掉錯誤，必須一律隔離至 `data/needs_review/`：
+1. **觸發條件**：
+   - Ollama 呼叫失敗、連線超時、或語法修復後仍未通過括號閉合校驗。
+   - 提取置信度評估低於門檻（`< 0.80`）。
+   - 雙欄排版出現未決斷層。
+2. **隔離檔案格式**：
+   - 自動寫入 `data/needs_review/<category>_<hash>.md`，包含：時間戳、原始片段、診斷原因、AI 置信度評估與人類人工處理建議。
+
+---
+
+## 11. 會話雙軌歸檔規範 (Dual-Track Session Archiving Protocol)
+
+每當會話需要中斷交接（`run.py handoff`）或重大里程碑結案時，AI 必須執行雙軌歸檔：
+1. **配對結構**：
+   - `memory/sessions/YYYY-MM-DD-<topic>-summary.md`：**高密度摘要**（供人類或新 AI 30 秒快速掌握進度與架構決定）。
+   - `memory/sessions/YYYY-MM-DD-<topic>-transcript.md`：**完整對話紀錄**（供事後深挖問答細節）。
+2. **自動化時機**：
+   - 建議於每次「離席交接（Handoff）」與「發布結案（Publish）」時執行，避免每個單發 prompt 產生過多碎裂小檔案。

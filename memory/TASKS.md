@@ -1,6 +1,6 @@
 # 📋 memory/TASKS.md (專案任務進度看板)
 
-最後更新日期：2026-09-23
+最後更新日期：2026-09-24
 
 ---
 
@@ -16,6 +16,7 @@
 - [x] [2026-09-23] 安裝 Git 物理防手滑鎖 (`.git/hooks/pre-push`)
 - [x] [2026-09-23] 建立通用新專案開案範本 (`PROJECT_INIT_STANDARD.md`)
 - [x] [2026-09-23] 將歷史全對話脈絡濃縮歸檔至 `memory/sessions/`
+- [x] [2026-09-24] 強化低信度自動隔離與對話工作階段雙軌歸檔 (`data/needs_review/`, `memory/sessions/`)
 
 ---
 

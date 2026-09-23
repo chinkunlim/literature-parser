@@ -60,6 +60,14 @@
   - **模型推理與加速**：優先評估 **Metal / MPS (Metal Performance Shaders)** 與 **CoreML**。
 - **原則**：只要 macOS 內建/原生功能的表現、耗電量或記憶體佔用更優秀，AI 必須主動向使用者提出該方案的優劣對比與整合建議。
 
+### 6. 🗄️ 會話雙軌歸檔與全自動隔離協議 (Automated Session Archiving & Quarantine)
+- **自動歸檔時機**：每次使用者表示「要去上課/中斷」執行 `run.py handoff`，或「完成大功能」執行結案存檔時。
+- **雙軌配對歸檔格式**：
+  - `memory/sessions/YYYY-MM-DD-<topic>-summary.md`：**高密度總結**（先看這個，掌握決策與結果）。
+  - `memory/sessions/YYYY-MM-DD-<topic>-transcript.md`：**完整對話紀錄**（有疑問時深挖原始問答）。
+- **異常無條件隔離**：
+  - 任何 Ollama 處理失敗、超時、或信度評估 < 0.80 的瑕疵，**一律自動拋入 `data/needs_review/` 隔離存檔**，絕不中斷主批次管線。
+
 ---
 
 ## 三、 臨時實驗室規範 (Scratchpad Policy)

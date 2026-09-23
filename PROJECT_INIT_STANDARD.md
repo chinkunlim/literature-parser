@@ -99,6 +99,12 @@ my-new-project/
 ### 鐵律 7：macOS 原生能力與硬體協同優先 (macOS-Native Priority)
 - 在 macOS (尤其是 Apple Silicon) 開發時，AI 嚴禁只盲目推薦跨平台重型套件。必須主動評估並優先建議 macOS 內建/原生功能（如 Apple Vision Framework OCR、Metal/MPS、sips、CoreML 等）。若原生方案效能更高、記憶體更省、體驗更好，必須主動向使用者提出！
 
+### 鐵律 8：會話雙軌歸檔與瑕疵全隔離協議 (Dual-Track Archiving & Mandatory Quarantine)
+- AI 離席交接（`handoff`）或重大結案（`publish`）時，必須自動配對產生：
+  - `memory/sessions/YYYY-MM-DD-<topic>-summary.md`：**高密度總結**（先看這個掌握決策與結果）。
+  - `memory/sessions/YYYY-MM-DD-<topic>-transcript.md`：**完整對話紀錄**（有疑問時深挖問答細節）。
+- 任何模型處理失敗、超時、或信度 < 0.80 的瑕疵，一律自動拋入 `data/needs_review/` 隔離存檔，絕不卡死主批次程序。
+
 ---
 
 ## 三、 開案一鍵初始化檢查清單 (AI Checklist)

@@ -113,6 +113,123 @@ class GlobalLearner:
         rules.setdefault("custom_corrections", {}).update(corrections)
         cls._save(rules)
 
+    # ------------------------------------------------------------------
+    # Structured Fix Rules — cross-document Ollama repair knowledge
+    # ------------------------------------------------------------------
+
+    @classmethod
+    def add_fix_rules(cls, proposals: list, archetype: str = "textbook") -> int:
+        """
+        Persist high-confidence Ollama repair proposals into the global fix-rules
+        store, keyed by document archetype ('textbook' or 'journal').
+
+        Only proposals with confidence >= 0.90 and non-trivial content are stored.
+        Duplicates (same original string) are skipped to avoid bloat.
+
+        Returns the number of *new* rules actually stored.
+        """
+        if not proposals:
+            return 0
+
+        rules = cls._load()
+        archetype_key = f"fix_rules_{archetype}"
+        existing_rules: list = rules.get(archetype_key, [])
+
+        # Build a set of already-known originals for O(1) dedup
+        known_originals = {r.get("original", "") for r in existing_rules}
+
+        new_count = 0
+        for prop in proposals:
+            original = (prop.get("original") or "").strip()
+            proposed = (prop.get("proposed") or "").strip()
+            confidence = float(prop.get("confidence", 0.0))
+            category = prop.get("category", "general")
+
+            # Only store high-confidence, meaningful, non-empty rules
+            if (
+                confidence >= 0.90
+                and original
+                and proposed
+                and original != proposed
+                and len(original) >= 2
+                and original not in known_originals
+            ):
+                existing_rules.append({
+                    "original": original,
+                    "proposed": proposed,
+                    "category": category,
+                    "confidence": round(confidence, 3),
+                    "archetype": archetype,
+                    "learned_count": 1,
+                })
+                known_originals.add(original)
+                new_count += 1
+            elif original in known_originals:
+                # Increment learned_count to track frequency (for future rule prioritisation)
+                for r in existing_rules:
+                    if r.get("original") == original:
+                        r["learned_count"] = r.get("learned_count", 1) + 1
+                        break
+
+        if new_count > 0 or proposals:
+            rules[archetype_key] = existing_rules
+            cls._save(rules)
+            if new_count > 0:
+                logger.info(
+                    "GlobalLearner: persisted %d new fix rule(s) for archetype '%s'.",
+                    new_count, archetype,
+                )
+        return new_count
+
+    @classmethod
+    def get_fix_rules(cls, archetype: str = "textbook") -> list:
+        """
+        Return globally learned fix rules for the given archetype,
+        sorted by learned_count descending (most frequent fixes first).
+        """
+        rules = cls._load()
+        archetype_key = f"fix_rules_{archetype}"
+        fix_rules = rules.get(archetype_key, [])
+        return sorted(fix_rules, key=lambda r: r.get("learned_count", 1), reverse=True)
+
+    @classmethod
+    def apply_known_fixes(cls, md_text: str, archetype: str = "textbook") -> tuple:
+        """
+        Pre-emptively applies all globally learned fix rules to ``md_text``
+        before the Ollama verification stage, so the same issues don't
+        recur across documents of the same type.
+
+        Returns: (fixed_text, applied_fixes_list)
+        The caller should log applied_fixes_list for traceability.
+        """
+        fix_rules = cls.get_fix_rules(archetype)
+        if not fix_rules:
+            return md_text, []
+
+        applied = []
+        current_text = md_text
+
+        for rule in fix_rules:
+            original = rule.get("original", "")
+            proposed = rule.get("proposed", "")
+            if original and proposed and original in current_text:
+                current_text = current_text.replace(original, proposed)
+                applied.append({
+                    "original": original,
+                    "proposed": proposed,
+                    "category": rule.get("category", "global_learned"),
+                    "confidence": rule.get("confidence", 0.9),
+                    "learned_count": rule.get("learned_count", 1),
+                })
+
+        if applied:
+            logger.info(
+                "GlobalLearner: pre-applied %d known fix rule(s) from global memory (archetype: %s).",
+                len(applied), archetype,
+            )
+
+        return current_text, applied
+
 
 # ---------------------------------------------------------------------------
 # Book-scoped Adaptive Learner

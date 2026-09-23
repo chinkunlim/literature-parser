@@ -27,6 +27,7 @@ from book_processor.config_manager import ConfigManager
 from book_processor.core.invariants import QualityInvariantGuard
 from book_processor.core.image_manager import ImageManager
 from book_processor.core.analyzer import PDFAnalyzer
+from book_processor.core.learner import GlobalLearner
 from book_processor.parsers.digital_pdf import DigitalPDFParser
 import book_processor.parsers.digital_pdf as _digital_pdf_mod
 from book_processor.parsers.scanned_pdf import ScannedPDFParser
@@ -187,6 +188,18 @@ class JournalPipeline(BasePipeline):
         # ---------------------------------------------------------------------
         # Stage 5: Dual Verification
         # ---------------------------------------------------------------------
+        # ── Global Learning Pre-Application ──────────────────────────────────
+        # Apply all globally-learned journal fix rules before Ollama verification,
+        # so recurring issues from previous papers never waste Ollama compute.
+        try:
+            full_md, _pre_fixes = GlobalLearner.apply_known_fixes(full_md, archetype="journal")
+            if _pre_fixes:
+                print(f"  [🧠 Global Learn] Pre-applied {len(_pre_fixes)} known fix rule(s).")
+                with open(md_file, 'w', encoding='utf-8') as f:
+                    f.write(full_md + '\n')
+        except Exception as _gl_err:
+            logger.debug("GlobalLearner pre-application skipped: %s", _gl_err)
+
         print(f"  [*] Running automatic accuracy verification...")
         verifier = AccuracyVerifier(use_ollama=self.use_ollama, ollama_model=self.ollama_model)
         v_res = verifier.verify_chapter(str(doc_out), expected_pages=total_pages)
@@ -197,13 +210,16 @@ class JournalPipeline(BasePipeline):
         if not v_res.get('passed', True) and self.use_ollama:
             healer = OllamaHealer(model_name=self.ollama_model)
             if healer.is_available:
-                healed_md, modified, fixes = healer.heal_markdown(full_md, v_res, doc_name=clean_name)
+                healed_md, modified, fixes = healer.heal_markdown(
+                    full_md, v_res, doc_name=clean_name, archetype="journal"
+                )
                 if modified:
                     full_md = healed_md
                     with open(md_file, 'w', encoding='utf-8') as f:
                         f.write(full_md + '\n')
                     print(f"  [*] Re-running verification following Ollama healing...")
                     v_res = verifier.verify_chapter(str(doc_out), expected_pages=total_pages)
+
 
         # ---------------------------------------------------------------------
         # Stage 7: Status Manifest & Archival

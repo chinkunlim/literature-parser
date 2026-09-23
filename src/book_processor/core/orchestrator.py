@@ -31,7 +31,7 @@ from book_processor.parsers.digital_pdf import DigitalPDFParser
 from book_processor.parsers.epub_parser import EPUBProcessor
 from book_processor.verification.verifier import AccuracyVerifier
 from book_processor.core.invariants import QualityInvariantGuard, CircuitBreaker
-from book_processor.core.learner import AdaptiveLearner
+from book_processor.core.learner import AdaptiveLearner, GlobalLearner
 from book_processor.verification.ollama_verifier import OllamaVerifier
 from book_processor.verification.review_manager import ReviewManager
 from book_processor.verification.layout_healer import LayoutAutoHealer
@@ -425,6 +425,22 @@ class BookProcessorOrchestrator:
         if '<style>' not in full_md:
             full_md = build_textbook_css(_style) + full_md
 
+        # ──────────────────────────────────────────────────────────────────────
+        # Global Learning Pre-Application:
+        # Before running any Ollama calls, pre-emptively apply all fix rules that
+        # were learned from previous documents of the same archetype.  This prevents
+        # known issues (e.g. publisher OCR typos, recurring LaTeX patterns) from
+        # ever reaching the verification / Ollama stage on subsequent documents.
+        # ──────────────────────────────────────────────────────────────────────
+        _doc_archetype = "journal" if is_journal_doc else "textbook"
+        try:
+            full_md, _pre_fixes = GlobalLearner.apply_known_fixes(full_md, archetype=_doc_archetype)
+            if _pre_fixes:
+                print(f"  [🧠 Global Learn] Pre-applied {len(_pre_fixes)} known fix rule(s) from global memory.")
+                for _pf in _pre_fixes[:3]:
+                    print(f"     • [{_pf.get('category', 'global')}] '{_pf.get('original', '')[:50]}…'")
+        except Exception as _gl_err:
+            logger.debug("GlobalLearner pre-application skipped: %s", _gl_err)
 
         # Closed-loop layout auto-healing before syntax invariant checks
         full_md, fixes = LayoutAutoHealer.audit_and_heal_chapter(
@@ -438,6 +454,7 @@ class BookProcessorOrchestrator:
             print(f"  [⚡ Auto-Healer] Applied {len(fixes)} layout correction(s):")
             for fix in fixes[:3]:
                 print(f"     • {fix}")
+
 
         # Syntax & delimiter invariant check
         QualityInvariantGuard.check_markdown_syntax(full_md, str(ch_dir))

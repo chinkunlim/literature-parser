@@ -20,6 +20,7 @@ from book_processor.config import (
 )
 from book_processor.utils.system import is_ollama_running, ensure_ollama_running
 from book_processor.verification.ollama_verifier import OllamaVerifier
+from book_processor.core.learner import GlobalLearner
 
 logger = logging.getLogger(__name__)
 
@@ -45,10 +46,14 @@ class OllamaHealer:
         markdown_text: str,
         verification_result: Dict[str, Any],
         doc_name: str = "document",
+        archetype: str = "textbook",
     ) -> Tuple[str, bool, List[str]]:
         """
         Attempts to automatically fix all reported verification defects in markdown_text.
         Returns: (healed_markdown, was_modified, applied_fixes_summary)
+
+        ``archetype`` should be 'textbook' or 'journal' so that successful repairs
+        are propagated to the GlobalLearner for cross-document benefit.
         """
         if not self.is_available:
             logger.info("OllamaHealer: local Ollama not available; skipping auto-heal.")
@@ -109,6 +114,38 @@ class OllamaHealer:
 
         if any_modified:
             print(f"  [✓ Ollama Healer] Applied {len(applied_fixes)} automated correction(s).")
+
+            # ──────────────────────────────────────────────────────────────
+            # Cross-document learning: push healer-applied fixes to GlobalLearner.
+            # We wrap each fix as a structured proposal for compatibility with
+            # GlobalLearner.add_fix_rules(), though details are textual here.
+            # Only categories that produce deterministic text replacements should
+            # be stored; pure structural fixes (table separators) are not stored
+            # as they cannot be meaningfully matched by simple string replacement.
+            # ──────────────────────────────────────────────────────────────
+            _learnable_categories = {"math_syntax", "katex_safety", "currency_safety", "hyphenation"}
+            healer_proposals = []
+            for issue in issues:
+                cn = issue["check"]
+                if cn in _learnable_categories:
+                    details_str = issue.get("details", "")
+                    if details_str and len(details_str) >= 2:
+                        healer_proposals.append({
+                            "original": details_str[:200],
+                            "proposed": f"[healer-auto-fixed: {cn}]",
+                            "category": f"healer_{cn}",
+                            "confidence": 0.92,
+                        })
+            if healer_proposals:
+                try:
+                    pushed = GlobalLearner.add_fix_rules(healer_proposals, archetype=archetype)
+                    if pushed > 0:
+                        logger.info(
+                            "OllamaHealer: propagated %d healer fix pattern(s) to global memory.",
+                            pushed,
+                        )
+                except Exception as _gl_err:
+                    logger.debug("OllamaHealer: GlobalLearner propagation skipped – %s", _gl_err)
 
         return current_md, any_modified, applied_fixes
 

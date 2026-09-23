@@ -16,8 +16,35 @@ import tempfile
 from pathlib import Path
 
 from book_processor.config import AUTO_ACCEPT_CONFIDENCE_THRESHOLD
+from book_processor.core.learner import GlobalLearner
+
 
 logger = logging.getLogger(__name__)
+
+
+def _detect_archetype_from_dir(path: Path) -> str:
+    """
+    Walks *path* and its parents looking for ``book_profile.json`` to determine
+    whether the document is a 'journal' article or a 'textbook'.
+    Falls back to 'textbook' if no profile is found.
+    """
+    for candidate in [path, *path.parents]:
+        profile = candidate / "book_profile.json"
+        if profile.exists():
+            try:
+                with open(profile, "r", encoding="utf-8") as fh:
+                    data = json.load(fh)
+                if (
+                    data.get("archetype") == "journal"
+                    or data.get("is_journal", False)
+                    or data.get("features", {}).get("is_journal_article", False)
+                ):
+                    return "journal"
+            except Exception:
+                pass
+        if candidate == candidate.parent:
+            break
+    return "textbook"
 
 
 def _atomic_write_json(path: Path, data: dict) -> None:
@@ -134,7 +161,24 @@ class ReviewManager:
                 Path(chapter_dir).name,
             )
 
+            # ──────────────────────────────────────────────────────────────
+            # Cross-document learning: propagate high-confidence repairs to
+            # GlobalLearner so every future document of the same archetype
+            # benefits immediately without Ollama re-discovering the same fix.
+            # ──────────────────────────────────────────────────────────────
+            try:
+                archetype = _detect_archetype_from_dir(Path(chapter_dir))
+                pushed = GlobalLearner.add_fix_rules(auto_accepted, archetype=archetype)
+                if pushed > 0:
+                    logger.info(
+                        "ReviewManager: propagated %d new fix rule(s) to global memory (archetype: %s).",
+                        pushed, archetype,
+                    )
+            except Exception as _gl_err:
+                logger.debug("ReviewManager: GlobalLearner propagation skipped – %s", _gl_err)
+
         return {"auto_accepted": len(auto_accepted), "pending": len(pending)}
+
 
     @classmethod
     def load_review_manifest(cls, chapter_dir: str) -> dict:

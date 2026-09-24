@@ -1,0 +1,53 @@
+{
+  "chapter": "Ch03 Ethical and Legal Issues in Group Counseling",
+  "total_proposals": 5,
+  "auto_accepted_count": 5,
+  "pending_count": 0,
+  "proposals": [
+    {
+      "id": "rev-1",
+      "original": "ow nou Ft WYN On =",
+      "proposed": "Now You Know:",
+      "reason": "OCR error, likely a corrupted title or section heading. 'ow nou Ft WYN On =' is incoherent.",
+      "category": "ocr_typo",
+      "confidence": 0.95,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-2",
+      "original": "Ethical Issues in Group Membership ad",
+      "proposed": "Ethical Issues in Group Membership",
+      "reason": "The trailing 'ad' is likely a fragment or OCR artifact from 'and'.",
+      "category": "ocr_typo",
+      "confidence": 0.95,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-3",
+      "original": "Involuntarey Membership",
+      "proposed": "Involuntary Membership",
+      "reason": "Spelling error ('y' instead of 'ary').",
+      "category": "ocr_typo",
+      "confidence": 1.0,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "4",
+      "original": "Psychological Risks for Members 103)",
+      "proposed": "Psychological Risks for Members",
+      "reason": "The '103)'' is likely an artifact from a page number or a misplaced parenthesis.",
+      "category": "ocr_typo",
+      "confidence": 0.95,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-5",
+      "original": "Summarey Guidelines Regareding Confidentiality",
+      "proposed": "Summary Guidelines Regarding Confidentiality",
+      "reason": "Multiple OCR/typo errors: 'Summarey' -> 'Summary', 'Regareding' -> 'Regarding'.",
+      "category": "ocr_typo",
+      "confidence": 1.0,
+      "status": "AUTO_ACCEPTED"
+    }
+  ]
+}

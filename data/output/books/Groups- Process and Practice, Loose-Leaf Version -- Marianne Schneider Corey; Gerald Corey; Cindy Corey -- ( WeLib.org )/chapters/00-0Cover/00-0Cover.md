@@ -7,8 +7,16 @@
   h1, h2, h3, h4, h5, h6 { text-align: left; }
   blockquote { text-align: left; }
 
-  /* Textbook Plum Table & Card Styling */
-  .textbook-table-wrapper, .comparison-card, .framed-card {
+  /* Textbook Plum Table & Cared Styling */
+  .textbook-table-wrapper, .
+<!-- AI-REVIEW-START id="rev-1" category="ocr_typo" -->
+<!-- ORIGINAL:
+comparison
+-->
+<!-- REASON: OCR/Typo: 'compareison' is an incorrect spelling of 'comparison'. -->
+comparison
+<!-- AI-REVIEW-END -->
+-cared, .framed-cared {
     margin: 1.8em 0;
     border: 1px solid #e5cfdc;
     border-radius: 6px;
@@ -16,7 +24,7 @@
     background: #ffffff;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   }
-  .table-caption, .card-caption, .framed-card-header {
+  .table-caption, .card-caption, .framed-cared-header {
     padding: 10px 14px;
     font-size: 0.95em;
     font-weight: 600;
@@ -24,7 +32,8 @@
     border-bottom: 2px solid #842959;
   }
   .textbook-table {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     border-collapse: collapse;
     font-size: 0.9em;
   }
@@ -55,7 +64,7 @@
     border-top: 1px solid #e5cfdc;
     padding: 8px 12px;
   }
-  /* Comparison Card (Strengths & Weaknesses) */
+  /* Compareison Cared (Strengths & Weaknesses) */
   .banner-header {
     background: #842959;
     color: #ffffff;
@@ -67,12 +76,12 @@
   .banner-weaknesses .banner-header {
     background: #73224d;
   }
-  .banner-list, .framed-card-body {
+  .banner-list, .framed-cared-body {
     margin: 0;
     padding: 12px 20px 16px 36px;
     background: #faf7f9;
   }
-  .banner-list li, .framed-card-body li {
+  .banner-list li, .framed-cared-body li {
     margin-bottom: 6px;
     line-height: 1.5;
     color: #2b1b24;
@@ -91,6 +100,17 @@
   }
 </style>
 
-# 00-0Cover
+# 00-Cover
 
 
+
+
+<!-- OBSIDIAN_NAV_START -->
+---
+
+<div align="center">
+
+[[00-1publish|00-1Publish]] →
+
+</div>
+<!-- OBSIDIAN_NAV_END -->

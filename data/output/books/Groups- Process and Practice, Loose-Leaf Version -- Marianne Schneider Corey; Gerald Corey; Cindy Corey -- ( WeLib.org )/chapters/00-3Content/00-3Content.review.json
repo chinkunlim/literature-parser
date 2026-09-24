@@ -1,0 +1,26 @@
+{
+  "chapter": "00-3Content",
+  "total_proposals": 2,
+  "auto_accepted_count": 2,
+  "pending_count": 0,
+  "proposals": [
+    {
+      "id": "rev-1",
+      "original": "Vareious",
+      "proposed": "Various",
+      "reason": "OCR error; 'e' likely a misread 'a'",
+      "category": "ocr_typo",
+      "confidence": 0.98,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-2",
+      "original": "Stareting",
+      "proposed": "Starting",
+      "reason": "OCR error; 'e' likely a misread 't'",
+      "category": "ocr_typo",
+      "confidence": 0.98,
+      "status": "AUTO_ACCEPTED"
+    }
+  ]
+}

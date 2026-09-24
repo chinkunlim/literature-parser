@@ -1,0 +1,35 @@
+{
+  "chapter": "Index",
+  "total_proposals": 3,
+  "auto_accepted_count": 3,
+  "pending_count": 0,
+  "proposals": [
+    {
+      "id": "rev-1",
+      "original": "compareison-cared",
+      "proposed": "comparison-card",
+      "reason": "OCR/typo in CSS class names; 'compareison' should be 'comparison' and 'cared' should be 'card'.",
+      "category": "ocr_typo",
+      "confidence": 0.98,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-2",
+      "original": "compareison-cared",
+      "proposed": "comparison-card",
+      "reason": "Second instance of the same CSS class name.",
+      "category": "ocr_typo",
+      "confidence": 0.98,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-3",
+      "original": "xamples, 15, 318-325",
+      "proposed": "examples, 15, 318-325",
+      "reason": "Missing starting 'e' in 'examples' due to OCR/page-break/fragmentation.",
+      "category": "ocr_typo",
+      "confidence": 0.98,
+      "status": "AUTO_ACCEPTED"
+    }
+  ]
+}

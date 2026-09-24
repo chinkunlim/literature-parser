@@ -1,0 +1,44 @@
+{
+  "chapter": "References and Suggested Readings",
+  "total_proposals": 4,
+  "auto_accepted_count": 3,
+  "pending_count": 1,
+  "proposals": [
+    {
+      "id": "rev-1",
+      "original": "supplementarey",
+      "proposed": "supplementary",
+      "reason": "Typo in the word 'supplementary'.",
+      "category": "ocr_typo",
+      "confidence": 0.98,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-2",
+      "original": "ACA code of\n\n- thics",
+      "proposed": "ACA code of\n\n- ethics",
+      "reason": "Broken word 'ethics' split across a line/bullet point with OCR noise.",
+      "category": "ocr_typo",
+      "confidence": 0.98,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-4",
+      "original": "http:// www.groupsinc.org/group/ethicalguide.html",
+      "proposed": "http://www.groupsinc.org/group/ethicalguide.html",
+      "reason": "Unnecessary space in URL.",
+      "category": "ocr_typo",
+      "confidence": 0.95,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-3",
+      "original": "202)",
+      "proposed": "2023",
+      "reason": "OCR error '202)' likely meant '2023' or '202' or '2020'. Given the context of subsequent 2007 date, 2023 or 2020 is likely.",
+      "category": "ocr_typo",
+      "confidence": 0.85,
+      "status": "PENDING"
+    }
+  ]
+}

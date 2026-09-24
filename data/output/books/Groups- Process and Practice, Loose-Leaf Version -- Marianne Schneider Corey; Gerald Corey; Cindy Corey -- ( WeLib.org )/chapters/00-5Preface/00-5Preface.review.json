@@ -1,0 +1,53 @@
+{
+  "chapter": "00-5Preface",
+  "total_proposals": 5,
+  "auto_accepted_count": 4,
+  "pending_count": 1,
+  "proposals": [
+    {
+      "id": "rev-1",
+      "original": "of Groups: Process and Practice",
+      "proposed": "Groups: Process and Practice",
+      "reason": "Removal of leading 'of' likely due to parsing error or OCR artifact.",
+      "category": "ocr_typo",
+      "confidence": 0.95,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-2",
+      "original": "Ancillareies",
+      "proposed": "Appendices",
+      "reason": "Highly likely typo or misreading of 'Appendices'.",
+      "category": "ocr_typo",
+      "confidence": 0.98,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-4",
+      "original": "vareiety",
+      "proposed": "variety",
+      "reason": "Typo in 'variety'.",
+      "category": "ocr_typo",
+      "confidence": 0.98,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-5",
+      "original": "appeares",
+      "proposed": "appears",
+      "reason": "Typo in 'appears'.",
+      "category": "ocr_typo",
+      "confidence": 0.98,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-6",
+      "original": "o",
+      "proposed": "Index",
+      "reason": "The character 'o' likely represents a missing title (e.g. Index) or a parsing error.",
+      "category": "ocr_typo",
+      "confidence": 0.85,
+      "status": "PENDING"
+    }
+  ]
+}

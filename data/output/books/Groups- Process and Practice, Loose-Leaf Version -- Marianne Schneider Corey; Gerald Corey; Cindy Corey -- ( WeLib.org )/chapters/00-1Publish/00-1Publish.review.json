@@ -1,0 +1,53 @@
+{
+  "chapter": "00-1Publish",
+  "total_proposals": 5,
+  "auto_accepted_count": 4,
+  "pending_count": 1,
+  "proposals": [
+    {
+      "id": "rev-1",
+      "original": "comparison-cared",
+      "proposed": "comparison-card",
+      "reason": "Likely typo in CSS class name; 'cared' is often a typo for 'card' in web/document design.",
+      "category": "ocr_typo",
+      "confidence": 0.95,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-2",
+      "original": "comparison-cared",
+      "proposed": "comparison-card",
+      "reason": "Correcting the second occurrence of the CSS class name typo.",
+      "category": "ocr_typo",
+      "confidence": 0.95,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-3",
+      "original": "10th Edi.t",
+      "proposed": "10th Edit.",
+      "reason": "Correcting a broken word split by a period.",
+      "category": "ocr_typo",
+      "confidence": 0.98,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-7",
+      "original": "o @ CENGAGE",
+      "proposed": "© CENGAGE",
+      "reason": "The 'o' and '@' symbols are common OCR errors for '©'.",
+      "category": "ocr_typo",
+      "confidence": 0.95,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-4",
+      "original": "Mexico ¢",
+      "proposed": "Mexico •",
+      "reason": "The cent symbol (¢) is often used as an OCR error for a bullet or separator dot.",
+      "category": "ocr_typo",
+      "confidence": 0.92,
+      "status": "PENDING"
+    }
+  ]
+}

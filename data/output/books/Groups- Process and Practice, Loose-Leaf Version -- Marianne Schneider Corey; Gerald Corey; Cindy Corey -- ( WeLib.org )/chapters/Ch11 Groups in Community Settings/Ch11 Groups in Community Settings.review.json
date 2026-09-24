@@ -1,0 +1,62 @@
+{
+  "chapter": "Ch11 Groups in Community Settings",
+  "total_proposals": 6,
+  "auto_accepted_count": 4,
+  "pending_count": 2,
+  "proposals": [
+    {
+      "id": "rev-1",
+      "original": "wu F&F WN",
+      "proposed": "Wu F&F WN",
+      "reason": "Capitalization of first letter in list item.",
+      "category": "ocr_typo",
+      "confidence": 0.95,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-2",
+      "original": "Introduction o",
+      "proposed": "Introduction",
+      "reason": "Trailing 'o' is likely an OCR error or artifact.",
+      "category": "ocr_typo",
+      "confidence": 0.95,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-3",
+      "original": "Group Work With Women o",
+      "proposed": "Group Work With Women",
+      "reason": "Trailing 'o' is likely an OCR error or artifact.",
+      "category": "ocr_typo",
+      "confidence": 0.95,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-5",
+      "original": "An Involuntarey",
+      "proposed": "An Involuntary",
+      "reason": "Typo: 'e' instead of 'i' in 'Involuntary'.",
+      "category": "ocr_typo",
+      "confidence": 0.98,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-4",
+      "original": "d",
+      "proposed": "Development",
+      "reason": "Single letter 'd' is likely a truncated word or fragment.",
+      "category": "ocr_typo",
+      "confidence": 0.85,
+      "status": "PENDING"
+    },
+    {
+      "id": "rev-6",
+      "original": "Group Treatment for People With Substance",
+      "proposed": "Group Treatment for People With Substance Abuse",
+      "reason": "The title is likely truncated.",
+      "category": "ocr_typo",
+      "confidence": 0.85,
+      "status": "PENDING"
+    }
+  ]
+}

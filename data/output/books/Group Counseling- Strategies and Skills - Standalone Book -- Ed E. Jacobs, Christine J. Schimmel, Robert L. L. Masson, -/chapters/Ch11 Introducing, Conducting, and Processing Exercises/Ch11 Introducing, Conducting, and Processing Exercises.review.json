@@ -1,0 +1,44 @@
+{
+  "chapter": "Ch11 Introducing, Conducting, and Processing Exercises",
+  "total_proposals": 4,
+  "auto_accepted_count": 4,
+  "pending_count": 0,
+  "proposals": [
+    {
+      "id": "rev-1",
+      "original": "compareison-cared",
+      "proposed": "comparison-card",
+      "reason": "The word 'compareison' is a misspelling of 'comparison', and 'cared' is likely an OCR or transcription error for 'card' (common in UI/UX components).",
+      "category": "ocr_typo",
+      "confidence": 0.98,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-2",
+      "original": "compareison-cared",
+      "proposed": "comparison-card",
+      "reason": "Duplicate instance of the typo in CSS class names.",
+      "category": "ocr_typo",
+      "confidence": 0.98,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-3",
+      "original": "aree",
+      "proposed": "are",
+      "reason": "Typo 'aree' for 'are'.",
+      "category": "ocr_typo",
+      "confidence": 1.0,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-4",
+      "original": "paretner",
+      "proposed": "partner",
+      "reason": "Typo 'paretner' for 'partner'.",
+      "category": "ocr_typo",
+      "confidence": 1.0,
+      "status": "AUTO_ACCEPTED"
+    }
+  ]
+}

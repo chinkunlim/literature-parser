@@ -24,7 +24,8 @@
     border-bottom: 2px solid #842959;
   }
   .textbook-table {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     border-collapse: collapse;
     font-size: 0.9em;
   }
@@ -91,14 +92,57 @@
   }
 </style>
 
-# 00-0Cover
+<details open>
+<summary>📑 <b>Table of Contents</b></summary>
+
+- [EDITION](#edition)
+- [— Group](#group)
+- [Counseling](#counseling)
+- [Digitized by the Internet Archive](#digitized-by-the-internet-archive)
+- [https://archive.org/details/
+<!-- AI-REVIEW-START id="rev-1" category="ocr_typo" -->
+<!-- ORIGINAL:
+groupcounselings000jacov8u3
+-->
+<!-- REASON: OCR error where capital 'O' is used instead of the number '0'. -->
+groupcounselings000jacov8u3
+<!-- AI-REVIEW-END -->
+](#https-archive-org-details-groupcounselingso000jacov8u3)
+
+</details>
+
 
 <!-- Page 1 -->
-Se                  Group Counseling STRATEGIES   AND   SKILLS
+## EDITION
+
+## — Group
+
+## Counseling
+
+(B
 
 <!-- Page 2 -->
 ## Digitized by the Internet Archive
 
 in 2022 with funding from Kahle/Austin Foundation
 
-https://archive.org/details/groupcounselingsOO0O00jaco_v8u3
+## https://archive.org/details/
+<!-- AI-REVIEW-START id="rev-2" category="ocr_typo" -->
+<!-- ORIGINAL:
+groupcounselings000jaco_v8u3
+-->
+<!-- REASON: Incorrect underscore character likely from OCR or faulty transcription of a URL segment. -->
+groupcounselings000jaco_v8u3
+<!-- AI-REVIEW-END -->
+
+
+
+<!-- OBSIDIAN_NAV_START -->
+---
+
+<div align="center">
+
+[[00-1publish|00-1Publish]] →
+
+</div>
+<!-- OBSIDIAN_NAV_END -->

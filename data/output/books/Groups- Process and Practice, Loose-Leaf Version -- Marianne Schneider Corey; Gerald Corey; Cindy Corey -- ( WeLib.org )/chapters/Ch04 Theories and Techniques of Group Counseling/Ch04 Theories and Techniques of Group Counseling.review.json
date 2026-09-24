@@ -1,0 +1,35 @@
+{
+  "chapter": "Ch04 Theories and Techniques of Group Counseling",
+  "total_proposals": 3,
+  "auto_accepted_count": 2,
+  "pending_count": 1,
+  "proposals": [
+    {
+      "id": "rev-1",
+      "original": "Comparison Cared",
+      "proposed": "Comparison Card",
+      "reason": "Typo: 'Cared' should be 'Card' in the context of 'Comparison Card' or 'comparison-cared' CSS class naming logic, but 'card' is the standard term for a UI component.",
+      "category": "ocr_typo",
+      "confidence": 0.95,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-2",
+      "original": "framed-cared",
+      "proposed": "framed-card",
+      "reason": "Consistent with 'card' UI terminology and 'card-caption' nearby.",
+      "category": "ocr_typo",
+      "confidence": 0.95,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-3",
+      "original": "Psyc",
+      "proposed": "Psychology",
+      "reason": "Truncated word 'Psyc' at the end of the text.",
+      "category": "ocr_typo",
+      "confidence": 0.85,
+      "status": "PENDING"
+    }
+  ]
+}

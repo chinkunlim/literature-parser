@@ -1,0 +1,62 @@
+{
+  "chapter": "Ch10 Exercises",
+  "total_proposals": 6,
+  "auto_accepted_count": 5,
+  "pending_count": 1,
+  "proposals": [
+    {
+      "id": "rev-1",
+      "original": "compareison-cared",
+      "proposed": "comparison-card",
+      "reason": "OCR/typo error in CSS class name: 'compareison' -> 'comparison' and 'cared' -> 'card'",
+      "category": "ocr_typo",
+      "confidence": 0.98,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-2",
+      "original": "compareison-cared",
+      "proposed": "comparison-card",
+      "reason": "OCR/typo error in CSS class name: 'compareison' -> 'comparison' and 'cared' -> 'card'",
+      "category": "ocr_typo",
+      "confidence": 0.98,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-4",
+      "original": "Learening",
+      "proposed": "Learning",
+      "reason": "OCR error in Table of Contents: 'Learening' -> 'Learning'",
+      "category": "ocr_typo",
+      "confidence": 1.0,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-5",
+      "original": ") GROUP COUNSELING SKILLS",
+      "proposed": "GROUP COUNSELING SKILLS",
+      "reason": "OCR error: ')' at the start of a title.",
+      "category": "ocr_typo",
+      "confidence": 0.98,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-6",
+      "original": "areound",
+      "proposed": "around",
+      "reason": "OCR error at the end of the paragraph: 'areound' -> 'around'",
+      "category": "ocr_typo",
+      "confidence": 1.0,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-3",
+      "original": "aD oS",
+      "proposed": "ADO",
+      "reason": "OCR error in Table of Contents: 'aD oS' -> 'ADO' or 'Ados'. Contextually, 'aD oS' is likely a typo for a specific term.",
+      "category": "ocr_typo",
+      "confidence": 0.85,
+      "status": "PENDING"
+    }
+  ]
+}

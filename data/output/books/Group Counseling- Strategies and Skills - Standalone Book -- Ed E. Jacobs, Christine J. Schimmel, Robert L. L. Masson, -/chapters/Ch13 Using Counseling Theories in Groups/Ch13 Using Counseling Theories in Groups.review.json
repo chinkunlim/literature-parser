@@ -1,0 +1,80 @@
+{
+  "chapter": "Ch13 Using Counseling Theories in Groups",
+  "total_proposals": 8,
+  "auto_accepted_count": 8,
+  "pending_count": 0,
+  "proposals": [
+    {
+      "id": "rev-1",
+      "original": "compareison-cared",
+      "proposed": "comparison-card",
+      "reason": "Typo in 'comparison' and 'card' likely caused by OCR or manual error.",
+      "category": "ocr_typo",
+      "confidence": 0.98,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-2",
+      "original": "compareison-cared",
+      "proposed": "comparison-card",
+      "reason": "Second occurrence of the same class name error.",
+      "category": "ocr_typo",
+      "confidence": 0.98,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-3",
+      "original": "feeting",
+      "proposed": "feeling",
+      "reason": "Likely OCR error for 'feeling'.",
+      "category": "ocr_typo",
+      "confidence": 0.99,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-4",
+      "original": "feareful",
+      "proposed": "fearful",
+      "reason": "Typo in 'fearful'.",
+      "category": "ocr_typo",
+      "confidence": 0.98,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-5",
+      "original": "gerk",
+      "proposed": "jerk",
+      "reason": "Context suggests 'jerk' (matching the next line's 'jerk').",
+      "category": "ocr_typo",
+      "confidence": 0.98,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-6",
+      "original": "yjuat",
+      "proposed": "just",
+      "reason": "Likely OCR error for 'just'.",
+      "category": "ocr_typo",
+      "confidence": 0.98,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-7",
+      "original": "3’m",
+      "proposed": "I'm",
+      "reason": "OCR error for 'I'm' where 'I' was misinterpreted as '3'.",
+      "category": "ocr_typo",
+      "confidence": 0.95,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-8",
+      "original": "3’m",
+      "proposed": "I'm",
+      "reason": "Second occurrence of '3'm' as 'I'm'.",
+      "category": "ocr_typo",
+      "confidence": 0.95,
+      "status": "AUTO_ACCEPTED"
+    }
+  ]
+}

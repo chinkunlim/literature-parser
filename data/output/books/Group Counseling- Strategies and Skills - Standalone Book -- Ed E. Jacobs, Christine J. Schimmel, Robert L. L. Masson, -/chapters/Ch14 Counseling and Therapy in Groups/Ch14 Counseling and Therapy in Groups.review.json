@@ -1,0 +1,35 @@
+{
+  "chapter": "Ch14 Counseling and Therapy in Groups",
+  "total_proposals": 3,
+  "auto_accepted_count": 2,
+  "pending_count": 1,
+  "proposals": [
+    {
+      "id": "rev-1",
+      "original": "compareison-cared",
+      "proposed": "comparison-card",
+      "reason": "OCR/Typo error 'compareison' -> 'comparison' and 'cared' -> 'card' in CSS class names.",
+      "category": "ocr_typo",
+      "confidence": 0.95,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-2",
+      "original": "compareison-cared",
+      "proposed": "comparison-card",
+      "reason": "Double occurrence of the same error in CSS class names.",
+      "category": "ocr_typo",
+      "confidence": 0.95,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-3",
+      "original": "au ew N",
+      "proposed": "an even N",
+      "reason": "Garbled text likely from 'an even' or similar, 'au ew' is a common OCR error for 'an' or 'an even'.",
+      "category": "ocr_typo",
+      "confidence": 0.85,
+      "status": "PENDING"
+    }
+  ]
+}

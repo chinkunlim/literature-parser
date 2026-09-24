@@ -1,0 +1,26 @@
+{
+  "chapter": "00-1Publish",
+  "total_proposals": 2,
+  "auto_accepted_count": 2,
+  "pending_count": 0,
+  "proposals": [
+    {
+      "id": "rev-1",
+      "original": "o. CENGAGE",
+      "proposed": "© CENGAGE",
+      "reason": "OCR error: 'o.' is a common misinterpretation of the copyright symbol '©'.",
+      "category": "ocr_typo",
+      "confidence": 0.98,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-2",
+      "original": "Learning’",
+      "proposed": "Learning",
+      "reason": "Trailing single quote/apostrophe is likely a typo or artifact.",
+      "category": "ocr_typo",
+      "confidence": 0.95,
+      "status": "AUTO_ACCEPTED"
+    }
+  ]
+}

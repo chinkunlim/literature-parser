@@ -1,0 +1,44 @@
+{
+  "chapter": "Ch15 Closing a Session or Group",
+  "total_proposals": 4,
+  "auto_accepted_count": 4,
+  "pending_count": 0,
+  "proposals": [
+    {
+      "id": "rev-1",
+      "original": "vareious",
+      "proposed": "various",
+      "reason": "OCR typo or misspelling of 'various'",
+      "category": "ocr_typo",
+      "confidence": 0.98,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-2",
+      "original": "Leaper",
+      "proposed": "Leader",
+      "reason": "Contextual correction of 'Leaper' to 'Leader' in a counseling session.",
+      "category": "ocr_typo",
+      "confidence": 0.95,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-3",
+      "original": "summareized",
+      "proposed": "summarized",
+      "reason": "OCR typo or misspelling of 'summarized'",
+      "category": "ocr_typo",
+      "confidence": 0.98,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-4",
+      "original": "learened",
+      "proposed": "learned",
+      "reason": "OCR typo or misspelling of 'learned'",
+      "category": "ocr_typo",
+      "confidence": 0.98,
+      "status": "AUTO_ACCEPTED"
+    }
+  ]
+}

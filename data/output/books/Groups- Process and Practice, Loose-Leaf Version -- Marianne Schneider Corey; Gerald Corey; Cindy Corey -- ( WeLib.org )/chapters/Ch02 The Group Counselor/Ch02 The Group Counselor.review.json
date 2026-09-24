@@ -1,0 +1,62 @@
+{
+  "chapter": "Ch02 The Group Counselor",
+  "total_proposals": 6,
+  "auto_accepted_count": 4,
+  "pending_count": 2,
+  "proposals": [
+    {
+      "id": "rev-2",
+      "original": "Lot)",
+      "proposed": "Lots)",
+      "reason": "The closing parenthesis without an opening parenthesis suggests a typo or OCR error in 'Lots'.",
+      "category": "ocr_typo",
+      "confidence": 0.95,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-3",
+      "original": "02)",
+      "proposed": "2)",
+      "reason": "The leading zero in '02' is a common OCR artifact when numbers are list items.",
+      "category": "ocr_typo",
+      "confidence": 0.95,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-4",
+      "original": "learening",
+      "proposed": "learning",
+      "reason": "Typo in 'learning'.",
+      "category": "ocr_typo",
+      "confidence": 1.0,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-5",
+      "original": "Researech",
+      "proposed": "Research",
+      "reason": "Typo in 'Research'.",
+      "category": "ocr_typo",
+      "confidence": 1.0,
+      "status": "AUTO_ACCEPTED"
+    },
+    {
+      "id": "rev-1",
+      "original": "wow on vu on",
+      "proposed": "Word for Word",
+      "reason": "The sequence 'wow on vu on' is likely a garbled OCR error for 'Word for Word' given the context of a Table of Contents.",
+      "category": "ocr_typo",
+      "confidence": 0.92,
+      "status": "PENDING"
+    },
+    {
+      "id": "rev-6",
+      "original": "com",
+      "proposed": "rm",
+      "reason": "The text 'the-challenge-of-com' is a truncated 'The Challenge of Combining Research and Practice' link. However, 'com' is likely part of 'combining' and the string 'com' in a markdown link is usually a result of truncation or garbling during OCR or copy-paste.",
+      "category": "ocr_typo",
+      "confidence": 0.85,
+      "status": "PENDING"
+    }
+  ]
+}

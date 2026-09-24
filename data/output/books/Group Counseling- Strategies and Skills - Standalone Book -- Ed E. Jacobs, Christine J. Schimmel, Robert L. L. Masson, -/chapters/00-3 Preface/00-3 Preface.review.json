@@ -1,0 +1,17 @@
+{
+  "chapter": "00-3 Preface",
+  "total_proposals": 1,
+  "auto_accepted_count": 1,
+  "pending_count": 0,
+  "proposals": [
+    {
+      "id": "rev-1",
+      "original": "chap",
+      "proposed": "chapter",
+      "reason": "The text is truncated at the end of the line, likely a cut-off word during transcription or OCR.",
+      "category": "ocr_typo",
+      "confidence": 0.98,
+      "status": "AUTO_ACCEPTED"
+    }
+  ]
+}

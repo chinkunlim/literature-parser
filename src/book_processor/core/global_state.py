@@ -127,14 +127,24 @@ class GlobalStateManager:
             try:
                 with open(status_json, "r", encoding="utf-8") as f:
                     book_data = json.load(f)
-                title = book_data.get("book_title", status_json.parent.name)
-                chapters = book_data.get("chapters", {})
-                doc_type = "literature" if "literature" in str(status_json) else "book"
+                title = book_data.get("book_title") or book_data.get("doc_name") or status_json.parent.name
+                doc_type = "literature" if ("literature" in str(status_json) or book_data.get("archetype") == "journal") else "book"
+                if "chapters" in book_data and book_data["chapters"]:
+                    chapters = book_data["chapters"]
+                else:
+                    passed = book_data.get("passed", False)
+                    chapters = {
+                        title: {
+                            "status": "VERIFIED" if passed else "FAILED",
+                            "verification_pass": passed,
+                        }
+                    }
                 self.update_book(title, chapters, doc_type=doc_type)
                 synced += 1
             except Exception:
                 continue
         return synced
+
 
     def get_all(self) -> Dict[str, Any]:
         """Returns the complete global state dictionary."""

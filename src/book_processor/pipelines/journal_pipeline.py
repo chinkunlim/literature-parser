@@ -40,8 +40,8 @@ from book_processor.utils.text_utils import sanitize_filename, stitch_cross_page
 
 logger = logging.getLogger(__name__)
 
-# Standard academic styling injected into journal Markdown
-from book_processor.book_style import build_textbook_css
+# Standard academic styling injected into literature Markdown
+from book_processor.literature_style import build_literature_css
 
 
 class JournalPipeline(BasePipeline):
@@ -162,9 +162,9 @@ class JournalPipeline(BasePipeline):
         # Stitch cross-page continuity
         full_md = stitch_cross_page_continuity(full_md)
 
-        # Prepend Academic CSS
-        academic_css = build_textbook_css({"is_journal_article": True})
-        if "/* Academic Journal Typographic Styling */" not in full_md:
+        # Prepend Academic Literature CSS
+        academic_css = build_literature_css()
+        if "/* Academic Literature Typographic Styling */" not in full_md and "/* Academic Journal Typographic Styling */" not in full_md:
             full_md = f"{academic_css}\n{full_md}"
 
         # Save primary document Markdown

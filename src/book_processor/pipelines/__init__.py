@@ -8,7 +8,8 @@ Separated processing pipelines for different document types:
 """
 
 from book_processor.pipelines.base_pipeline import BasePipeline
+from book_processor.pipelines.literature_pipeline import LiteraturePipeline
 from book_processor.pipelines.journal_pipeline import JournalPipeline
 from book_processor.pipelines.textbook_pipeline import TextbookPipeline
 
-__all__ = ["BasePipeline", "JournalPipeline", "TextbookPipeline"]
+__all__ = ["BasePipeline", "LiteraturePipeline", "JournalPipeline", "TextbookPipeline"]

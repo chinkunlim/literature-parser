@@ -15,7 +15,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from book_processor.config import (
     OLLAMA_API_BASE,
-    DEFAULT_OLLAMA_MODEL,
+    DEFAULT_OLLAMA_HEALER_MODEL,
     OLLAMA_GENERATE_TIMEOUT,
 )
 from book_processor.utils.system import is_ollama_running, ensure_ollama_running
@@ -30,7 +30,7 @@ class OllamaHealer:
 
     def __init__(
         self,
-        model_name: str = DEFAULT_OLLAMA_MODEL,
+        model_name: str = DEFAULT_OLLAMA_HEALER_MODEL,
         api_base: str = OLLAMA_API_BASE,
         auto_start: bool = True,
         max_repair_loops: int = 3,
@@ -38,7 +38,7 @@ class OllamaHealer:
         self.model_name = model_name
         self.api_base = api_base
         self.max_repair_loops = max_repair_loops
-        self.verifier = OllamaVerifier(model_name=model_name, api_base=api_base, auto_start=auto_start)
+        self.verifier = OllamaVerifier(healer_model=model_name, api_base=api_base, auto_start=auto_start)
         self.is_available = self.verifier.is_available
 
     def heal_markdown(
@@ -152,7 +152,7 @@ class OllamaHealer:
     def _query_ollama_raw(self, prompt: str, system_prompt: str = "") -> Optional[str]:
         """Queries Ollama for raw text output."""
         payload = {
-            "model": self.verifier.model_name,
+            "model": self.verifier.healer_model,
             "prompt": prompt,
             "system": system_prompt,
             "stream": False,

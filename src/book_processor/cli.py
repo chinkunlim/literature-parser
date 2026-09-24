@@ -16,7 +16,7 @@ from book_processor import __version__
 from book_processor.core.orchestrator import BookProcessorOrchestrator
 from book_processor.verification.verifier import AccuracyVerifier
 from book_processor.utils.system import check_dependencies
-from book_processor.config import DEFAULT_OLLAMA_MODEL
+from book_processor.config import DEFAULT_OLLAMA_HEALER_MODEL, DEFAULT_OLLAMA_SEMANTIC_MODEL
 
 
 def main():
@@ -31,7 +31,7 @@ def main():
     def add_ollama_args(subparser):
         subparser.add_argument("--ollama", dest="ollama", action="store_true", default=None, help="Force enable local Ollama AI audit")
         subparser.add_argument("--no-ollama", dest="ollama", action="store_false", help="Disable local Ollama AI audit")
-        subparser.add_argument("--ollama-model", default=DEFAULT_OLLAMA_MODEL, help=f"Local Ollama model name (default: {DEFAULT_OLLAMA_MODEL})")
+        subparser.add_argument("--ollama-model", default=None, help="Legacy single override model name (overrides both semantic and healer if set)")
 
     # 1. SPLIT Subcommand
     p_split = subparsers.add_parser("split", help="Split entire book into chapter PDFs in seconds (no OCR)")
@@ -131,7 +131,7 @@ def main():
             input_dir=getattr(args, 'input_dir', '.'),
             output_dir=getattr(args, 'output_dir', './output'),
             use_ollama=resolve_ollama(getattr(args, 'ollama', None)),
-            ollama_model=getattr(args, 'ollama_model', 'qwen2.5:7b')
+            ollama_model=getattr(args, 'ollama_model', None)
         )
 
         books = orchestrator.discover_books(getattr(args, 'file', None))

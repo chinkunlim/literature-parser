@@ -11,7 +11,8 @@ import urllib.request
 import urllib.error
 from book_processor.config import (
     OLLAMA_API_BASE,
-    DEFAULT_OLLAMA_MODEL,
+    DEFAULT_OLLAMA_SEMANTIC_MODEL,
+    DEFAULT_OLLAMA_HEALER_MODEL,
     DEFAULT_OLLAMA_VISION_MODEL,
     OLLAMA_GENERATE_TIMEOUT,
 )
@@ -23,15 +24,16 @@ logger = logging.getLogger(__name__)
 class OllamaVerifier:
     """Dispatches verification and LaTeX refinement tasks to local Ollama models."""
 
-    def __init__(self, model_name: str = DEFAULT_OLLAMA_MODEL, api_base: str = OLLAMA_API_BASE, auto_start: bool = True) -> None:
-        self.model_name = model_name
+    def __init__(self, semantic_model: str = None, healer_model: str = None, api_base: str = OLLAMA_API_BASE, auto_start: bool = True) -> None:
+        self.semantic_model = semantic_model or DEFAULT_OLLAMA_SEMANTIC_MODEL
+        self.healer_model = healer_model or DEFAULT_OLLAMA_HEALER_MODEL
         self.api_base = api_base
         if auto_start:
             self.is_available = ensure_ollama_running(self.api_base)
         else:
             self.is_available = is_ollama_running(self.api_base)
         if self.is_available:
-            self.auto_select_model()
+            self.auto_select_models()
 
     def list_local_models(self) -> list:
         """Returns list of installed local Ollama models."""
@@ -45,41 +47,41 @@ class OllamaVerifier:
         except Exception:
             return []
 
-    def auto_select_model(self) -> str:
+    def auto_select_models(self) -> None:
         """
-        Inspects installed local models and selects the best matching model.
-        If self.model_name is not installed, falls back to highest-priority available model.
+        Inspects installed local models and selects the best matching models.
+        Falls back if the requested models are not installed.
         """
         models = self.list_local_models()
         if not models:
-            return self.model_name
+            return
 
-        # Check if requested model or prefix matches
-        for m in models:
-            if m == self.model_name or m.startswith(self.model_name.split(':')[0]):
-                self.model_name = m
-                return m
-
-        # Priority fallback list of high-capability models
-        candidates = [
-            "qwen2.5-coder:7b", "qwen2.5:7b", "qwen2.5:14b",
-            "gemma4:12b", "gemma4:latest", "gemma4",
-            "deepseek-r1:8b", "deepseek-r1:14b",
-            "llama3.2-vision:latest", "llama3.1:8b", "llama3:latest",
-            "mistral:7b", "gemma2:9b"
-        ]
-        for cand in candidates:
-            cand_prefix = cand.split(':')[0]
+        def select_best(requested: str, candidates: list) -> str:
+            # Check exact or prefix
             for m in models:
-                if m == cand or m.startswith(cand_prefix):
-                    logger.info("OllamaVerifier: model '%s' not found; auto-selected '%s'.", self.model_name, m)
-                    self.model_name = m
+                if m == requested or m.startswith(requested.split(':')[0]):
                     return m
+            # Check fallbacks
+            for cand in candidates:
+                cand_prefix = cand.split(':')[0]
+                for m in models:
+                    if m == cand or m.startswith(cand_prefix):
+                        return m
+            return models[0]
 
-        # If none matched, use the first installed model
-        self.model_name = models[0]
-        logger.info("OllamaVerifier: using first available model '%s'.", models[0])
-        return self.model_name
+        semantic_candidates = [
+            "gemma4:12b", "gemma4:latest", "gemma4", "gemma2:9b",
+            "llama3.1:8b", "llama3:latest", "mistral:7b", "qwen2.5:7b"
+        ]
+        healer_candidates = [
+            "qwen2.5-coder:7b", "qwen2.5:14b", "qwen2.5:7b",
+            "deepseek-r1:8b", "deepseek-r1:14b",
+            "gemma4:12b", "llama3.1:8b"
+        ]
+
+        self.semantic_model = select_best(self.semantic_model, semantic_candidates)
+        self.healer_model = select_best(self.healer_model, healer_candidates)
+        logger.info("OllamaVerifier: selected semantic_model='%s', healer_model='%s'", self.semantic_model, self.healer_model)
 
     def verify_chapter_semantics(self, chapter_title: str, markdown_sample: str) -> dict:
         """
@@ -92,7 +94,7 @@ class OllamaVerifier:
         if not self.is_available:
             return {
                 "available": False,
-                "model": self.model_name,
+                "model": self.semantic_model,
                 "feedback": "Local Ollama daemon is offline or inaccessible.",
             }
 
@@ -126,7 +128,7 @@ class OllamaVerifier:
 
 
         payload = {
-            "model": self.model_name,
+            "model": self.semantic_model,
             "prompt": prompt,
             "stream": False,
             "keep_alive": "30m",
@@ -143,7 +145,7 @@ class OllamaVerifier:
                 response_text = result.get("response", "").strip()
                 return {
                     "available": True,
-                    "model": self.model_name,
+                    "model": self.semantic_model,
                     "feedback": response_text,
                     "passed": (
                         "[PASS]" in response_text.upper()
@@ -154,7 +156,7 @@ class OllamaVerifier:
         except Exception as e:
             return {
                 "available": False,
-                "model": self.model_name,
+                "model": self.semantic_model,
                 "feedback": f"Error communicating with local Ollama: {e}",
             }
 
@@ -196,7 +198,7 @@ class OllamaVerifier:
         )
 
         payload = {
-            "model": self.model_name,
+            "model": self.healer_model,
             "prompt": prompt,
             "stream": False,
             "format": "json",

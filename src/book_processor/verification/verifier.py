@@ -40,7 +40,7 @@ class AccuracyVerifier:
                         self.dict_words.add(w)
 
         self.use_ollama = use_ollama
-        self.ollama = OllamaVerifier(model_name=ollama_model) if use_ollama and ollama_model else (OllamaVerifier() if use_ollama else None)
+        self.ollama = OllamaVerifier(healer_model=ollama_model) if use_ollama and ollama_model else (OllamaVerifier() if use_ollama else None)
 
     def verify_chapter(self, chapter_dir: str, expected_pages: int = None) -> dict:
         ch_path = Path(chapter_dir)

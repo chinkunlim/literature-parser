@@ -23,7 +23,7 @@ from book_processor.profiler.special_block_scanner import SpecialBlockScanner
 from book_processor.profiler.coordinate_calibrator import CoordinateCalibrator
 from book_processor.config import (
     DEFAULT_INBOX_DIR, DEFAULT_PROCESSED_DIR, DEFAULT_OUTPUT_DIR,
-    DEFAULT_OLLAMA_MODEL, CIRCUIT_BREAKER_MAX_FAILURES,
+    DEFAULT_OLLAMA_HEALER_MODEL, CIRCUIT_BREAKER_MAX_FAILURES,
 )
 
 from book_processor.parsers.scanned_pdf import ScannedPDFParser
@@ -59,7 +59,7 @@ class BookProcessorOrchestrator:
         inbox_dir: str = DEFAULT_INBOX_DIR,
         processed_dir: str = DEFAULT_PROCESSED_DIR,
         use_ollama: bool = False,
-        ollama_model: str = DEFAULT_OLLAMA_MODEL
+        ollama_model: str = DEFAULT_OLLAMA_HEALER_MODEL
     ):
         self.input_dir = os.path.abspath(input_dir)
         self.output_dir = os.path.abspath(output_dir)
@@ -482,7 +482,7 @@ class BookProcessorOrchestrator:
 
         # 4. Local AI Review & Diff Generation
         if self.use_ollama:
-            ollama = OllamaVerifier(model_name=self.ollama_model)
+            ollama = OllamaVerifier(healer_model=self.ollama_model) if self.ollama_model else OllamaVerifier()
             if ollama.is_available:
                 print(f"  [AI Review] Requesting local AI audit & diff suggestions from {self.ollama_model}...")
                 proposals = ollama.audit_and_propose_fixes(full_md)

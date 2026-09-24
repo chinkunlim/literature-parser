@@ -1,0 +1,48 @@
+{
+  "publisher": "springer",
+  "name": "Springer Nature / SpringerLink / LNCS",
+  "doi_prefixes": ["10.1007"],
+  "running_header_patterns": [
+    "\\bSpringerLink\\b",
+    "\\bSpringer\\s+Nature\\b",
+    "Lecture Notes in Computer Science",
+    "\\bLNCS\\b",
+    "\\bSpringer-Verlag\\b",
+    "\\bcommunicated by\\b",
+    "\\bSpringer\\s+Science\\b"
+  ],
+  "footer_noise_patterns": [
+    "springer\\.com/article",
+    "link\\.springer\\.com",
+    "© The Author\\(s\\)\\s*\\d{4}",
+    "Open Access.*?Creative Commons",
+    "This article is licensed under a Creative Commons"
+  ],
+  "hanging_indent_reference_style": "springer_numbered",
+  "two_column": false,
+  "figure_caption_position": "below",
+  "figure_caption_italic": true,
+  "supplementary_section_keywords": [
+    "Supplementary Material",
+    "Supplementary Information",
+    "Appendix",
+    "Proof of Theorem",
+    "Proof of Lemma"
+  ],
+  "abstract_label": "Abstract",
+  "keywords_label": "Keywords",
+  "known_section_order": [
+    "Abstract",
+    "Keywords",
+    "Introduction",
+    "Related Work",
+    "Background",
+    "Methodology",
+    "Experiments",
+    "Results",
+    "Discussion",
+    "Conclusion",
+    "References",
+    "Appendix"
+  ]
+}

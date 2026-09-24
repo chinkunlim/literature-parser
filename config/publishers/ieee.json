@@ -1,0 +1,58 @@
+{
+  "publisher": "ieee",
+  "name": "IEEE (Institute of Electrical and Electronics Engineers)",
+  "doi_prefixes": ["10.1109"],
+  "running_header_patterns": [
+    "\\bIEEE TRANSACTIONS ON\\b",
+    "\\bIEEE ACCESS\\b",
+    "\\bIEEE JOURNAL OF\\b",
+    "\\bIEEE SIGNAL PROCESSING\\b",
+    "\\bPROCEEDINGS OF THE IEEE\\b",
+    "\\b\\d{4} IEEE\\b",
+    "Authorized licensed use limited to",
+    "Downloaded on \\d{1,2}\\s+\\w+\\s+\\d{4}",
+    "Restrictions apply\\."
+  ],
+  "footer_noise_patterns": [
+    "Authorized licensed use limited to:.*?Restrictions apply\\.",
+    "Digital Object Identifier 10\\.1109",
+    "VOLUME \\d+,\\s*NO\\.\\s*\\d+,\\s*\\w+\\s+\\d{4}",
+    "©\\s*\\d{4}\\s+IEEE\\.?\\s+Personal use",
+    "IEEE Xplore"
+  ],
+  "hanging_indent_reference_style": "ieee_numbered",
+  "two_column": true,
+  "author_bio_at_end": true,
+  "index_terms_section": true,
+  "nomenclature_section": true,
+  "special_section_keywords": [
+    "Index Terms",
+    "Index Terms—",
+    "Nomenclature",
+    "List of Abbreviations",
+    "Author Biography",
+    "Author Biographies",
+    "Biographies",
+    "About the Author"
+  ],
+  "figure_caption_position": "below",
+  "abstract_label": "Abstract",
+  "keywords_label": "Index Terms",
+  "known_section_order": [
+    "Abstract",
+    "Index Terms",
+    "Introduction",
+    "Related Work",
+    "System Model",
+    "Proposed Method",
+    "Simulation",
+    "Experimental Results",
+    "Results",
+    "Discussion",
+    "Conclusion",
+    "Appendix",
+    "References",
+    "Nomenclature",
+    "Author Biography"
+  ]
+}

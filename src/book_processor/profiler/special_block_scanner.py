@@ -16,7 +16,7 @@ re-scanning.
 
 Usage:
     from book_processor.profiler.special_block_scanner import SpecialBlockScanner
-    scanner = SpecialBlockScanner(book_dir=Path("output/MyBook"))
+    scanner = SpecialBlockScanner(book_dir=Path("./data/output/books/MyBook"))
     scanner.scan_and_update(chapter_pdfs=[Path("chapters/Ch01/Ch01.pdf"), ...])
 """
 

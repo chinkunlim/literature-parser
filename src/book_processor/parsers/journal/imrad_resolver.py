@@ -64,6 +64,8 @@ class IMRADResolver:
         in_code_block = False
         in_references = False
         last_emergent = ""
+        has_seen_imrad = False
+        has_seen_abstract = False
 
         while i < len(lines):
             line = lines[i]
@@ -116,6 +118,7 @@ class IMRADResolver:
                         if not re.search(r'[\.\;\:\,]', trimmed) or trimmed.endswith(':'):
                             new_lines.append(f"## {sec_name}")
                             promoted_primary = True
+                            has_seen_imrad = True
                             last_emergent = ""
                             break
                 if promoted_primary:
@@ -141,6 +144,18 @@ class IMRADResolver:
             if promoted_secondary:
                 i += 1
                 continue
+
+            # 2.5 Auto-detect Abstract if it's the first long paragraph before any IMRAD section
+            if not has_seen_imrad and not has_seen_abstract and not in_references:
+                if len(trimmed) > 350 and not trimmed.startswith("<") and not trimmed.startswith("!"):
+                    new_lines.append("## Abstract\n")
+                    if not trimmed.startswith(">"):
+                        new_lines.append(f"> {trimmed}")
+                    else:
+                        new_lines.append(trimmed)
+                    has_seen_abstract = True
+                    i += 1
+                    continue
 
             # 3. Check Shared Emergent Sections (Author Note, Received Dates, Funding)
             matched_emergent = cls._match_emergent_section(trimmed, shared_sections)

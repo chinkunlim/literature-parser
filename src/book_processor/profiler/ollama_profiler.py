@@ -218,7 +218,7 @@ class OllamaProfiler:
 if __name__ == "__main__":
     import sys
     logging.basicConfig(level=logging.INFO)
-    target = Path("output/Research Methods, Design, and Analysis 13th ed")
+    target = Path("./data/output/books/Research Methods, Design, and Analysis 13th ed")
     if len(sys.argv) > 1:
         target = Path(sys.argv[1])
     prof = create_or_update_book_profile(target, force_refresh=True)

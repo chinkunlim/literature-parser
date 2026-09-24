@@ -22,7 +22,7 @@ from book_processor.profiler.coordinate_calibrator import CoordinateCalibrator
 from book_processor.verification.visual_auditor import VisualAuditor
 from book_processor.core.checkpoint import CheckpointManager
 
-BOOK_DIR = Path(__file__).parent.parent / "output/Research Methods, Design, and Analysis 13th ed"
+BOOK_DIR = Path(__file__).parent.parent / "./data/output/books/Research Methods, Design, and Analysis 13th ed"
 CH02_PDF = BOOK_DIR / "chapters/Ch02 Research Approaches and Methods of Data Collection/Ch02 Research Approaches and Methods of Data Collection.pdf"
 CH02_MD = BOOK_DIR / "chapters/Ch02 Research Approaches and Methods of Data Collection/Ch02 Research Approaches and Methods of Data Collection.md"
 

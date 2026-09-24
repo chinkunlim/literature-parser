@@ -150,7 +150,7 @@ class CoordinateCalibrator:
 
 if __name__ == "__main__":
     import sys
-    b_dir = Path("output/Research Methods, Design, and Analysis 13th ed")
+    b_dir = Path("./data/output/books/Research Methods, Design, and Analysis 13th ed")
     ch_pdf = b_dir / "chapters/Ch02 Research Approaches and Methods of Data Collection/Ch02 Research Approaches and Methods of Data Collection.pdf"
     if ch_pdf.exists():
         geom = CoordinateCalibrator.calibrate_book_geometry(str(ch_pdf))

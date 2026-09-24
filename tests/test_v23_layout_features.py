@@ -25,7 +25,7 @@ class TestV23LayoutFeatures(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.ch01_pdf = "output/Research Methods, Design, and Analysis 13th ed/chapters/Ch01 Introduction to Scientific Research/Ch01 Introduction to Scientific Research.pdf"
+        cls.ch01_pdf = "./data/output/books/Research Methods, Design, and Analysis 13th ed/chapters/Ch01 Introduction to Scientific Research/Ch01 Introduction to Scientific Research.pdf"
         cls.pdf_exists = Path(cls.ch01_pdf).exists()
         from book_processor.style_loader import load_style
         cls.orig_style = load_style()

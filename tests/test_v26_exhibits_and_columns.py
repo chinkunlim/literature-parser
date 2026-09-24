@@ -10,7 +10,7 @@ sys.path.insert(0, str(ROOT / "src"))
 from book_processor.parsers.layout_detector import LayoutDetector
 from book_processor.parsers.digital_pdf import DigitalPDFParser
 
-CH04_PDF = ROOT / "output/Research Methods, Design, and Analysis 13th ed/chapters/Ch04 Ethics/Ch04 Ethics.pdf"
+CH04_PDF = ROOT / "./data/output/books/Research Methods, Design, and Analysis 13th ed/chapters/Ch04 Ethics/Ch04 Ethics.pdf"
 
 
 class TestV26ExhibitsAndColumns(unittest.TestCase):

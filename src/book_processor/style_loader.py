@@ -85,21 +85,20 @@ def load_style(book_output_dir: str = None) -> dict:
 
                 # If publisher is declared or fingerprinted, merge publisher template first
                 pub = bp.get("publisher", "").lower()
-                profiles_dir = Path(__file__).parent / "profiles"
                 if "pearson" in pub:
                     pub_path = profiles_dir / "publisher_pearson.json"
                 elif "cengage" in pub:
                     pub_path = profiles_dir / "publisher_cengage.json"
                 elif any(k in pub for k in ("apa", "american psychological", "experimental psychology")):
-                    pub_path = profiles_dir / "journal_apa.json"
+                    pub_path = profiles_dir / "literature_apa.json" if (profiles_dir / "literature_apa.json").exists() else profiles_dir / "journal_apa.json"
                 elif any(k in pub for k in ("elsevier", "sciencedirect", "academic press")):
-                    pub_path = profiles_dir / "journal_elsevier.json"
+                    pub_path = profiles_dir / "literature_elsevier.json" if (profiles_dir / "literature_elsevier.json").exists() else profiles_dir / "journal_elsevier.json"
                 elif any(k in pub for k in ("wiley", "blackwell")):
-                    pub_path = profiles_dir / "journal_wiley.json"
+                    pub_path = profiles_dir / "literature_wiley.json" if (profiles_dir / "literature_wiley.json").exists() else profiles_dir / "journal_wiley.json"
                 elif any(k in pub for k in ("springer", "nature", "psychonomic")):
-                    pub_path = profiles_dir / "journal_springer.json"
+                    pub_path = profiles_dir / "literature_springer.json" if (profiles_dir / "literature_springer.json").exists() else profiles_dir / "journal_springer.json"
                 elif any(k in pub for k in ("sage", "association for psychological science", "psychological science")):
-                    pub_path = profiles_dir / "journal_sage.json"
+                    pub_path = profiles_dir / "literature_sage.json" if (profiles_dir / "literature_sage.json").exists() else profiles_dir / "journal_sage.json"
                 else:
                     pub_path = None
 

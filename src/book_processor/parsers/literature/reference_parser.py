@@ -7,6 +7,7 @@ Prevents adjacent citations from merging into giant run-on paragraphs, and
 safeguards trailing emergent sections (Received/Accepted dates, Author Notes).
 """
 
+import html
 import logging
 import re
 from typing import List, Tuple
@@ -15,12 +16,8 @@ logger = logging.getLogger(__name__)
 
 
 class ReferenceParser:
-    """Parses and formats academic journal reference lists."""
+    """Parses and formats academic literature reference lists."""
 
-    # Matches author-year citation start, e.g.:
-    # "Lejuez, C. W., Aklin, W. M., ... (2003a)."
-    # "Centers for Disease Control (CDC). (2001)."
-    # "Hopko, D., Lejuez, C., et al. (2006)."
     CITATION_REGEX = re.compile(
         r'(?:^|(?<=[\.\?!]\s)|(?<=\.\*\s)|(?<=\.\*\*\s))('
         r'[A-Z][a-zA-Z\-\'\s]+?,\s+[A-Z]\.(?:[^\(\)]*?)\((?:18|19|20)\d{2}[a-z]?\)'
@@ -30,7 +27,6 @@ class ReferenceParser:
         r')'
     )
 
-    # Trailing sections that frequently follow references
     TRAILING_PATTERNS = [
         re.compile(r'^(Received\s+\w+\s+\d{1,2},\s+\d{4}.*)$', re.M | re.I),
         re.compile(r'^(Received\s+\d{1,2}\s+\w+\s+\d{4}.*)$', re.M | re.I),
@@ -100,7 +96,6 @@ class ReferenceParser:
         matches = list(cls.CITATION_REGEX.finditer(cleaned_body))
 
         if not matches:
-            # Fallback: line by line
             lines = [l.strip() for l in cleaned_body.split('\n') if l.strip() and not l.strip().startswith("<!--")]
             return lines
 
@@ -110,13 +105,30 @@ class ReferenceParser:
             end = matches[i + 1].start() if i + 1 < len(matches) else len(cleaned_body)
             entry = cleaned_body[start:end].strip()
             if entry:
-                # Fix line-break hyphenation within citation
-                entry = re.sub(r'(\w+)-\s*\*\s*\*(\w+)', r'\1\2', entry)
-                entry = re.sub(r'(\w+)-\s+(\w+)', r'\1\2', entry)
-                # Normalize internal newlines to single space
+                # 1. Unescape HTML entities (&amp; -> &)
+                entry = html.unescape(entry)
+
+                # 2. Fix line-break hyphenation within citation (words only, not numbers)
+                entry = re.sub(r'([a-zA-Z]+)-\s*\*\s*\*([a-zA-Z]+)', r'\1\2', entry)
+                entry = re.sub(r'([a-zA-Z]+)-\s+([a-zA-Z]+)', r'\1\2', entry)
+
+                # 3. Normalize internal newlines to single space
                 entry = re.sub(r'\s*\n\s*', ' ', entry)
-                # Remove orphan page markers inside citation text
+
+                # 4. Remove orphan page markers inside citation text
                 entry = re.sub(r'<!-- Page \d+ -->\s*', '', entry)
+
+                # 5. Clean glued italic syntax e.g. *Journal, 6,*613- 619 -> *Journal*, 6, 613–619
+                entry = re.sub(r'\*([^*]+),\s*(\d+),\*(\d+)', r'*\1*, \2, \3', entry)
+                entry = re.sub(r'\*([^*]+)\*(?!\s)([A-Za-z0-9])', r'*\1* \2', entry)
+
+                # 6. Normalize page ranges with en-dash (e.g. 75- 84 or 75 -84 -> 75–84)
+                entry = re.sub(r'(\d+)\s*[-–]\s*(\d+)', r'\1–\2', entry)
+
+                # 7. Strip trailing non-ascii box/junk characters
+                entry = re.sub(r'[\u4e00-\u9fff\uff00-\uffef\u25a0-\u25ff\u2500-\u257f\s]+$', '', entry)
+                entry = entry.strip(' 䡲\t\r\n')
+
                 entries.append(entry.strip())
 
         return entries
@@ -138,11 +150,18 @@ class ReferenceParser:
             return full_md
 
         entries = cls.parse_citation_entries(body)
-        if not entries:
-            return full_md
-
         formatted_refs = cls.format_references(entries)
+
+        # Clean trailing post metadata if present
+        clean_post = post.strip(' 䡲\t\r\n')
+        # Clean any OCR junk box character at the end of post
+        clean_post = re.sub(r'[\u4e00-\u9fff\uff00-\uffef\u25a0-\u25ff\s]+$', '', clean_post).strip()
+
         result = f"{pre.rstrip()}\n\n{header}\n\n{formatted_refs}"
-        if post:
-            result = f"{result}\n\n{post.lstrip()}"
-        return result
+        if clean_post:
+            result += f"\n\n{clean_post}"
+
+        return result.strip()
+
+
+__all__ = ["ReferenceParser"]

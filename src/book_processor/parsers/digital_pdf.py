@@ -349,7 +349,12 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
 
         # 6. Pre-extract Vector Figures (e.g. Figure 1.1, Figure 1.2)
         vec_images, vec_consumed = LayoutDetector.extract_vector_figures(page_elem, fonts, pdf_path, page_num, pw, ph)
-        page_images = list(page_images) + vec_images
+        if page_images and vec_images:
+            for r_img, v_img in zip(page_images, vec_images):
+                if v_img.get('caption') and not r_img.get('caption'):
+                    r_img['caption'] = v_img['caption']
+        else:
+            page_images = list(page_images) + vec_images
 
         # 7. Pre-extract End-of-Chapter Sections (e.g. Pages 16-17; textbooks only)
         eoc_sections, eoc_consumed = LayoutDetector.extract_end_of_chapter_sections(page_elem, fonts, pw, ph, page_num) if not is_journal else ([], set())
@@ -925,11 +930,17 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             return 'Illustration'
 
         placed_img_blocks = []
+        is_lit_or_jrnl = is_journal or _STYLE.get("is_journal") or str(_STYLE.get("archetype", "")).startswith("literature")
+
         # Prepend top-of-page figures (e.g. Figure 1.1) so they don't split bottom sentences
         for img in top_images:
             img_caption = resolve_caption(img)
             fname = img.get('filename', f"{img.get('page', page_num):03d}_img.{img.get('ext', 'png')}")
-            placed_img_blocks.append(f"![{img_caption}](images/{fname})\n\n*{img_caption}*")
+            if is_lit_or_jrnl:
+                from book_processor.parsers.literature.figure_formatter import FigureFormatter
+                placed_img_blocks.append(FigureFormatter.render_figure_html(f"images/{fname}", img_caption))
+            else:
+                placed_img_blocks.append(f"![{img_caption}](images/{fname})\n\n*{img_caption}*")
 
         for b in final_blocks:
             placed_img_blocks.append(b)
@@ -937,7 +948,11 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
         for img in bottom_images:
             img_caption = resolve_caption(img)
             fname = img.get('filename', f"{img.get('page', page_num):03d}_img.{img.get('ext', 'png')}")
-            placed_img_blocks.append(f"![{img_caption}](images/{fname})\n\n*{img_caption}*")
+            if is_lit_or_jrnl:
+                from book_processor.parsers.literature.figure_formatter import FigureFormatter
+                placed_img_blocks.append(FigureFormatter.render_figure_html(f"images/{fname}", img_caption))
+            else:
+                placed_img_blocks.append(f"![{img_caption}](images/{fname})\n\n*{img_caption}*")
 
 
         # Append extracted footnotes at the bottom of the page

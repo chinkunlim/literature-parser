@@ -54,10 +54,10 @@ books-project/
 │   ├── needs_review/               # 🚨 [人機隔離區] 遇疑難公式或壞頁自動存於此，不卡死主程序
 │   └── state/                      # 💾 斷點續傳快照、TOC 預覽與 Dashboard 狀態
 │
-├── tests/                          # 🧪 [自動化測試體系] (179 個測試全部 PASS)
+├── tests/                          # 🧪 [自動化測試體系] (186 個測試全部 PASS)
 │   ├── __init__.py                 # 動態注入 sys.path，確保任何環境直跑 unittest/pytest
-│   └── test_*.py                   # 21 個測試檔案，平坦結構於 tests/ 頂層
-│                                   # (含 unit + integration 測試，以 test_v<version>_*.py 命名)
+│   └── test_*.py                   # 22 個測試檔案，平坦結構於 tests/ 頂層
+│                                   # (含 unit + integration 測試，包含 test_v36_literature_layout_refinement.py)
 │
 ├── src/                            # 💻 [業務核心原始碼] (Clean Architecture)
 │   ├── guards/                     # 🛡️ 守衛防線
@@ -67,17 +67,17 @@ books-project/
 │   │   └── validator.py            # 輸入 JSON 比對與輸出異常自動喚醒 Ollama (信度 < 0.80 自動隔離)
 │   ├── utils/                      # 🛠️ 通用工具
 │   │   └── logger.py               # 結構化診斷日誌工具
-│   └── book_processor/             # ⚙️ 書籍與文獻處理核心引擎 (後續計畫更名 doc_processor)
+│   └── book_processor/             # ⚙️ 書籍與文獻處理核心引擎
 │       ├── book_style.py           # 📖 教科書專屬排版樣式表 (紫李主題、Anki 閃卡、學習目標)
 │       ├── literature_style.py     # 📑 學術文獻專屬排版樣式表 (APA 三線表、作者卡片、期刊元數據)
+│       ├── profiles/               # 📐 版面設定檔 (含 literature_*.json 與 publisher_*.json)
 │       ├── pipelines/              # 管線層
 │       │   ├── textbook_pipeline.py    # 長篇書籍章節切分管線
-│       │   ├── journal_pipeline.py     # 向後相容別名管線
+│       │   ├── journal_pipeline.py     # 向後相容別名管線 (重導至 LiteraturePipeline)
 │       │   └── literature_pipeline.py  # 🎯 學術文獻主管線 (orchestrator 直接調用此管線)
 │       ├── parsers/                # 解析層 (PDF, EPUB, LaTeX, 雙欄版面)
-│       │   ├── literature/         # 🎯 學術文獻解析子模組 (IMRAD, Reference)  [原 journal/]
-│       │   └── journal/            # 🔄 向後相容 shim → 重導至 parsers.literature
-│       ├── verification/           # 檢驗層 (OllamaVerifier, rules)
+│       │   └── literature/         # 🎯 學術文獻解析子模組 (metadata_extractor, imrad_resolver, figure_formatter, reference_parser)
+│       ├── verification/           # 檢驗層 (OllamaVerifier, rules, OllamaHealer)
 │       ├── utils/                  # 輔助模組 (obsidian_linker 雙鏈與索引生成)
 │       └── core/                   # 核心調度 (orchestrator, global_state 全域狀態, splitter)
 │

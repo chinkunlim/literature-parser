@@ -1,30 +1,52 @@
 """
 Academic Literature Pipeline (LiteraturePipeline)
 =================================================
-Dedicated, modular processing pipeline for academic literature (journal articles,
-conference papers, preprints, dissertations). Standardized superset of JournalPipeline
-with domain-specific subtype discovery, IEEE boilerplate cleanup, Index Terms formatting,
-and preprint advisory alert injection.
+Dedicated, modular processing pipeline for academic literature (peer-reviewed journal articles,
+conference papers, preprints, and dissertations). First-class citizen architecture:
+  - Single atomic document flow (no chapter splitting)
+  - Dedicated Academic Typographic CSS injection
+  - High-precision Metadata Extractor (hybrid adaptive AI/rules)
+  - Universal Two-Column Band Flow Engine
+  - Universal Hanging-Indent Reference List Parser
+  - IMRAD Headings & Emergent Sections Resolver
+  - Subtype customization (IEEE, preprint, dissertation)
+  - High-fidelity Table Synchronization with TOC Isolation
+  - Semantic HTML5 <figure> Rendering & Deduplication
+  - Closed-Loop Multi-Metric Verification + Ollama Auto-Healing
 """
 
-import re
+import json
 import logging
+import os
+import re
+import tempfile
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
-from book_processor.pipelines.journal_pipeline import JournalPipeline
+from book_processor.pipelines.base_pipeline import BasePipeline
+from book_processor.config_manager import ConfigManager
+from book_processor.core.invariants import QualityInvariantGuard
+from book_processor.core.image_manager import ImageManager
+from book_processor.core.analyzer import PDFAnalyzer
+from book_processor.core.learner import GlobalLearner
+from book_processor.parsers.digital_pdf import DigitalPDFParser
+import book_processor.parsers.digital_pdf as _digital_pdf_mod
+from book_processor.parsers.scanned_pdf import ScannedPDFParser
+from book_processor.parsers.layout_detector import set_style as _ld_set_style, load_style
+from book_processor.parsers.literature.imrad_resolver import IMRADResolver
+from book_processor.parsers.literature.reference_parser import ReferenceParser
+from book_processor.parsers.literature.metadata_extractor import LiteratureMetadataExtractor
+from book_processor.parsers.literature.figure_formatter import FigureFormatter
+from book_processor.verification.verifier import AccuracyVerifier
+from book_processor.verification.ollama_healer import OllamaHealer
+from book_processor.utils.text_utils import sanitize_filename, stitch_cross_page_continuity
+from book_processor.literature_style import build_literature_css
 
 logger = logging.getLogger(__name__)
 
 
-class LiteraturePipeline(JournalPipeline):
-    """
-    Advanced academic literature pipeline with domain customization:
-    - Subtypes: journal | ieee | dissertation | preprint
-    - Automatic IEEE Author Biography & license watermark removal
-    - IEEE/ACM Index Terms to Obsidian markdown tag blocks
-    - Preprint peer-review caution alert callouts
-    """
+class LiteraturePipeline(BasePipeline):
+    """Processes academic literature into high-fidelity publication-grade Markdown."""
 
     SUBTYPE_JOURNAL = "journal"
     SUBTYPE_IEEE = "ieee"
@@ -49,12 +71,11 @@ class LiteraturePipeline(JournalPipeline):
         if re.search(r'\b(?:Submitted to|Under review at|Preprint)\b', head_sample, re.I):
             return cls.SUBTYPE_PREPRINT
 
-
-        # IEEE textual signal (if publisher was not explicitly recognized)
+        # IEEE textual signal
         if re.search(r'IEEE\s+(?:Transactions|Journal|Access|Conferences?)\b', head_sample, re.I):
             return cls.SUBTYPE_IEEE
 
-        # Dissertation signals (length + explicit chapters)
+        # Dissertation signals
         if total_pages > 45 and re.search(r'^\s*#+\s*(?:Chapter|CHAPTER)\s+[0-9IVXLCDM]+', md_head, re.M):
             return cls.SUBTYPE_DISSERTATION
 
@@ -66,30 +87,24 @@ class LiteraturePipeline(JournalPipeline):
     @classmethod
     def clean_ieee_boilerplate(cls, md: str) -> str:
         """Strips Author Biography sections and IEEE licensing disclaimers."""
-        # 1. Remove Author Biography / Biographies sections until the end or next major header
         cleaned = re.sub(
             r'#+\s*(?:Author\s+Biograph(?:y|ies)|About the Authors?|Biographies)\b.*?(?=\n#+\s+[^\n]+|\Z)',
             '',
             md,
             flags=re.S | re.I
         )
-
-        # 2. Remove IEEE license and access restrictions
         cleaned = re.sub(
             r'Authorized licensed use limited to:.*?Restrictions apply\.',
             '',
             cleaned,
             flags=re.S
         )
-
-        # 3. Remove standalone DOI footers for IEEE
         cleaned = re.sub(
             r'(?:Digital Object Identifier|DOI):\s*10\.1109/[A-Za-z0-9\.\-]+',
             '',
             cleaned,
             flags=re.I
         )
-
         return cleaned.strip()
 
     @classmethod
@@ -100,7 +115,6 @@ class LiteraturePipeline(JournalPipeline):
             return md
 
         raw_terms = match.group(1).strip()
-        # Split terms by comma or semicolon
         terms = [t.strip().strip('.') for t in re.split(r'[,;]', raw_terms) if t.strip()]
         if not terms:
             return md
@@ -110,14 +124,14 @@ class LiteraturePipeline(JournalPipeline):
             f"\n\n> [!NOTE] **🏷️ 關鍵領域詞 (Index Terms)**\n"
             f"> {tag_pills}\n\n"
         )
-
         return md[:match.start()] + callout + md[match.end():]
 
     @classmethod
     def sync_verified_tables(cls, new_md: str, verified_md_path: Path) -> str:
         """
-        If a verified baseline markdown exists with curated APA/academic tables,
-        injects those high-fidelity tables into the newly generated markdown.
+        Injects curated APA tables from baseline markdown into the generated markdown.
+        CRITICAL FIX: Strictly isolates the Table of Contents (<details> block)
+        so that table HTML is NEVER injected inside TOC anchors!
         """
         if not verified_md_path.exists():
             return new_md
@@ -135,111 +149,258 @@ class LiteraturePipeline(JournalPipeline):
         if not verified_tables:
             return new_md
 
-        result = new_md
+        # Split document into TOC section and Body section to protect TOC from injection
+        toc_end_idx = new_md.find("</details>")
+        if toc_end_idx != -1:
+            divider_idx = new_md.find("---", toc_end_idx)
+            boundary = divider_idx + 3 if divider_idx != -1 else toc_end_idx + len("</details>")
+            toc_prefix = new_md[:boundary]
+            body = new_md[boundary:]
+        else:
+            toc_prefix = ""
+            body = new_md
+
         for t_num, t_html in verified_tables.items():
-            # If already present in high quality, don't duplicate
-            if t_html in result:
+            if t_html in body:
                 continue
 
-            # Replace broken Table X section in result
+            # Look for Table X section in body text to replace
             p_broken = re.compile(
-                rf'(?:###\s*Table\s+{t_num}\b[^\n]*\n+|Table\s+{t_num}\b[^\n]*\n+)(?:[^\n]+\n+){{1,40}}?(?=(?:###|\#\#|\Z))',
+                rf'(?:###\s*Table\s+{t_num}\b[^\n]*\n+|Table\s+{t_num}\b[^\n]*\n+)(?:[^\n]+\n+){{1,45}}?(?=(?:###|\#\#|\Z))',
                 re.DOTALL
             )
-            m = p_broken.search(result)
+            m = p_broken.search(body)
             if m:
-                result = result[:m.start()] + t_html + "\n\n" + result[m.end():]
+                body = body[:m.start()] + t_html + "\n\n" + body[m.end():]
             else:
-                # If Table heading was promoted differently or missing, search for Table X mention
-                p_mention = re.compile(rf'\bTable\s+{t_num}\b')
-                m2 = p_mention.search(result)
-                if m2:
-                    p_end = result.find('\n\n', m2.end())
-                    if p_end != -1:
-                        result = result[:p_end] + "\n\n" + t_html + "\n\n" + result[p_end:].lstrip()
-                    else:
-                        result = result[:m2.end()] + "\n\n" + t_html + "\n\n" + result[m2.end():]
-                else:
-                    # Fallback: if Table X is missing, insert before next table or after previous table
-                    next_num = str(int(t_num) + 1) if t_num.isdigit() else None
-                    if next_num and f"Table {next_num}" in result:
-                        m_next = re.search(rf'<div class="table-caption"[^>]*>Table\s+{next_num}</div>', result)
-                        if m_next:
-                            result = result[:m_next.start()] + t_html + "\n\n" + result[m_next.start():]
-                            continue
-                    prev_num = str(int(t_num) - 1) if t_num.isdigit() and int(t_num) > 1 else None
-                    if prev_num and f"Table {prev_num}" in result:
-                        m_prev = re.search(rf'Table\s+{prev_num}\b.*?</table>(?:\s*<div class="table-notes"[^>]*>.*?</div>)?', result, re.DOTALL)
-                        if m_prev:
-                            result = result[:m_prev.end()] + "\n\n" + t_html + "\n\n" + result[m_prev.end():]
+                # If table is completely missing from body, find where Table X is introduced or position relative to adjacent tables
+                next_num = str(int(t_num) + 1) if t_num.isdigit() else None
+                if next_num and f"Table {next_num}" in body:
+                    m_next = re.search(rf'<div class="table-caption"[^>]*>Table\s+{next_num}</div>', body)
+                    if m_next:
+                        body = body[:m_next.start()] + t_html + "\n\n" + body[m_next.start():]
+                        continue
 
-        return result
+                prev_num = str(int(t_num) - 1) if t_num.isdigit() and int(t_num) > 1 else None
+                if prev_num and f"Table {prev_num}" in body:
+                    m_prev = re.search(rf'Table\s+{prev_num}\b.*?</table>(?:\s*<div class="table-notes"[^>]*>.*?</div>)?', body, re.DOTALL)
+                    if m_prev:
+                        body = body[:m_prev.end()] + "\n\n" + t_html + "\n\n" + body[m_prev.end():]
+                        continue
+
+                # Fallback: append after Results heading
+                m_res = re.search(r'##\s+Results\b', body)
+                if m_res:
+                    body = body[:m_res.end()] + "\n\n" + t_html + "\n\n" + body[m_res.end():]
+
+        return toc_prefix + body
 
     # -------------------------------------------------------------------------
-    # Pipeline Execution with Domain Post-Processing
+    # Core Pipeline Execution
     # -------------------------------------------------------------------------
     def process(self, pdf_path: str, **kwargs) -> Dict[str, Any]:
-        """Runs the standard JournalPipeline, then applies domain literature adaptations."""
-        res = super().process(pdf_path, **kwargs)
+        """Runs the end-to-end literature pipeline."""
+        p_path = Path(pdf_path)
+        if not p_path.exists():
+            raise FileNotFoundError(f"Literature PDF not found: {pdf_path}")
 
-        md_file_str = res.get("markdown_file")
-        if not md_file_str or not Path(md_file_str).exists():
-            return res
+        QualityInvariantGuard.check_pdf_pre_split(str(p_path))
 
-        md_path = Path(md_file_str)
-        try:
-            full_md = md_path.read_text(encoding="utf-8")
-        except Exception as e:
-            logger.warning("LiteraturePipeline: could not read markdown %s: %s", md_path, e)
-            return res
+        doc_name = p_path.stem
+        clean_name = sanitize_filename(doc_name)
+        doc_out = self.output_dir / clean_name
+        doc_images_dir = doc_out / "images"
+        doc_out.mkdir(parents=True, exist_ok=True)
 
-        # Retrieve page count and publisher from result if available
-        v_res = res.get("verification", {})
-        total_pages = v_res.get("expected_pages", 0)
+        total_pages = PDFAnalyzer.get_page_count(str(p_path))
 
-        # Subtype detection
-        subtype = self.detect_subtype(full_md, total_pages=total_pages)
-        res["literature_subtype"] = subtype
+        # ---------------------------------------------------------------------
+        # Stage 1: Load Hierarchical Configuration
+        # ---------------------------------------------------------------------
+        config = self.load_pipeline_config(str(p_path), archetype="literature")
+        ConfigManager.save_instance_profile(doc_out, config, archetype="literature")
 
-        modified = False
+        style = dict(config.get("features", {}))
+        style["is_literature"] = True
+        style["is_journal_article"] = True
+        style["generate_toc"] = False
+        style["gloss_placement"] = "none"
+        style["prepend_chapter_title_if_missing"] = False
+        style["has_learning_objectives"] = False
+        style["has_concept_map"] = False
+        style["images_dir"] = str(doc_images_dir)
+        style["_publisher_config"] = config.get("publisher_config", {})
+        _ld_set_style(style)
+        _digital_pdf_mod._STYLE = style
 
+        is_scanned = kwargs.get("is_scanned", False)
+
+        print(f"\n{'='*70}\n[LITERATURE PIPELINE] {doc_name} ({total_pages} page(s))\n{'='*70}")
+        print(f"  Publisher: {config.get('publisher', 'Generic').upper()}")
+        print(f"  Mode: {'SCANNED (OCR Layout)' if is_scanned else 'BORN-DIGITAL VECTOR (Two-Column Flow)'}")
+
+        # ---------------------------------------------------------------------
+        # Stage 2: Extract & Deduplicate Genuine Figures/Photos
+        # -------------------------------------------------------------------------
+        raw_images = ImageManager.extract_pdf_images(str(p_path), is_scanned=is_scanned)
+        saved_images = []
+        if raw_images:
+            doc_images_dir.mkdir(parents=True, exist_ok=True)
+            for seq, img in enumerate(raw_images, 1):
+                p = img['page']
+                ext = img['ext']
+                fname = f"{p:03d}_{seq:03d}.{ext}"
+                dest = doc_images_dir / fname
+                with open(dest, 'wb') as f_out:
+                    f_out.write(img['data'])
+                img['filename'] = fname
+                saved_images.append(img)
+
+        # Deduplicate images on same page to prevent vector-crop duplication
+        saved_images = FigureFormatter.deduplicate_page_images(saved_images)
+        print(f"  [✓] Genuine figures/charts extracted: {len(saved_images)}")
+
+        # ---------------------------------------------------------------------
+        # Stage 3: Page Extraction & Two-Column Reading Flow
+        # ---------------------------------------------------------------------
+        md_parts = []
+        if not is_scanned:
+            DigitalPDFParser.reset_chapter_state()
+
+        with tempfile.TemporaryDirectory() as work_tmp:
+            for p in range(1, total_pages + 1):
+                p_imgs = [img for img in saved_images if img['page'] == p]
+                if is_scanned:
+                    p_md = ScannedPDFParser.process_scanned_page(str(p_path), p, work_tmp)
+                else:
+                    p_md = DigitalPDFParser.parse_page_to_markdown(str(p_path), p, p_imgs)
+                if p_md:
+                    md_parts.append(f"<!-- Page {p} -->\n{p_md}")
+
+        full_md = '\n\n'.join(md_parts).strip()
+
+        # ---------------------------------------------------------------------
+        # Stage 4: Structure Resolution & Typography
+        # ---------------------------------------------------------------------
+        # 1. Promote top-level title to H1 (#)
+        if not re.search(r'^\s*#\s+[^\n]+', full_md):
+            m_first_h = re.search(r'###\s+([^\n]+)(?:\n+###\s+([^\n]+))?', full_md)
+            if m_first_h:
+                t1 = m_first_h.group(1).strip()
+                t2 = m_first_h.group(2).strip() if m_first_h.group(2) else ""
+                combined_title = f"{t1} {t2}".strip()
+                full_md = full_md[:m_first_h.start()] + f"# {combined_title}" + full_md[m_first_h.end():]
+
+        # 2. Resolve IMRAD structure & APA hierarchy
+        if "features" not in config:
+            config["features"] = {}
+        config["features"]["allow_blockquotes"] = True
+        full_md = IMRADResolver.resolve_structure(full_md, config=config)
+
+        # 3. Format semantic header (Article Meta, Authors, Dynamic TOC, Abstract)
+        full_md = LiteratureMetadataExtractor.format_header(full_md, pdf_path=str(p_path))
+
+        # 4. Standardize hanging-indent references
+        full_md = ReferenceParser.clean_document_references(full_md)
+
+        # 5. Apply symbol normalizations
+        shared_symbols = config.get("shared_symbols", {})
+        for sym, rep in shared_symbols.items():
+            if sym in full_md:
+                full_md = full_md.replace(sym, rep)
+
+        # 6. Stitch cross-page continuity
+        full_md = stitch_cross_page_continuity(full_md)
+
+        # 7. Subtype detection & domain post-processing
+        subtype = self.detect_subtype(full_md, total_pages=total_pages, publisher=config.get("publisher"))
         if subtype == self.SUBTYPE_IEEE:
-            cleaned = self.clean_ieee_boilerplate(full_md)
-            cleaned = self.format_index_terms(cleaned)
-            if cleaned != full_md:
-                full_md = cleaned
-                modified = True
-
+            full_md = self.clean_ieee_boilerplate(full_md)
+            full_md = self.format_index_terms(full_md)
         elif subtype == self.SUBTYPE_PREPRINT:
             warning_callout = (
                 "> [!WARNING] **學術預印本提要 (Preprint Document)**\n"
                 "> 本文為未經同行評審 (Non-Peer-Reviewed) 之學術預印本，數據與結論可能與最終出版物有所出入。\n\n"
             )
             if "學術預印本提要" not in full_md:
-                # Insert warning right after any injected CSS or at the top
-                css_end = full_md.find("</style>")
-                if css_end != -1:
-                    insert_pos = css_end + len("</style>")
-                    full_md = full_md[:insert_pos] + "\n\n" + warning_callout + full_md[insert_pos:].lstrip()
-                else:
-                    full_md = warning_callout + full_md
-        # Sync verified tables if a golden baseline exists in output directory
-        verified_path = md_path.parent / f"{md_path.stem}_Verified.md"
+                full_md = warning_callout + full_md
+
+        # 8. Synchronize verified tables if golden baseline exists in output directory
+        verified_path = doc_out / f"{clean_name}_Verified.md"
         if verified_path.exists():
-            synced_md = self.sync_verified_tables(full_md, verified_path)
-            if synced_md != full_md:
-                full_md = synced_md
-                modified = True
-                logger.info("LiteraturePipeline: synchronized verified tables from %s", verified_path.name)
+            full_md = self.sync_verified_tables(full_md, verified_path)
+            logger.info("LiteraturePipeline: synchronized verified tables from %s", verified_path.name)
 
-        if modified:
-            try:
-                md_path.write_text(full_md.strip() + "\n", encoding="utf-8")
-                logger.info("LiteraturePipeline: successfully applied %s post-processing", subtype)
-            except Exception as e:
-                logger.error("LiteraturePipeline: failed to write updated markdown: %s", e)
+        # 9. Prepend Academic Literature CSS
+        academic_css = build_literature_css()
+        if "/* Academic Literature Typographic Styling */" not in full_md and "/* Academic Journal Typographic Styling */" not in full_md:
+            full_md = f"{academic_css}\n{full_md}"
 
-        return res
+        # Save primary document Markdown
+        md_file = doc_out / f"{clean_name}.md"
+        with open(md_file, 'w', encoding='utf-8') as f:
+            f.write(full_md.strip() + '\n')
+        print(f"  [✓] Literature Markdown generated: {md_file.name}")
+
+        # ---------------------------------------------------------------------
+        # Stage 5: Dual Verification & Closed-Loop Healing
+        # ---------------------------------------------------------------------
+        try:
+            full_md, _pre_fixes = GlobalLearner.apply_known_fixes(full_md, archetype="literature")
+            if _pre_fixes:
+                print(f"  [🧠 Global Learn] Pre-applied {len(_pre_fixes)} known fix rule(s).")
+                with open(md_file, 'w', encoding='utf-8') as f:
+                    f.write(full_md + '\n')
+        except Exception as _gl_err:
+            logger.debug("GlobalLearner pre-application skipped: %s", _gl_err)
+
+        print(f"  [*] Running automatic accuracy verification...")
+        verifier = AccuracyVerifier(use_ollama=self.use_ollama, ollama_model=self.ollama_model)
+        v_res = verifier.verify_chapter(str(doc_out), expected_pages=total_pages)
+
+        if not v_res.get('passed', True) and self.use_ollama:
+            healer = OllamaHealer(model_name=self.ollama_model)
+            if healer.is_available:
+                healed_md, modified, fixes = healer.heal_markdown(
+                    full_md, v_res, doc_name=clean_name, archetype="literature"
+                )
+                if modified:
+                    full_md = healed_md
+                    with open(md_file, 'w', encoding='utf-8') as f:
+                        f.write(full_md + '\n')
+                    print(f"  [*] Re-running verification following Ollama healing...")
+                    v_res = verifier.verify_chapter(str(doc_out), expected_pages=total_pages)
+
+        # ---------------------------------------------------------------------
+        # Stage 6: Status Manifest & Archival
+        # ---------------------------------------------------------------------
+        status_file = doc_out / "processing_status.json"
+        status_payload = {
+            "archetype": "literature",
+            "subtype": subtype,
+            "doc_name": doc_name,
+            "total_pages": total_pages,
+            "passed": v_res.get("passed", False),
+            "accuracy_percent": v_res.get("accuracy_percent", 0),
+            "images_extracted": len(saved_images),
+            "publisher": config.get("publisher"),
+        }
+        with open(status_file, "w", encoding="utf-8") as f:
+            json.dump(status_payload, f, indent=2)
+
+        if v_res.get("passed", False):
+            print(f"\n[✓ LITERATURE COMPLETE] 100% verified! Output saved in: {doc_out}\n")
+            if "inbox" in str(p_path):
+                self.archive_source(str(p_path))
+
+        return {
+            "passed": v_res.get("passed", False),
+            "output_dir": str(doc_out),
+            "markdown_file": str(md_file),
+            "literature_subtype": subtype,
+            "verification": v_res,
+        }
 
 
+JournalPipeline = LiteraturePipeline
 __all__ = ["LiteraturePipeline", "JournalPipeline"]

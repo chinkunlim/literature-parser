@@ -161,7 +161,7 @@ class ConfigManager:
 
         from book_processor.fingerprinting.document_classifier import DocumentClassifier
         if DocumentClassifier.is_journal_article(pdf_path):
-            return "journal"
+            return "literature"
 
         # Check outline/bookmarks for textbook chapter markers
         try:
@@ -195,11 +195,11 @@ class ConfigManager:
         match_count = sum(1 for pat in academic_signals if re.search(pat, sample_text, re.I))
 
         if total_pages <= 35 and match_count >= 2:
-            return "journal"
+            return "literature"
         elif total_pages <= 20:
-            return "journal"
+            return "literature"
 
-        return "textbook" if total_pages > 40 else "journal"
+        return "textbook" if total_pages > 40 else "literature"
 
     @classmethod
     def detect_publisher(cls, pdf_path: Optional[str] = None, sample_text: str = "") -> Optional[str]:
@@ -274,7 +274,7 @@ class ConfigManager:
             if pdf_path and os.path.exists(pdf_path):
                 archetype = cls.detect_archetype(pdf_path)
             else:
-                archetype = "journal"
+                archetype = "literature"
 
         # Level 1: Archetype
         merged = cls.load_archetype(archetype)

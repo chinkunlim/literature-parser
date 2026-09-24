@@ -47,26 +47,27 @@ description: Specialized sub-skill for converting academic literature (journal a
 ## 🏗️ 技術架構摘要
 
 ```
-orchestrator.py (detect_archetype='journal')
-  └──► LiteraturePipeline.process()        [pipelines/literature_pipeline.py]
-         └──► JournalPipeline.process()    [pipelines/journal_pipeline.py] (繼承基礎管線)
-               ├── ConfigManager.load_hierarchical_config(archetype='literature')
-               │     └── config/archetypes/literature.json  (原 journal.json)
-               │     └── config/publishers/<publisher>.json (author_note_patterns 等)
-               ├── DigitalPDFParser.parse_page_to_markdown()
-               │     └── LayoutDetector.separate_footnotes()
-               │           (載入 _STYLE['_publisher_config'] 動態萃取 Author Note)
-               ├── IMRADResolver.resolve_structure()
-               │     ├── _bond_table_notes()
-               │     └── _fix_ocr_stats()
-               ├── SemanticHeaderFormatter.format_header() (Ollama 語意重構作者群、TOC超連結、> Abstract)
-               ├── LiteraturePipeline.sync_verified_tables() (高精確度 APA 數據表格同步還原)
-               ├── ReferenceParser.clean_document_references()
-               └── literature_style.build_literature_css() (獨立專屬學術樣式注入)
-         └──► LiteraturePipeline 子類型後處理 (IEEE/preprint 擴充)
+orchestrator.py (detect_archetype='literature')
+  └──► LiteraturePipeline.process()        [pipelines/literature_pipeline.py] (第一公民管線)
+        ├── ConfigManager.load_hierarchical_config(archetype='literature')
+        │     └── config/archetypes/literature.json
+        │     └── config/publishers/<publisher>.json (author_note_patterns 等)
+        ├── DigitalPDFParser.parse_page_to_markdown()
+        │     ├── FigureFormatter (轉移向量圖標題至點陣圖，消除重複)
+        │     └── FigureFormatter.render_figure_html() (輸出語意化 <figure> 避免編號清單損壞)
+        ├── IMRADResolver.resolve_structure()
+        │     ├── 行內 APA Level 4 標題促進 (####)
+        │     ├── 第一頁作者註抽離並重組至 References 前
+        │     ├── _bond_table_notes()
+        │     └── _fix_ocr_stats()
+        ├── LiteratureMetadataExtractor.format_header() (Page 1 確定性快速萃取 + JSON mode 備援)
+        ├── LiteraturePipeline.sync_verified_tables() (高精確度 APA 數據表格同步還原)
+        ├── ReferenceParser.clean_document_references()
+        ├── literature_style.build_literature_css() (獨立專屬學術樣式注入)
+        └── LiteraturePipeline 子類型後處理 (IEEE/preprint 擴充)
 ```
 
 - 樣式模組：`src/book_processor/literature_style.py` (與 `book_style.py` 徹底解耦)
-- 解析子模組：`src/book_processor/parsers/literature/` (原 `parsers/journal/`，已遷移)
-- `parsers/journal/` 保留為向後相容 shim（自動轉導至 `parsers.literature`）
+- 解析子模組：`src/book_processor/parsers/literature/` (完全整併，已徹底移除 legacy `parsers/journal/`)
+- 設定模組：`src/book_processor/profiles/literature_*.json`
 - 輸出檔案：`document_profile.json`（非 `book_profile.json`）

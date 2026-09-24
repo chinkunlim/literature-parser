@@ -529,7 +529,7 @@ class BookProcessorOrchestrator:
         # Check document archetype: dispatch directly to LiteraturePipeline if academic literature
         from book_processor.config_manager import ConfigManager
         archetype = ConfigManager.detect_archetype(pdf_path)
-        if archetype == "journal":
+        if archetype in ("literature", "journal"):
             from book_processor.pipelines.literature_pipeline import LiteraturePipeline
             pipeline = LiteraturePipeline(
                 output_dir=self.output_dir,

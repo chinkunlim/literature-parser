@@ -1,10 +1,18 @@
 # 📋 memory/TASKS.md (專案任務進度看板)
 
-最後更新日期：2026-09-24
+最後更新日期：2026-09-25
 
 ---
 
 ## 🏃 當前 Sprint (v1.0.0-rc1 專案治理與守衛上線)
+
+- [x] [2026-09-25] 徹底整併刪除 `src/book_processor/parsers/journal/`，將所有文獻模組收斂於 `parsers/literature/`
+- [x] [2026-09-25] 建立 `LiteratureMetadataExtractor`：支援 Page 1 確定性元數據快速路徑、Ollama 結構化 JSON 備援、統一 `.article-meta` 與作者卡片
+- [x] [2026-09-25] 建立 `FigureFormatter`：實現單頁圖表去重、HTML5 語意化 `<figure>` 渲染與換行正規化
+- [x] [2026-09-25] 升級 `IMRADResolver`：支援 APA Level 4 行內標題 (`####`) 促進、第一頁作者註分離重組、論文結束日期提取、統計符號修復
+- [x] [2026-09-25] 修復第一頁緒論內文遭切除問題，實現 17 個大綱標題與 `2002-01194-001_Verified.md` 100% 精準對齊
+- [x] [2026-09-25] 新增 `literature_*.json` 版面配置，統一 `style_loader.py` 與 `config_manager.py` 優先順序
+- [x] [2026-09-25] 新增 `tests/test_v36_literature_layout_refinement.py`，全套 186 個單元測試 100% 通過
 
 - [x] [2026-09-23] 梳理專案核心需求與淘汰 OpenClaw 冗餘檔案
 - [x] [2026-09-23] 設計跨 Agent 協同規範 (`AGENTS.md`) 與冷啟動手冊 (`OPERATIONS.md`)

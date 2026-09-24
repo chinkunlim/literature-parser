@@ -1,0 +1,34 @@
+{
+  "publisher": "Springer Nature",
+  "archetype": "journal_springer_standard",
+  "is_journal": true,
+  "geometry": {
+    "page_width": 894.0,
+    "page_height": 1192.0,
+    "header_cut_ratio": 0.05,
+    "footer_cut_ratio": 0.05,
+    "odd_page_margin_x": [0.0, 1.0],
+    "even_page_margin_x": [0.0, 1.0]
+  },
+  "typography": {
+    "h1_min_size": 18.0,
+    "h2_min_size": 14.0,
+    "h3_min_size": 12.0
+  },
+  "special_blocks": {
+    "has_concept_map": false,
+    "has_margin_glossary": false,
+    "eoc_heading_patterns": [
+      "^References\\b",
+      "^Declarations\\b",
+      "^Compliance with Ethical Standards\\b",
+      "^Acknowledgements?\\b"
+    ]
+  },
+  "column_roles": {
+    "even_left": "body",
+    "even_right": "body",
+    "odd_left": "body",
+    "odd_right": "body"
+  }
+}

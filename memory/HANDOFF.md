@@ -5,17 +5,18 @@
 
 ---
 
-### 🕒 最新交接時間：2026-09-24 18:18
+### 🕒 最新交接時間：2026-09-25 03:05
  
 #### 1. 剛剛完成了什麼？ (Session Accomplishments)
-- **學術文獻排版體系徹底解耦與升級**：
-  1. 建立獨立專屬的 `literature_style.py`，徹底分離書籍與文獻的樣式管理。
-  2. 確立 `LiteraturePipeline` 作為第一公民主管線，`JournalPipeline` 降為相容別名。
-  3. 實裝 `SemanticHeaderFormatter`，利用本機 Ollama 實現精確期刊元資訊 (`.article-meta`)、作者群卡片 (`.author-block`)、動態超連結目錄 (`Table of Contents`) 與 `> Abstract` 引言重構。
-  4. 修復 `TableParser` 誤判小數為編號列表的缺陷，並實現 `LiteraturePipeline.sync_verified_tables` 表格同步機制。
-  5. 徹底根治根目錄 `output/` 幽靈資料夾（修正單元測試寫死路徑）。
-  6. 重新輸出並驗證 `2008-17521-013.md` 與 `2002-01194-001.md`，包含 6 大 APA 表格與專屬樣式全部 100% 完美呈現。
-- **測試驗證**：179 個單元測試全數通過（`Ran 179 tests in 5.443s — OK (skipped=6)`）。
+- **學術文獻與電子書架構徹底解耦，全面整併 journal 至 literature**：
+  1. 徹底物理刪除 `src/book_processor/parsers/journal/` 歷史殘留，將所有文獻模組完全收斂至 `src/book_processor/parsers/literature/`。
+  2. 新增 `literature_*.json` 專屬設定，並統一 `style_loader.py` 與 `config_manager.py` 優先順序。
+  3. 診斷並根治 Ollama 幻覺問題：改為 Page 1 確定性元數據快速路徑 (`LiteratureMetadataExtractor`)，僅在缺欄位時以 JSON mode 精準查詢，徹底杜絕 LLM 抄寫佔位符與重寫內文問題。
+  4. 根治第一頁緒論 Prose 遭誤截斷的缺陷：嚴格以 Abstract 結束為界標，100% 完整保留第一頁緒論內文。
+  5. 實現 `FigureFormatter` 單頁向量圖與點陣圖去重，以語意化 HTML5 `<figure>` 與 `<figcaption>` 呈現。
+  6. 升級 `IMRADResolver`：促進 APA Level 4 行內標題 (`####`)、將第一頁作者註抽離重組至 References 前並縫合截斷句子、綁定論文修訂與收錄日期。
+  7. 動態目錄 [TOC] 17 個章節大綱與 `2002-01194-001_Verified.md` 達成 100% 精準對齊。
+- **測試驗證**：186 個單元測試全數通過（`Ran 186 tests in 5.350s — OK (skipped=6)`）。
 
 #### 2. 目前專案狀態與代碼位置
 - 分支：`main`

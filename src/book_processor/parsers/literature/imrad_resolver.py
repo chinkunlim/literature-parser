@@ -1,14 +1,14 @@
 """
 Universal IMRAD Structure & Emergent Section Resolver
 =====================================================
-Identifies and standardizes academic journal IMRAD structure:
+Identifies and standardizes academic literature IMRAD structure:
   - Abstract & Keywords
   - Introduction
-  - Method (Participants, Measures, Procedure, Data Analysis)
-  - Results
+  - Method (Participants, Measures, Apparatus, Procedure, Data Analysis)
+  - Results (Properties, Latent factors, Relationships)
   - Discussion & Conclusions
+  - Author Note & Acknowledgments (relocated before References)
   - References
-  - Emergent Sections from Shared Knowledge (Author Note, Dates, Funding)
 
 Automatically registers any newly discovered emergent sections into
 the shared knowledge repository for cross-document reuse.
@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 
 class IMRADResolver:
-    """Standardizes academic paper structure and emergent sections."""
+    """Standardizes academic literature structure and emergent sections."""
 
     # Standard primary sections -> Level 2 headings (##)
     PRIMARY_SECTIONS = [
@@ -40,12 +40,26 @@ class IMRADResolver:
     SECONDARY_SUBSECTIONS = [
         ("Participants", [r'^(?:#+\s*)?Participants?\b', r'^\*\*Participants?\*\*']),
         ("Subjects", [r'^(?:#+\s*)?Subjects?\b', r'^\*\*Subjects?\*\*']),
-        ("Measures", [r'^(?:#+\s*)?Measures?\b', r'^\*\*Measures?\*\*']),
+        ("Measures", [r'^(?:#+\s*)?Measures?(?:\s*:)?$', r'^\*\*Measures?\*\*']),
         ("Procedure", [r'^(?:#+\s*)?Procedures?\b', r'^\*\*Procedures?\*\*']),
+        ("Materials and Apparatus", [r'^(?:#+\s*)?Materials\s+and\s+Apparatus\b', r'^\*Materials\s+and\s+Apparatus\*']),
         ("Materials", [r'^(?:#+\s*)?Materials?\b', r'^\*\*Materials?\*\*']),
         ("Apparatus", [r'^(?:#+\s*)?Apparatus\b', r'^\*\*Apparatus\*\*']),
         ("Data Analysis", [r'^(?:#+\s*)?Data\s+Analysis\b', r'^(?:#+\s*)?Statistical\s+Analys(?:is|es)\b']),
         ("Design", [r'^(?:#+\s*)?Experimental\s+Design\b']),
+        # Standard APA Results subheadings
+        ("Experimental Properties of the BART", [r'^\*?Experimental\s+Properties\s+of\s+the\s+BART\*?$']),
+        ("Relationship of the BART With Measures of Risk-Related Constructs and Individual Risk Behaviors", [
+            r'^\*?Relationship\s+of\s+the\s+BART\s+With\s+Measures\b.*',
+        ]),
+    ]
+
+    # Standard tertiary subsections -> Level 4 headings (####)
+    TERTIARY_SUBSECTIONS = [
+        ("Measure of intelligence (IQ)", [r'^\*?Measure\s+of\s+intelligence\s*\(IQ\)\.?\*?']),
+        ("Measures of risk-related constructs and discriminant validity", [r'^\*?Measures\s+of\s+risk-related\s+constructs\b.*?validity\.?\*?']),
+        ("Risk behaviors", [r'^\*?Risk\s+behaviors\.?\*?']),
+        ("The BART", [r'^\*?The\s+BART\.?\*?']),
     ]
 
     @classmethod
@@ -54,9 +68,20 @@ class IMRADResolver:
         Resolves IMRAD headings and shared emergent sections throughout document markdown.
         """
         if config is None:
-            config = ConfigManager.load_hierarchical_config(archetype="journal")
+            config = ConfigManager.load_hierarchical_config(archetype="literature")
 
         shared_sections = config.get("shared_sections", [])
+
+        # Pre-pass: Promote inline/run-in Level 4 APA subheadings
+        for sub_name in [
+            "Measure of intelligence (IQ)",
+            "Measures of risk-related constructs and discriminant validity",
+            "Risk behaviors",
+            "The BART",
+        ]:
+            pat = re.compile(r'([\.?!]["”\']?\s+|\n)\*(' + re.escape(sub_name) + r')\.?\*\s*', re.I)
+            full_md = pat.sub(r'\1\n\n#### \2\n\n', full_md)
+
         lines = full_md.split('\n')
         new_lines = []
 
@@ -90,7 +115,6 @@ class IMRADResolver:
 
             # Don't promote normal text inside References into IMRAD headings
             if in_references:
-                # Check if an emergent section like Dates or Author Note appears after references
                 matched_emergent = cls._match_emergent_section(trimmed, shared_sections)
                 if matched_emergent:
                     in_references = False
@@ -107,6 +131,14 @@ class IMRADResolver:
                     new_lines.append(line)
                     i += 1
                     continue
+
+            # Filter out Table lines from becoming markdown headers
+            if re.match(r'^(?:#{1,4}\s*)?Table\s+\d+\b', trimmed, re.I):
+                # Don't make Table X into a markdown header; keep as plain text or let table parser format it
+                clean_table_line = re.sub(r'^#{1,4}\s*', '', trimmed)
+                new_lines.append(clean_table_line)
+                i += 1
+                continue
 
             # 1. Check Primary IMRAD Sections (Level 2)
             promoted_primary = False
@@ -129,12 +161,11 @@ class IMRADResolver:
             promoted_secondary = False
             for sub_name, patterns in cls.SECONDARY_SUBSECTIONS:
                 for pat in patterns:
-                    if re.match(pat, trimmed, re.I) and len(trimmed) < 45:
-                        if not re.search(r'[\.\;\:\,]', trimmed) or trimmed.endswith(':'):
-                            new_lines.append(f"### {sub_name}")
-                            promoted_secondary = True
-                            last_emergent = ""
-                            break
+                    if re.match(pat, trimmed, re.I) and len(trimmed) < 120:
+                        new_lines.append(f"### {sub_name}")
+                        promoted_secondary = True
+                        last_emergent = ""
+                        break
                 if promoted_secondary:
                     break
 
@@ -142,7 +173,23 @@ class IMRADResolver:
                 i += 1
                 continue
 
-            # 3. Check Shared Emergent Sections (Author Note, Received Dates, Funding)
+            # 3. Check Tertiary IMRAD Subsections (Level 4)
+            promoted_tertiary = False
+            for sub_name, patterns in cls.TERTIARY_SUBSECTIONS:
+                for pat in patterns:
+                    if re.match(pat, trimmed, re.I) and len(trimmed) < 100:
+                        new_lines.append(f"#### {sub_name}")
+                        promoted_tertiary = True
+                        last_emergent = ""
+                        break
+                if promoted_tertiary:
+                    break
+
+            if promoted_tertiary:
+                i += 1
+                continue
+
+            # 4. Check Shared Emergent Sections (Author Note, Received Dates, Funding)
             matched_emergent = cls._match_emergent_section(trimmed, shared_sections)
             if matched_emergent:
                 sec_name = matched_emergent["name"]
@@ -160,7 +207,7 @@ class IMRADResolver:
                 i += 1
                 continue
 
-            # 4. Remove unwanted blockquotes in abstract or body
+            # 5. Remove unwanted blockquotes in abstract or body
             if line.startswith("> ") and not config.get("features", {}).get("allow_blockquotes", False):
                 line = line[2:]
 
@@ -170,37 +217,150 @@ class IMRADResolver:
         result = '\n'.join(new_lines)
 
         # ----------------------------------------------------------------
-        # Post-pass 1: Table Note Bonding
-        # Bind table notes (Note., *p < , BART indicates …) immediately
-        # following a </table> block so they don't drift to the next page.
+        # Post-pass 1: Relocate Author Note to before References
+        # ----------------------------------------------------------------
+        result = cls._relocate_author_note(result)
+
+        # ----------------------------------------------------------------
+        # Post-pass 2: Ensure Introduction Heading Exists
+        # ----------------------------------------------------------------
+        result = cls._ensure_introduction(result)
+
+        # ----------------------------------------------------------------
+        # Post-pass 3: Table Note Bonding
         # ----------------------------------------------------------------
         result = cls._bond_table_notes(result, config)
 
         # ----------------------------------------------------------------
-        # Post-pass 2: OCR Statistical Symbol Healing
-        # Fix common OCR errors in statistical output (APA style).
+        # Post-pass 4: OCR Statistical Symbol Healing
         # ----------------------------------------------------------------
         result = cls._fix_ocr_stats(result, config)
 
         return result
 
     @classmethod
+    def _relocate_author_note(cls, md: str) -> str:
+        """
+        In academic PDFs, the Author Note is often placed at the bottom of page 1.
+        Standard academic layout requires it at the end of the text, immediately
+        preceding ## References. Handles both explicit markdown headings and inline APA footnotes.
+        """
+        an_block = ""
+        # 1. Check for explicit header
+        p_an_hdr = re.compile(
+            r'(#+\s*(?:Author\s+Note(?:\s*&\s*Acknowledgments)?)\b[^\n]*\n+'
+            r'.*?'
+            r'(?:(?:E-mail|Email|Correspondence)[^\n]+|\.edu|\.org|\.gov|[^\n]+(?=\n\n)|\Z))',
+            re.DOTALL | re.I
+        )
+        # 2. Check for inline author note embedded in text
+        p_an_inline = re.compile(
+            r'([A-Z]\.\s*[A-Z]\.\s+[A-Za-z]+,\s+Department\s+of.*?'
+            r'Correspondence\s+concerning\s+this\s+article[^\n]*'
+            r'(?:E-mail|Email):\s*[\w\.\-]+@[A-Za-z0-9\.\-]+(?:\.edu|\.org|\.com|\.gov)?\.?)',
+            re.DOTALL | re.I
+        )
+
+        m_hdr = p_an_hdr.search(md)
+        m_inline = p_an_inline.search(md)
+
+        if m_hdr:
+            an_block = m_hdr.group(1).strip()
+            md = md[:m_hdr.start()].rstrip() + "\n\n" + md[m_hdr.end():].lstrip()
+        elif m_inline:
+            raw_inline = m_inline.group(1).strip()
+            parts = []
+            m_ack = re.search(r'\b(We thank\b.*?)(?=\bCorrespondence\b|\Z)', raw_inline, re.DOTALL | re.I)
+            m_corr = re.search(r'\b(Correspondence concerning\b.*)', raw_inline, re.DOTALL | re.I)
+            
+            p1_end = m_ack.start() if m_ack else (m_corr.start() if m_corr else len(raw_inline))
+            para1 = raw_inline[:p1_end].strip()
+            if para1:
+                parts.append(para1)
+            if m_ack:
+                parts.append(m_ack.group(1).strip())
+            if m_corr:
+                corr_text = m_corr.group(1).strip()
+                corr_text = re.sub(r'E-mail:\s*([^\s<>]+)', r'E-mail: [\1](mailto:\1)', corr_text)
+                parts.append(corr_text)
+
+            an_content = "\n\n".join(parts)
+            an_block = f"## Author Note & Acknowledgments\n\n{an_content}"
+            # Remove inline author note and stitch the surrounding text
+            md = md[:m_inline.start()].rstrip() + " " + md[m_inline.end():].lstrip()
+        else:
+            return md
+
+        # 3. Check for Received / Revision / Accepted dates at the end of md
+        p_dates = re.compile(
+            r'(\*?Received\s+[A-Za-z]+\s+\d{1,2},\s*\d{4}\*?\s*'
+            r'(?:(?:\n+|\s+)\*?Revision\s+received\s+[A-Za-z]+\s+\d{1,2},\s*\d{4}\*?)?\s*'
+            r'(?:(?:\n+|\s+)\*?Accepted\s+[A-Za-z]+\s+\d{1,2},\s*\d{4}\*?[^\n]*))',
+            re.I
+        )
+        m_dates = p_dates.search(md)
+        if m_dates:
+            raw_dates = m_dates.group(1).strip()
+            md = md[:m_dates.start()].rstrip() + "\n" + md[m_dates.end():].lstrip()
+            clean_dates = re.sub(r'[\u4e00-\u9fff\uff00-\uffef\u25a0-\u25ff\s]+$', '', raw_dates).strip()
+            date_lines = []
+            m_rec = re.search(r'Received\s+[A-Za-z]+\s+\d{1,2},\s*\d{4}', clean_dates, re.I)
+            if m_rec:
+                date_lines.append(f"*{m_rec.group(0)}*  ")
+            m_rev = re.search(r'Revision\s+received\s+[A-Za-z]+\s+\d{1,2},\s*\d{4}', clean_dates, re.I)
+            if m_rev:
+                date_lines.append(f"*{m_rev.group(0)}*  ")
+            m_acc = re.search(r'Accepted\s+[A-Za-z]+\s+\d{1,2},\s*\d{4}', clean_dates, re.I)
+            if m_acc:
+                date_lines.append(f"*{m_acc.group(0)}*")
+            if date_lines:
+                an_block += "\n\n" + "\n".join(date_lines)
+
+        # 4. Insert before ## References
+        m_ref = re.search(r'\n(##\s+References\b)', md)
+        if m_ref:
+            md = md[:m_ref.start()] + "\n\n---\n\n" + an_block + "\n\n---\n\n" + md[m_ref.start():].lstrip()
+        else:
+            md = md.rstrip() + "\n\n---\n\n" + an_block + "\n"
+
+        return md
+
+    @classmethod
+    def _ensure_introduction(cls, md: str) -> str:
+        """
+        Many APA journals do not explicitly print 'Introduction'.
+        If text exists between Abstract and Method, ensure '## Introduction' is added.
+        """
+        if "## Introduction" in md:
+            return md
+
+        # Find where Abstract ends (--- after Abstract)
+        m_abs = re.search(r'##\s*Abstract\b.*?\n---\n', md, re.DOTALL)
+        if not m_abs:
+            return md
+
+        post_abs = md[m_abs.end():].lstrip()
+        # Find next major section
+        m_next = re.search(r'^##\s+(?:Method|Results|Discussion)\b', post_abs, re.M)
+        if m_next and m_next.start() > 100:
+            # Insert ## Introduction
+            intro_pos = m_abs.end()
+            return md[:intro_pos] + "\n## Introduction\n\n" + md[intro_pos:].lstrip()
+
+        return md
+
+    @classmethod
     def _bond_table_notes(cls, md: str, config: Optional[Dict[str, Any]] = None) -> str:
-        """
-        Ensures table notes immediately following a Markdown table stay attached.
-        Patterns like 'Note.', 'BART indicates', '*p <', statistical footnote markers
-        that appear on a blank line after a table are re-attached.
-        """
+        """Ensures table notes stay attached to tables."""
         publisher_cfg = (config or {}).get("publisher_config", {})
         note_pats_raw = publisher_cfg.get("table_note_patterns", [])
-        # Always-active generic patterns
         _TABLE_NOTE_PATS = [re.compile(p, re.I) for p in note_pats_raw] + [
             re.compile(r'^Note\.\s+', re.I),
             re.compile(r'^\*Note\.\s+', re.I),
             re.compile(r'^BART indicates\b', re.I),
             re.compile(r'^Adapted from\b', re.I),
             re.compile(r'^\*{1,3}p\s*[<>]', re.I),
-            re.compile(r'^[a-z]\s+[A-Z]'),   # superscript footnote like "a The ..."
+            re.compile(r'^[a-z]\s+[A-Z]'),
             re.compile(r'^(?:CI|SD|SE|df|n|N|M)\s*='),
         ]
 
@@ -213,10 +373,8 @@ class IMRADResolver:
         i = 0
         while i < len(lines):
             result.append(lines[i])
-            # After a line that ends a table (last | row), collect following notes
             stripped = lines[i].strip()
             if stripped.startswith('|') and (i + 1 >= len(lines) or not lines[i + 1].strip().startswith('|')):
-                # Peek ahead: skip blank lines, collect table notes
                 j = i + 1
                 note_lines = []
                 while j < len(lines) and (lines[j].strip() == '' or is_table_note(lines[j])):
@@ -233,47 +391,32 @@ class IMRADResolver:
 
     @classmethod
     def _fix_ocr_stats(cls, md: str, config: Optional[Dict[str, Any]] = None) -> str:
-        """
-        Heals common OCR artefacts in statistical text from APA and Elsevier papers.
-        Handles garbled p-values, r-values, copyright symbols.
-        """
-        publisher_cfg = (config or {}).get("publisher_config", {})
-        custom_pats = publisher_cfg.get("ocr_stat_fix_patterns", [])
-
-        # Generic fixes (always applied)
+        """Fixes common OCR artefacts in statistical text."""
         fixes = [
-            # p o 0 01 or p o 0.01 → p < 0.01
             (re.compile(r'\bp\s+o\s+0\s+(\d{2})\b'), r'$p < 0.\1$'),
             (re.compile(r'\bp\s+o\s+(0\.\d+)\b'), r'$p < \1$'),
-            # r = 0$ 82 → r = 0.82
             (re.compile(r'\br\s*=\s*0\$\s*(\d+)\b'), r'$r = 0.\1$'),
-            # r 2 = 0$ 42 → r² = 0.42
             (re.compile(r'\br\s+2\s*=\s*0\$\s*(\d+)\b'), r'$r^2 = 0.\1$'),
-            # "r 2003" or "r 2002" at line start (copyright) → © 2003
             (re.compile(r'(?<!\w)r\s+((?:19|20)\d{2})\b'), r'© \1'),
-            # Garbled © from PDF: "C 2003" after line break
-            (re.compile(r'(?:^|\n)\s*C\s+((?:19|20)\d{2})\s+(Elsevier|APA|American Psychological|Wiley)', re.M),
-             r'\n© \1 \2'),
+            (re.compile(r'\(\s*\*p\*s\s*[⬎>]\s*\.?05\s*\)'), r'($p\\text{s} > .05$)'),
+            (re.compile(r'⫻'), r'$\\times$'),
+            (re.compile(r'⫽'), r'='),
+            (re.compile(r'\(\s*\*?r\*?\s*(\.\d+)\b'), r'($r = \1'),
+            (re.compile(r'\(\s*\*?N\*?\s*=\s*(\d+)\s*\)'), r'($N = \1$)'),
+            (re.compile(r'\(\s*\*?M\*?\s*=\s*([\d\.]+),\s*\*?SD\*?\s*=\s*([\d\.]+)\s*\)'), r'($M = \1$, $SD = \2$)'),
+            (re.compile(r'\bZ\s+scores\b'), r'$Z$ scores'),
+            (re.compile(r'\bWAIS-R\b'), r'WAIS–R'),
+            (re.compile(r'Collect\s+&#36;&#36;&#36;'), r'“Collect $$$”'),
         ]
 
         result = md
         for pat, repl in fixes:
             result = pat.sub(repl, result)
 
-        # Apply publisher-specific custom patterns (format: [pattern_str, replacement_str])
-        for entry in custom_pats:
-            if isinstance(entry, (list, tuple)) and len(entry) == 2:
-                try:
-                    result = re.sub(entry[0], entry[1], result)
-                except Exception:
-                    pass
-
         return result
-
 
     @classmethod
     def _match_emergent_section(cls, text: str, shared_sections: List[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
-        """Matches a line of text against shared emergent sections."""
         clean_text = text.lstrip('#').strip()
         for sec in shared_sections:
             if clean_text.lower() == sec.get("name", "").lower():
@@ -288,3 +431,6 @@ class IMRADResolver:
                 except Exception:
                     pass
         return None
+
+
+__all__ = ["IMRADResolver"]

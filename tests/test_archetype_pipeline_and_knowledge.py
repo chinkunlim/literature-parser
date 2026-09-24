@@ -17,8 +17,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from book_processor.config_manager import ConfigManager, deep_merge
-from book_processor.parsers.journal.reference_parser import ReferenceParser
-from book_processor.parsers.journal.imrad_resolver import IMRADResolver
+from book_processor.parsers.literature.reference_parser import ReferenceParser
+from book_processor.parsers.literature.imrad_resolver import IMRADResolver
 from book_processor.verification.ollama_healer import OllamaHealer
 
 
@@ -75,7 +75,7 @@ class TestArchetypePipelineAndKnowledge(unittest.TestCase):
         self.assertIn("Received July 2, 2008", post)
 
         cleaned = ReferenceParser.clean_document_references(full_doc)
-        self.assertIn("Hopko, D., &amp; Lejuez, C. (2006).", cleaned)
+        self.assertIn("Hopko, D., & Lejuez, C. (2006).", cleaned)
         self.assertIn("Killgore, W. (2007).", cleaned)
         self.assertIn("Received July 2, 2008", cleaned)
 

@@ -1,9 +1,10 @@
 {
-  "archetype": "journal",
+  "archetype": "literature",
+  "subtype": "journal",
   "doc_name": "2002-01194-001",
   "total_pages": 10,
-  "passed": true,
-  "accuracy_percent": 93.12,
+  "passed": false,
+  "accuracy_percent": 92.72,
   "images_extracted": 2,
   "publisher": "apa"
 }

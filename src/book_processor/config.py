@@ -30,10 +30,10 @@ _DICT_CANDIDATES = [
 ]
 DEFAULT_DICT_PATH = next((p for p in _DICT_CANDIDATES if os.path.exists(p)), "")
 
-DEFAULT_INPUT_DIR = "."
-DEFAULT_OUTPUT_DIR = "./output"
-DEFAULT_INBOX_DIR = "./inbox"
-DEFAULT_PROCESSED_DIR = "./processed"
+DEFAULT_INPUT_DIR = "./data/input/books"
+DEFAULT_OUTPUT_DIR = "./data/output/books"
+DEFAULT_INBOX_DIR = "./data/input/books"
+DEFAULT_PROCESSED_DIR = "./data/processed"
 
 # Global learned-rules store (survives individual book cleanups).
 GLOBAL_RULES_DIR = Path.home() / ".book_processor"

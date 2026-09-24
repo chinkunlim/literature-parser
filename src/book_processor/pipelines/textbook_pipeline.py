@@ -41,7 +41,13 @@ class TextbookPipeline(BasePipeline):
         orchestrator = None,
     ):
         super().__init__(output_dir=output_dir, processed_dir=processed_dir, use_ollama=use_ollama, ollama_model=ollama_model)
+        if orchestrator is None:
+            raise RuntimeError(
+                "TextbookPipeline requires a BookProcessorOrchestrator instance. "
+                "Pass orchestrator=BookProcessorOrchestrator(...) when constructing the pipeline."
+            )
         self.orchestrator = orchestrator
+
 
     def process(self, pdf_path: str, **kwargs) -> Dict[str, Any]:
         """Runs the textbook pipeline (chapter split + per-chapter conversion)."""
@@ -99,10 +105,10 @@ class TextbookPipeline(BasePipeline):
                 PDFSplitter.split_chapter(str(p_path), start, end, str(ch_pdf))
             ckpt.update_status(name, split_pdf=True, status='SPLIT')
 
-            if self.orchestrator:
-                res = self.orchestrator.convert_single_chapter(str(ch_pdf), book_source_pdf=str(p_path))
-                if not res.get('passed', False):
-                    all_passed = False
+            res = self.orchestrator.convert_single_chapter(str(ch_pdf), book_source_pdf=str(p_path))
+            if not res.get('passed', False):
+                all_passed = False
+
 
         if all_passed and not target_chapter:
             self.archive_source(str(p_path))

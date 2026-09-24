@@ -1,8 +1,13 @@
 """
-System & Inbox Watchdog Monitor
+System & Input Watchdog Monitor
 ===============================
-Monitors the inbox/ folder for newly added textbooks, inspects system health
+Monitors the inbox folder for newly added textbooks, inspects system health
 (free disk space, CPU load, thermal safety), and notifies the user for immediate action.
+
+NOTE: The canonical user-facing watchdog is ``run.py watchdog``, which monitors
+``data/input/books/`` and ``data/input/literature/``.
+WatchdogService is the underlying implementation and can be used for API integration.
+Default directory constants in ``config.py`` now correctly point to ``data/input/books/``.
 """
 
 import logging

@@ -1,13 +1,14 @@
-# Book Processor (v2.2.0)
+# Book Processor (v3.0.0)
 
-> **Enterprise-Grade PDF & EPUB Structured Markdown Extractor with Neural Layout OCR, Uniform LaTeX Math Reconstruction, Multi-Domain Layout Engines, Human-in-the-Loop Local AI Review, Adaptive Self-Healing, Active Recall Flashcards, and Autonomous Inbox Watchdog.**
+> **Enterprise-Grade PDF & EPUB Structured Markdown Extractor with Neural Layout OCR, Uniform LaTeX Math Reconstruction, Multi-Domain Layout Engines, Human-in-the-Loop Local AI Review, Adaptive Self-Healing, Cross-Document Global Learning, Active Recall Flashcards, and Autonomous Watchdog.**
 
 > [!TIP]
 > **🚀 快速上手 (Quick Start)**:
 > 本專案已全面升級為統一總指揮中心 [run.py](run.py) 與跨 Agent 協作治理體系。
 > - **人類與新 AI 快速指引**：請優先閱讀 [OPERATIONS.md](OPERATIONS.md)（30 秒喚醒手冊）與 [AGENTS.md](AGENTS.md)（跨 Agent 憲法）。
 > - **常用指令**：執行 `uv run python run.py agent-init` 讀取原則；執行 `uv run python run.py doctor` 進行軟硬體健檢；執行 `uv run python run.py process <filepath>` 開始轉檔。
-> - **資料目錄標準**：書籍請放至 `data/input/books/`，期刊論文請放至 `data/input/journals/`。
+> - **資料目錄標準**：書籍請放至 `data/input/books/`，期刊論文請放至 `data/input/literature/`。
+
 
 Designed for students, academic researchers, AI agents, and software engineers who require **100% high-fidelity, reproduction-accurate Markdown textbooks** with zero cloud token consumption and absolute data privacy.
 
@@ -124,64 +125,80 @@ The project conforms to modern Python package standards (PEP 517/518, `pyproject
 
 ```text
 books/
-├── inbox/                             # Drop incoming PDF & EPUB textbooks here
-├── processed/                         # Auto-archived textbooks upon 100% verified completion
-├── pyproject.toml                     # Modern Python packaging configuration
-├── book_processor.py                  # Unified CLI entrypoint
-├── batch_convert.py                   # High-performance batch conversion & profiling utility
-├── verify_accuracy.py                 # Standalone verification CLI entrypoint
+├── run.py                             # 🎯 Unified CLI Command Center (entry point for all operations)
+├── pyproject.toml                     # Modern Python packaging configuration (uv)
+├── AGENTS.md                          # Cross-Agent governance constitution (mandatory read)
+├── OPERATIONS.md                      # 30-second onboarding guide for humans & AI
+├── data/
+│   ├── input/
+│   │   ├── books/                     # 📥 Drop incoming textbook PDF/EPUB here
+│   │   └── literature/                # 📥 Drop academic journal PDF here
+│   ├── output/
+│   │   ├── books/                     # 📤 Converted textbook Markdown output
+│   │   └── literature/                # 📤 Converted journal Markdown output
+│   ├── processed/                     # ✅ Auto-archived source files upon verified completion
+│   └── needs_review/                  # ⚠️ Auto-quarantined files with confidence < 0.80
 ├── src/
-│   └── book_processor/
-│       ├── __init__.py                # Package initialization & version (2.2.0)
-│       ├── config.py                  # Global parameters (DPI, thresholds, noise regex, paths)
-│       ├── cli.py                     # Unified CLI parser & subcommands (doctor, split, convert, etc.)
-│       ├── book_style.py              # Base typographic stylesheet & CSS injector
-│       ├── style_loader.py            # Hierarchical style loader (global -> publisher -> book override)
-│       ├── core/
-│       │   ├── analyzer.py            # PDF outline & table of contents analyzer
-│       │   ├── splitter.py            # Fast lossless PDF chapter extraction (pdfseparate/pdfunite)
-│       │   ├── image_manager.py       # Lossless extraction, sips conversion & background filtering
-│       │   ├── checkpoint.py          # Real-time state manager & processing_status.md builder
-│       │   ├── invariants.py          # Pre/post-condition quality guards & circuit breaker
-│       │   ├── learner.py             # Adaptive parameter auto-retry & learned_rules.json persistence
-│       │   ├── watchdog.py            # System health & inbox directory monitoring service
-│       │   └── orchestrator.py        # Pipeline orchestrator with lifecycle archiving & SIGINT pause
-│       ├── profiler/
-│       │   ├── coordinate_calibrator.py # Dynamic odd/even page margin calibration
-│       │   ├── special_block_scanner.py # Textbook feature discovery scanner
-│       │   ├── model_advisor.py       # Layout analysis model advisor
-│       │   └── ollama_profiler.py     # Local LLM textbook profiler
-│       ├── profiles/
-│       │   ├── global_profile.json    # Universal minimalist profile contract
-│       │   ├── publisher_pearson.json # Pearson layout template
-│       │   └── publisher_cengage.json # Cengage layout template
-│       ├── parsers/
-│       │   ├── digital_pdf.py         # Born-digital PDF vector parser (XML font trees & styles)
-│       │   ├── scanned_pdf.py         # 300 DPI neural OCR parser with column order reconstruction
-│       │   ├── epub_parser.py         # EPUB extractor maintaining HTML styling & media maps
-│       │   ├── layout_detector.py     # Multi-domain layout recognizer (callouts, footnotes, code)
-│       │   └── math_latex.py          # Uniform LaTeX math font sizing & equation delimiter checker
-│       ├── verification/
-│       │   ├── rules.py               # Deterministic rule-based checks (vocab, noise, headings)
-│       │   ├── verifier.py            # Multi-metric automated verification suite
-│       │   ├── layout_healer.py       # Closed-loop pre-save layout auto-healer
-│       │   ├── visual_auditor.py      # Visual reference comparison & 10-point scoring
-│       │   ├── ollama_verifier.py     # Local Ollama LLM integration (localhost:11434)
-│       │   └── review_manager.py      # Human-in-the-loop interactive CLI diff review desk
-│       └── utils/
-│           ├── anki_exporter.py       # Anki-compatible TSV flashcard deck generator
-│           ├── text_utils.py          # Filename sanitization, hyphen repair, punctuation cleanup
-│           └── system.py              # System dependency checks (poppler, tesseract, sips, ollama)
-├── tests/                             # Comprehensive automated test suite (111 tests)
-│   ├── test_v21_features.py           # Core features & circuit breaker
-│   ├── test_v22_features.py           # Digital PDF & LaTeX normalization
-│   ├── test_v23_layout_features.py    # Multi-domain layout & footnotes
-│   ├── test_v24_ch02_layout.py        # Real-world textbook layout verification
-│   ├── test_v25_layout_healer.py      # LayoutAutoHealer repair routines
-│   ├── test_v26_exhibits_and_columns.py # Multi-column & exhibit parsing
-│   ├── test_v27_profile_and_layout.py # Profile loading & publisher inheritance
-│   ├── test_v28_advanced_features.py  # Coordinate calibrator & visual auditor
-│   └── test_v29_special_block_scanner.py # Feature discovery scanning
+│   ├── book_processor/
+│   │   ├── config.py                  # Global parameters (DPI, thresholds, paths, Ollama settings)
+│   │   ├── cli.py                     # Underlying CLI parser (called by run.py)
+│   │   ├── config_manager.py          # 4-layer config inheritance + shared knowledge harvesting
+│   │   ├── book_style.py              # Base typographic stylesheet & CSS injector
+│   │   ├── style_loader.py            # Hierarchical style loader (global → publisher → book)
+│   │   ├── concurrency/
+│   │   │   └── m5_worker_pool.py      # Apple M5 multi-core parallel processing pool
+│   │   ├── core/
+│   │   │   ├── orchestrator.py        # Master pipeline orchestrator (textbook path)
+│   │   │   ├── learner.py             # GlobalLearner (cross-doc) + AdaptiveLearner (per-book)
+│   │   │   ├── checkpoint.py          # Real-time state manager & processing_status.md builder
+│   │   │   ├── invariants.py          # Pre/post-condition quality guards & circuit breaker
+│   │   │   ├── analyzer.py            # PDF outline & table of contents analyzer
+│   │   │   ├── splitter.py            # Fast lossless PDF chapter extraction
+│   │   │   ├── image_manager.py       # Lossless image extraction & background filter
+│   │   │   └── watchdog.py            # WatchdogService (API use; run.py watchdog is canonical)
+│   │   ├── fingerprinting/
+│   │   │   ├── document_classifier.py # PDF archetype classifier (textbook/journal)
+│   │   │   └── publisher_detector.py  # Publisher detection (Elsevier, Wiley, APA…)
+│   │   ├── parsers/
+│   │   │   ├── digital_pdf.py         # Born-digital PDF vector parser
+│   │   │   ├── scanned_pdf.py         # 300 DPI neural OCR parser
+│   │   │   ├── epub_parser.py         # EPUB extractor
+│   │   │   ├── layout_detector.py     # Multi-domain layout recognizer
+│   │   │   ├── layout/                # Modular layout sub-parsers (tables, margins, callouts…)
+│   │   │   └── journal/               # Journal-specific parsers (IMRAD, references)
+│   │   ├── pipelines/
+│   │   │   ├── textbook_pipeline.py   # TextbookPipeline: TOC split + per-chapter conversion
+│   │   │   ├── journal_pipeline.py    # JournalPipeline: 7-stage dual-column paper processing
+│   │   │   └── literature_pipeline.py # LiteraturePipeline: extends JournalPipeline
+│   │   ├── profiler/
+│   │   │   ├── coordinate_calibrator.py # Dynamic page margin geometry calibration
+│   │   │   └── special_block_scanner.py # Textbook feature discovery scanner
+│   │   ├── verification/
+│   │   │   ├── verifier.py            # 14-metric automated verification suite
+│   │   │   ├── ollama_verifier.py     # Ollama semantic review & JSON proposals
+│   │   │   ├── ollama_healer.py       # Auto-healer with GlobalLearner feedback
+│   │   │   ├── review_manager.py      # Auto-accept high-confidence fixes + GlobalLearner propagation
+│   │   │   └── layout_healer.py       # Deterministic rule-based layout fixer
+│   │   └── utils/
+│   │       ├── anki_exporter.py       # Anki-compatible TSV flashcard deck generator
+│   │       ├── text_utils.py          # Text sanitization & cross-page stitching
+│   │       └── system.py              # Binary dependency checks (poppler, tesseract, ollama)
+│   ├── guards/
+│   │   ├── hardware.py                # RAM / SSD / battery hardware safety guard
+│   │   ├── ollama_guard.py            # Ollama auto-wake & graceful degradation
+│   │   └── validator.py               # Input/output validator with auto-quarantine
+│   └── utils/
+│       └── logger.py                  # Structured diagnostic logger (where/why/fix format)
+├── tests/                             # Comprehensive automated test suite (171 tests, 0 failures)
+├── config/
+│   ├── publishers/                    # Publisher-specific layout profiles (elsevier, wiley, apa)
+│   └── shared_knowledge/              # Cross-document learned symbol mappings & journal sections
+├── memory/
+│   ├── TASKS.md                       # Project task board with completion dates
+│   ├── HANDOFF.md                     # Session handoff state for AI agents
+│   └── sessions/                      # Dual-track session archives (summary + transcript)
+└── docs/                              # Architecture, coding rules, ADR decisions, structure map
+
 └── output/                            # Chapter-centric structured output
     ├── <Book_Title>/
         ├── processing_status.md       # Real-time Markdown status dashboard
@@ -234,27 +251,34 @@ winget install poppler
 ```
 
 ### 3. Verify Your Environment
-Run the built-in system doctor:
+Run the built-in system doctor (checks RAM, SSD, Ollama, poppler & tesseract):
 ```bash
-python3 book_processor.py doctor
+uv run python run.py doctor
 ```
-Expected output:
+Expected output (all dependencies installed):
 ```text
-======================================================================
-[SYSTEM DOCTOR] Checking Environment & Dependencies
-======================================================================
-  [✓] Installed: pdfinfo (Poppler PDF inspection tool)
-  [✓] Installed: pdftoppm (Poppler 300 DPI image renderer)
-  [✓] Installed: pdfimages (Poppler raw image extraction tool)
-  [✓] Installed: pdfseparate (Poppler chapter extraction tool)
-  [✓] Installed: pdfunite (Poppler chapter assembly tool)
-  [✓] Installed: pdftohtml (Poppler XML font/style extractor)
-  [✓] Installed: pdftotext (Poppler text extractor)
-  [✓] Installed: tesseract (Tesseract OCR Neural Engine)
-  [✓] Installed: sips (macOS lossless image processor)
-  [✓] Installed: ollama (Local Offline AI Engine)
-----------------------------------------------------------------------
-All required dependencies are satisfied!
+=================================================================
+🩺 [DOCTOR] 系統軟硬體與環境前置健檢 (System Health Audit)
+=================================================================
+• 記憶體狀態 (RAM)  : 12.4 GB 可用 (門檻: ≥ 4.0 GB) -> ✅ [PASS]
+• 硬碟剩餘空間 (SSD): 48.2 GB 剩餘 (門檻: ≥ 10.0 GB) -> ✅ [PASS]
+• 電源供應狀態      : AC (充電中) -> ✅ [PASS]
+• Apple MPS 晶片加速: ✅ [PASS: 支援硬體加速]
+
+[Ollama 本地大模型診斷]
+• 服務狀態 (Port 11434): ✅ [ONLINE] 在線運行中
+• 已安裝模型清單       : gemma4:12b, qwen2.5:7b
+• 推薦啟用模型         : 🤖 gemma4:12b
+
+[核心工具鏈診斷]
+• pdfinfo    : ✅ [PASS]
+• pdfseparate: ✅ [PASS]
+• pdftoppm   : ✅ [PASS]
+• pdftohtml  : ✅ [PASS]
+• tesseract  : ✅ [PASS]
+  → 所有核心工具鏈完整！
+
+🎉 系統狀態完美！全自動 Ollama 深度語義與公式除錯已準備就緒。
 ```
 
 ---
@@ -263,89 +287,68 @@ All required dependencies are satisfied!
 
 You can run commands directly from your terminal (`Terminal.app`, `iTerm2`, `bash`, `zsh`, `cmd.exe`, or `PowerShell`) inside the project root:
 
-### 1. Direct Batch Conversion for Any Book
-Convert all chapters of any specific book directory in `output/` with full layout uncurling, semantic tables, and continuous stitching:
+### 1. Process a Textbook
+Drop your PDF into `data/input/books/` then run:
 ```bash
-# Convert a specific book (force overwrite)
-python3 batch_convert.py -b "output/Research Methods, Design, and Analysis 13th ed" --force
+# Process a full textbook — auto-detects from path convention
+uv run python run.py process data/input/books/<YourTextbook>.pdf
 
-# Convert another book (e.g. Group Counseling or Groups Process)
-python3 batch_convert.py -b "output/Group Counseling- Strategies and Skills - Standalone Book -- Ed E. Jacobs, Christine J. Schimmel, Robert L. L. Masson, -" --force
+# Process an EPUB book archive
+uv run python run.py process data/input/books/<YourTextbook>.epub
 
-# Process ALL books found under output/ sequentially in one go
-python3 batch_convert.py --all-books --force
+# Override type explicitly
+uv run python run.py process data/input/books/<YourTextbook>.pdf --type book
 ```
 
-### 2. Fast Chapter Splitting (Seconds)
-Split an entire 500-page book into standalone chapter PDFs without waiting for OCR:
+### 2. Process an Academic Journal / Literature
+Drop your PDF into `data/input/literature/` then run:
 ```bash
-python3 book_processor.py split --file "inbox/<YourTextbook>.pdf"
+uv run python run.py process data/input/literature/<Paper>.pdf
+
+# Or override type explicitly
+uv run python run.py process data/input/literature/<Paper>.pdf --type literature
 ```
 
-### 3. Convert a Single Chapter (with Auto-Verify)
-Convert an individual chapter PDF to Markdown + LaTeX math + figures, followed by automated verification:
+### 3. System Health Check
 ```bash
-python3 book_processor.py convert --pdf "output/<YourTextbook>/chapters/<ChapterName>/<ChapterName>.pdf"
+uv run python run.py doctor
 ```
 
-### 4. End-to-End Autonomous Book Run
-Splits, extracts structure, generates `book_profile.json`, converts all chapters, verifies accuracy, and archives the completed file:
+### 4. Start the Autonomous Watchdog
+Monitor directories for new files and auto-trigger conversion:
 ```bash
-# Process full PDF book
-python3 book_processor.py run --file "inbox/<YourTextbook>.pdf"
-
-# Process EPUB book archive
-python3 book_processor.py run --file "inbox/<YourTextbook>.epub"
-
-# Target only a specific chapter in a book
-python3 book_processor.py run --file "inbox/<YourTextbook>.pdf" --chapter "Ch01"
+uv run python run.py watchdog
 ```
 
-### 5. Resume Interrupted Processing
-Resume a paused or interrupted conversion run, skipping all chapters already verified:
+### 5. Save Progress (Git Checkpoint)
 ```bash
-python3 book_processor.py resume --file "inbox/<YourTextbook>.pdf"
+uv run python run.py save "feat: describe what was done"
 ```
 
-### 6. Interactive Centralized Review Desk
-Inspect and resolve all AI/verifier flagged review items across an entire book or chapter:
+### 6. Archive All Sessions
 ```bash
-# Review all chapters across a book
-python3 book_processor.py review -b "output/<YourTextbook>"
-
-# Review a specific chapter
-python3 book_processor.py review -c "output/<YourTextbook>/chapters/<ChapterName>"
-```
-
-### 7. Content Quality & Accuracy Verification
-Run multi-metric accuracy audits (vocabulary, running headers, continuity, heading ratios):
-```bash
-# Audit an entire book
-python3 book_processor.py verify -b "output/<YourTextbook>"
-
-# Audit an individual chapter
-python3 book_processor.py verify -c "output/<YourTextbook>/chapters/<ChapterName>"
-```
-
-### 8. System Environment Doctor & Watchdog
-Check dependencies or run the inbox daemon:
-```bash
-# Check installed binary tools (poppler, tesseract, ollama)
-python3 book_processor.py doctor
-
-# Run watchdog monitoring inbox/
-python3 book_processor.py watchdog --interval 5 --auto-process
+uv run python run.py archive-sessions
 ```
 
 ---
 
 ## 📖 Complete CLI Command Reference
 
-The system provides two command interfaces:
-- `book_processor.py`: The unified pipeline orchestrator (splitting, resume, watchdog, review, verify).
-- `batch_convert.py`: High-throughput direct converter with layout profiling, visual auditing, and batch execution.
+All operations are routed through **`uv run python run.py <command>`**:
 
-### `batch_convert.py` Flags & Options
+| Command | Description |
+| :--- | :--- |
+| `agent-init` | AI agent onboarding briefing — read AGENTS.md & HANDOFF.md |
+| `doctor` | System health audit: RAM, SSD, Ollama, poppler, tesseract |
+| `process <file>` | Convert a PDF/EPUB using path-based routing (books vs literature) |
+| `watchdog` | Autonomous monitor for `data/input/` + hardware guard |
+| `save "<msg>"` | Update timestamps → run tests → git commit (English only) |
+| `handoff "<reason>"` | Save handoff state → archive sessions → git commit |
+| `publish "<notes>"` | Full release: tests → archive → squash merge |
+| `archive-sessions` | Auto-scan brain/ and export all sessions as dual-track archives |
+| `test-ollama-auto-trigger` | Verify Ollama guards & input validators work end-to-end |
+
+
 | Flag / Argument | Description | Example |
 | :--- | :--- | :--- |
 | `-b`, `--book-dir <PATH>` | Target specific book output directory | `python3 batch_convert.py -b "output/BookName"` |

@@ -10,7 +10,7 @@
 flowchart TD
     subgraph Input_Layer ["1. 輸入與實體路由 (Input Routing)"]
         InBook["data/input/books/<br>(PDF / EPUB)"] -->|路由至| BookDomain["書籍專用處理器<br>(Textbook Pipeline)"]
-        InJournal["data/input/journals/<br>(Academic PDF)"] -->|路由至| PaperDomain["期刊專用處理器<br>(Journal Pipeline)"]
+        InJournal["data/input/literature/<br>(Academic PDF)"] -->|路由至| PaperDomain["期刊專用處理器<br>(Journal Pipeline)"]
     end
 
     subgraph Guard_Layer ["2. 前置防線與守衛 (Guards)"]
@@ -44,7 +44,7 @@ flowchart TD
 
     subgraph Export_Layer ["5. 筆記化輸出與儀表板 (Export & Dashboard)"]
         Clean --> ObsidianBook["data/output/books/<br>(Obsidian 雙鏈筆記)"]
-        Clean --> ObsidianJournal["data/output/journals/<br>(論文結構筆記)"]
+        Clean --> ObsidianJournal["data/output/literature/<br>(論文結構筆記)"]
         Clean --> StatusDB["data/state/status.json<br>(即時進度快照)"]
         StatusDB --> Dashboard["dashboard/<br>(預留視覺化儀表板)"]
     end
@@ -55,7 +55,7 @@ flowchart TD
 ## 核心設計原則
 
 1. **路徑即路由 (Path-as-Routing)**：
-   - 書籍放在 `data/input/books/`，期刊放在 `data/input/journals/`。由路徑直接決定調用哪個 Pipeline，完全免除 AI 猜測的誤差與 Token 浪費。
+   - 書籍放在 `data/input/books/`，期刊放在 `data/input/literature/`。由路徑直接決定調用哪個 Pipeline，完全免除 AI 猜測的誤差與 Token 浪費。
 2. **優雅降級 (Graceful Degradation)**：
    - 系統依賴 Ollama 進行自我除錯，但在無 Ollama、無 GPU 加速或低電量情況下，自動退化為純規則檢驗，保證主轉檔流程絕不崩潰。
 3. **人機隔離防呆 (Human-in-the-Loop Quarantine)**：

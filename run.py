@@ -83,7 +83,28 @@ def cmd_doctor(args):
     else:
         print(f"• 服務狀態 (Port 11434): ⚠️ [OFFLINE] 離線 (將自動啟用純語法規則降級模式)")
 
-    # 3. Clean temporary files
+    # 3. Core Binary Dependencies (poppler + tesseract)
+    import shutil
+    print("\n[核心工具鏈診斷]")
+    _deps = {
+        "pdfinfo":     ("poppler-utils", "brew install poppler"),
+        "pdfseparate": ("poppler-utils", "brew install poppler"),
+        "pdftoppm":    ("poppler-utils", "brew install poppler"),
+        "pdftohtml":   ("poppler-utils", "brew install poppler"),
+        "tesseract":   ("tesseract",     "brew install tesseract"),
+    }
+    all_deps_ok = True
+    for binary, (pkg, install_cmd) in _deps.items():
+        found = shutil.which(binary) is not None
+        if not found:
+            all_deps_ok = False
+        print(f"• {binary:12s}: {'✅ [PASS]' if found else f'🛑 [MISSING] → 安裝指令: {install_cmd}'}")
+    if all_deps_ok:
+        print("  → 所有核心工具鏈完整！")
+    else:
+        print("  → ⚠️ 缺少必要工具，PDF 轉檔將無法正常運作，請依上方指令安裝後重試。")
+
+    # 4. Clean temporary files
     pruned = clean_dangling_tmp_files()
     if pruned > 0:
         print(f"\n• 暫存檔案自動清理     : 🧹 [CLEAN] 已自動清理 {pruned} 個過期暫存檔 (*.tmp.*)")
@@ -91,10 +112,11 @@ def cmd_doctor(args):
         print(f"\n• 暫存檔案自動清理     : ✅ [PASS] 磁碟環境無殘留暫存檔")
 
     print("=" * 65)
-    if hw["safe_for_heavy_llm"] and service["alive"] and service["selected_model"]:
+    if hw["safe_for_heavy_llm"] and service["alive"] and service["selected_model"] and all_deps_ok:
         print("🎉 系統狀態完美！全自動 Ollama 深度語義與公式除錯已準備就緒。\n")
     else:
         print("💡 提示：系統可正常轉檔，但在硬體受限或 Ollama 離線時將自動優雅降級。\n")
+
 
 
 # ==============================================================================
@@ -106,18 +128,33 @@ def cmd_process(args):
         print(f"🛑 錯誤：找不到指定的輸入檔案: {filepath}")
         sys.exit(1)
 
-    # Determine pipeline by directory convention or flag
+    # Determine pipeline by directory convention or flag.
+    # Use anchor-based detection: compare resolved path against known input roots
+    # to avoid false matches when the user's home path contains 'books' or 'literature'.
     doc_type = args.type
     if not doc_type:
-        path_str = str(filepath.resolve()).lower()
-        if "literature" in path_str or "journals" in path_str or "papers" in path_str:
-            doc_type = "literature"
-        elif "books" in path_str:
-            doc_type = "book"
-        else:
-            doc_type = "book"  # default fallback
+        try:
+            rel = filepath.resolve().relative_to(ROOT)
+            parts = rel.parts  # e.g. ('data', 'input', 'literature', 'paper.pdf')
+            if len(parts) >= 3 and parts[0] == "data" and parts[1] == "input":
+                subdir = parts[2]  # 'books', 'literature', etc.
+                if subdir in ("literature", "journals", "papers"):
+                    doc_type = "literature"
+                elif subdir == "books":
+                    doc_type = "book"
+        except ValueError:
+            pass  # file is outside ROOT — fall through to keyword scan
+        if not doc_type:
+            # Last-resort: keyword scan on the portion after the last path separator
+            fname_lower = filepath.name.lower()
+            parent_lower = filepath.parent.name.lower()
+            if parent_lower in ("literature", "journals", "papers"):
+                doc_type = "literature"
+            else:
+                doc_type = "book"  # safe default
     elif doc_type == "journal":
-        doc_type = "literature"  # normalize journal to literature
+        doc_type = "literature"  # normalize alias
+
 
     print(f"\n🚀 啟動處理管線: [{doc_type.upper()}] 檔案: {filepath.name}")
 
@@ -383,10 +420,12 @@ def cmd_test_ollama_auto_trigger(args):
 # ==============================================================================
 def cmd_archive_sessions(args):
     """
-    Scans the Antigravity brain directory and archives all conversation sessions
-    associated with this workspace into memory/sessions/ with dual-track pairing.
+    Auto-discovers ALL conversation sessions in the Antigravity brain directory
+    and archives them into memory/sessions/ with dual-track pairing (summary + transcript).
+    No hardcoded UUID list required — fully automatic.
     """
-    import json
+    import json as _json
+
     brain_dir = Path.home() / ".gemini" / "antigravity" / "brain"
     sessions_dir = ROOT / "memory" / "sessions"
     sessions_dir.mkdir(parents=True, exist_ok=True)
@@ -395,67 +434,115 @@ def cmd_archive_sessions(args):
     print("🗄️ [ARCHIVE-SESSIONS] 全自動對話雙軌歸檔 (Dual-Track Archiving)")
     print("=" * 65)
 
-    known_sessions = [
-        ("2026-09-18", "e81a99f1-8fd6-4393-8186-db1c305c5170", "initial-textbook-pipeline-development", "書籍轉檔管線初版開發與版面分析"),
-        ("2026-09-18", "74bb97d9-9bba-4680-900c-e5a79d616708", "research-methods-book-conversion", "Research Methods 教科書轉檔與排版優化"),
-        ("2026-09-20", "cb3aa69b-509b-4784-96e1-9d645c7ff32b", "typography-tables-and-formula-refinement", "排版、表格與跨頁內容語義修復"),
-        ("2026-09-23", "e7e0ccf8-a309-4bad-b967-e1ef03284bae", "academic-journal-pipeline-and-dual-column", "學術期刊雙欄管線開發與 Ollama 邊界分流"),
-        ("2026-09-23", "d934528e-eb4f-4097-8457-50cc94bfb932", "project-architecture-and-governance", "專案架構治理、軟硬體守衛與跨 Agent 規範"),
-    ]
+    if not brain_dir.exists():
+        print(f"⚠️ Brain 目錄不存在: {brain_dir}")
+        return
 
-    for date_str, conv_id, slug, title in known_sessions:
+    # ── Auto-discover all conversation directories ──────────────────────
+    discovered = []
+    for conv_dir in sorted(brain_dir.iterdir()):
+        if not conv_dir.is_dir() or conv_dir.name.startswith("."):
+            continue
+        t_src = conv_dir / ".system_generated" / "logs" / "transcript.jsonl"
+        if not t_src.exists():
+            continue
+
+        # Extract date and topic from transcript metadata
+        date_str = ""
+        first_user_msg = ""
+        try:
+            with open(t_src, "r", encoding="utf-8") as _f:
+                for _line in _f:
+                    try:
+                        _d = _json.loads(_line)
+                        if not date_str and _d.get("created_at"):
+                            date_str = _d["created_at"][:10]  # YYYY-MM-DD
+                        if not first_user_msg and _d.get("type") == "USER_INPUT":
+                            _raw = _d.get("content", "")
+                            first_user_msg = (
+                                _raw.replace("<USER_REQUEST>", "")
+                                    .replace("</USER_REQUEST>", "")
+                                    .strip()[:80]
+                            )
+                        if date_str and first_user_msg:
+                            break
+                    except Exception:
+                        continue
+        except Exception:
+            pass
+
+        if not date_str:
+            date_str = "0000-00-00"
+        conv_id = conv_dir.name
+        # Build a slug from the first user message (sanitize to filename-safe)
+        slug_raw = re.sub(r"[^\w\s-]", "", first_user_msg[:50]).strip().lower()
+        slug = re.sub(r"[\s_-]+", "-", slug_raw).strip("-") or conv_id[:8]
+        title = first_user_msg or f"Session {conv_id[:8]}"
+
+        discovered.append((date_str, conv_id, slug, title, t_src))
+
+    if not discovered:
+        print("ℹ️ 未找到任何對話紀錄。")
+        return
+
+    print(f"🔍 自動偵測到 {len(discovered)} 個對話紀錄目錄。\n")
+
+    for date_str, conv_id, slug, title, t_src in discovered:
         summary_file = sessions_dir / f"{date_str}-{slug}-summary.md"
         transcript_file = sessions_dir / f"{date_str}-{slug}-transcript.md"
-        t_src = brain_dir / conv_id / ".system_generated" / "logs" / "transcript.jsonl"
 
-        print(f"• 會話 [{date_str}] {title} (ID: {conv_id[:8]}...):")
+        print(f"• 會話 [{date_str}] {title[:60]} (ID: {conv_id[:8]}...):")
         if summary_file.exists():
             print(f"  - 總結 (Summary)   : ✅ 已存在 ({summary_file.name})")
         else:
             print(f"  - 總結 (Summary)   : ⚠️ 待補充 ({summary_file.name})")
 
-        if t_src.exists():
-            try:
-                with open(t_src, "r", encoding="utf-8") as fin, open(transcript_file, "w", encoding="utf-8") as fout:
-                    fout.write(f"# 📜 對話紀錄全量封存 (Full Transcript): {title}\n\n")
-                    fout.write(f"- **會話 ID**: `{conv_id}`\n")
-                    fout.write(f"- **歸檔檔案**: `{transcript_file.name}`\n\n---\n\n")
-                    step_idx = 0
-                    for line in fin:
-                        try:
-                            d = json.loads(line)
-                            step_idx = d.get("step_index", step_idx + 1)
-                            stype = d.get("type", "")
-                            created = d.get("created_at", "")
-                            content = d.get("content", "")
-                            tool_calls = d.get("tool_calls", [])
-                            if stype == "USER_INPUT":
-                                user_text = content.replace("<USER_REQUEST>", "").replace("</USER_REQUEST>", "").strip()
-                                fout.write(f"## 👤 [Step {step_idx}] 使用者指令 (User Input)\n")
-                                fout.write(f"**時間**: `{created}`\n\n{user_text}\n\n---\n\n")
-                            elif stype == "PLANNER_RESPONSE" or tool_calls or content:
-                                fout.write(f"## 🤖 [Step {step_idx}] 助手回應與執行軌跡 (Assistant Response)\n")
-                                fout.write(f"**時間**: `{created}`\n\n")
-                                if tool_calls:
-                                    fout.write("### 🛠️ 工具調用 (Tool Calls)\n")
-                                    for tc in tool_calls:
-                                        name = tc.get("name", "")
-                                        args = tc.get("args", {})
-                                        summary = args.get("toolSummary", "")
-                                        action = args.get("toolAction", "")
-                                        fout.write(f"- `{name}`: *{action}* ({summary})\n")
-                                    fout.write("\n")
-                                if content:
-                                    fout.write(f"{content}\n\n")
-                                fout.write("---\n\n")
-                        except Exception:
-                            pass
-                size_kb = transcript_file.stat().st_size / 1024
-                print(f"  - 紀錄 (Transcript): ✅ 已同步更新 ({size_kb:.1f} KB)")
-            except Exception as e:
-                print(f"  - 紀錄 (Transcript): ❌ 讀取失敗 ({e})")
-        else:
-            print(f"  - 紀錄 (Transcript): {'✅ 已存在' if transcript_file.exists() else '⚠️ 來源日誌不存在'}")
+        try:
+            with open(t_src, "r", encoding="utf-8") as fin, \
+                 open(transcript_file, "w", encoding="utf-8") as fout:
+                fout.write(f"# 📜 對話紀錄全量封存 (Full Transcript): {title}\n\n")
+                fout.write(f"- **會話 ID**: `{conv_id}`\n")
+                fout.write(f"- **歸檔檔案**: `{transcript_file.name}`\n\n---\n\n")
+                step_idx = 0
+                for line in fin:
+                    try:
+                        d = _json.loads(line)
+                        step_idx = d.get("step_index", step_idx + 1)
+                        stype = d.get("type", "")
+                        created = d.get("created_at", "")
+                        content = d.get("content", "")
+                        tool_calls = d.get("tool_calls", [])
+                        if stype == "USER_INPUT":
+                            user_text = (
+                                content.replace("<USER_REQUEST>", "")
+                                       .replace("</USER_REQUEST>", "")
+                                       .strip()
+                            )
+                            fout.write(f"## 👤 [Step {step_idx}] 使用者指令 (User Input)\n")
+                            fout.write(f"**時間**: `{created}`\n\n{user_text}\n\n---\n\n")
+                        elif stype == "PLANNER_RESPONSE" or tool_calls or content:
+                            fout.write(f"## 🤖 [Step {step_idx}] 助手回應與執行軌跡 (Assistant Response)\n")
+                            fout.write(f"**時間**: `{created}`\n\n")
+                            if tool_calls:
+                                fout.write("### 🛠️ 工具調用 (Tool Calls)\n")
+                                for tc in tool_calls:
+                                    tc_name = tc.get("name", "")
+                                    tc_args = tc.get("args", {})   # ← fixed: was `args` (shadowing outer param)
+                                    tc_summary = tc_args.get("toolSummary", "")
+                                    tc_action = tc_args.get("toolAction", "")
+                                    fout.write(f"- `{tc_name}`: *{tc_action}* ({tc_summary})\n")
+                                fout.write("\n")
+                            if content:
+                                fout.write(f"{content}\n\n")
+                            fout.write("---\n\n")
+                    except Exception:
+                        pass
+            size_kb = transcript_file.stat().st_size / 1024
+            print(f"  - 紀錄 (Transcript): ✅ 已同步更新 ({size_kb:.1f} KB)")
+        except Exception as e:
+            print(f"  - 紀錄 (Transcript): ❌ 讀取失敗 ({e})")
+
+
 
 # ==============================================================================
 # 6. WATCHDOG: Integrated Hardware & Directory Monitor

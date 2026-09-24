@@ -34,13 +34,14 @@
 - [x] [2026-09-24] 實現目錄級全自動批次轉檔指令 (`run.py batch <dir>`)，具備逐檔硬體巡檢保護與冷卻防護機制
 - [x] [2026-09-24] 實現 Obsidian 雙鏈與全書索引生成器 (`obsidian_linker.py` + `run.py obsidian-link`)，自動注入章節前後導航並支援 Graph View
 - [x] [2026-09-24] 實現全域進度狀態中心化管理 (`GlobalStateManager` + `run.py status`)，原子化維護 `data/state/global_status.json` 並支援輸出目錄自動狀態重建
+- [x] [2026-09-24] 實現 `LiteraturePipeline` 學術文獻領域深度客製化（支援子類型識別、IEEE 作者簡介/浮水印清理、Index Terms 標籤重構與預印本警示標註）
 
 ---
 
 ## 📅 後續規劃 (Backlog)
 
 - [ ] [未排程] 實作 `dashboard/` 視覺化儀表板（讀取 `data/state/global_status.json`）
-- [ ] [未排程] `LiteraturePipeline` 領域客製化（支援論文子類型判斷與 IEEE 特殊版面過濾）
+
 
 
 

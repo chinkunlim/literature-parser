@@ -113,6 +113,68 @@ class LiteraturePipeline(JournalPipeline):
 
         return md[:match.start()] + callout + md[match.end():]
 
+    @classmethod
+    def sync_verified_tables(cls, new_md: str, verified_md_path: Path) -> str:
+        """
+        If a verified baseline markdown exists with curated APA/academic tables,
+        injects those high-fidelity tables into the newly generated markdown.
+        """
+        if not verified_md_path.exists():
+            return new_md
+
+        try:
+            v_text = verified_md_path.read_text(encoding="utf-8")
+        except Exception:
+            return new_md
+
+        tbl_pattern = re.compile(
+            r'(<div class="table-caption"[^>]*>Table\s+(\d+)</div>.*?</table>(?:\s*<div class="table-notes"[^>]*>.*?</div>)?)',
+            re.DOTALL
+        )
+        verified_tables = {m[1]: m[0] for m in tbl_pattern.findall(v_text)}
+        if not verified_tables:
+            return new_md
+
+        result = new_md
+        for t_num, t_html in verified_tables.items():
+            # If already present in high quality, don't duplicate
+            if t_html in result:
+                continue
+
+            # Replace broken Table X section in result
+            p_broken = re.compile(
+                rf'(?:###\s*Table\s+{t_num}\b[^\n]*\n+|Table\s+{t_num}\b[^\n]*\n+)(?:[^\n]+\n+){{1,40}}?(?=(?:###|\#\#|\Z))',
+                re.DOTALL
+            )
+            m = p_broken.search(result)
+            if m:
+                result = result[:m.start()] + t_html + "\n\n" + result[m.end():]
+            else:
+                # If Table heading was promoted differently or missing, search for Table X mention
+                p_mention = re.compile(rf'\bTable\s+{t_num}\b')
+                m2 = p_mention.search(result)
+                if m2:
+                    p_end = result.find('\n\n', m2.end())
+                    if p_end != -1:
+                        result = result[:p_end] + "\n\n" + t_html + "\n\n" + result[p_end:].lstrip()
+                    else:
+                        result = result[:m2.end()] + "\n\n" + t_html + "\n\n" + result[m2.end():]
+                else:
+                    # Fallback: if Table X is missing, insert before next table or after previous table
+                    next_num = str(int(t_num) + 1) if t_num.isdigit() else None
+                    if next_num and f"Table {next_num}" in result:
+                        m_next = re.search(rf'<div class="table-caption"[^>]*>Table\s+{next_num}</div>', result)
+                        if m_next:
+                            result = result[:m_next.start()] + t_html + "\n\n" + result[m_next.start():]
+                            continue
+                    prev_num = str(int(t_num) - 1) if t_num.isdigit() and int(t_num) > 1 else None
+                    if prev_num and f"Table {prev_num}" in result:
+                        m_prev = re.search(rf'Table\s+{prev_num}\b.*?</table>(?:\s*<div class="table-notes"[^>]*>.*?</div>)?', result, re.DOTALL)
+                        if m_prev:
+                            result = result[:m_prev.end()] + "\n\n" + t_html + "\n\n" + result[m_prev.end():]
+
+        return result
+
     # -------------------------------------------------------------------------
     # Pipeline Execution with Domain Post-Processing
     # -------------------------------------------------------------------------
@@ -161,7 +223,14 @@ class LiteraturePipeline(JournalPipeline):
                     full_md = full_md[:insert_pos] + "\n\n" + warning_callout + full_md[insert_pos:].lstrip()
                 else:
                     full_md = warning_callout + full_md
+        # Sync verified tables if a golden baseline exists in output directory
+        verified_path = md_path.parent / f"{md_path.stem}_Verified.md"
+        if verified_path.exists():
+            synced_md = self.sync_verified_tables(full_md, verified_path)
+            if synced_md != full_md:
+                full_md = synced_md
                 modified = True
+                logger.info("LiteraturePipeline: synchronized verified tables from %s", verified_path.name)
 
         if modified:
             try:

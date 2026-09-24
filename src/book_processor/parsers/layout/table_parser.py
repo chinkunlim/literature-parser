@@ -463,8 +463,14 @@ class TableParser:
                 items.append(' '.join(curr_item))
 
             if len(items) >= 2:
+                m_first = re.match(r'^(\d+)[\.\)]\s*', items[0])
+                has_numbers = bool(m_first and m_first.group(1) == '1' and all(re.match(r'^\d+[\.\)]\s*', it) for it in items))
+                has_bullets = all(re.match(r'^[•\-\*]\s*', it) for it in items)
+                if not has_numbers and not has_bullets:
+                    # Not a legitimate list; do not consume as a list table
+                    continue
+
                 consumed.update(table_consumed)
-                has_numbers = all(re.match(r'^\d+[\.\)]\s*', it) for it in items)
                 # Build table heading per STYLE — strip pre-existing bold/italic first
                 clean_title = title.strip()
                 clean_title = re.sub(r'^\*\*(.+?)\*\*$', r'\1', clean_title)

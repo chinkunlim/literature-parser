@@ -16,7 +16,7 @@ from book_processor import __version__
 from book_processor.core.orchestrator import BookProcessorOrchestrator
 from book_processor.verification.verifier import AccuracyVerifier
 from book_processor.utils.system import check_dependencies
-from book_processor.config import DEFAULT_OLLAMA_HEALER_MODEL, DEFAULT_OLLAMA_SEMANTIC_MODEL
+from book_processor.config import DEFAULT_OLLAMA_HEALER_MODEL, DEFAULT_OLLAMA_SEMANTIC_MODEL, DEFAULT_OUTPUT_DIR, DEFAULT_INBOX_DIR
 
 
 def main():
@@ -36,7 +36,7 @@ def main():
     # 1. SPLIT Subcommand
     p_split = subparsers.add_parser("split", help="Split entire book into chapter PDFs in seconds (no OCR)")
     p_split.add_argument("--file", "-f", required=True, help="Path to input PDF file")
-    p_split.add_argument("--output-dir", "-o", default="./output", help="Output directory")
+    p_split.add_argument("--output-dir", "-o", default=DEFAULT_OUTPUT_DIR, help="Output directory")
 
     # 2. CONVERT Subcommand (with auto-verify)
     p_convert = subparsers.add_parser("convert", help="Convert a single chapter PDF to Markdown + LaTeX, then auto-verify")
@@ -48,14 +48,14 @@ def main():
     p_run.add_argument("--file", "-f", default=None, help="Process a specific PDF or EPUB file")
     p_run.add_argument("--chapter", "-c", default=None, help="Target a specific chapter name or number")
     p_run.add_argument("--input-dir", "-i", default=".", help="Input directory (default: current directory)")
-    p_run.add_argument("--output-dir", "-o", default="./output", help="Output directory")
+    p_run.add_argument("--output-dir", "-o", default=DEFAULT_OUTPUT_DIR, help="Output directory")
     add_ollama_args(p_run)
     p_run.add_argument("--parallel", action="store_true", help="Process chapters concurrently utilizing Apple M5 P-Cores")
 
     # 4. RESUME Subcommand
     p_resume = subparsers.add_parser("resume", help="Resume interrupted processing, skipping verified chapters")
     p_resume.add_argument("--file", "-f", required=True, help="Path to book PDF file to resume")
-    p_resume.add_argument("--output-dir", "-o", default="./output", help="Output directory")
+    p_resume.add_argument("--output-dir", "-o", default=DEFAULT_OUTPUT_DIR, help="Output directory")
     add_ollama_args(p_resume)
     p_resume.add_argument("--parallel", action="store_true", help="Process chapters concurrently utilizing Apple M5 P-Cores")
 
@@ -74,7 +74,7 @@ def main():
     p_watch = subparsers.add_parser("watchdog", help="Monitor inbox for new books and inspect system health")
     p_watch.add_argument("--inbox-dir", default="./inbox", help="Directory to monitor for incoming books")
     p_watch.add_argument("--processed-dir", default="./processed", help="Directory to archive completed books")
-    p_watch.add_argument("--output-dir", default="./output", help="Output directory")
+    p_watch.add_argument("--output-dir", default=DEFAULT_OUTPUT_DIR, help="Output directory")
     p_watch.add_argument("--interval", type=float, default=5.0, help="Polling interval in seconds")
     p_watch.add_argument("--auto-process", action="store_true", help="Automatically process newly detected books without asking")
 
@@ -129,7 +129,7 @@ def main():
     elif args.subcommand == "run":
         orchestrator = BookProcessorOrchestrator(
             input_dir=getattr(args, 'input_dir', '.'),
-            output_dir=getattr(args, 'output_dir', './output'),
+            output_dir=getattr(args, 'output_dir', DEFAULT_OUTPUT_DIR),
             use_ollama=resolve_ollama(getattr(args, 'ollama', None)),
             ollama_model=getattr(args, 'ollama_model', None)
         )

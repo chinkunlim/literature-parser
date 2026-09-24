@@ -50,7 +50,7 @@ MAX_ALERT_LOG_BYTES = 1_000_000  # 1 MB – rotate when exceeded
 # Local Ollama AI Settings
 # ---------------------------------------------------------------------------
 OLLAMA_API_BASE = "http://localhost:11434"
-DEFAULT_OLLAMA_MODEL = "gemma4:12b"               # User's installed local flagship model
+DEFAULT_OLLAMA_MODEL = "qwen2.5-coder:7b"               # Specialized coding/healing model
 DEFAULT_OLLAMA_VISION_MODEL = "llama3.2-vision:latest"   # User's installed local multimodal model
 OLLAMA_GENERATE_TIMEOUT = 180.0  # seconds; allows 7b-14b local models sufficient evaluation time
 

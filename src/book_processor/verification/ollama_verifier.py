@@ -62,8 +62,8 @@ class OllamaVerifier:
 
         # Priority fallback list of high-capability models
         candidates = [
-            "gemma4:12b", "gemma4:latest", "gemma4",
             "qwen2.5-coder:7b", "qwen2.5:7b", "qwen2.5:14b",
+            "gemma4:12b", "gemma4:latest", "gemma4",
             "deepseek-r1:8b", "deepseek-r1:14b",
             "llama3.2-vision:latest", "llama3.1:8b", "llama3:latest",
             "mistral:7b", "gemma2:9b"

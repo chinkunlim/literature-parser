@@ -2,8 +2,8 @@
   "archetype": "journal",
   "doc_name": "Journal of Adolescence - 2003 - Lejuez - Evaluation of the Balloon Analogue Risk Task  BART  as a predictor of adolescent",
   "total_pages": 5,
-  "passed": true,
-  "accuracy_percent": 91.96,
+  "passed": false,
+  "accuracy_percent": 92.12,
   "images_extracted": 0,
   "publisher": "elsevier"
 }

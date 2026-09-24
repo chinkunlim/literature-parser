@@ -17,10 +17,10 @@ SRC_DIR = Path(__file__).parent.parent / "src"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
-from book_processor.profiler.model_advisor import check_models_status
-from book_processor.profiler.coordinate_calibrator import CoordinateCalibrator
-from book_processor.verification.visual_auditor import VisualAuditor
-from book_processor.core.checkpoint import CheckpointManager
+from doc_processor.profiler.model_advisor import check_models_status
+from doc_processor.profiler.coordinate_calibrator import CoordinateCalibrator
+from doc_processor.verification.visual_auditor import VisualAuditor
+from doc_processor.core.checkpoint import CheckpointManager
 
 BOOK_DIR = Path(__file__).parent.parent / "./data/output/books/Research Methods, Design, and Analysis 13th ed"
 CH02_PDF = BOOK_DIR / "chapters/Ch02 Research Approaches and Methods of Data Collection/Ch02 Research Approaches and Methods of Data Collection.pdf"

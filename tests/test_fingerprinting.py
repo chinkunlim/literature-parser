@@ -7,8 +7,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 import unittest
-from book_processor.fingerprinting.publisher_detector import PublisherDetector
-from book_processor.fingerprinting.document_classifier import DocumentClassifier
+from doc_processor.fingerprinting.publisher_detector import PublisherDetector
+from doc_processor.fingerprinting.document_classifier import DocumentClassifier
 
 
 class TestFingerprinting(unittest.TestCase):
@@ -18,14 +18,14 @@ class TestFingerprinting(unittest.TestCase):
         pub = PublisherDetector.detect_from_text(text)
         self.assertEqual(pub, "apa")
         profile = PublisherDetector.get_profile_name(pub, is_journal=True)
-        self.assertEqual(profile, "journal_apa.json")
+        self.assertEqual(profile, "literature_apa.json")
 
     def test_detect_elsevier_from_doi_and_text(self):
         text = "Cognition 102 (2007) 1–25. doi:10.1016/j.cognition.2005.12.008. Elsevier B.V."
         pub = PublisherDetector.detect_from_text(text)
         self.assertEqual(pub, "elsevier")
         profile = PublisherDetector.get_profile_name(pub, is_journal=True)
-        self.assertEqual(profile, "journal_elsevier.json")
+        self.assertEqual(profile, "literature_elsevier.json")
 
     def test_detect_wiley(self):
         text = "British Journal of Psychology. doi: 10.1111/bjop.12345. John Wiley & Sons Ltd."

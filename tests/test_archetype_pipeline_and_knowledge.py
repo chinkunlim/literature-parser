@@ -16,10 +16,10 @@ import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from book_processor.config_manager import ConfigManager, deep_merge
-from book_processor.parsers.literature.reference_parser import ReferenceParser
-from book_processor.parsers.literature.imrad_resolver import IMRADResolver
-from book_processor.verification.ollama_healer import OllamaHealer
+from doc_processor.config_manager import ConfigManager, deep_merge
+from doc_processor.parsers.literature.reference_parser import ReferenceParser
+from doc_processor.parsers.literature.imrad_resolver import IMRADResolver
+from doc_processor.verification.ollama_healer import OllamaHealer
 
 
 class TestArchetypePipelineAndKnowledge(unittest.TestCase):

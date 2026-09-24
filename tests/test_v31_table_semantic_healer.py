@@ -4,14 +4,14 @@ Math Formula Healing, and Semantic Quality Rules
 """
 
 import unittest
-from book_processor.utils.text_utils import (
+from doc_processor.utils.text_utils import (
     reflow_wrapped_lines, repair_drop_caps, clean_decorative_noise,
     detect_plain_text_headings, format_dialogue_lines, stitch_cross_page_continuity
 )
-from book_processor.parsers.math_latex import MathLaTeXConverter
-from book_processor.parsers.layout_detector import generate_markdown_toc
-from book_processor.book_style import build_textbook_css
-from book_processor.verification.rules import (
+from doc_processor.parsers.math_latex import MathLaTeXConverter
+from doc_processor.parsers.layout_detector import generate_markdown_toc
+from doc_processor.book_style import build_textbook_css
+from doc_processor.verification.rules import (
     check_numeric_coordinate_noise, check_shattered_math,
     check_infix_math_in_words, check_heading_prose_intrusion,
     check_table_banner_integrity, check_heading_density,

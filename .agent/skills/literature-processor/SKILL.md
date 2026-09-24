@@ -67,7 +67,7 @@ orchestrator.py (detect_archetype='literature')
         └── LiteraturePipeline 子類型後處理 (IEEE/preprint 擴充)
 ```
 
-- 樣式模組：`src/book_processor/literature_style.py` (與 `book_style.py` 徹底解耦)
-- 解析子模組：`src/book_processor/parsers/literature/` (完全整併，已徹底移除 legacy `parsers/journal/`)
-- 設定模組：`src/book_processor/profiles/literature_*.json`
+- 樣式模組：`src/doc_processor/literature_style.py` (與 `book_style.py` 徹底解耦)
+- 解析子模組：`src/doc_processor/parsers/literature/` (完全整併，已徹底移除 legacy `parsers/journal/`)
+- 設定模組：`src/doc_processor/profiles/literature_*.json`
 - 輸出檔案：`document_profile.json`（非 `book_profile.json`）

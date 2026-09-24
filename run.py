@@ -163,11 +163,11 @@ def _run_process_pipeline(filepath: Path, doc_type: Optional[str] = None, ignore
     output_base.mkdir(parents=True, exist_ok=True)
 
     print(f"• 輸出目標資料夾: {output_base}")
-    print(f"• 呼叫對應領域管線: src/book_processor/pipelines/{'textbook_pipeline' if doc_type == 'book' else 'literature_pipeline'}.py")
+    print(f"• 呼叫對應領域管線: src/doc_processor/pipelines/{'textbook_pipeline' if doc_type == 'book' else 'literature_pipeline'}.py")
 
     # Delegate to existing core CLI with appropriate arguments
     cli_cmd = [
-        sys.executable, "-m", "book_processor.cli", "run",
+        sys.executable, "-m", "doc_processor.cli", "run",
         "--file", str(filepath),
         "--output-dir", str(output_base),
     ]
@@ -1009,7 +1009,7 @@ def cmd_obsidian_link(args):
     Scans a processed book output directory, generates index.md with Obsidian
     wikilinks, and injects inter-chapter previous/next navigation footers.
     """
-    from book_processor.utils.obsidian_linker import generate_book_index, inject_chapter_navigation
+    from doc_processor.utils.obsidian_linker import generate_book_index, inject_chapter_navigation
 
     book_dir = Path(args.book_dir).resolve()
     if not book_dir.is_dir():
@@ -1051,7 +1051,7 @@ def cmd_status(args):
     Displays an aggregated visual snapshot of all processed books/literature
     from data/state/global_status.json (with automatic rebuild if needed).
     """
-    from book_processor.core.global_state import GlobalStateManager
+    from doc_processor.core.global_state import GlobalStateManager
 
     gsm = GlobalStateManager()
     # If state file is empty or requested sync, scan output directory
@@ -1104,7 +1104,7 @@ def cmd_dashboard(args):
     """
     import json
     import webbrowser
-    from book_processor.core.global_state import GlobalStateManager
+    from doc_processor.core.global_state import GlobalStateManager
 
     gsm = GlobalStateManager()
     data = gsm.get_all()

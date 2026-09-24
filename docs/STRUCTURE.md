@@ -67,14 +67,13 @@ books-project/
 │   │   └── validator.py            # 輸入 JSON 比對與輸出異常自動喚醒 Ollama (信度 < 0.80 自動隔離)
 │   ├── utils/                      # 🛠️ 通用工具
 │   │   └── logger.py               # 結構化診斷日誌工具
-│   └── book_processor/             # ⚙️ 書籍與文獻處理核心引擎
+│   └── doc_processor/              # ⚙️ 文檔處理核心引擎 (教科書與學術文獻一體化架構)
 │       ├── book_style.py           # 📖 教科書專屬排版樣式表 (紫李主題、Anki 閃卡、學習目標)
 │       ├── literature_style.py     # 📑 學術文獻專屬排版樣式表 (APA 三線表、作者卡片、期刊元數據)
-│       ├── profiles/               # 📐 版面設定檔 (含 literature_*.json 與 publisher_*.json)
+│       ├── profiles/               # 📐 版面設定檔 (全數統一為 literature_*.json 與 publisher_*.json)
 │       ├── pipelines/              # 管線層
 │       │   ├── textbook_pipeline.py    # 長篇書籍章節切分管線
-│       │   ├── journal_pipeline.py     # 向後相容別名管線 (重導至 LiteraturePipeline)
-│       │   └── literature_pipeline.py  # 🎯 學術文獻主管線 (orchestrator 直接調用此管線)
+│       │   └── literature_pipeline.py  # 🎯 學術文獻主管線 (雙欄帶狀流動、APA 表格對齊、IMRAD 標題)
 │       ├── parsers/                # 解析層 (PDF, EPUB, LaTeX, 雙欄版面)
 │       │   └── literature/         # 🎯 學術文獻解析子模組 (metadata_extractor, imrad_resolver, figure_formatter, reference_parser)
 │       ├── verification/           # 檢驗層 (OllamaVerifier, rules, OllamaHealer)

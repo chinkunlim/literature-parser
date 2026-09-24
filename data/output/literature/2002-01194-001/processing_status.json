@@ -3,8 +3,8 @@
   "subtype": "journal",
   "doc_name": "2002-01194-001",
   "total_pages": 10,
-  "passed": false,
-  "accuracy_percent": 92.72,
+  "passed": true,
+  "accuracy_percent": 92.67,
   "images_extracted": 2,
   "publisher": "apa"
 }

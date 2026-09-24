@@ -13,11 +13,11 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from book_processor.parsers.literature.metadata_extractor import LiteratureMetadataExtractor, generate_markdown_toc
-from book_processor.parsers.literature.figure_formatter import FigureFormatter
-from book_processor.parsers.literature.imrad_resolver import IMRADResolver
-from book_processor.parsers.literature.reference_parser import ReferenceParser
-from book_processor.pipelines.literature_pipeline import LiteraturePipeline
+from doc_processor.parsers.literature.metadata_extractor import LiteratureMetadataExtractor, generate_markdown_toc
+from doc_processor.parsers.literature.figure_formatter import FigureFormatter
+from doc_processor.parsers.literature.imrad_resolver import IMRADResolver
+from doc_processor.parsers.literature.reference_parser import ReferenceParser
+from doc_processor.pipelines.literature_pipeline import LiteraturePipeline
 
 
 class TestLiteratureLayoutRefinement(unittest.TestCase):
@@ -172,6 +172,65 @@ class TestLiteratureLayoutRefinement(unittest.TestCase):
         finally:
             v_path.unlink()
 
+    def test_ghost_table_and_raw_digits_purged(self):
+        body = (
+            "# Paper\n\n"
+            "## Results\n\n"
+            "Paragraph before table.\n\n"
+            "Average adjusted pumps\n\n"
+            "Total First 10 Middle 10 Last 10\n\n"
+            "*SD* *M* *SD* *M* *SD* *M* *SD*\n\n"
+            "10.1 28.5 12.0 28.5 10.6\n\n"
+            "*Note.* Blue indicates balloons with a range of 1-128;\n\n"
+            "Also shown in Table 2, Adj BART and\n\n"
+            "<!-- Page 6 -->\n"
+            "7 1\n\n6 1\n\n5 1\n\n—\n\n*Variables* —.71**\n\n"
+            "[^10]: 11. 12. 13. *p*\n\n"
+            "<!-- Page 7 -->\n"
+            "the risk-related constructs were significantly correlated.\n"
+        )
+        with tempfile.NamedTemporaryFile("w+", suffix="_Verified.md", delete=False) as f:
+            f.write(
+                '<div class="table-caption">Table 1</div>\n'
+                '<div class="table-subtitle">Summary</div>\n'
+                '<table><tr><th>Col</th></tr></table>\n'
+                '<div class="table-notes"><em>Note.</em> Note.</div>\n\n'
+                '<div class="table-caption">Table 2</div>\n'
+                '<div class="table-subtitle">Correlations</div>\n'
+                '<table><tr><th>Col</th></tr></table>\n'
+                '<div class="table-notes"><em>Note.</em> Note.</div>\n'
+            )
+            v_path = Path(f.name)
+
+        try:
+            synced = LiteraturePipeline.sync_verified_tables(body, v_path)
+            self.assertNotIn("Average adjusted pumps", synced)
+            self.assertNotIn("7 1\n", synced)
+            self.assertIn("Also shown in Table 2, Adj BART and the risk-related constructs", synced)
+        finally:
+            v_path.unlink()
+
+    def test_katex_safe_collect_and_dollars(self):
+        raw = "A button labeled “Collect $$$” was shown. Participants clicked Collect $$$."
+        fixed = IMRADResolver._fix_ocr_stats(raw)
+        self.assertNotIn("$$$", fixed)
+        self.assertIn("Collect &#36;&#36;&#36;", fixed)
+
+    def test_running_page_number_and_hyphen_compound(self):
+        from doc_processor.utils.text_utils import stitch_cross_page_continuity
+        raw = "The BART is a computerized, laboratory-\n\n75\n<!-- Page 2 -->\n\nbased measure that involves..."
+        stitched = stitch_cross_page_continuity(raw)
+        self.assertNotIn("75", stitched)
+        self.assertIn("laboratory-based", stitched)
+
+    def test_no_false_bullet_on_lowercase_dash(self):
+        from doc_processor.parsers.layout.list_parser import ListParser
+        raw = "Test-retest reliability has been\n– established ($r = .92)."
+        res = ListParser.detect_and_format_lists(raw)
+        self.assertNotIn("- established", res)
+        self.assertIn("– established", res)
+
 
 if __name__ == "__main__":
     unittest.main()
+

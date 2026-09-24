@@ -6,6 +6,15 @@
 
 ## 🏃 當前 Sprint (v1.0.0-rc1 專案治理與守衛上線)
 
+- [x] [2026-09-25] 全專案核心套件重命名：`src/book_processor` → `src/doc_processor`，同步更新 `pyproject.toml`、`run.py`、所有測試與技能文檔
+- [x] [2026-09-25] 徹底根除 `journal` 殘留：刪除 `journal_pipeline.py` 與 `journal_*.json`，全面收斂為 `literature` 架構
+- [x] [2026-09-25] 修復 5 大文獻排版瑕疵 (`2002-01194-001.md`)：
+  - 清理頁碼殘留（75）並保留連字號（`laboratory-based`）
+  - 欄位隔離基線聚合，消除假清單項（`- established`）
+  - 精確清除 Table 1, 2, 6 OCR 殘留碎片並錨定語意位置
+  - 修復跨行 `Table\n2. With...` 導致之偽清單標記
+  - 轉義 `Collect $$$` 防範 KaTeX 語法崩潰，解碼 `&amp;` 為 `&`
+- [x] [2026-09-25] 新增單元測試驗證排版修復，190 項測試 100% 通過
 - [x] [2026-09-25] 徹底整併刪除 `src/book_processor/parsers/journal/`，將所有文獻模組收斂於 `parsers/literature/`
 - [x] [2026-09-25] 建立 `LiteratureMetadataExtractor`：支援 Page 1 確定性元數據快速路徑、Ollama 結構化 JSON 備援、統一 `.article-meta` 與作者卡片
 - [x] [2026-09-25] 建立 `FigureFormatter`：實現單頁圖表去重、HTML5 語意化 `<figure>` 渲染與換行正規化

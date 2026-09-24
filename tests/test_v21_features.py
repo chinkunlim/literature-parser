@@ -21,12 +21,12 @@ from pathlib import Path
 # Add src to sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
 
-from book_processor.parsers.math_latex import MathLaTeXConverter
-from book_processor.core.invariants import QualityInvariantGuard, CircuitBreaker
-from book_processor.parsers.layout_detector import LayoutDetector
-from book_processor.verification.review_manager import ReviewManager
-from book_processor.core.learner import AdaptiveLearner
-from book_processor.core.watchdog import WatchdogService
+from doc_processor.parsers.math_latex import MathLaTeXConverter
+from doc_processor.core.invariants import QualityInvariantGuard, CircuitBreaker
+from doc_processor.parsers.layout_detector import LayoutDetector
+from doc_processor.verification.review_manager import ReviewManager
+from doc_processor.core.learner import AdaptiveLearner
+from doc_processor.core.watchdog import WatchdogService
 
 
 class TestMathLaTeXUniformSizing(unittest.TestCase):

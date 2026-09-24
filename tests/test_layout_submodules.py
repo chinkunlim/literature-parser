@@ -7,11 +7,11 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 import unittest
-from book_processor.parsers.layout.table_parser import TableParser
-from book_processor.parsers.layout.callout_parser import CalloutParser
-from book_processor.parsers.layout.list_parser import ListParser
-from book_processor.parsers.layout.margin_parser import MarginParser
-from book_processor.parsers.layout.table_llm_fixer import TableLLMFixer
+from doc_processor.parsers.layout.table_parser import TableParser
+from doc_processor.parsers.layout.callout_parser import CalloutParser
+from doc_processor.parsers.layout.list_parser import ListParser
+from doc_processor.parsers.layout.margin_parser import MarginParser
+from doc_processor.parsers.layout.table_llm_fixer import TableLLMFixer
 
 
 class TestLayoutSubmodules(unittest.TestCase):

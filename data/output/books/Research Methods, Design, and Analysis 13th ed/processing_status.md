@@ -4,8 +4,8 @@
 
 - **Total Chapters**: 25
 - **Verified & Complete**: 19 / 25 (76.0%)
-- **Last Session Updated**: 2026-09-25 03:05:55
-- **Resume Command**: `python3 book_processor.py resume --file "<path_to_book>"`
+- **Last Session Updated**: 2026-09-25 03:44:35
+- **Resume Command**: `python3 doc_processor.py resume --file "<path_to_book>"`
 
 | Chapter | Page Range | Split PDF | Markdown | Images | Verification | Status |
 | :--- | :--- | :---: | :---: | :---: | :---: | :--- |

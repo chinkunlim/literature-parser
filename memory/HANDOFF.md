@@ -5,18 +5,19 @@
 
 ---
 
-### 🕒 最新交接時間：2026-09-25 03:05
+### 🕒 最新交接時間：2026-09-25 03:45
  
 #### 1. 剛剛完成了什麼？ (Session Accomplishments)
-- **學術文獻與電子書架構徹底解耦，全面整併 journal 至 literature**：
-  1. 徹底物理刪除 `src/book_processor/parsers/journal/` 歷史殘留，將所有文獻模組完全收斂至 `src/book_processor/parsers/literature/`。
-  2. 新增 `literature_*.json` 專屬設定，並統一 `style_loader.py` 與 `config_manager.py` 優先順序。
-  3. 診斷並根治 Ollama 幻覺問題：改為 Page 1 確定性元數據快速路徑 (`LiteratureMetadataExtractor`)，僅在缺欄位時以 JSON mode 精準查詢，徹底杜絕 LLM 抄寫佔位符與重寫內文問題。
-  4. 根治第一頁緒論 Prose 遭誤截斷的缺陷：嚴格以 Abstract 結束為界標，100% 完整保留第一頁緒論內文。
-  5. 實現 `FigureFormatter` 單頁向量圖與點陣圖去重，以語意化 HTML5 `<figure>` 與 `<figcaption>` 呈現。
-  6. 升級 `IMRADResolver`：促進 APA Level 4 行內標題 (`####`)、將第一頁作者註抽離重組至 References 前並縫合截斷句子、綁定論文修訂與收錄日期。
-  7. 動態目錄 [TOC] 17 個章節大綱與 `2002-01194-001_Verified.md` 達成 100% 精準對齊。
-- **測試驗證**：186 個單元測試全數通過（`Ran 186 tests in 5.350s — OK (skipped=6)`）。
+- **核心套件名稱標準化**：
+  1. 將 `src/book_processor` 正式遷移重命名為 `src/doc_processor`，同步更新 `pyproject.toml`（`doc-processor`）、`run.py`、所有單元測試與技能文檔。
+  2. 徹底清除 `journal` 歷史遺留：刪除 `journal_pipeline.py`、`profiles/journal_*.json`，全面收斂為 `literature` 架構。
+- **文獻排版 5 大缺陷全數根除 (`2002-01194-001.md`)**：
+  1. 頁碼殘留（75）清除，並保留 `laboratory-based` 等複合詞連字號。
+  2. 欄位隔離基線聚合，消除雙欄跨欄造成的截斷與偽清單項（`- established`）。
+  3. 精確清除 Table 1, 2, 6 之 OCR 殘留碎片，所有 6 個 APA 規範表格 100% 錨定於正確語意段落。
+  4. 修復跨行 `Table\n2. With...` 導致之偽清單標記。
+  5. 轉義 `Collect $$$` 防範 KaTeX 語法崩潰，解碼 `&amp;` 為 `&`。
+- **測試驗證**：190 個單元測試全數通過（`Ran 190 tests in 5.457s — OK (skipped=6)`）。文獻 `2002-01194-001.pdf` 重新轉檔完成，Ollama 審查評定 Excellent（PASS）。
 
 #### 2. 目前專案狀態與代碼位置
 - 分支：`main`

@@ -7,8 +7,8 @@ import xml.etree.ElementTree as ET
 ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
-from book_processor.parsers.layout_detector import LayoutDetector
-from book_processor.parsers.digital_pdf import DigitalPDFParser
+from doc_processor.parsers.layout_detector import LayoutDetector
+from doc_processor.parsers.digital_pdf import DigitalPDFParser
 
 CH04_PDF = ROOT / "./data/output/books/Research Methods, Design, and Analysis 13th ed/chapters/Ch04 Ethics/Ch04 Ethics.pdf"
 
@@ -91,7 +91,7 @@ class TestV26ExhibitsAndColumns(unittest.TestCase):
 
     def test_margin_glossary_does_not_swallow_exhibit_p3(self):
         """Verify Research misconduct glossary definition ends properly and does not swallow Exhibit 4.1."""
-        from book_processor.style_loader import load_style
+        from doc_processor.style_loader import load_style
         orig = load_style()
         try:
             test_style = dict(orig)

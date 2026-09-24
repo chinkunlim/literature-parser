@@ -7,7 +7,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 import unittest
-from book_processor.parsers.math.apa_stats_normalizer import APAStatsNormalizer
+from doc_processor.parsers.math.apa_stats_normalizer import APAStatsNormalizer
 
 
 class TestAPAStatsNormalizer(unittest.TestCase):
@@ -45,7 +45,7 @@ class TestAPAStatsNormalizer(unittest.TestCase):
         self.assertIn("$M = 12.4, SD = 3.2$", res)
 
     def test_escape_currency_dollars(self):
-        from book_processor.parsers.math_latex import MathLaTeXConverter
+        from doc_processor.parsers.math_latex import MathLaTeXConverter
         s1 = 'Click the button labeled “Collect $$$” to cash out.'
         res1 = MathLaTeXConverter.escape_currency_dollars(s1)
         self.assertIn('“Collect &#36;&#36;&#36;”', res1)

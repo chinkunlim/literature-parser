@@ -7,9 +7,9 @@ import sys
 ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT / 'src'))
 
-from book_processor.parsers.digital_pdf import DigitalPDFParser
-from book_processor.parsers.layout_detector import LayoutDetector
-from book_processor.style_loader import load_style
+from doc_processor.parsers.digital_pdf import DigitalPDFParser
+from doc_processor.parsers.layout_detector import LayoutDetector
+from doc_processor.style_loader import load_style
 
 CH02_PDF = ROOT / 'output/Research Methods, Design, and Analysis 13th ed/chapters/Ch02 Research Approaches and Methods of Data Collection/Ch02 Research Approaches and Methods of Data Collection.pdf'
 

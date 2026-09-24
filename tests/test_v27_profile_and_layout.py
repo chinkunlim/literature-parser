@@ -21,8 +21,8 @@ SRC_DIR = Path(__file__).parent.parent / "src"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
-from book_processor.parsers.digital_pdf import DigitalPDFParser
-from book_processor.parsers.layout_detector import LayoutDetector
+from doc_processor.parsers.digital_pdf import DigitalPDFParser
+from doc_processor.parsers.layout_detector import LayoutDetector
 
 BOOK_DIR = Path(__file__).parent.parent / "./data/output/books/Research Methods, Design, and Analysis 13th ed"
 CH01_PDF = BOOK_DIR / "chapters/Ch01 Introduction to Scientific Research/Ch01 Introduction to Scientific Research.pdf"

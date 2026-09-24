@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "book-processor"
+name = "doc-processor"
 version = "2.2.0"
 description = "Enterprise-grade PDF & EPUB Structured Markdown & Image Extractor with Neural Layout OCR, LaTeX Math & Local Ollama AI Verification"
 readme = "README.md"
@@ -20,8 +20,9 @@ classifiers = [
 ]
 
 [project.scripts]
-book-processor = "book_processor.cli:main"
-verify-accuracy = "book_processor.verification.verifier:main"
+doc-processor = "doc_processor.cli:main"
+book-processor = "doc_processor.cli:main"
+verify-accuracy = "doc_processor.verification.verifier:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

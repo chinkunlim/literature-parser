@@ -5,12 +5,44 @@
 ---
 
 ## [Unreleased]
-- 待開發：未來的視覺化儀表板 (Dashboard) 介面 (`dashboard/`)。
-- 待優化：更多特化期刊排版（如 IEEE、ACM）的雙欄分割微調。
+- 待優化：更多特化期刊排版（如 ACM）的雙欄分割微調。
+
+---
+
+## [3.1.0] - 2026-09-24
+
+### 🌟 新增 (Added)
+- **Springer 與 IEEE 出版商版面範本 (`config/publishers/springer.json`, `ieee.json`)**：
+  - 補齊 DOI 識別（`10.1007`, `10.1109`）、雙欄屬性標記、頁眉/頁尾浮水印與授權雜訊過濾規則。
+- **目錄級批次轉檔 CLI 指令 (`run.py batch <dir>`)**：
+  - 一鍵遞迴探索目錄內所有 PDF/EPUB 檔案，逐檔執行硬體守衛巡檢（RAM/SSD/電池）與冷卻防護。
+- **Obsidian 雙鏈與全書索引生成器 (`obsidian_linker.py` + `run.py obsidian-link`)**：
+  - 自動生成全書目錄索引 `index.md`，並在章節尾部注入前後篇導航雙鏈，原生適配 Obsidian Graph View 知識圖譜。
+- **全域進度狀態中心化管理器 (`GlobalStateManager` + `run.py status`)**：
+  - 原子化維護 `data/state/global_status.json`，提供終端機進度條視覺化儀表，支援單篇原子文獻與多章節書籍。
+- **`LiteraturePipeline` 學術文獻領域深度客製化**：
+  - 實作子類型自動偵測（journal、ieee、dissertation、preprint）。
+  - 自動剔除 IEEE 論文結尾的作者簡介（Author Biography）與授權宣告雜訊。
+  - 將 IEEE/ACM Index Terms 標題重構為現代化 Obsidian 呼號標籤區塊，並為預印本自動標註警告提示。
+- **靜態零依賴 HTML 視覺化儀表板 (`dashboard/index.html` + `run.py dashboard`)**：
+  - 生成現代暗色主題 HTML 看板，即時匯總所有文獻與書籍完成度、驗證率與審查狀態，自動調用瀏覽器檢視。
+- **自動化測試體系擴充至 179 項**：
+  - 新增 `test_v33_obsidian_linker.py`、`test_v34_global_state.py`、`test_v35_literature_pipeline.py`，全量測試 100% 通過。
+
+### 🐞 修復 (Fixed)
+- **修復 `ScannedPDFParser` 內部方法名稱呼叫不匹配**：
+  - 修復 `AttributeError: type object 'ScannedPDFParser' has no attribute 'process_scanned_page'`，補齊向後相容別名並修正呼叫端，徹底打通掃描版書籍神經 OCR 管線。
+- **修復全域進度統計對單篇學術文獻的映射支援**：
+  - 讓 `GlobalStateManager` 在輸出目錄自動掃描時，能正確將單篇原子論文映射為 100% 完工指標。
+
+### 📦 實體交付 (Deliverables)
+- 3 篇學術文獻（APA、Elsevier 雙欄）全量重新輸出完工。
+- 4 本電子書（包含 30MB 與 55MB 掃描版教科書）全數完成 OCR 轉換並注入 Obsidian 雙鏈與索引。
 
 ---
 
 ## [1.0.0-rc2] - 2026-09-24
+
 
 ### 🌟 新增 (Added)
 - **通用開案標準升級至 30 大核心工程鐵律 (`PROJECT_INIT_STANDARD.md`)**：

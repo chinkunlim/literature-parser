@@ -19,7 +19,7 @@ books-project/
 ├── AGENTS.md                       # 🤖 [跨Agent憲法] 意圖指令路由表、十大核心鐵律、六大黃金同步矩陣
 ├── CHANGELOG.md                    # 📜 [版本日誌] 紀錄歷史與里程碑變更 (語意化版號 + 具體日期)
 ├── PROJECT_INIT_STANDARD.md        # 🌟 [通用標準] 24大核心鐵律、雙層規範、開案一鍵初始化檢查清單
-├── run.py                          # 🛠️ [總指揮中心] agent-init, doctor, process, save, handoff, publish, watchdog, archive-sessions
+├── run.py                          # 🛠️ [總指揮中心] agent-init, doctor, process, save, handoff, publish, watchdog, end-session
 │
 ├── .agent/skills/                  # 🧠 [技能分層架構]
 │   ├── document-processor/         # 👑 [總調度技能] 環境健檢、文檔特徵感知、子技能派發、雙軌審計
@@ -44,20 +44,20 @@ books-project/
 ├── scratch/                        # 🧪 [臨時實驗室] 一次性測試腳本，不入 Git，保持代碼庫純淨
 ├── logs/                           # 📋 [診斷日誌] 結構化詳細日誌輸出 (Where + Why + How)
 │
-├── data/                           # 📥 [資料流核心] 雙軌實體路由與隔離防呆 (無 inbox/output 殘留)
+├── data/                           # 📥 [資料流核心] 雙軌實體路由與隔離防呆
 │   ├── input/                      # 原始待處理實體檔案
 │   │   ├── books/                  # 📚 專門存放長篇書籍 (PDF/EPUB) ➔ 自動啟動書籍管線
 │   │   └── literature/             # 📑 專門存放學術文獻/論文 (PDF) ➔ 自動啟動雙欄文獻管線
 │   ├── output/                     # 產出的筆記型 Markdown
 │   │   ├── books/                  # 輸出按章節切分之 Obsidian 筆記
-│   │   └── literature/             # 輸出含 Abstract、雙欄還原與文獻之論文筆記
+│   │   └── literature/             # 輸出含 Abstract、雙欄還原與文獻之論文筆記 (document_profile.json)
 │   ├── needs_review/               # 🚨 [人機隔離區] 遇疑難公式或壞頁自動存於此，不卡死主程序
 │   └── state/                      # 💾 斷點續傳快照、TOC 預覽與 Dashboard 狀態
 │
 ├── tests/                          # 🧪 [自動化測試體系] (179 個測試全部 PASS)
 │   ├── __init__.py                 # 動態注入 sys.path，確保任何環境直跑 unittest/pytest
-│   ├── unit/                       # 單元測試 (純函數、正則、版面子模組，毫秒級無 I/O)
-│   └── integration/                # 整合測試 (管線端到端、硬體守衛聯動)
+│   └── test_*.py                   # 21 個測試檔案，平坦結構於 tests/ 頂層
+│                                   # (含 unit + integration 測試，以 test_v<version>_*.py 命名)
 │
 ├── src/                            # 💻 [業務核心原始碼] (Clean Architecture)
 │   ├── guards/                     # 🛡️ 守衛防線
@@ -67,16 +67,28 @@ books-project/
 │   │   └── validator.py            # 輸入 JSON 比對與輸出異常自動喚醒 Ollama (信度 < 0.80 自動隔離)
 │   ├── utils/                      # 🛠️ 通用工具
 │   │   └── logger.py               # 結構化診斷日誌工具
-│   └── book_processor/             # ⚙️ 既有書籍與文獻處理核心引擎
-│       ├── pipelines/              # 管線層 (textbook_pipeline, literature_pipeline 支援 IEEE 與子類型處理)
+│   └── book_processor/             # ⚙️ 書籍與文獻處理核心引擎 (後續計畫更名 doc_processor)
+│       ├── pipelines/              # 管線層
+│       │   ├── textbook_pipeline.py    # 長篇書籍章節切分管線
+│       │   ├── journal_pipeline.py     # 內部基礎管線 (被 LiteraturePipeline 繼承)
+│       │   └── literature_pipeline.py  # 🎯 學術文獻主管線 (orchestrator 直接調用此管線)
 │       ├── parsers/                # 解析層 (PDF, EPUB, LaTeX, 雙欄版面)
+│       │   ├── literature/         # 🎯 學術文獻解析子模組 (IMRAD, Reference)  [原 journal/]
+│       │   └── journal/            # 🔄 向後相容 shim → 重導至 parsers.literature
 │       ├── verification/           # 檢驗層 (OllamaVerifier, rules)
 │       ├── utils/                  # 輔助模組 (obsidian_linker 雙鏈與索引生成)
 │       └── core/                   # 核心調度 (orchestrator, global_state 全域狀態, splitter)
 │
-├── config/publishers/              # 🏛️ [出版商特徵設定] (apa, elsevier, wiley, springer, ieee)
+├── config/                         # ⚙️ [層級式配置系統]
+│   ├── archetypes/                 # L1 文件類型特徵設定
+│   │   ├── literature.json         # 學術文獻 (原 journal.json，已重命名)
+│   │   └── textbook.json           # 教科書
+│   ├── publishers/                 # L2 出版商特徵設定 (apa, elsevier, wiley, springer, ieee)
+│   └── shared_knowledge/           # L3 跨文件共用知識
+│       ├── literature_sections.json # IMRAD 段落別名 (原 journal_sections.json，已重命名)
+│       └── symbol_mappings.json    # Unicode → LaTeX 映射
 │
-└── dashboard/                      # 📊 [視覺化儀表板] 靜態零依賴 HTML 看板 (dashboard/index.html 由 run.py dashboard 生成)
+└── dashboard/                      # 📊 [視覺化儀表板] 靜態零依賴 HTML 看板
 ```
 
 ---

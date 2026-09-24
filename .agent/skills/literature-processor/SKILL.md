@@ -30,6 +30,39 @@ description: Specialized sub-skill for converting academic literature (journal a
    - 專屬懸掛縮排解析器：結構化解析 `[1]`, `(Smith et al., 2020)` 等參考文獻清單為清晰 Markdown 列表。
 5. **學術排版 CSS 注入**：
    - 自動嵌入 `<style>` 樣式（Times New Roman 字型、兩端對齊、論文表格邊界優化）。
-6. **自癒與隔離機制**：
+6. **出版商專屬噪訊萃取 (Publisher-Specific Pattern Extraction)**：
+   - 從 `config/publishers/<apa|elsevier|...>.json` 載入 `author_note_patterns`、`footer_noise_patterns` 與 `table_note_patterns`。
+   - APA：從雙欄底部正確萃取 Author Note、Correspondence、Acknowledgments，不再混入正文。
+   - Elsevier：過濾 ScienceDirect banner、`* Corresponding author`、copyright 行。
+7. **表格附注綁定 (Table Note Bonding)**：
+   - `Note.`、`BART indicates`、`*p <` 等 APA 表格附注自動與上方 Markdown 表格綁定，防止跨頁漂移。
+8. **OCR 統計符號修復 (OCR Stat Heal)**：
+   - 修正 APA/Elsevier OCR 常見亂碼：`p o 0 01` → `$p < 0.01$`、`r = 0$ 82` → `$r = 0.82$`、`r 2003` → `© 2003`。
+9. **自癒與隔離機制**：
    - LaTeX 數學公式（如統計統計值 $F(1, 24) = 4.32, p < .05$）標準化修復。
-   - 遇異常或信度 $< 0.80$，自動隔離至 `data/needs_review/`。
+   - 遇異常或信度 < 0.80，自動隔離至 `data/needs_review/`。
+
+---
+
+## 🏗️ 技術架構摘要
+
+```
+orchestrator.py (detect_archetype='journal')
+  └──► LiteraturePipeline.process()        [pipelines/literature_pipeline.py]
+         └──► JournalPipeline.process()    [pipelines/journal_pipeline.py] (繼承基礎管線)
+               ├── ConfigManager.load_hierarchical_config(archetype='literature')
+               │     └── config/archetypes/literature.json  (原 journal.json)
+               │     └── config/publishers/<publisher>.json (author_note_patterns 等)
+               ├── DigitalPDFParser.parse_page_to_markdown()
+               │     └── LayoutDetector.separate_footnotes()  ← Bug Fixed
+               │           (載入 _STYLE['_publisher_config'] 動態萃取 Author Note)
+               ├── IMRADResolver.resolve_structure()
+               │     ├── _bond_table_notes()  ← New
+               │     └── _fix_ocr_stats()     ← New
+               └── ReferenceParser.clean_document_references()
+         └──► LiteraturePipeline 子類型後處理 (IEEE/preprint 擴充)
+```
+
+- 解析子模組：`src/book_processor/parsers/literature/` (原 `parsers/journal/`，已遷移)
+- `parsers/journal/` 保留為向後相容 shim（自動轉導至 `parsers.literature`）
+- 輸出檔案：`document_profile.json`（非 `book_profile.json`）

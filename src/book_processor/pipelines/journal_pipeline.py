@@ -32,8 +32,8 @@ from book_processor.parsers.digital_pdf import DigitalPDFParser
 import book_processor.parsers.digital_pdf as _digital_pdf_mod
 from book_processor.parsers.scanned_pdf import ScannedPDFParser
 from book_processor.parsers.layout_detector import set_style as _ld_set_style, load_style
-from book_processor.parsers.journal.imrad_resolver import IMRADResolver
-from book_processor.parsers.journal.reference_parser import ReferenceParser
+from book_processor.parsers.literature.imrad_resolver import IMRADResolver
+from book_processor.parsers.literature.reference_parser import ReferenceParser
 from book_processor.verification.verifier import AccuracyVerifier
 from book_processor.verification.ollama_healer import OllamaHealer
 from book_processor.utils.text_utils import sanitize_filename, stitch_cross_page_continuity
@@ -91,7 +91,7 @@ class JournalPipeline(BasePipeline):
         # Stage 1: Load Hierarchical Configuration (L1 -> L2 -> L3 -> L4)
         # ---------------------------------------------------------------------
         config = self.load_pipeline_config(str(p_path), archetype="journal")
-        ConfigManager.save_instance_profile(doc_out, config)
+        ConfigManager.save_instance_profile(doc_out, config, archetype="journal")
 
         # Configure DigitalPDFParser specifically for journal articles
         style = dict(config.get("features", {}))
@@ -102,6 +102,8 @@ class JournalPipeline(BasePipeline):
         style["has_learning_objectives"] = False
         style["has_concept_map"] = False
         style["images_dir"] = str(doc_images_dir)
+        # Expose publisher config to layout_detector.separate_footnotes for pattern-based extraction
+        style["_publisher_config"] = config.get("publisher_config", {})
         _ld_set_style(style)
         _digital_pdf_mod._STYLE = style
 

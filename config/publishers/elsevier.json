@@ -4,8 +4,66 @@
   "doi_prefixes": ["10.1016"],
   "running_header_patterns": [
     "\\bARTICLE IN PRESS\\b",
-    "\\bJournal of [A-Za-z]+\\b",
-    "\\bwww\\.elsevier\\.com/locate/[a-z]+\\b"
+    "\\bJournal of [A-Za-z ]+\\b",
+    "\\bwww\\.elsevier\\.com/locate/[a-z]+\\b",
+    "\\bwww\\.sciencedirect\\.com\\b",
+    "^[A-Z][a-zA-Z ]+\\s+\\d+\\s+\\(\\d{4}\\)\\s+\\d+–\\d+$",
+    "^[A-Z][a-zA-Z ]+\\s+/\\s+Journal of\\b"
+  ],
+  "author_note_patterns": [
+    "^\\*\\s*Corresponding author",
+    "^Correspondence to:",
+    "^E-mail address:",
+    "^Fax:",
+    "^Tel\\.?:",
+    "^E-mail:",
+    "^Address:",
+    "^Available online\\b",
+    "\\bReceived \\d+\\b.*\\bAccepted\\b",
+    "^Received:\\s*\\d"
+  ],
+  "footer_noise_patterns": [
+    "^Published by Elsevier\\b",
+    "^\\(C\\) \\d{4} Elsevier\\b",
+    "^Copyright \\(C\\) \\d{4}\\b",
+    "^All rights reserved\\b",
+    "^doi:10\\.1016",
+    "^0\\d{2,3}-\\d{4}/",
+    "^Note\\.\\s+",
+    "^\\*\\s*Note[s]?\\.?\\s+",
+    "^ScienceDirect\\b",
+    "^www\\.sciencedirect\\.com\\b"
+  ],
+  "copyright_patterns": [
+    "\\(C\\) \\d{4} Elsevier (Ltd|Inc|B\\.V\\.|Science|Ltd\\.)",
+    "Published by Elsevier",
+    "doi:10\\.1016"
+  ],
+  "table_note_patterns": [
+    "^Note\\.\\s+",
+    "^\\*Note\\.\\s+",
+    "^BART indicates\\b",
+    "^Adapted from\\b",
+    "^\\*p\\s*[<>]",
+    "^\\*\\*p\\s*[<>]",
+    "^\\*\\*\\*p\\s*[<>]",
+    "^[a-z]\\s+",
+    "^n =",
+    "^N =",
+    "^M =",
+    "^SD ="
+  ],
+  "ocr_stat_fix_patterns": [
+    ["p o (0\\.\\d+)", "p < $1"],
+    ["p o 0(\\d{2})", "p < 0.$1"],
+    ["r = 0\\$ (\\d+)", "r = 0.$1"],
+    ["r (\\d{4})", "© $1"],
+    ["ScienceDirect r (\\d{4})", "© $1"]
+  ],
+  "banner_noise_patterns": [
+    "^ScienceDirect\\b",
+    "^www\\.elsevier\\.com\\b",
+    "^www\\.sciencedirect\\.com\\b"
   ],
   "hanging_indent_reference_style": "elsevier_apa"
 }

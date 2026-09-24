@@ -44,6 +44,25 @@
 
 - 暫無待排程項目 (All Planned Enhancements Complete)
 
+---
+
+## ✅ 已完成 — 本次 Refactor (2026-09-24 第二輪)
+
+- [x] [2026-09-24] 刪除 literature 輸出目錄中殘留 chapters/ 資料夾（textbook pipeline 誤產物）
+- [x] [2026-09-24] 刪除 .agent/skills/book-processor/ 過時相容 shim（已由 literature-processor 完整取代）
+- [x] [2026-09-24] 大幅擴充 config/publishers/apa.json：補足 author_note_patterns、footer_noise_patterns、table_note_patterns、ocr_stat_fix_patterns
+- [x] [2026-09-24] 大幅擴充 config/publishers/elsevier.json：補足 ScienceDirect banner_noise_patterns、corresponding author patterns、copyright_patterns
+- [x] [2026-09-24] 重命名 config/archetypes/journal.json → literature.json（config_manager 加入向後相容 alias）
+- [x] [2026-09-24] 重命名 config/shared_knowledge/journal_sections.json → literature_sections.json（config_manager 自動回退邏輯）
+- [x] [2026-09-24] 建立 src/book_processor/parsers/literature/ 子模組（從 parsers/journal/ 遷移），parsers/journal/ 降為向後相容 shim
+- [x] [2026-09-24] 修正 orchestrator.py：改為直接調用 LiteraturePipeline（原錯誤調用 JournalPipeline）
+- [x] [2026-09-24] 修正 layout_detector.separate_footnotes()：改用動態頁面寬度（非固定 450px）、載入 publisher author_note_patterns & footer_noise_patterns、掃描閾值降至 60%（原 65%）
+- [x] [2026-09-24] journal_pipeline 將 publisher_config 注入 style['_publisher_config'] 讓 layout_detector 可存取
+- [x] [2026-09-24] 修正 config_manager.save_instance_profile()：literature 類型輸出 document_profile.json（原誤輸出 book_profile.json）
+- [x] [2026-09-24] 新增 IMRADResolver._bond_table_notes()：將 Note.、BART indicates、*p < 等表格附注與前置 table 綁定，防止跨頁漂移
+- [x] [2026-09-24] 新增 IMRADResolver._fix_ocr_stats()：修復 APA/Elsevier OCR 統計符號錯誤（p o 0 01 → p < 0.01、r = 0$ 82 → r = 0.82、r 2003 → © 2003）
+- [x] [2026-09-24] 更新 docs/STRUCTURE.md：反映真實目錄結構（tests/ 平坦、parsers/literature/ 新增、config 層級說明）
+
 
 
 

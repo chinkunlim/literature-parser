@@ -83,10 +83,15 @@ class ConfigManager:
     # Tier 1: Archetype
     # -------------------------------------------------------------------------
     @classmethod
-    def load_archetype(cls, archetype: str = "journal") -> dict:
-        """Loads Level 1 Global Archetype configuration."""
+    def load_archetype(cls, archetype: str = "literature") -> dict:
+        """Loads Level 1 Global Archetype configuration.
+        
+        Note: 'journal' is a legacy alias for 'literature' — both map to literature.json.
+        """
         config_dir = cls.get_config_root() / "archetypes"
-        file_path = config_dir / f"{archetype.lower()}.json"
+        # Normalize legacy 'journal' alias to the renamed 'literature' config file
+        normalized = "literature" if archetype.lower() in ("journal", "literature") else archetype.lower()
+        file_path = config_dir / f"{normalized}.json"
         return cls.load_json(file_path)
 
     # -------------------------------------------------------------------------
@@ -108,7 +113,11 @@ class ConfigManager:
     def load_shared_knowledge(cls) -> dict:
         """Loads Level 3 Shared Cross-Document Knowledge repository."""
         config_dir = cls.get_config_root() / "shared_knowledge"
-        sections_data = cls.load_json(config_dir / "journal_sections.json")
+        # Prefer renamed literature_sections.json; fall back to legacy journal_sections.json
+        sections_file = config_dir / "literature_sections.json"
+        if not sections_file.exists():
+            sections_file = config_dir / "journal_sections.json"
+        sections_data = cls.load_json(sections_file)
         symbols_data = cls.load_json(config_dir / "symbol_mappings.json")
         return {
             "shared_sections": sections_data.get("emergent_sections", []),
@@ -119,13 +128,18 @@ class ConfigManager:
     # Tier 4: Instance Profile
     # -------------------------------------------------------------------------
     @classmethod
-    def load_instance_profile(cls, instance_path: Path | str) -> dict:
-        """Loads Level 4 local book/document profile JSON if exists."""
+    def load_instance_profile(cls, instance_path) -> dict:
+        """Loads Level 4 local book/document profile JSON if exists.
+        
+        Prefers document_profile.json; falls back to legacy book_profile.json.
+        """
         if not instance_path:
             return {}
         p = Path(instance_path)
         if p.is_dir():
-            p = p / "book_profile.json"
+            doc_profile = p / "document_profile.json"
+            book_profile = p / "book_profile.json"
+            p = doc_profile if doc_profile.exists() else book_profile
         return cls.load_json(p)
 
     # -------------------------------------------------------------------------
@@ -358,7 +372,15 @@ class ConfigManager:
         return True
 
     @classmethod
-    def save_instance_profile(cls, output_dir: Path | str, profile_data: dict):
-        """Saves dynamic instance configuration to `<output_dir>/book_profile.json`."""
-        out_path = Path(output_dir) / "book_profile.json"
+    def save_instance_profile(cls, output_dir, profile_data: dict, archetype: str = ""):
+        """Saves dynamic instance configuration to the output directory.
+
+        For literature/journal archetypes: writes ``document_profile.json``.
+        For textbook archetypes: writes ``book_profile.json`` (legacy name preserved
+        for backward compatibility with textbook pipeline components).
+        """
+        is_literature = archetype.lower() in ("journal", "literature") if archetype else False
+        filename = "document_profile.json" if is_literature else "book_profile.json"
+        out_path = Path(output_dir) / filename
         cls.save_json(out_path, profile_data)
+

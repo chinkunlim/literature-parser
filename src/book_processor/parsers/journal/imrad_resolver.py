@@ -168,7 +168,108 @@ class IMRADResolver:
             i += 1
 
         result = '\n'.join(new_lines)
+
+        # ----------------------------------------------------------------
+        # Post-pass 1: Table Note Bonding
+        # Bind table notes (Note., *p < , BART indicates …) immediately
+        # following a </table> block so they don't drift to the next page.
+        # ----------------------------------------------------------------
+        result = cls._bond_table_notes(result, config)
+
+        # ----------------------------------------------------------------
+        # Post-pass 2: OCR Statistical Symbol Healing
+        # Fix common OCR errors in statistical output (APA style).
+        # ----------------------------------------------------------------
+        result = cls._fix_ocr_stats(result, config)
+
         return result
+
+    @classmethod
+    def _bond_table_notes(cls, md: str, config: Optional[Dict[str, Any]] = None) -> str:
+        """
+        Ensures table notes immediately following a Markdown table stay attached.
+        Patterns like 'Note.', 'BART indicates', '*p <', statistical footnote markers
+        that appear on a blank line after a table are re-attached.
+        """
+        publisher_cfg = (config or {}).get("publisher_config", {})
+        note_pats_raw = publisher_cfg.get("table_note_patterns", [])
+        # Always-active generic patterns
+        _TABLE_NOTE_PATS = [re.compile(p, re.I) for p in note_pats_raw] + [
+            re.compile(r'^Note\.\s+', re.I),
+            re.compile(r'^\*Note\.\s+', re.I),
+            re.compile(r'^BART indicates\b', re.I),
+            re.compile(r'^Adapted from\b', re.I),
+            re.compile(r'^\*{1,3}p\s*[<>]', re.I),
+            re.compile(r'^[a-z]\s+[A-Z]'),   # superscript footnote like "a The ..."
+            re.compile(r'^(?:CI|SD|SE|df|n|N|M)\s*='),
+        ]
+
+        def is_table_note(line):
+            s = line.strip()
+            return any(p.match(s) for p in _TABLE_NOTE_PATS)
+
+        lines = md.split('\n')
+        result = []
+        i = 0
+        while i < len(lines):
+            result.append(lines[i])
+            # After a line that ends a table (last | row), collect following notes
+            stripped = lines[i].strip()
+            if stripped.startswith('|') and (i + 1 >= len(lines) or not lines[i + 1].strip().startswith('|')):
+                # Peek ahead: skip blank lines, collect table notes
+                j = i + 1
+                note_lines = []
+                while j < len(lines) and (lines[j].strip() == '' or is_table_note(lines[j])):
+                    if lines[j].strip():
+                        note_lines.append(lines[j].strip())
+                    j += 1
+                if note_lines:
+                    result.append('')
+                    result.extend(f'*{nl}*' if not nl.startswith('*') else nl for nl in note_lines)
+                    i = j
+                    continue
+            i += 1
+        return '\n'.join(result)
+
+    @classmethod
+    def _fix_ocr_stats(cls, md: str, config: Optional[Dict[str, Any]] = None) -> str:
+        """
+        Heals common OCR artefacts in statistical text from APA and Elsevier papers.
+        Handles garbled p-values, r-values, copyright symbols.
+        """
+        publisher_cfg = (config or {}).get("publisher_config", {})
+        custom_pats = publisher_cfg.get("ocr_stat_fix_patterns", [])
+
+        # Generic fixes (always applied)
+        fixes = [
+            # p o 0 01 or p o 0.01 → p < 0.01
+            (re.compile(r'\bp\s+o\s+0\s+(\d{2})\b'), r'$p < 0.\1$'),
+            (re.compile(r'\bp\s+o\s+(0\.\d+)\b'), r'$p < \1$'),
+            # r = 0$ 82 → r = 0.82
+            (re.compile(r'\br\s*=\s*0\$\s*(\d+)\b'), r'$r = 0.\1$'),
+            # r 2 = 0$ 42 → r² = 0.42
+            (re.compile(r'\br\s+2\s*=\s*0\$\s*(\d+)\b'), r'$r^2 = 0.\1$'),
+            # "r 2003" or "r 2002" at line start (copyright) → © 2003
+            (re.compile(r'(?<!\w)r\s+((?:19|20)\d{2})\b'), r'© \1'),
+            # Garbled © from PDF: "C 2003" after line break
+            (re.compile(r'(?:^|\n)\s*C\s+((?:19|20)\d{2})\s+(Elsevier|APA|American Psychological|Wiley)', re.M),
+             r'\n© \1 \2'),
+        ]
+
+        result = md
+        for pat, repl in fixes:
+            result = pat.sub(repl, result)
+
+        # Apply publisher-specific custom patterns (format: [pattern_str, replacement_str])
+        for entry in custom_pats:
+            if isinstance(entry, (list, tuple)) and len(entry) == 2:
+                try:
+                    result = re.sub(entry[0], entry[1], result)
+                except Exception:
+                    pass
+
+        return result
+
 
     @classmethod
     def _match_emergent_section(cls, text: str, shared_sections: List[Dict[str, Any]]) -> Optional[Dict[str, Any]]:

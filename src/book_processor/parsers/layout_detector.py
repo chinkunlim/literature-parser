@@ -62,9 +62,16 @@ class LayoutDetector:
     @classmethod
     def separate_footnotes(cls, lines_with_pos: list, page_height: float) -> tuple:
         """
-        Identifies bottom-of-page footnote lines (typically bottom 15% of page)
-        starting with a numeral or dagger and formats as Markdown footnotes [^X]: ...
+        Identifies and extracts page/column-bottom anchored blocks BEFORE two-column reflow.
+
+        Extracted block categories:
+          1. Author Note clusters (APA col-1 bottom): matched against publisher author_note_patterns
+          2. Numbered footnotes at page bottom (size <= 12.5, top >= 85% page height)
+          3. Footer noise (copyright, banner): publisher footer_noise_patterns
+
         Returns: (body_lines, footnote_markdown_strings)
+          body_lines                — items safe to pass to the two-column banding logic
+          footnote_markdown_strings — formatted strings appended at document end
         """
         body_lines = []
         footnote_lines = []
@@ -73,27 +80,81 @@ class LayoutDetector:
         in_footnote = False
         is_journal = bool(_STYLE and _STYLE.get("is_journal_article"))
 
-        # Pre-detect author note cluster in column 1 bottom (APA and academic journals)
+        # ------------------------------------------------------------------
+        # Load publisher-specific patterns if available
+        # ------------------------------------------------------------------
+        publisher_cfg = (_STYLE or {}).get("_publisher_config", {})
+        _raw_author_pats = publisher_cfg.get("author_note_patterns", [])
+        _raw_footer_pats = publisher_cfg.get("footer_noise_patterns", [])
+        author_note_pats = [re.compile(p, re.I) for p in _raw_author_pats]
+        footer_noise_pats = [re.compile(p, re.I) for p in _raw_footer_pats]
+
+        # Generic fallback patterns (always active for journal articles)
+        _GENERIC_AUTHOR_NOTE = re.compile(
+            r'Correspondence concerning|Author Note[s]?\b|'
+            r'This (research|study) was (supported|funded)|We (thank|gratefully acknowledge)\b|'
+            r'^\*\s*Corresponding author\b|^Correspondence to:\b|^E-mail address:|^Fax:|^Tel\.?:|'
+            r'^[A-Z][a-zA-Z\s\.,]+,\s+(Department of|Center for|School of|Institute of)\b|'
+            r'^Requests for reprints\b|^Address correspondence\b',
+            re.I | re.M
+        )
+        _GENERIC_FOOTER_NOISE = re.compile(
+            r'^(Published by Elsevier|ScienceDirect|www\.elsevier\.com|www\.sciencedirect\.com|'
+            r'Copyright \(C\) \d{4}|\(C\) \d{4} Elsevier|All rights reserved)\b',
+            re.I
+        )
+
+        def _matches_any(pats, text, fallback=None):
+            for p in pats:
+                if p.search(text):
+                    return True
+            return bool(fallback and fallback.search(text))
+
+        # ------------------------------------------------------------------
+        # Pre-detect author note cluster in column 1 bottom
+        # Start scanning from 60% down the page for journals (APA notes appear
+        # as low as 60–65% in two-column layouts).
+        # ------------------------------------------------------------------
         author_note_items = set()
         if is_journal:
+            # Estimate column-1 right boundary from actual line positions
+            all_lefts = [item[1] for item in lines_with_pos if len(item) >= 5]
+            all_rights = [item[1] + item[2] for item in lines_with_pos if len(item) >= 5]
+            pw_guess = max(all_rights) if all_rights else 612
+            col1_right_limit = pw_guess * 0.52   # col-1 ends around centre of page
+
+            author_scan_threshold = page_height * 0.60
+
             note_start_idx = -1
             for idx, item in enumerate(lines_with_pos):
-                if item[0] >= page_height * 0.65 and item[1] < 450:
-                    txt = item[-1]
-                    if re.search(r'Correspondence concerning|Author Note\b|This research was supported|We thank\b|^[A-Z][a-zA-Z\s\.\,]+,\s+Center for\b|^[A-Z][a-zA-Z\s\.\,]+,\s+Department of\b', txt, re.I):
+                top_val = item[0]
+                left_val = item[1]
+                txt = item[-1]
+                if top_val >= author_scan_threshold and left_val <= col1_right_limit:
+                    if _matches_any(author_note_pats, txt, _GENERIC_AUTHOR_NOTE):
                         note_start_idx = idx
+                        # Walk backward to include preceding lines of the same block
                         while note_start_idx > 0:
-                            prev_item = lines_with_pos[note_start_idx - 1]
-                            if prev_item[1] < 450 and abs(lines_with_pos[note_start_idx][0] - prev_item[0]) < 25:
+                            prev = lines_with_pos[note_start_idx - 1]
+                            same_col = prev[1] <= col1_right_limit
+                            close_enough = abs(lines_with_pos[note_start_idx][0] - prev[0]) < 30
+                            if same_col and close_enough:
                                 note_start_idx -= 1
                             else:
                                 break
                         break
+
             if note_start_idx != -1:
+                anchor_top = lines_with_pos[note_start_idx][0]
                 for item in lines_with_pos[note_start_idx:]:
-                    if item[1] < 450 and item[0] >= lines_with_pos[note_start_idx][0] - 5:
+                    in_col1 = item[1] <= col1_right_limit
+                    contiguous = item[0] >= anchor_top - 5
+                    if in_col1 and contiguous:
                         author_note_items.add(id(item))
 
+        # ------------------------------------------------------------------
+        # Main classification loop
+        # ------------------------------------------------------------------
         for item in lines_with_pos:
             top = item[0]
             left = item[1]
@@ -101,11 +162,16 @@ class LayoutDetector:
             text = item[-1]
             s = text.strip()
 
+            # 1. Pre-detected author note block
             if id(item) in author_note_items:
                 author_note_lines.append(s)
                 continue
 
-            # Check if line is at the bottom of the page and starts with a digit/bracket
+            # 2. Footer noise (copyright, banners) — drop silently
+            if is_journal and _matches_any(footer_noise_pats, s, _GENERIC_FOOTER_NOISE):
+                continue
+
+            # 3. Numbered footnotes at page bottom (small font)
             if top >= bottom_threshold and size <= 12.5:
                 m = re.match(cls.FOOTNOTE_NUMBER_PATTERN, s)
                 if m:
@@ -121,6 +187,9 @@ class LayoutDetector:
             in_footnote = False
             body_lines.append(item)
 
+        # ------------------------------------------------------------------
+        # Assemble extracted author note as end-of-document section
+        # ------------------------------------------------------------------
         if author_note_lines:
             note_content = " ".join(author_note_lines)
             footnote_lines.append(f"## Author Note & Acknowledgments\n\n{note_content}")

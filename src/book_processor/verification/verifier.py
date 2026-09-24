@@ -334,7 +334,7 @@ class AccuracyVerifier:
 
         # 8. Local Ollama AI Semantic Audit (if enabled)
         if self.use_ollama and self.ollama:
-            print(f"  [*] Dispatching Local Ollama AI ({self.ollama.model_name}) for semantic & LaTeX audit...")
+            print(f"  [*] Dispatching Local Ollama AI ({self.ollama.semantic_model}) for semantic & LaTeX audit...")
             ai_res = self.ollama.verify_chapter_semantics(ch_name, md_content)
             results['checks']['ollama'] = ai_res
             if ai_res['available']:

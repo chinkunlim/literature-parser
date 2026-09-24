@@ -126,7 +126,17 @@ class CheckpointManager:
         except OSError as e:
             logger.error("CheckpointManager: failed to write Markdown dashboard – %s", e)
 
+        # 3. Synchronize with Global State Manager (atomic)
+        try:
+            from book_processor.core.global_state import GlobalStateManager
+            gsm = GlobalStateManager()
+            doc_type = "literature" if "literature" in str(self.book_dir) else "book"
+            gsm.update_book(self.book_title, self.data.get("chapters", {}), doc_type=doc_type)
+        except Exception as e:
+            logger.debug("CheckpointManager: global state sync skipped – %s", e)
+
     def _render_markdown(self) -> str:
+
         total = len(self.data["chapters"])
         verified = sum(
             1 for c in self.data["chapters"].values() if c.get("status") in ("VERIFIED", "CONVERTED")

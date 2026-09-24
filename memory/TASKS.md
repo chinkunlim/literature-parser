@@ -33,12 +33,14 @@
 - [x] [2026-09-24] 新增 Springer 與 IEEE 出版商版面範本與雜訊過濾規則 (`config/publishers/springer.json`, `config/publishers/ieee.json`)
 - [x] [2026-09-24] 實現目錄級全自動批次轉檔指令 (`run.py batch <dir>`)，具備逐檔硬體巡檢保護與冷卻防護機制
 - [x] [2026-09-24] 實現 Obsidian 雙鏈與全書索引生成器 (`obsidian_linker.py` + `run.py obsidian-link`)，自動注入章節前後導航並支援 Graph View
+- [x] [2026-09-24] 實現全域進度狀態中心化管理 (`GlobalStateManager` + `run.py status`)，原子化維護 `data/state/global_status.json` 並支援輸出目錄自動狀態重建
 
 ---
 
 ## 📅 後續規劃 (Backlog)
 
-- [ ] [未排程] 實作 `dashboard/` 視覺化儀表板（讀取 `data/state/status.json`）
+- [ ] [未排程] 實作 `dashboard/` 視覺化儀表板（讀取 `data/state/global_status.json`）
 - [ ] [未排程] `LiteraturePipeline` 領域客製化（支援論文子類型判斷與 IEEE 特殊版面過濾）
+
 
 

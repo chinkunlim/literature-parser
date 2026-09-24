@@ -957,12 +957,64 @@ def cmd_obsidian_link(args):
     print("🎉 在 Obsidian 中開啟此書籍資料夾，即可使用 Graph View 視覺化章節網絡！\n")
 
 
+def cmd_status(args):
+    """
+    Displays an aggregated visual snapshot of all processed books/literature
+    from data/state/global_status.json (with automatic rebuild if needed).
+    """
+    from book_processor.core.global_state import GlobalStateManager
+
+    gsm = GlobalStateManager()
+    # If state file is empty or requested sync, scan output directory
+    data = gsm.get_all()
+    if not data.get("books") or getattr(args, "sync", False):
+        synced = gsm.sync_from_output_dir()
+        if synced > 0:
+            print(f"🔄 [STATUS SYNC] 已從輸出目錄自動同步 {synced} 本書之進度狀態。")
+        data = gsm.get_all()
+
+    books = data.get("books", {})
+    last_updated = data.get("last_updated", "N/A")
+
+    print("\n" + "=" * 65)
+    print(f"📊 [STATUS] 全域書籍與文獻處理進度快照 (更新時間: {last_updated})")
+    print("=" * 65)
+
+    if not books:
+        print("\nℹ️ 尚無任何轉檔紀錄。請先執行 run.py process 或 run.py batch。\n")
+        print("=" * 65)
+        return
+
+    for title, info in books.items():
+        pct = info.get("progress_pct", 0)
+        filled = pct // 5
+        bar = "█" * filled + "░" * (20 - filled)
+        status = info.get("status", "UNKNOWN")
+        icon = {
+            "COMPLETE": "✅",
+            "IN_PROGRESS": "🔄",
+            "HAS_FAILURES": "❌",
+            "PENDING": "⏳",
+        }.get(status, "ℹ️")
+
+        doc_type = info.get("doc_type", "book").upper()
+        print(f"\n{icon} [{doc_type}] {title}")
+        print(f"   [{bar}] {pct:3d}%  ({info.get('verified', 0)}/{info.get('total_chapters', 0)} 章節完成)")
+        if info.get("failed", 0) > 0:
+            print(f"   ❌ 驗證失敗: {info['failed']} 個章節")
+        if info.get("pending_review", 0) > 0:
+            print(f"   👁️  待人工/AI審查: {info['pending_review']} 個章節")
+
+    print("\n" + "=" * 65 + "\n")
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="python run.py",
         description="Book & Journal Processor Unified Command Center",
     )
     subparsers = parser.add_subparsers(dest="subcommand", required=True)
+
 
 
     # doctor
@@ -1030,8 +1082,14 @@ def main():
     p_obs.add_argument("book_dir", help="書籍輸出資料夾 (例如 data/output/books/ResearchMethods/)")
     p_obs.set_defaults(func=cmd_obsidian_link)
 
+    # status
+    p_stat = subparsers.add_parser("status", help="檢視所有書籍與學術文獻之全域處理進度快照")
+    p_stat.add_argument("--sync", action="store_true", help="強制重新掃描輸出目錄以同步全域狀態")
+    p_stat.set_defaults(func=cmd_status)
+
     args = parser.parse_args()
     args.func(args)
+
 
 
 

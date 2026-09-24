@@ -23,18 +23,22 @@ DOI_PREFIX_MAP = {
     "10.3389": "frontiers",         # Frontiers Media
     "10.1371": "plos",              # Public Library of Science
     "10.1080": "taylor_francis",     # Taylor & Francis / Routledge
+    "10.1063": "aip",                # AIP Publishing (American Institute of Physics)
+    "10.1146": "annual_reviews",     # Annual Reviews
 }
 
 # Text signatures found on title or copyright pages
 PUBLISHER_TEXT_SIGNATURES = [
-    (r"(?:American Psychological Association|apa\.org|Journal of Experimental Psychology|Psychological Review)", "apa"),
-    (r"(?:Elsevier\s*(?:B\.V\.|Science|Inc\.)|ScienceDirect|Academic Press)", "elsevier"),
+    (r"(?:American Psychological Association|apa\.org|Journal of Experimental Psychology|Psychological Review|Experimental and Clinical Psychopharmacology|Psychotherapy)", "apa"),
+    (r"(?:Elsevier\s*(?:B\.V\.|Science|Inc\.)|ScienceDirect|Academic Press|Journal of Adolescence|Cognition)", "elsevier"),
     (r"(?:John Wiley & Sons|Wiley-Blackwell|wileyonlinelibrary\.com)", "wiley"),
     (r"(?:Springer\s*(?:Nature|Science|Verlag)|Psychonomic Society|nature\.com)", "springer"),
     (r"(?:SAGE Publications|Association for Psychological Science|Psychological Science)", "sage"),
     (r"(?:Taylor & Francis|Routledge)", "taylor_francis"),
     (r"(?:Oxford University Press)", "oup"),
-    (r"(?:Cambridge University Press)", "cup"),
+    (r"(?:Cambridge University Press|cambridge\.org/bil|Bilingualism: Language and Cognition)", "cup"),
+    (r"(?:AIP Advances|American Institute of Physics|pubs\.aip\.org/aip)", "aip"),
+    (r"(?:Annual Reviews|annualreviews\.org|Annu\. Rev\.)", "annual_reviews"),
     (r"(?:Pearson Education|Allyn & Bacon|Prentice Hall)", "pearson"),
     (r"(?:Cengage Learning|Wadsworth|Brooks/Cole)", "cengage"),
     (r"(?:McGraw-Hill)", "mcgraw_hill"),
@@ -78,7 +82,7 @@ class PublisherDetector:
             return "global_profile.json"
 
         # Literature profiles
-        if is_literature or is_journal or publisher_key in ("apa", "elsevier", "wiley", "springer", "sage", "taylor_francis", "frontiers", "plos"):
+        if is_literature or is_journal or publisher_key in ("apa", "elsevier", "wiley", "springer", "sage", "taylor_francis", "frontiers", "plos", "aip", "cup", "annual_reviews"):
             literature_profile = f"literature_{publisher_key}.json"
             return literature_profile
 

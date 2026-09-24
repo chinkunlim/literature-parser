@@ -136,15 +136,19 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             return False
         if top < ph * 0.04:
             return True
-        if top < ph * 0.11:
+        if top < ph * 0.12:
             clean = txt.strip()
             if re.match(r'^\d+$', clean):
                 return True
-            if re.search(r'\b(?:ARTICLE IN PRESS|Journal of [A-Za-z]+|EXPERIMENTAL AND CLINICAL PSYCHOPHARMACOLOGY)\b', clean, re.I):
+            if re.search(r'\b(?:ARTICLE IN PRESS|RESEARCH ARTICLE|AIP Advances|Bilingualism: Language and Cognition|Journal of [A-Za-z]+|EXPERIMENTAL AND CLINICAL PSYCHOPHARMACOLOGY|Psychotherapy)\b', clean, re.I):
                 return True
-            if re.search(r'\bTEST-RETEST CHARACTERISTICS\b', clean):
+            if re.search(r'\b(?:NIH-PA Author Manuscript|HHS Public Access|Author [Mm]anuscript|available in PMC)\b', clean, re.I):
                 return True
-            if re.search(r'\b(?:et al\.\s*/|WHITE,\s*LEJUEZ,\s*AND\s*DE\s*WIT|Downloaded from https?://)\b', clean, re.I):
+            if re.search(r'\b(?:Cite as:|cambridge\.org/bil|pubs\.aip\.org|Downloaded from https?://)\b', clean, re.I):
+                return True
+            if re.search(r'\b(?:et al\.\s*/|WHITE,\s*LEJUEZ,\s*AND\s*DE\s*WIT|HARTSHORNE ET AL|BIALYSTOK|KROLL ET AL|PLIATSIKAS ET AL)\b', clean, re.I):
+                return True
+            if re.search(r'\bTEST-RETEST CHARACTERISTICS\b', clean, re.I):
                 return True
             if clean.isupper() and len(clean) > 5 and font_size <= 14.0:
                 return True
@@ -444,6 +448,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             return ""
 
         # Baseline clustering: cluster text elements within 5.0pt vertically into baseline lines
+        is_single_col_doc = _STYLE.get("geometry", {}).get("columns", {}).get("layout") == "single_column"
         raw_lines.sort(key=lambda x: x[0])
         clusters = []
         for item in raw_lines:
@@ -454,12 +459,13 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 c_top = sum(x[0] for x in c) / len(c)
                 if abs(c_top - item[0]) <= 5.0:
                     # In multi-column layouts, don't mix left-column and right-column items into the same baseline cluster
-                    c_has_left = any(x[1] < pw * 0.48 and x[2] < pw * 0.48 for x in c)
-                    c_has_right = any(x[1] >= pw * 0.48 for x in c)
-                    if item_is_left and c_has_right:
-                        continue
-                    if item_is_right and c_has_left:
-                        continue
+                    if not is_single_col_doc:
+                        c_has_left = any(x[1] < pw * 0.48 and x[2] < pw * 0.48 for x in c)
+                        c_has_right = any(x[1] >= pw * 0.48 for x in c)
+                        if item_is_left and c_has_right:
+                            continue
+                        if item_is_right and c_has_left:
+                            continue
                     matched_c = c
                     break
             if matched_c is not None:
@@ -480,7 +486,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                     prev_top, prev_left, prev_width, prev_size, prev_txt = cur_line
                     prev_right = prev_left + prev_width
                     gap = left_val - prev_right
-                    is_diff_col = (gap > 20) and ((prev_left < pw * 0.48 and left_val >= pw * 0.48) or (gap > 60 and left_val < prev_left))
+                    is_diff_col = not is_single_col_doc and (gap > 20) and ((prev_left < pw * 0.48 and left_val >= pw * 0.48) or (gap > 60 and left_val < prev_left))
                     if is_diff_col:
                         merged_same_y.append(tuple(cur_line))
                         cur_line = [top_val, left_val, width_val, size_val, txt_val]
@@ -518,7 +524,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
         left_count = sum(1 for c in classified if c[4] == 'left')
         right_count = sum(1 for c in classified if c[4] == 'right')
 
-        if left_count >= 5 and right_count >= 5:
+        if not is_single_col_doc and left_count >= 5 and right_count >= 5:
             # Multi-column page: group spanning elements into bands
             span_intervals = []
             for top, left, size, text, cls_type in classified:

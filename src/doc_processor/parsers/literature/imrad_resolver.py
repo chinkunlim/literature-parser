@@ -217,9 +217,19 @@ class IMRADResolver:
         result = '\n'.join(new_lines)
 
         # ----------------------------------------------------------------
+        # Post-pass 0: Clean NIH / HHS manuscript watermarks
+        # ----------------------------------------------------------------
+        result = cls._clean_nih_watermarks(result)
+
+        # ----------------------------------------------------------------
         # Post-pass 1: Relocate Author Note to before References
         # ----------------------------------------------------------------
         result = cls._relocate_author_note(result)
+
+        # ----------------------------------------------------------------
+        # Post-pass 1b: Relocate other auxiliary sections to before References
+        # ----------------------------------------------------------------
+        result = cls._relocate_auxiliary_sections(result)
 
         # ----------------------------------------------------------------
         # Post-pass 2: Ensure Introduction Heading Exists
@@ -237,6 +247,46 @@ class IMRADResolver:
         result = cls._fix_ocr_stats(result, config)
 
         return result
+
+    @classmethod
+    def _clean_nih_watermarks(cls, md: str) -> str:
+        """Removes residual NIH/HHS Public Access and author manuscript watermarks from body text."""
+        md = re.sub(r'(?m)^>?\s*NIH-PA Author Manuscript\s*\n*', '', md)
+        md = re.sub(r'(?m)^>?\s*HHS Public Access\s*\n*', '', md)
+        md = re.sub(r'(?m)^>?\s*Author [Mm]anuscript; available in PMC[^\n]*\n*', '', md)
+        md = re.sub(r'(?m)^>?\s*Author Manuscript\s*\n*', '', md)
+        return md
+
+    @classmethod
+    def _relocate_auxiliary_sections(cls, md: str) -> str:
+        """
+        Moves end-matter auxiliary sections (Author Declarations, Conflict of Interest,
+        Data Availability, Funding, Financial Support, Acknowledgments, Disclosure Statement)
+        immediately preceding ## References if they appeared after References.
+        """
+        m_ref = re.search(r'\n(##\s+References\b)', md)
+        if not m_ref:
+            return md
+
+        ref_start = m_ref.start()
+        post_ref = md[m_ref.end():]
+
+        aux_pats = [
+            r'#+\s*(?:Author\s+Declarations?|Conflict\s+of\s+Interest|Data\s+Availability(?:\s+Statement)?|Funding|Financial\s+Support|Disclosure\s+Statement|Acknowledgments?|Supplementary\s+Materials?)\b.*?(?=\n#+\s+[^\n]+|\Z)'
+        ]
+        found_blocks = []
+        for pat in aux_pats:
+            for m in re.finditer(pat, post_ref, re.S | re.I):
+                blk = m.group(0).strip()
+                if blk:
+                    found_blocks.append(blk)
+            post_ref = re.sub(pat, '', post_ref, flags=re.S | re.I).strip()
+
+        if found_blocks:
+            aux_content = "\n\n".join(found_blocks)
+            md = md[:ref_start].rstrip() + "\n\n---\n\n" + aux_content + "\n\n---\n\n## References\n\n" + post_ref.lstrip()
+
+        return md
 
     @classmethod
     def _relocate_author_note(cls, md: str) -> str:

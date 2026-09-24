@@ -175,7 +175,10 @@ def _run_process_pipeline(filepath: Path, doc_type: Optional[str] = None, ignore
         cli_cmd.append("--ollama")
 
     logger.info(f"Executing: {' '.join(cli_cmd)}")
-    res = subprocess.run(cli_cmd)
+    env = os.environ.copy()
+    src_dir = str(ROOT / "src")
+    env["PYTHONPATH"] = f"{src_dir}:{env['PYTHONPATH']}" if "PYTHONPATH" in env else src_dir
+    res = subprocess.run(cli_cmd, env=env)
     if res.returncode == 0:
         print(f"\n✅ 處理完成！結果已儲存至 {output_base}")
         return True

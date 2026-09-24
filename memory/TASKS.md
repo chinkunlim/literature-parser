@@ -6,6 +6,18 @@
 
 ## 🏃 當前 Sprint (v1.0.0-rc1 專案治理與守衛上線)
 
+- [x] [2026-09-25] 實作多期刊學術文獻版面分析與物理座標校準 (`CoordinateCalibrator.calibrate_literature_geometry` & `document_profile.json`)：
+  - 提取頁面寬高、頂部導覽 cutoff、底部頁碼 cutoff、單雙欄判定與分欄 gutter、第一頁內文起始 Y 座標
+  - 自動為每篇文獻持久化專屬 `document_profile.json`，並擴充出版商範本 (`literature_aip.json`, `literature_cup.json`, `literature_annual_reviews.json`)
+  - 擴充 `PublisherDetector` 支援 AIP (`10.1063`), Annual Reviews (`10.1146`), CUP (`10.1017`)
+- [x] [2026-09-25] 解決單欄/雙欄自適應與 NIH/HHS 作者手稿雜訊過濾：
+  - `DigitalPDFParser` 整合動態單欄守衛 (`is_single_col_doc`)，防止單欄手稿被誤切
+  - `IMRADResolver` 實裝 `_clean_nih_watermarks` 與 `_relocate_auxiliary_sections`，將特別章節（Author Note, Acknowledgments, Declarations, Funding, Conflict of Interest, Data Availability）統一收斂至 `## References` 之前
+  - `LiteratureMetadataExtractor` 支援 NIH `Published in final edited form as:`、CUP、AIP、Elsevier 元數據解析，且支援 `Keywords:` 前之摘要提取與第一頁緒論保護
+  - 解決貨幣與版權費符號 (`$12.00`) 與不對稱 `$$` 導致之 KaTeX 崩潰
+  - 優化 `AccuracyVerifier` 字典型態辨識（支援標準英文屈折/衍生詞綴與學術詞彙），全套 197 項測試 100% 通過
+- [x] [2026-09-25] 全量批次轉檔與審查 `data/input/literature/` 全部 10 篇學術文獻：
+  - 10 篇文獻全部產出高精確度 Markdown、抽取並語義錨定圖表、生成精準座標 `document_profile.json`，全部 100% 通過品質驗證（SUCCESS PASS）
 - [x] [2026-09-25] 實作 Figure 與 Table 語義定位與句子自動縫合演算法 (`FigureFormatter.reposition_figures`)：
   - 解決 Figure 2 穿插於跨頁指示說明段落中間（截斷 `...all money in` 與 `your temporary bank is lost...`）之缺陷
   - 所有 Figure 和 Table 精確放置於內文第一次提及之完整段落（以 `\n\n` 結尾）之後

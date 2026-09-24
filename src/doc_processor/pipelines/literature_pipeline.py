@@ -272,12 +272,20 @@ class LiteraturePipeline(BasePipeline):
         total_pages = PDFAnalyzer.get_page_count(str(p_path))
 
         # ---------------------------------------------------------------------
-        # Stage 1: Load Hierarchical Configuration
+        # Stage 1: Load Hierarchical Configuration & Calibrate Geometry
         # ---------------------------------------------------------------------
         config = self.load_pipeline_config(str(p_path), archetype="literature")
+
+        # Geometry Profiler: Calibrate exact coordinates and generate document_profile.json
+        from doc_processor.profiler.coordinate_calibrator import CoordinateCalibrator
+        lit_profile = CoordinateCalibrator.calibrate_and_save_literature_profile(doc_out, p_path, total_pages=total_pages)
+        if "geometry" in lit_profile:
+            config["geometry"] = lit_profile["geometry"]
+
         ConfigManager.save_instance_profile(doc_out, config, archetype="literature")
 
         style = dict(config.get("features", {}))
+        style["geometry"] = config.get("geometry", {})
         style["is_literature"] = True
         style["is_journal_article"] = True
         style["generate_toc"] = False
@@ -293,7 +301,7 @@ class LiteraturePipeline(BasePipeline):
         is_scanned = kwargs.get("is_scanned", False)
 
         print(f"\n{'='*70}\n[LITERATURE PIPELINE] {doc_name} ({total_pages} page(s))\n{'='*70}")
-        print(f"  Publisher: {config.get('publisher', 'Generic').upper()}")
+        print(f"  Publisher: {(config.get('publisher') or 'Generic').upper()}")
         print(f"  Mode: {'SCANNED (OCR Layout)' if is_scanned else 'BORN-DIGITAL VECTOR (Two-Column Flow)'}")
 
         # ---------------------------------------------------------------------
@@ -339,6 +347,9 @@ class LiteraturePipeline(BasePipeline):
         # ---------------------------------------------------------------------
         # Stage 4: Structure Resolution & Typography
         # ---------------------------------------------------------------------
+        # Strip manuscript watermark headings that shouldn't become document title
+        full_md = re.sub(r'(?m)^#+\s*(?:NIH\s+Public\s+Access|Author\s+Manuscript|HHS\s+Public\s+Access|ARTICLE\s+IN\s+PRESS|RESEARCH\s+ARTICLE)\s*\n+', '', full_md, flags=re.I)
+
         # 1. Promote top-level title to H1 (#)
         if not re.search(r'^\s*#\s+[^\n]+', full_md):
             m_first_h = re.search(r'###\s+([^\n]+)(?:\n+###\s+([^\n]+))?', full_md)
@@ -398,6 +409,9 @@ class LiteraturePipeline(BasePipeline):
         full_md = full_md.replace("&amp;", "&")
         full_md = re.sub(r'(?:“|")?Collect\s+(?:\$\$\$|&#36;&#36;&#36;)(?:”|")?', '“Collect &#36;&#36;&#36;”', full_md)
         full_md = re.sub(r'(?<!\\)\$\$\$(?!\$)', '&#36;&#36;&#36;', full_md)
+        full_md = re.sub(r'(?<!\\)\$(\d+(?:\.\d+)?)', r'&#36;\1', full_md)
+        full_md = re.sub(r'\${2,}([^\$\n]+)\$', r'$\1$', full_md)
+        full_md = re.sub(r'\$([^\$\n]+)\${2,}', r'$\1$', full_md)
 
         # 10. Prepend Academic Literature CSS
         academic_css = build_literature_css()

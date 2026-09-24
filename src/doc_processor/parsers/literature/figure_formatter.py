@@ -173,12 +173,37 @@ class FigureFormatter:
                     break
 
             if not inserted:
-                # Fallback: place before next heading or at document end
-                h_match = re.search(r'(?m)^(?=##|\#\#\#)', text)
-                if h_match:
-                    text = text[:h_match.start()] + '\n\n' + fig_html + '\n\n' + text[h_match.start():]
-                else:
-                    text = text + '\n\n' + fig_html + '\n\n'
+                # Fallback: check if image filename has page info (e.g. diagram_p03_01 or 003_001)
+                pg_match = re.search(r'(?:_p|/)(\d+)_', fig_html)
+                pg_num = int(pg_match.group(1)) if pg_match else None
+                if pg_num:
+                    next_pg_tag = f"<!-- Page {pg_num + 1} -->"
+                    cur_pg_tag = f"<!-- Page {pg_num} -->"
+                    next_pos = text.find(next_pg_tag)
+                    if next_pos != -1:
+                        text = text[:next_pos] + fig_html + '\n\n' + text[next_pos:]
+                        inserted = True
+                    else:
+                        cur_pos = text.find(cur_pg_tag)
+                        if cur_pos != -1:
+                            next_h = re.search(r'(?m)^(?=##|\#\#\#)', text[cur_pos + len(cur_pg_tag):])
+                            if next_h:
+                                ins_pos = cur_pos + len(cur_pg_tag) + next_h.start()
+                                text = text[:ins_pos] + fig_html + '\n\n' + text[ins_pos:]
+                                inserted = True
+                if not inserted:
+                    # Place before next major heading after Introduction (e.g. Discussion, Method, References)
+                    headings = list(re.finditer(r'(?m)^##\s+([^\n]+)', text))
+                    cand_h = None
+                    for h in headings:
+                        h_name = h.group(1).lower()
+                        if "introduction" not in h_name and "abstract" not in h_name:
+                            cand_h = h
+                            break
+                    if cand_h:
+                        text = text[:cand_h.start()] + fig_html + '\n\n' + text[cand_h.start():]
+                    else:
+                        text = text + '\n\n' + fig_html + '\n\n'
 
         text = re.sub(r'\n{3,}', '\n\n', text)
         return text.strip()

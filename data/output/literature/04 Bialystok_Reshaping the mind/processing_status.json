@@ -1,0 +1,10 @@
+{
+  "archetype": "literature",
+  "subtype": "journal",
+  "doc_name": "04 Bialystok_Reshaping the mind",
+  "total_pages": 15,
+  "passed": true,
+  "accuracy_percent": 86.2,
+  "images_extracted": 5,
+  "publisher": "apa"
+}

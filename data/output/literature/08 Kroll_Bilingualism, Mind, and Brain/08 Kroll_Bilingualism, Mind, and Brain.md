@@ -1,0 +1,435 @@
+<style>
+  /* Academic Literature Typographic Styling */
+  p {
+    text-align: justify;
+    text-justify: inter-word;
+    line-height: 1.65;
+    margin-bottom: 1em;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    text-align: left;
+    font-weight: 700;
+  }
+  h1 { margin-top: 1.2em; margin-bottom: 0.6em; }
+  h2 { margin-top: 1.6em; margin-bottom: 0.6em; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
+  h3 { margin-top: 1.3em; margin-bottom: 0.5em; }
+  h4 { margin-top: 1.1em; margin-bottom: 0.4em; }
+  blockquote {
+    border-left: 4px solid #842959;
+    padding: 10px 18px;
+    margin: 1.4em 0;
+    background: #fbf8fa;
+    color: #333;
+  }
+  .article-meta {
+    font-size: 0.9em;
+    color: #555;
+    margin-bottom: 1.5em;
+  }
+  .author-block {
+    margin: 1.2em 0 1.8em 0;
+    line-height: 1.5;
+  }
+  .author-name {
+    font-weight: bold;
+    font-size: 1.05em;
+  }
+  .author-affiliation {
+    font-size: 0.92em;
+    color: #555;
+    margin-bottom: 0.6em;
+  }
+  .author-note {
+    font-size: 0.88em;
+    color: #555;
+    border-top: 1px solid #e1e4e8;
+    margin-top: 2.5em;
+    padding-top: 1.2em;
+  }
+  table {
+    width: auto;
+    max-width: 100%;
+    border-collapse: collapse;
+    margin: 1.8em 0;
+    font-size: 0.88em;
+  }
+  th, td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+  }
+  th {
+    border-top: 2px solid #333;
+    border-bottom: 1px solid #333;
+    font-weight: bold;
+    background: #f9f9f9;
+  }
+  tr.table-bottom-rule td {
+    border-bottom: 2px solid #333;
+  }
+  .table-caption {
+    font-weight: bold;
+    margin-top: 1.8em;
+    margin-bottom: 0.3em;
+  }
+  .table-subtitle {
+    font-style: italic;
+    margin-bottom: 0.6em;
+  }
+  .table-notes {
+    font-size: 0.84em;
+    color: #666;
+    margin-top: 0.4em;
+    margin-bottom: 1.8em;
+  }
+  figure {
+    margin: 2em 0;
+    text-align: center;
+  }
+  figcaption {
+    font-size: 0.9em;
+    color: #444;
+    margin-top: 0.6em;
+    text-align: justify;
+  }
+  .instruction-quote {
+    background-color: #f6f8fa;
+    border-left: 3px solid #0366d6;
+    padding: 12px 18px;
+    margin: 1.2em 0;
+    font-style: normal;
+  }
+</style>
+
+<div class="article-meta">
+  <strong>Annu Rev Linguist</strong><br>
+  2015; 1: 377-394<br>
+  DOI: <a href="https://doi.org/10.1146/annurev-linguist-030514-124937">10.1146/annurev-linguist-030514-124937</a>
+</div>
+
+# Bilingualism, Mind, and Brain
+
+<div class="author-block">
+  <div class="author-name">Judith F. Kroll1, Paola E. Dussias2, Kinsey Bice1, and Lauren Perrotti2</div>
+  <div class="author-affiliation">1Department of Psychology, Italian, and Portuguese, Program in Linguistics, Center for Language</div>
+
+</div>
+
+<details open>
+<summary>📑 <b>Table of Contents</b></summary>
+
+- [Abstract](#abstract)
+- [1. INTRODUCTION](#1-introduction)
+- [2. THE PARALLEL ACTIVATION OF THE BILINGUAL’S TWO LANGUAGES](#2-the-parallel-activation-of-the-bilinguals-two-languages)
+- [3. DYNAMIC CHANGES DURING SYNTACTIC PROCESSING](#3-dynamic-changes-during-syntactic-processing)
+- [4. THE COGNITIVE AND NEURAL CONSEQUENCES OF BILINGUALISM](#4-the-cognitive-and-neural-consequences-of-bilingualism)
+- [5. SUMMARY AND CONCLUSIONS](#5-summary-and-conclusions)
+
+</details>
+
+---
+
+## Abstract
+
+> The use of two or more languages is common in most of the world. Yet, until recently, bilingualism was considered to be a complicating factor for language processing, cognition, and the brain. The past 20 years have witnessed an upsurge of research on bilingualism to examine language acquisition and processing, their cognitive and neural bases, and the consequences that bilingualism holds for cognition and the brain over the life span. Contrary to the view that bilingualism complicates the language system, this new research demonstrates that all of the languages that are known and used become part of the same language system. The interactions that arise when two languages are in play have consequences for the mind and the brain and, indeed, for language processing itself, but those consequences are not additive. Thus, bilingualism helps reveal the fundamental architecture and mechanisms of language processing that are otherwise hidden in monolingual speakers.
+>
+> **Keywords** bilingual; monolingual; event-related potential; mind; brain
+
+---
+
+## 1. INTRODUCTION
+
+Bilinguals are individuals who actively use more than one language, but bilingualism arises in many different ways. Some individuals are exposed to two languages from birth and continue to use both languages throughout their lives. Early bilinguals may live in a bilingual environment where they are the majority-language users or in a context in which only one of the two languages is used by most speakers. Other bilinguals acquire the second language (L2) only after early childhood, once a native language has been firmly established. Like early bilinguals, these late bilinguals may live in a range of different environments in which most individuals become bilingual or in which only some become bilingual. In the research we review, we consider anyone who actively uses two languages to
+
+Correspondence to: Judith F. Kroll. **DISCLOSURE STATEMENT** The authors are not aware of any affiliations, memberships, funding, or financial holdings that might be perceived as affecting the objectivity of this review.
+
+<figure>
+  <img src="images/001_001.jpg" alt="Illustration" style="max-width: 650px; width: 100%;">
+  <figcaption>Illustration</figcaption>
+</figure>
+
+<!-- Page 2 -->
+
+Page 2 be bilingual, but we also acknowledge that not all bilinguals are the same (e.g., Luk & history and the context of language use are important, but so too are differences in the languages themselves and the proficiency and relative dominance with which each language is used.
+
+Three discoveries about bilingualism (Kroll et al. 2014) have shaped the current research agenda. One is that both languages are always active when bilinguals listen to speech, read words in either language, and plan speech in each of the two languages (e.g., Marian & Spivey 2003, Dijkstra 2005, Kroll et al. 2006). The parallel activation of the two languages means that there are influences of the language not in use, even when bilinguals are unaware of those influences. It also means that the two languages potentially compete for cognitive resources and that bilinguals must acquire a way to control or regulate that competition so as not to erroneously use the unintended language or to lose fluency in each language.
+
+The second discovery is that not only does the native language influence the L2, but the L2 comes to influence the L1 once bilinguals are adequately proficient in the L2. If the two languages were represented separately, as suggested by early models (see Kroll & Tokowicz 2005 for a review of the claims about separate versus shared memory representations for the two languages), then bilinguals might be able to function as two monolinguals. Yet all of the evidence suggests otherwise. Indeed, if the two languages could function independently, then late bilinguals who acquired the L2 once the L1 was firmly in place might be expected to reveal fewer cross-language interactions, particularly from the L2 to the L1, and fewer consequences of bilingualism on the native language. Although the age of acquisition may have profound influences on some aspects of processing the L2 and on the structural organization of the neural networks that support language (e.g., Hernández & Li 2007, Wattendorf et al. 2014), recent studies suggest that language proficiency, rather than the age of acquisition, may be the more important factor in shaping cross-language interactions (e.g., Abutalebi & Green 2007, Steinhauer et al. 2009). Furthermore, the neural support for processing the two languages is largely shared; differences in brain activation are more likely to be attributed to the requirement to control the L1 when the L2 is used and to recruit additional cognitive resources than to basic differences in their representation in the brain (e.g., Abutalebi et al. 2005). The fundamental permeability across the two languages makes early and late bilinguals more, rather than less, similar to one another. It also makes crosslanguage interactions bidirectional, changing the way that the bilinguals process each of the two languages and creating different language profiles for bilingual and monolingual speakers.
+
+The third discovery is that the use of two or more languages has consequences that extend beyond language processing to domain-general cognitive functions. These consequences are particularly beneficial to individuals at points in their lives when they may be vulnerable, especially during early development (e.g., Morales et al. 2013a) and later in life, when ordinary cognitive decline or the presence of pathology places greater demands on the cognitive system and its neural control (e.g., Bialystok et al. 2007). Life as a bilingual appears to affect the ability to ignore irrelevant information, switch between tasks, and resolve conflicting cognitive alternatives. The initial hypothesis about these cognitive
+
+Annu Rev Linguist. Author manuscript; available in PMC 2017 June 20.
+
+<!-- Page 3 -->
+Page 3 changes was that they were related directly to the first two observations we describe. The parallel activation of the two languages imposes the requirement that bilinguals learn to regulate the resulting cross-language competition. Likewise, coactivation of the bilingual’s two languages implies not only that the L1 affects the L2, but that the L2 comes to affect the L1, with a requirement to regulate the relative activation of each language in a way that is sensitive to the context in which each language is used. The need to control each language, and to potentially reduce the activation of the stronger language to enable processing in the weaker language, has implications not only for language processing itself but also for the way in which the neural networks that accomplish cognitive control are tuned in response to experience. Recent studies make clear that it is not only the general demand to juggle the two languages with skill that may affect the efficiency with which bilinguals resolve competition, but also the ways in which the two languages are used (e.g., Green & Abutalebi 2013, Green & Wei 2014). Bilinguals do many different things with language, and a goal of the recent research is to determine more specifically how the demands of particular language tasks produce changes in the brain and behavior (e.g., Kroll & Bialystok 2013).
+
+In this review, we consider each of these discoveries, focusing primarily on the evidence that we take to be most exciting in the recent literature, and particularly on the recent findings that provide a means to relate cross-language interactions and changes to the native language to the consequences of bilingualism for the mind and the brain. Our review is necessarily selective, with an emphasis on those findings that have not been discussed extensively elsewhere. In particular, the studies conducted over the past two decades that have demonstrated cross-language activation in reading, listening to spoken language, and planning speech have been recently reviewed in some detail (e.g., Kroll et al. 2012, 2013). We briefly discuss the general findings on this topic in Section 2 but point the reader to other sources for additional background.
+
+Critically, we note that much of the research on cross-language interaction has been conducted at the lexical level, in which the properties of words in each of a bilingual’s two languages have been exploited to examine the presence of activation in the language not in use. The findings on bilingual lexical access provide important foundational knowledge about those factors that constrain or encourage influence from one language to the other. But language is about much more than words alone. In Section 3we address the consequences of bilingualism on the native language, but we focus our review at the sentence level. The grammars of the bilingual’s two languages sometimes converge but often conflict. This research asks how competition across the bilingual’s two grammars is resolved. Traditionally, syntactic processing in the L2 was thought to be guided by transfer from the L1 (e.g., MacWhinney 2005, Pienemann et al. 2005). But the L1 also comes to be affected by the L2. The change in native language processing in response to the L2 is not only a reflection of the fundamental openness of the bilingual’s language system but also a finding that has profound implications for how we understand the status of the native language in language processing and in language learning. If the bilingual’s two languages come to be merged to some degree, then arguments about the separate and special representations for the L2 in late acquirers (e.g., Clahsen & Felser 2006) must be reassessed.
+
+Annu Rev Linguist. Author manuscript; available in PMC 2017 June 20.
+
+<!-- Page 4 -->
+Page 4
+
+In Section 4, we consider the consequences of bilingualism for cognition and the brain. This area of research is growing at a very rapid pace. Our review is therefore selective but focuses on those studies that enable us to move beyond correlational observations of differences between bilinguals and monolinguals to ask how different aspects of bilingualism draw on cognitive and neural resources. The factors that enable bilinguals to regulate the use of each language have consequences not only for language but also for domain-general cognitive processes and the neural networks that support them.
+
+## 2. THE PARALLEL ACTIVATION OF THE BILINGUAL’S TWO LANGUAGES
+
+A widely replicated finding is that a bilingual’s two languages are simultaneously active during language use (e.g., Kroll & Dussias 2013). Intuitively, the native and more dominant language, L1, remains active when using the less dominant second language, L2. However, the converse is also true, such that bilinguals using their L1 also demonstrate concurrent L2 activation. Furthermore, this parallel activation, or cross-language activation, appears to be present in all bilinguals regardless of the languages they speak, including bilinguals whose languages use different written scripts, as with Chinese and English (Thierry & Wu 2007), or different modalities, as with American Sign Language (ASL) and English (Morford et al. 2011).
+
+The evidence revealing parallel activation across the bilingual’s two languages comes from a diverse set of tasks and methods. A common technique for measuring the activity of the nontarget language is to compare the processing of language-ambiguous cognates and homographs with words that unambiguously belong to one of the bilingual’s two languages alone. Cognates are words that have similar form and meaning across a bilingual’s two languages (e.g., piano in English and Spanish). The convergence in lexical form and meaning for cognates tends to facilitate processing on word recognition and word production tasks (e.g., Costa et al. 2000, Dijkstra 2005). In contrast, homographs, which have similar lexical form but conflicting meaning across the bilingual’s two languages (e.g., Spanish carpeta means ‘folder,’ not ‘carpet’), typically produce interference in processing. In theory, monolingual speakers should process cognates and homographs no differently than other words that are matched on lexical properties such as word length and frequency. Therefore, when bilinguals demonstrate sensitivity (i.e., facilitation or interference) to languageambiguous cognates and homographs compared with matched unambiguous control words, we can infer that the heightened activity of their nontarget language facilitates processing when form and meaning agree (cognates) or that the heightened activity competes with the target language when there is conflict between form and meaning (homographs).
+
+Studies have reported that a bilingual’s nontarget language is active in a range of tasks that require only one of the two languages to be used. Cognate facilitation has been found for isolated word reading in both the L1 (Van Hell & Dijkstra 2002) and the L2 (e.g., Dijkstra 2005), as well as for sentence reading in the L1 and L2 (e.g., Schwartz & Kroll 2006, Libben & Titone 2009). Bilinguals also demonstrate parallel activation of the two languages while listening to speech in either language (e.g., Marian & Spivey 2003, Lagrou et al. 2011). Most surprisingly, both languages appear to be active when bilinguals plan to speak in one language alone, even though initiation of speech planning lies within the control of
+
+Annu Rev Linguist. Author manuscript; available in PMC 2017 June 20.
+
+<!-- Page 5 -->
+Page 5
+
+Gollan 2014). The pervasive presence of parallel activation at all levels of language processing is further confirmed by the diversity of bilinguals for whom these findings hold true.
+
+Bilingualism in Dutch and English or in Spanish and English is frequently studied. In each case, there are many cognates across both languages and the two languages share the Roman alphabet. But cross-language activation has also been reported for bilinguals whose two languages differ in lexical form. For example, Chinese-English bilinguals may have spoken cognates across languages, with shared phonology, but the script differences prevent orthographic overlap. Despite these structural differences across languages, many past studies have shown that different-script bilinguals experience parallel activation of both languages in much the same way as same-script bilinguals (Thierry & Wu 2007, Hoshino & Kroll 2008). Hoshino & Kroll (2008) demonstrated that Japanese-English bilinguals were facilitated to the same degree in naming pictures whose names were phonological cognates as Spanish-English bilinguals for whom the cognate names shared both phonological and orthographic information.
+
+An even more dramatic example of cross-language interaction in the face of structurally distinct languages is the case of bimodal bilinguals, individuals who use a spoken or written language and a signed language. Morford et al. (2011) asked deaf ASL-English bilinguals to make semantic relatedness judgments about pairs of words in English. No ASL was presented, but some of the English words had ASL translations that were either similar or different in form. Morford et al. found that the speed of semantic relatedness judgments for the English words was affected by whether the form of the ASL translations converged or conflicted with the semantic relatedness of the English words. This result suggests that there is implicit activation of the translation into the language not in use even when the two languages are strikingly different in lexical form. Likewise, Thierry & Wu (2007) reported evidence using event-related potentials (ERPs) suggesting that early in processing there is neural sensitivity to the translation. This finding is remarkable because the Chinese-English bilinguals in this study performed the semantic relatedness judgment task in English only, without any Chinese actually present and in a context in which the bilinguals were immersed in an English-speaking environment. Such data are remarkable because they demonstrate that conscious awareness of the other language is not required to observe these effects; both languages are momentarily active when bilinguals process words in one language alone, despite the apparent dissimilarity of the bilingual’s two languages that might be used as a means to induce functional separation.
+
+Parallel activation appears to be a product of knowing two languages, independent of what those languages are or how they are used. The fact that cross-language activation is found in language comprehension and production, and for both written and spoken or signed language, suggests that the L1 and L2 are interconnected. The fact that it is found in bilinguals that differ so widely in their two languages suggests that there are at least some common, shared language storage or processing mechanisms that support both languages regardless of what they are. Critically, the parallel activation of the two languages has consequences, both for language use and for cognition in general.
+
+Annu Rev Linguist. Author manuscript; available in PMC 2017 June 20.
+
+<!-- Page 6 -->
+Page 6
+
+In a well-known paper, Grosjean (1989) claimed that a bilingual is not two monolinguals in one. The context for this claim was a debate about whether language switching is a normal or pathological feature of bilingual language use. We now know that code switching and language mixing are not only normal features of bilingualism but also skills that may effectively enhance cognitive abilities in bilinguals (e.g., Green & Abutalebi 2013, Green & Wei 2014). But it is also important to note that the pervasive parallel activation of the bilingual’s two languages is likely to be a primary mechanism that contributes to language change and that differentiates bilingual and monolingual language use. When a bilingual is using the less dominant L2, the concurrent L1 activation is pervasive. Given the choice between using two words or two structures, one of which shares overlap with the L1, the simultaneous L1 activation will promote that alternative over a word or structure that appears in the L2 only [see, e.g., evidence on cross-language syntactic priming (Hartsuiker et al. 2004)]. Choosing common structures across languages when using the L2 is not that surprising; however, the same process applies to a bilingual using his or her L1, although processing in the L1 may be sufficiently skilled and automatic as to mask the influence of the L2. These small, incremental changes accumulate with increasing L2 proficiency and with time; continuing to select language-similar structures over language-dissimilar structures changes the way both languages are used.
+
+If the bilingual’s two languages are always active, to be able to use the target language there must be regulation to control the influence of the language not in use. The fact that bilinguals rarely produce erroneous language intrusions (e.g., Gollan et al. 2011) suggests that they develop an effective means to control the language they do not intend to use. Although there is debate about the means by which bilinguals control the use of each language (see Kroll & Gollan 2014 for a recent review of this debate in the realm of speech production), there is evidence in both comprehension and production that the activation of the language not in use must be reduced and that, at least under some circumstances, there is active suppression of the dominant language to enable the processing of the less dominant language (e.g., Kroll et al. 2008).
+
+The practice of resolving competition between both languages has been hypothesized to depend on domain-general cognitive skills that are honed over time with daily language use (see Bialystok et al. 2012 for a review). We discuss this issue in more detail in Section 4, but note that not only does bilingualism come to affect cognition, but a consequence of multiple language use is to produce greater efficiency in language processing itself. Blumenfeld & Marian (2011) tested this hypothesis in a study on spoken word recognition in the L1. They used the visual world paradigm (Allopenna et al. 1998), in which speakers viewed a grid with four objects, one in each of the four corners of the grid. The task is to point or click on an object that is named by a spoken word while eye movements are recorded. Past research has shown both within- and between-language competition when an object shares the phonology of a named object (e.g., Marian & Spivey 2003). The eye-tracking record reveals extended fixations to phonological competitors relative to unrelated controls. Blumenfeld & Marian (2011) compared the performance of bilinguals with that of monolinguals identifying words in their L1. Both groups exhibited effects of the phonological competitor. On a second trial, the grid was presented but without the four objects. Instead, an asterisk appeared in one of the four corners. The task was to indicate the location of the asterisk.
+
+Annu Rev Linguist. Author manuscript; available in PMC 2017 June 20.
+
+<!-- Page 7 -->
+Page 7
+
+Monolinguals were slower to identify the asterisk when it appeared in the position of the phonological competitor, but bilinguals were not, suggesting that the latter were able to more efficiently resolve the competition from the previous trial. As discussed in Section 4, below, the efficiency of resolving conflict, within or across languages or within purely cognitive tasks, is a theme that has emerged in recent work as a hallmark of bilingualism.
+
+## 3. DYNAMIC CHANGES DURING SYNTACTIC PROCESSING
+
+It is widely known that adult second-language acquisition is marked by variable mastery of the target language, most notably in the acquisition of the sound system and the grammatical structures of the L2 (e.g., Flege 1987, 2007; Hawkins & Chan 1997; Franceschina 2001, 2005). Because L2 acquisition involves more than simply memorizing individual sounds, words, or verbal paradigms, there is an ongoing debate about the causes underlying the observed incomplete acquisition. Some scholars assert that the relevant L2 information— including even subtle aspects of the L2 grammar—can be fully acquired by adult learners (e.g., Schwartz & Sprouse 1994, 1996; Lardiere 1998a,b; Prévost & White 2000; Bruhn de Garavito & White 2002; Keating 2009; Gillon Dowens et al. 2010; Alarcón 2011; Foucart & Frenck-Mestre 2011, 2012; Grüter et al. 2012; Witzel et al. 2012; Hopp 2013) and challenge the existence of fundamental differences (Clahsen& Felser 2006) between native and nonnative speakers. According to this view, errors in L2 performance are modulated by a number of variables, including proficiency and immersion experience in the L2 (e.g., Kotz 2009, Pliatsikas & Marinis 2013), speed of lexical access (Hopp 2013), and availability of cognitive and computational resources (e.g., McDonald 2006, Hopp 2010). Other researchers have argued instead that access to the pool of all potential linguistic structures is not available after the so-called critical period, which coincides roughly with the onset of puberty. In this view, the absence of the relevant structures in the L1 presents an obstacle to achieving complete acquisition of the second language (e.g., Eubank 1993, Hawkins & Chan 1997, Beck 1998). In support of this idea, many studies have highlighted that success in second-language acquisition is strongly influenced by the linguistic properties of the learner’s first language (e.g., Zobl 1982, Andersen 1983, Rutherford 1983) and that the ability of L2 speakers to process knowledge online depends in part on similarities between the L1 and the L2 (Sabourin et al. 2006, Sabourin & Stowe 2008).
+
+It is becoming increasingly clear, however, that transfer phenomena are not restricted to speakers’ incorporation of L1 linguistic elements into their L2 system. Evidence from behavioral and electrophysiological studies has shown not only that the first language affects the second language (e.g., Flege & Davidian 1984, Hancin-Bhatt 1994, Hatzidaki et al. 2011) but also that the second language can come to affect the native language (e.g., Dussias 2003, Dussias & Sagarra 2007, Valdés Kroff 2012, Dussias et al. 2014). In this section, we discuss some recent evidence examining the interactions between the bilingual’s two languages by focusing on the influence of the L2 on the L1. Research on first-language attrition (e.g., Lambert & Freed 1982, Seliger & Vago 1991, Schmid et al. 2004) has investigated changes in the L1 that come about through lack of exposure, which typically occurs in bilinguals who maintain little if any contact with speakers of the L1 or in bilinguals who have negative attitudes toward their L1 (Cook 2003). Our goal here is to examine the influence of the L2 on the L1 in bilinguals who actively use their two languages
+
+Annu Rev Linguist. Author manuscript; available in PMC 2017 June 20.
+
+<!-- Page 8 -->
+Page 8 daily in a variety of formal and informal contexts and who value maintenance of the L1. Examining this question has important implications not only for our understanding of how bilinguals manage to negotiate their two languages, but more critically for existing assumptions about the plasticity of cognitive and neural representations.
+
+Although evidence of the influence of the L2 on the native language is broad and has been observed at the level of the lexicon (e.g., Ameel et al. 2005, Linck et al. 2009, Baus et al. 2013), the phonology (e.g., Chang 2013), and the syntax (e.g., Dussias & Sagarra 2007), our discussion focuses on syntactic processing while bilinguals make structural decisions about the words they read or hear. We choose this focus because achieving high levels of L2 syntactic and morphosyntactic knowledge has been considered to be more constrained by age of acquisition than are other areas of language, such as semantics (e.g., Hahne & Friederici 2001) or pragmatics (e.g., Félix-Brasdefer & Koike 2012). Therefore, evidence suggesting that the purportedly stable L1 syntactic system is subject to influence from the L2 provides a strong piece of evidence for a linguistic system that is far more open and dynamic than previously thought (Hernández et al. 2005).
+
+One significant insight from the L2 acquisition work is that prolonged naturalistic exposure can have profound effects on how a second language is processed, reversing processing strategies that result from transfer ofL1information (Frenck-Mestre 2002) or causing shifts in L2 processing strategies from lexically driven to structurally driven 1 (Pliatsikas & Marinis
+
+2013). Given this evidence, an important aspect of the comparison between L2 and L1 speaker performance is to consider how immersion experience might affect L1 processing. Work examining this question shows a great deal of permeability across language boundaries at different levels. For example, in immersion contexts, L2 speakers experience reduced access to the L1 (Linck et al. 2009) and extensive contact with an L2, which can affect both L1 naming performance of common objects (Malt & Sloman 2003) and L1 phonology (e.g., Flege 1987, Flege & Eefting 1987). These findings confirm that a bilingual is not two monolinguals in one brain (Grosjean 1989) and that the seemingly stable L1 system is open to influence once individuals become proficient in the L2 (e.g., Gollan et al. 2008, Ivanova & Costa 2008, Runnqvist et al. 2013). Given this scenario, one might expect that experience in a second-language environment should also produce changes in syntactic processing in the native language. Findings reported for other linguistic domains (e.g., Bybee 1994) show that the frequency of linguistic items has important consequences for language change. If the frequency of exposure to a second language affects the native language, then bilinguals immersed in the L2 environment, who are matched in proficiency to bilinguals immersed in the L1 environment, should behave differently when processing sentences in their native language.
+
+Dussias & Sagarra (2007; also see Fernández 2003) tested the exposure hypothesis in a study that investigated the effect of intense contact with English on the resolution of syntactically ambiguous relative clauses in Spanish. Native Spanish and native English
+
+1Lexical processing relies on lexical semantic or conceptual information associated with a given lexical target. In contrast, in structurally driven processing structural decisions derive from general principles of configural economy along the lines of those proposed in Kimball (1973) or Frazier & Fodor (1978).
+
+Annu Rev Linguist. Author manuscript; available in PMC 2017 June 20.
+
+<!-- Page 9 -->
+Page 9 speakers differ in how they interpret temporarily ambiguous relative clauses such as Alguien disparó al hijo de la actriz que estaba en el balcón /‘Someone shot the son of the actress who was on the balcony.’ When asked the question ¿ Quién estaba en el balcón? (‘Who was on the balcony?’), monolingual Spanish speakers typically respond ‘the son’ (i.e., high attachment preference), whereas monolingual English speakers respond ‘the actress’ (low attachment preference) (Carreiras & Clifton 1999). Using tasks measuring ambiguity resolution during online reading, Dussias & Sagarra (2007) found that Spanish-English bilinguals immersed in a Spanish-speaking environment processed the ambiguity using a high attachment strategy. This was an expected finding. The interesting result was that bilinguals living in an English-speaking environment strongly favored the low attachment strategy when reading in Spanish, their native language. That is, for these speakers, exposure to a preponderance of English constructions resolved in favor of low attachment may have rendered this interpretation more available, resulting in a low attachment preference when reading in their first language.
+
+One question raised by these results is whether parsing preferences can show short-term changes on the basis of artificial exposure to particular patterns over a predetermined amount of time. In other words, can changes be triggered by overexposing bilinguals to particular structures so that proficient bilinguals who have undergone change in their L1 “move back” and those who have not achieved the desired outcome “move forward”? Past findings from the child processing literature suggest that exposure experience can affect children’s sentence-processing routines (e.g., Cuetos et al. 1996, Trueswell et al. 1999). Similar findings have been reported with adult monolingual speakers, demonstrating powerful implicit learning properties that characterize the human language system. For example, the notorious difficulty that native English speakers experience when processing object-extracted relative clauses such as The reporter that the senator attacked admitted the error relative to subject-extracted relative clauses such as The reporter that attacked the senator admitted the error (Traxler et al. 2002, Staub 2010) disappears with increased exposure to object-relatives (Wells et al. 2009). If the parser’s configuration is related to language exposure (MacDonald 1994, MacDonald & Seidenberg 2006, Gennari & MacDonald 2009) and language contact, then bilinguals’ processing routines are expected to change as a function of the frequency with which the relevant structure appears in an experimental session.
+
+Ongoing experiments on intervention in language exposure provide support for the dynamic nature of parsing. In one study (Dussias et al. 2014), L1 Spanish-L2 English bilinguals identified as being either so-called high attachers or low attachers (via an eye-tracking study) participated in a five-day intervention, during which they read short paragraphs containing relative clauses in which the syntactic ambiguity was resolved opposite to the bilinguals’ natural attachment preference. That is, participants who favored high attachment received a low attachment treatment, and those who favored low attachment received a high attachment treatment. In addition, half the participants received the intervention in Spanish and the other half in English. We know from monolingual research that experience with L1 structures can guide the interpretation of temporary ambiguity (Wells et al. 2009), but one remaining question is whether exposure to linguistic structures can trigger change when the input is in a different language. Participants returned to the lab after the intervention to participate in
+
+Annu Rev Linguist. Author manuscript; available in PMC 2017 June 20.
+
+<!-- Page 10 -->
+Page 10 two subsequent eye-tracking studies, one that assessed the immediate effect of the intervention and one that assessed the effect of the intervention a week after it was completed. Ongoing analyses show that those participants who originally preferred high attachment switched to a low attachment preference after the intervention and maintained the low attachment preference a week later. Participants who originally showed a low attachment strategy switched to a high attachment preference after the intervention, but eventually reverted back to a low attachment preference. Critically, whether the intervention was in Spanish or in English did not affect the pattern of results. The results indicate that it is not exposure to a language that causes the switch, but rather exposure to the structure itself.
+
+```python
+One might wonder whether immersion in the L2 can come to affect any aspect of L1 syntactic processing or whether some structures are more susceptible to intense exposure to a second language. Given that syntactic structures differ along many dimensions, it is possible that different L1 structures are differentially affected by immersion in the second language. For example, effects of naturalistic exposure may become evident in the processing of information that is somewhat “peripheral” to the so-called core syntax, but may be negligible when information has syntactic consequences (e.g., when the selection of verbal mood in a complement clause is a syntactic reflex of the selectional relationship between a matrix verb and its complement). It is also possible that changes are more easily triggered when structures overlap in some way in the bilingual’s two languages (Hartsuiker et al. 2004) than when they do not. An important question, then, is whether L1-specific morphosyntactic information is affected by the influence from the linguistic input available in the L2 environment, such that this information is no longer used during L1 sentence processing in bilinguals in a manner that resembles monolingual use. To test this hypothesis, Valdés Kroff (2012) examined whether intense contact with Spanish-English code-switched speech had consequences in the processing of grammatical gender in Spanish. In many bilingual communities, speakers regularly switch from one language to another, often several times in a single utterance. This phenomenon is called code switching. The ability to engage in fluent code switching is a hallmark of high proficiency in two languages (Miccio et al. 2009), given that successful and fluent code switching requires a high degree of knowledge of and sensitivity to the grammatical constraints of both languages. Grammatical gender was examined because it is a lexically specified feature of nouns that triggers syntactic agreement with other function and open-class elements, such as determiners and adjectives. In the context of code switching, grammatical gender is interesting for yet another reason. In the production literature on Spanish-English code switches, one widely attestable pattern is that when a code switch occurs within a noun phrase composed of a determiner and a noun, the determiner overwhelmingly surfaces in Spanish and the noun in English, such as ‘el building’ and not ‘the edificio.’ Researchers have also documented a production asymmetry in grammatical gender assignment in these mixed noun phrases. The Spanish masculine article el (‘the’) surfaces with English nouns regardless of the grammatical gender of their translation equivalents, for example, ‘el juice’ (Spanish jugo, masculine) or ‘el cookie’ (Spanish galleta, feminine). By contrast, mixed noun phrases involving the Spanish feminine article la (also translated as ‘the’) are rare and occur in restricted environments, such that only English nouns whose Spanish translation equivalents are feminine surface with la in
+
+```
+Annu Rev Linguist. Author manuscript; available in PMC 2017 June 20.
+
+<!-- Page 11 -->
+Page 11 code switching (e.g., ‘la cookie’ but not ‘la juice’; see Poplack 1980, Jake et al. 2002, Otheguy & Lapidus 2003). These production distributions in Spanish-English code switching stand in marked contrast to monolingual Spanish, where the grammatical gender of a noun and its accompanying article must obligatorily match, and where masculine and feminine nouns are evenly distributed (Eddington 2002, Otheguy & Lapidus 2003).
+
+As mentioned above, Valdés Kroff (2012) investigated whether L1 Spanish-L2 English speakers who had been immersed in a code-switching environment used grammatical gender information encoded in Spanish articles to anticipate the gender of an upcoming noun (as Lew-Williams & Fernald 2007 have shown with monolingual speakers of Spanish). Given the asymmetry observed in production data, it seemed plausible that the gender marking of articles would, to a lesser extent, facilitate the processing of code-switched speech. To investigate this hypothesis, Valdés Kroff (2012) recorded the eye movements of Spanish- English bilinguals. Participants saw two pictures that represented objects whose nouns were of either the same or different grammatical genders in Spanish, and listened to codeswitched sentences (e.g., Hay un niño que está mirando el candy /‘There is a boy looking at the candy’). Words were spoken with a Spanish article that either matched the gender of the word’s Spanish translation equivalent (e.g., el candy MASC, Spanish caramelo ) or did not match (target: el candle FEM, Spanish vela ). A control group of monolingual speakers listened to sentences entirely in Spanish. Participants were asked to listen to each sentence and to click on a named object. Where the grammatical gender of the Spanish names for each of the pictures was different between the two pictures, the gender information in the article was informative. In that condition, monolingual Spanish speakers showed the expected anticipatory effect on masculine and feminine different-gender trials. Results for the L2 speakers revealed an anticipatory effect, but only on different-gender trials in which the auditory stimulus was feminine. When the auditory stimulus was masculine in differentgender trials, participants did not launch anticipatory looks but rather waited to hear the target noun, meaning that they did not use masculine articles as cues for anticipatory processing. Because the masculine article is overwhelmingly more common than the feminine in Spanish-English code switching but not in monolingual Spanish, these group differences suggest that how grammatical cues are exploited in mixed-language processing is driven by experience with the statistical patterns attested in actual communicative contexts. Critically, they also reveal the key role that linguistic exposure has in languagecomprehension processes. Although there surely may be constraints on the sort of crosslanguage exchanges in bilinguals, the presence of these influences—and especially of those from the L2 to the L1—suggests a dynamic language system that changes in response to contact with other languages. In the final section of this review, we consider the consequences of these dynamics in bilingual language for cognition more broadly.
+
+## 4. THE COGNITIVE AND NEURAL CONSEQUENCES OF BILINGUALISM
+
+Recently there has been widespread media coverage on the provocative claims about the ability of bilingualism to protect individuals against the deleterious consequences of cognitive aging. Elderly bilinguals have been reported to be better able to switch between tasks, to ignore irrelevant information, and to resolve conflicting cognitive alternatives (see, e.g., Bialystok et al. 2009 for a review). But most striking is the evidence on the
+
+Annu Rev Linguist. Author manuscript; available in PMC 2017 June 20.
+
+<!-- Page 12 -->
+Page 12 consequences of bilingualism when some pathology is present, as in the case of
+
+Alzheimer’s disease were diagnosed with the disease an average of four to five years later if they were bilingual rather than monolingual (also see Alladi et al. 2013 for a recent replication in a different language context). Furthermore, brain scans of bilingual and monolingual Alzheimer’s patients who were matched for disease symptoms revealed that the brains of the bilingual patients were more diseased than those of monolingual patients (e.g., Schweizer et al. 2012). This comparison suggests that the active use of two languages protects bilinguals from the symptoms of the disease. The areas of the brain that enable cognitive control are hypothesized to have benefited from bilingual experience. Under conditions of pathology and stress, the skill developed as a function of juggling two languages over the course of a person’s life provides a level of cognitive reserve to enable individuals to continue to function, despite the presence of disease. Bilingualism itself does not directly affect Alzheimer’s disease but instead enables functional cognition for a longer period of time, relative to monolingualism, following the onset of the disease.
+
+But what aspect of bilingualism is responsible for these benefits? Past research claimed that a life spent resolving cross-language competition, of the sort we have documented at the level of the lexicon and the level of grammar, creates skill more generally in resolving conflict. The hypothesis is that the same cognitive networks that enable selection and decision making in the rest of life outside of language are also engaged when language is used. Bilingualism is then thought to provide a rich foundation for developing these control skills because language is so prevalent in cognitive life. Other activities (e.g., playing video games, becoming a skilled musician, driving a taxi cab through a maze of city streets) will also tune cognitive networks, but important as they are, it is unlikely that these activities will be used as frequently as language.
+
+Until recently, the account for the consequences of bilingualism was that the constant activity of the two languages produces competition that then requires resolution. Bilinguals therefore become expert in resolving competition and then reveal that expertise when a task, linguistic or not, presents similar conflict. The problem with this simple story, elegant as it may seem, is that not all bilinguals reveal precisely the same benefits, nor benefits in every conflict task, nor benefits at every point across the life span (e.g., Kroll & Bialystok 2013; S. Baum & D. Titone, manuscript accepted). As noted in Section 1, there are many different types of bilinguals, and even bilinguals who are similar with respect to the languages they speak may use those languages in different contexts and with different interlocutors. A goal in recent research has been to identify the critical features of bilingual experience, including learning history and the context in which the two languages are used, and the critical aspects of cognitive control that are required to enable proficient language performance under a range of circumstances.
+
+Recent neuroimaging studies have also sought to identify the brain mechanisms that might differentiate monolingual and bilingual experience. For example, Abutalebi et al. (2012) asked young adult bilinguals to perform a variant of the flanker task, a nonlinguistic conflictresolution task in which individuals must decide whether a symbol, such as an arrow, is facing in one direction or another, in the context of other information that converges or
+
+Annu Rev Linguist. Author manuscript; available in PMC 2017 June 20.
+
+<!-- Page 13 -->
+Page 13 diverges with the solution. They reported greater brain activation in a functional magnetic resonance imaging (fMRI) paradigm for the anterior cingulate cortex (ACC) in monolinguals than in bilinguals when solving the same task, suggesting that bilinguals are more efficient at using the brain areas engaged by conflict resolution than monolinguals. They concluded that bilingualism comes to “tune” the ACC. A similar fMRI result was reported by Gold et al. (2013) using a nonlinguistic switching task with bilinguals and monolinguals who were either younger or older healthy adults. In this study, only the older bilinguals revealed an advantage relative to monolinguals, demonstrating that older bilinguals were also more efficient in switching between conditions than their monolingual counterparts. The absence of an effect for the younger adults, typical in many studies examining the consequences of bilingualism, has been understood as a matter of sensitivity. Young adults are at their peak cognitive performance, and it may be difficult to enhance performance beyond that peak level. Alternatively, it may require more extensive bilingual experience over a longer period of time for these benefits to be revealed. Regardless, in each case these studies demonstrate that under conditions in which cognitive performance does not depend directly on language use, there is a difference between bilinguals and monolinguals that is consistent with the claim that bilingualism affects those brain networks that enable cognitive control.
+
+To begin to explain the range of circumstances over which processing differences are reported for bilinguals and monolinguals, Green & Abutalebi (2013) proposed the adaptive control model (for a recent review of the range of bilingual effects that have been reported, see S. Baum & D. Titone, manuscript accepted). This model assumes that there are multiple components of cognitive or inhibitory control that are recruited to perform particular language tasks. For example, a different subset of control mechanisms may be engaged when bilinguals code-switch with other similar bilingual speakers and when bilinguals are immersed in an environment in which the L2 is the dominant language. Over time, both under the sort of immediate pressures described in the intervention studies above and over a longer period of time when individuals are immersed in a foreign country and culture, there will be a dynamic set of changes in which there is adaptation to the demands of the environment. The variation in language use and language context, in level of language skill, and in the nature of the language pairings themselves will dictate the ways in which control networks are engaged. Thus, bilinguals will differ not only from monolinguals but also from other bilinguals whose circumstances differ from their own. Green & Abutalebi (2013) use code switching to illustrate the way in which these differences may emerge. As noted above, some bilinguals code-switch intrasententially and others do not. These two types of bilinguals may be otherwise similar in language proficiency, but habitual code switching may engage a subset of control mechanisms on which nonswitchers do not acquire the same level of practice. An area of active research in the current literature seeks to better understand the range of consequences conferred by habitual code switching (e.g., Green & Wei 2014).
+
+In addition to focusing on how different forms of bilingualism affect the engagement of cognitive mechanisms, we can also ask how different language and cognitive tasks themselves engage different components of inhibitory control. Morales et al. (2013b), using different measures of control, examined the performance of bilinguals and monolinguals on
+
+Annu Rev Linguist. Author manuscript; available in PMC 2017 June 20.
+
+<!-- Page 14 -->
+Page 14 proactive and reactive components of inhibition. Proactive inhibition is hypothesized to reflect early attentional mechanisms that enable focus on anticipated conditions. Reactive inhibition is thought to reflect control that occurs only after some set of alternatives are activated, and a selection must occur relatively late in processing. Critically, Morales et al. (2013b) found that a bilingual advantage was not present in general but depended on the interaction between conditions. Under conditions in which there was a demand for adjusting the proactive and reactive components of processing, bilinguals outperformed monolinguals, suggesting not a simple componential advantage but rather a different calibration of cognitive control in processing (also see Costa et al. 2009 for related evidence on how a bilingual advantage depends on the difficulty of monitoring).
+
+Other support for the notion that there is a wide range of cognitive consequences of bilingualism comes from studies of infants who are exposed to more than one language from birth. These“crib bilinguals” are not speaking either of the two languages to which they are exposed, but the multiple exposure has critical consequences for the way in which their representation of speech is tuned (e.g., Sundara et al. 2006) and furthermore imposes a range of consequences for attention and for language discrimination (e.g., Kovács & Mehler 2009, Sebastián-Gallés et al. 2012).
+
+A goal for future research is to begin to identify the constellation of control mechanisms that are engaged by bilingualism. The evidence on language processing suggests a dynamic system in which regulation among competing alternatives is necessary to enable the intended language to be used. Studies of inhibitory control in language processing have focused on conditions that make language selection more difficult, for example, when the use of the two languages is mixed (e.g., Christoffels et al. 2007) or when bilinguals are required to switch from one language to the other (e.g., Meuter & Allport 1999). Under these circumstances, differential costs are typically observed for the L1 relative to the L2, with the interpretation that the more proficient or more dominant language needs to be regulated to enable the use of the weaker or less proficient language. Recent studies on language processing, using the power of converging methods across neuroscience and behavior, have reported findings very similar to those described for cognitive tasks. There appear to be multiple components of inhibitory control, some local and short lived and others more global, extended in time, and perhaps affecting the entire language at once (e.g., Guo et al. 2011, Misra et al. 2012, Van Assche et al. 2013). For example, Misra et al. (2012) reported evidence for inhibition in L1 speech production in an ERP paradigm when the L1 was spoken following the L2. Of interest is that the inhibitory pattern was long lived in the experiment, with little evidence for immediate recovery. Although the Chinese-English bilinguals who were tested were dominant in Chinese as the L1, they were highly proficient in English as the L2, suggesting that the inhibitory pattern reflected not a lack of proficiency in speaking the L2 but rather a more general requirement to inhibit the L1 when speech was planned in the L2. What is not yet well understood is how these components of inhibitory control in language processing map onto the cognitive differences that have been identified for bilinguals. A goal in ongoing research is to catch language processing on the fly as a means to reveal the causal mechanisms that are responsible for these effects.
+
+Annu Rev Linguist. Author manuscript; available in PMC 2017 June 20.
+
+<!-- Page 15 -->
+Page 15
+
+## 5. SUMMARY AND CONCLUSIONS
+
+In the past two decades, there has been an upsurge of research investigating the consequences of bilingualism for language processing, for cognition, and for the brain. This research demonstrates a remarkable level of plasticity across the bilingual’s two languages, with evidence that the two languages engage directly within a single language system that is stretched in different directions by the conflicts and convergences present across each level of language use. Not only is the L2 shaped by the L1, but the L1 comes to be changed by the interactions with the L2. Those interactions, and the constant activation of the two languages, create demands on cognitive systems and the neural mechanisms that control them so that the bilingual is able to function fluently in each language and, at the same time, mix languages when switching is desirable or necessary. These consequences of bilingualism highlight the adaptive nature of language processing and illustrate how bilingual experience becomes a lens for language scientists to understand the relations between language use, cognition, and the brain.
+
+**Acknowledgments**
+
+The writing of this review was supported in part by National Institutes of Health grant HD053146 to J.F.K., National Science Foundation grant BCS-0821924 to P.E.D., National Science Foundation grants BCS-0955090 andOISE-0968369 to J.F.K. and P.E.D., and a Guggenheim Fellowship to J.F.K.
+
+**LITERATURE CITED**
+
+Abutalebi, J., Cappa, SF., Perani, D. What can functional neuroimaging tell us about the bilingual brain?. 2005. p. 497-515.See Kroll & De Groot 2005 Abutalebi J, Della Rosa PA, Green DW, Hernandez M, Scifo P, et al. Bilingualism tunes the anterior cingulate cortex for conflict monitoring. Cereb. Cortex. 2012; 22:2076-2086. [PubMed: 22038906] Abutalebi J, Green D. Bilingual language production: the neurocognition of language representation and control. J. Neurolinguist. 2007; 20:242-275. Alarcón I. Spanish gender agreement under complete and incomplete acquisition: early and late bilinguals’ linguistic behavior within the noun phrase. Biling. Lang. Cogn. 2011; 14:332-350. Alladi S, Bak TH, Duggirala V, Surampudi B, Shailaja M, et al. Bilingualism delays age at onset of dementia, independent of education and immigration status. Neurology. 2013; 81:1938-1944. [PubMed: 24198291] Allopenna PD, Magnuson JS, Tanenhaus MK. Tracking the time course of spoken word recognition: evidence for continuous mapping models. J. Mem. Lang. 1998; 38:419-439. Ameel E, Storms G, Malt BC, Sloman SA. How bilinguals solve the naming problem. J. Mem. Lang. 2005; 53:60-80. Andersen R. Transfer to somewhere. 1983:177-201. See Gass & Selinker 1983. Baus C, Costa A, Carreiras M. On the effects of second language immersion on first language production. Acta Psychol. 2013; 142:402-409. Beck M-L. L2 acquisition and obligatory head movement: English-speaking learners of German and the local impairment hypothesis. Stud. Second Lang. Acquis. 1998; 20:311-348. Bialystok E, Craik FIM, Freedman M. Bilingualism as a protection against the onset of symptoms of dementia. Neuropsychologia. 2007; 45:459-464. [PubMed: 17125807] Bialystok E, Craik FIM, Green DW, Gollan TH. Bilingual minds. Psychol. Sci. Public Interest. 2009;
+
+10:89-129. [PubMed: 26168404] Bialystok E, Craik FIM, Luk G. Bilingualism: consequences for mind and brain. Trends Cogn. Sci.
+
+2012; 16:240-250. [PubMed: 22464592]
+
+Annu Rev Linguist. Author manuscript; available in PMC 2017 June 20.
+
+<!-- Page 16 -->
+Page 16
+
+Blumenfeld HK, Marian V. Bilingualism influences inhibitory control in auditory comprehension.
+
+Cognition. 2011; 118:245-257. [PubMed: 21159332] Bruhn de Garavito, J., White, L. The second language acquisition of Spanish DPs: the status of grammatical features. In: Pérez-Leroux, AT., Liceras, JM., editors. The Acquisition of Spanish Morphosyntax: The L1/L2 Connection. Dordrecht, Neth: Kluwer; 2002. p. 153-178. Bybee JL. A view of phonology from a cognitive and functional perspective. Cogn. Linguist. 1994;
+
+5:285-305. Carreiras M, Clifton C. Another word on parsing relative clauses: eyetracking evidence from Spanish and English. Mem. Cogn. 1999; 27:826-833. Chang C. A novelty effect in phonetic drift of the native language. J. Phon. 2013; 41:520-533. Christoffels IK, Firk C, Schiller NO. Bilingual language control: an event-related brain potential study.
+
+Brain Res. 2007; 1147:192-208. [PubMed: 17391649] Clahsen H, Felser C. Grammatical processing in language learning. Appl. Psycholinguist. 2006; 27:3-
+
+42. Cook, V., editor. Effects of the Second Language on the First. Clevedon, UK: Multiling. Matters; 2003. Costa A, Caramazza A, Sebastián-Gallés N. The cognate facilitation effect: implications for models of lexical access. J. Exp. Psychol. Learn. Mem. Cogn. 2000; 26:1283-1296. [PubMed: 11009258] Costa A, Hernández M, Costa-Faidella J, Sebastián-Gallés N. On the bilingual advantage in conflict processing: Now you see it, now you don't. Cognition. 2009; 113:135-149. [PubMed: 19729156] Cuetos, F., Mitchell, DC., Corley, M. Parsing in different languages. In: Carreiras, M.García-Albea, J.,
+
+Sebastían-Gallés, N., editors. Language Processing in Spanish. Mahwah, NJ: Erlbaum; 1996. p. 145-187. Dijkstra T. Bilingual word recognition and lexical access. 2005:179-201. See Kroll & De Groot 2005. Dussias PE. Syntactic ambiguity resolution in second language learners: some effects of bilinguality on L1 and L2 processing strategies. Stud. Second Lang. Acquis. 2003; 25:529-557. Dussias, PE., Perrotti, L., Brown, M., Morales, L. Re-learning to parse a first language: the role of experience in sentence comprehension; Presented at Annu. CUNY Conf. Hum. Sentence Process., 27th; Columbus, OH. 2014. Dussias PE, Sagarra N. The effect of exposure on syntactic parsing in Spanish-English bilinguals.
+
+Biling. Lang. Cogn. 2007; 10:101-116. Eddington D. Spanish gender assignment in an analogical framework. J. Quant. Linguist. 2002; 9:49-
+
+75. Eubank L. On the transfer of parametric values in L2 development. Lang. Acquis. 1993; 3:183-208. Félix-Brasdefer, JC., Koike, DA., editors. Pragmatic Variation in First and Second Language Contexts:
+
+Methodological Issues. Amsterdam/Philadelphia: Benjamins; 2012. Fernández, EM. Bilingual Sentence Processing: Relative Clause Attachment in English and Spanish.
+
+Amsterdam: Benjamins; 2003. Flege J, Eefting W. Cross-language switching in stop consonant production and perception by Dutch speakers of English. Speech Commun. 1987; 6:185-202. Flege JE, Davidian R. Transfer and developmental processes in adult foreign language speech production. Appl. Psycholinguist. 1984; 5:332-347. Flege JE. The production of “new” and “similar” phones in a foreign language: evidence for the effect of equivalence classification. J. Phon. 1987; 15:47-65. Flege, JE. Language contact in bilingualism: phonetic system interactions. In: Cole, J., Hualde, JI., editors. Laboratory Phonology. Vol.
+
+9. Berlin: Mouton de Gruyter; 2007. p. 353-382. Foucart A, Frenck-Mestre C. Grammatical gender processing in L2: electrophysiological evidence of the effect of L1-L2 syntactic similarity. Biling. Lang. Cogn. 2011; 14:379-399. Foucart A, Frenck-Mestre C. Can late L2 learners acquire new grammatical features? Evidence from
+
+ERPs and eye-tracking. J. Mem. Lang. 2012; 66:226-248. Franceschina, F. Against an L2 morphological deficit as an explanation for the differences between native and non-native grammars. In: Foster-Cohen, SH., Nizegorodcew, A., editors. EUROSLA Yearbook. Vol.
+
+1. Amsterdam: Benjamins; 2001. p. 143-158.
+
+Annu Rev Linguist. Author manuscript; available in PMC 2017 June 20.
+
+<!-- Page 17 -->
+Page 17
+
+Franceschina, F. Fossilized Second Language Grammars: The Acquisition of Grammatical Gender.
+
+Amsterdam: Benjamins; 2005. Frazier L, Fodor JD. The sausage machine: a new two-stage parsing model. Cognition. 1978; 6:291-
+
+325. Frenck-Mestre, C. An on-line look at sentence processing in a second language. In: Herrida, RR.,
+
+Altarriba, J., editors. Bilingual Sentence Processing. Amsterdam: Elsevier; 2002. p. 217-236. Gass, S., Selinker, L., editors. Language Transfer in Language Learning. Rowley, MA: Newbury
+
+House; 1983. Gennari SP, MacDonald MC. Linking production and comprehension processes: the case of relative clauses. Cognition. 2009; 111:1-23. [PubMed: 19215912] Gillon Dowens M, Vergara M, Barber H, Carreiras M. Morphosyntactic processing in late secondlanguage learners. J. Cogn. Neurosci. 2010; 22:1870-1887. [PubMed: 19580390] Gold BT, Kim C, Johnson NF, Kriscio RJ, Smith CD. Lifelong bilingualism maintains neural efficiency for cognitive control in aging. J. Neurosci. 2013; 33:387-396. [PubMed: 23303919] Gollan TH, Montoya RI, Cera CM, Sandoval TC. More use almost always means a smaller frequency effect: aging, bilingualism, and the weaker links hypothesis. J. Mem. Lang. 2008; 58:787-814. [PubMed: 19343088] Gollan TH, Sandoval T, Salmon DP. Cross-language intrusion errors in aging bilinguals reveal the link between executive control and language selection. Psychol. Sci. 2011; 22:1155-1164. [PubMed: 21775653] Green DW, Abutalebi J. Language control in bilinguals: the adaptive control hypothesis. J. Cogn.
+
+Psychol. 2013; 25:515-530. Green DW, Wei L. A control process model of code-switching. Lang. Cogn. Neurosci. 2014; 29:499-
+
+511. Grosjean F. Neurolinguists, beware! The bilingual is not two monolinguals in one person. Brain Lang.
+
+1989; 36:3-15. [PubMed: 2465057] Grüter T, Lew-Williams C, Fernald A. Grammatical gender in L2: a production or a real-time processing problem? Second Lang. Res. 2012; 28:191-215. Guo T, Liu H, Misra M, Kroll JF. Local and global inhibition in bilingual word production: fMRI evidence from Chinese-English bilinguals. NeuroImage. 2011; 56:2300-2309. [PubMed: 21440072] Hahne A, Friederici AD. Processing a second language: late learners’ comprehension mechanisms as revealed by event-related brain potentials. Biling. Lang. Cogn. 2001; 4:123-141. Hancin-Bhatt B. Segmental transfer: a natural consequence of a dynamic system. Second Lang. Res.
+
+1994; 10:242-270. Hartsuiker RJ, Pickering MJ, Veltkamp E. Is syntax separate or shared between languages? Crosslinguistic syntactic priming in Spanish/English bilinguals. Psychol. Sci. 2004; 15:409-414.
+
+[PubMed: 15147495] Hatzidaki A, Branigan HP, Pickering MJ. Co-activation of syntax in bilingual language production.
+
+Cogn. Psychol. 2011; 62:123-150. [PubMed: 21093856] Hawkins R, Chan Y-HC. The partial availability of Universal Grammar in second language acquisition: the ‘failed functional features hypothesis’. Second Lang. Res. 1997; 13:187-226. Hernández AE, Li P. Age of acquisition: its neural and computational mechanisms. Psychol. Bull.
+
+2007; 133:638-650. [PubMed: 17592959] Hernández AE, Li P, MacWhinney B. The emergence of competing modules in bilingualism. Trends
+
+Cogn. Sci. 2005; 9:220-255. [PubMed: 15866148] Hopp H. Ultimate attainment in L2 inflectional morphology: performance similarities between nonnative and native speakers. Lingua. 2010; 120:901-931. Hopp H. Grammatical gender in adult L2 acquisition: relations between lexical and syntactic variability. Second Lang. Res. 2013; 29:33-56. Hoshino N, Kroll JF. Cognate effects in picture naming: Does cross-language activation survive a change of script? Cognition. 2008; 106:501-511. [PubMed: 17367774]
+
+Annu Rev Linguist. Author manuscript; available in PMC 2017 June 20.
+
+<!-- Page 18 -->
+Page 18
+
+Ivanova I, Costa A. Does bilingualism hamper lexical access in speech production? Acta Psychol.
+
+2008; 127:277-288. Jake JL, Myers-Scotton CM, Gross S. Making a minimalist approach to codeswitching work: adding the Matrix Language. Biling. Lang. Cogn. 2002; 5:69-91. Keating GD. Sensitivity to violations of gender agreement in native and nonnative Spanish: an eyemovement investigation. Lang. Learn. 2009; 59:503-35. Kimball J. Seven principles of surface structure parsing in natural language. Cognition. 1973; 2:15-47. Kotz SA. Acritical review of ERP and fMRI evidence on L2 syntactic processing. Brain Lang. 2009;
+
+109:68-74. [PubMed: 18657314] Kovács AM, Mehler J. Cognitive gains in 7-month-old bilingual infants. Proc. Natl. Acad. Sci. USA.
+
+2009; 106:6556-6560. [PubMed: 19365071] Kroll JF, Bialystok E. Understanding the consequences of bilingualism for language processing and cognition. J. Cogn. Psychol. 2013; 25:497-514. Kroll JF, Bobb SC, Hoshino N. Two languages in mind: bilingualism as a tool to investigate language, cognition, and the brain. Curr. Dir. Psychol. Sci. 2014; 23:159. [PubMed: 25309055] Kroll JF, Bobb SC, Misra MM, Guo T. Language selection in bilingual speech: evidence for inhibitory processes. Acta Psychol. 2008; 128:416-430. Kroll JF, Bobb SC, Wodniecka Z. Language selectivity is the exception, not the rule: arguments against a fixed locus of language selection in bilingual speech. Biling. Lang. Cogn. 2006; 9:119-135. Kroll, JF., De Groot, AMB., editors. Handbook of Bilingualism: Psycholinguistic Approaches. New
+
+York: Oxford Univ. Press; 2005. Kroll, JF., Dussias, PE. The comprehension of words and sentences in two languages. In: Bhatia, T.,
+
+Ritchie, W., editors. The Handbook of Bilingualism and Multilingualism. 2nd. Malden, MA: Wiley-Blackwell; 2013. p. 216-243. Kroll, JF., Dussias, PE., Bogulski, CA., Valdés-Kroff, J. Juggling two languages in one mind: what bilinguals tell us about language processing and its consequences for cognition. In: Ross, B., editor. The Psychology of Learning and Motivation. Vol.
+
+56. San Diego: Academic; 2012. p. 229-262. Kroll, JF., Gollan, TH. Speech planning in two languages: what bilinguals tell us about language production. In: Ferreira, V.Goldrick, M., Miozzo, M., editors. The Oxford Handbook of Language Production. Oxford, UK: Oxford Univ. Press; 2014. p. 165-181. Kroll JF, Gullifer J, Rossi E. The multilingual lexicon: the cognitive and neural basis of lexical comprehension and production in two languages. Annu. Rev. Appl. Linguist. 2013; 33:102-127. Kroll JF, Tokowicz N. Models of bilingual representation and processing. 2005:531-553. See
+
+Kroll&De Groot 2005. Lagrou E, Hartsuiker RJ, Duyck W. Knowledge of a second language influences auditory word recognition in the native language. J. Exp. Psychol. Learn. Mem. Cogn. 2011; 37:952-965. [PubMed: 21500950] Lambert, RD., Freed, BF., editors. The Loss of Language Skills. Rowley, MA: Newbury House; 1982. Lardiere D. Case and tense in the ‘fossilized’ steady state. Second Lang. Res. 1998a; 14:1-26. Lardiere D. Dissociating syntax from morphology in a divergent end-state grammar. Second Lang.
+
+Res. 1998b; 14:359-375. Lew-Williams C, Fernald A. Young children learning Spanish make rapid use of grammatical gender in spoken word recognition. Psychol. Sci. 2007; 18:193-198. [PubMed: 17444909] Libben MR, Titone DA. Bilingual lexical access in context: evidence from eye movements during reading. J. Exp. Psychol. Learn. Mem. Cogn. 2009; 35:381-390. [PubMed: 19271853] Linck JA, Kroll JF, Sunderman G. Losing access to the native language while immersed in a second language: evidence for the role of inhibition in second language learning. Psychol. Sci. 2009; 20:1507-1515. [PubMed: 19906121] Luk G, Bialystok E. Bilingualism is not a categorical variable: interaction between language proficiency and usage. J. Cogn. Psychol. 2013; 25:605-621. MacDonald MC. Probabilistic constraints and syntactic ambiguity resolution. Lang. Cogn. Process.
+
+1994; 9:157-201.
+
+Annu Rev Linguist. Author manuscript; available in PMC 2017 June 20.
+
+<!-- Page 19 -->
+Page 19
+
+MacDonald, MC., Seidenberg, MS. Constraint satisfaction accounts of lexical and sentence comprehension. In: Traxler, MJ., Gernsbacher, MA., editors. Handbook of Psycholinguistics. 2nd. London: Elsevier; 2006. p. 581-611. MacWhinney B. A unified model of language acquisition. 2005:49-67. See Kroll & De Groot 2005. Malt BC, Sloman SA. Linguistic diversity and object naming by non-native speakers of English.
+
+Biling. Lang. Cogn. 2003; 6:47-67. Marian V, Spivey M. Competing activation in bilingual language processing: within- and betweenlanguage competition. Biling. Lang. Cogn. 2003; 6:97-115. McDonald J. Beyond the critical period: processing-based explanations for poor grammaticality judgment performance by late second language learners. J. Mem. Lang. 2006; 55:381-401. Meuter RFI, Allport A. Bilingual language switching in naming: asymmetrical costs of language selection. J. Mem. Lang. 1999; 40:25-40. Miccio, AW., Hammer, CS., Rodríguez, BL. Code-switching and language disorders in young bilingual children. In: Toribio, J., Bullock, B., editors. Handbook on Linguistic Code-Switching. New York: Cambridge Univ. Press; 2009. p. 241-252. Misra M, Guo T, Bobb SC, Kroll JF. When bilinguals choose a single word to speak: electrophysiological evidence for inhibition of the native language. J. Mem. Lang. 2012; 67:224- 237. Morales J, Calvo A, Bialystok E. Working memory development in monolingual and bilingual children. J. Exp. Child Psychol. 2013a; 114:187-202. [PubMed: 23059128] Morales J, Gómez-Ariza CJ, Bajo MT. Dual mechanisms of cognitive control in bilinguals and monolinguals. J. Cogn. Psychol. 2013b; 25:531-546. Morford JP, Wilkinson E, Villwock A, Piñar P, Kroll JF. When deaf signers read English: Do written words activate their sign translations? Cognition. 2011; 118:286-292. [PubMed: 21145047] Otheguy, R., Lapidus, N. An adaptive approach to noun gender in New York contact Spanish. In:
+
+Nuñez-Cedeño, R.López, L., Cameron, R., editors. A Romance Perspective on Language Knowledge and Language Use: Selected Papers from the 31st Linguistic Symposium on the Romance Languages. Amsterdam: Benjamins; 2003. p. 209-229. Pienemann M, Di Base B, Kawaguchi S, Håkansson G. Processing constraints on L1 transfer.
+
+2005:128-153. See Kroll& De Groot 2005. Pliatsikas C, Marinis T. Processing empty categories in a second language: when naturalistic exposure fills the (intermediate) gap. Biling. Lang. Cogn. 2013; 16:167-182. Poplack S. “Sometimes I’ll start a sentence in Spanish y termino en español”: toward a typology of code-switching. Linguistics. 1980; 18:581-618. Prévost P, White L. Missing surface inflection or impairment in second language? Evidence from tense and agreement. Second Lang. Res. 2000; 16:103-133. Runnqvist E, Gollan TH, Costa A, Ferreira VS. A disadvantage in bilingual sentence production modulated by syntactic frequency and similarity across languages. Cognition. 2013; 129:256- 263. [PubMed: 23948209] Rutherford W. Language typology and language transfer. 1983:358-370. See Gass & Selinker 1983. Sabourin L, Stowe LA, de Haan GJ. Transfer effects in learning a second language grammatical gender system. Second Lang. Res. 2006; 22:1-29. Sabourin L, Stowe LA. Second language processing: When are first and second languages processed similarly? Second Lang. Res. 2008; 24:397-430. Schmid, MS., Köpke, B., Keijzer, M., Weilemar, L. First Language Attrition: Interdisciplinary
+
+Perspectives on Methodological Issues. Amsterdam: Benjamins; 2004. Schwartz AI, Kroll JF. Bilingual lexical activation in sentence context. J. Mem. Lang. 2006; 55:197-
+
+212. Schwartz, BD., Sprouse, R. Word order and nominative case in non-native language acquisition: a longitudinal study of (L1 Turkish) German interlanguage. In: Hoekstra, T., Schwartz, BD., editors. Language Acquisition Studies in Generative Grammar. Amsterdam: Benjamins; 1994. p. 317-368.
+
+Annu Rev Linguist. Author manuscript; available in PMC 2017 June 20.
+
+<!-- Page 20 -->
+Page 20
+
+Schwartz BD, Sprouse R. L2 cognitive states and the full transfer/full access model. Second Lang. Res.
+
+1996; 12:40-72. reserve: evidence from brain atrophy in Alzheimer’s disease. Cortex. 2012; 48:991-996. [PubMed: 21596373] Sebastián-Gallés N, Albareda-Castellot B, Weikum WM, Werker JF. A bilingual advantage in visual language discrimination in infancy. Psychol. Sci. 2012; 23:994-999. [PubMed: 22810164] Seliger, HW., Vago, RM. First Language Attrition. Cambridge, UK: Cambridge Univ. Press; 1991. Staub A. Eye movements and processing difficulty in object relative clauses. Cognition. 2010; 116:71-
+
+86. [PubMed: 20427040] Steinhauer K, White EJ, Drury JE. Temporal dynamics of late second language acquisition: evidence from event-related brain potentials. Second Lang. Res. 2009; 25:13-41. Sundara M, Polka L, Genesee F. Language experience facilitates discrimination of /d-ð/ in monolingual and bilingual acquisition of English. Cognition. 2006; 100:186-199. Thierry G, Wu YJ. Brain potentials reveal unconscious translation during foreign language comprehension. Proc. Natl. Acad. Sci. USA. 2007; 104:12530-12535. [PubMed: 17630288] Traxler MJ, Morris RK, Seely RE. Processing subject and object relative clauses: evidence from eye movements. J. Mem. Lang. 2002; 47:69-90. Trueswell JC, Sekerina I, Hill NM, Logrip ML. The kindergarten-path effect: studying on-line sentence processing in young children. Cognition. 1999; 73:89-134. [PubMed: 10580160] Valdés Kroff, J. Using eye-tracking to study auditory comprehension in code-switching: evidence for the link between comprehension and production. PhD thesis. University Park: Pa. State Univ.; 2012. p. 193 Van Assche E, Duyck W, Gollan TH. Whole-language and item-specific control in bilingual language production. J. Exp. Psychol. Learn. Mem. Cogn. 2013; 9:1781-1792. Van Hell JG, Dijkstra T. Foreign language knowledge can influence native language performance in exclusively native contexts. Psychon. Bull. Rev. 2002; 9:780-789. [PubMed: 12613683] Wattendorf E, Festman J, Westermann B, Keil U, Zappatore D, et al. Early bilingualism influences early and subsequently later acquired languages in cortical regions representing control functions. Int. J. Biling. 2014; 18:48-66. Wells JB, Christiansen MH, Race DS, Acheson DJ, MacDonald MC. Experience and sentence processing: statistical learning and relative clause comprehension. Cogn. Psychol. 2009; 58:250- 271. [PubMed: 18922516] Witzel J, Witzel N, Nicol J. Deeper than shallow: evidence for structure-based parsing biases in L2. sentence processing. Appl. Psycholinguist. 2012; 33:419-456. Zobl H. A direction for contrastive analysis: the comparative study of developmental sequences.
+
+TESOL Q. 1982; 16:183-196.
+
+Annu Rev Linguist. Author manuscript; available in PMC 2017 June 20.

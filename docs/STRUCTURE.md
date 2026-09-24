@@ -54,10 +54,10 @@ books-project/
 │   ├── needs_review/               # 🚨 [人機隔離區] 遇疑難公式或壞頁自動存於此，不卡死主程序
 │   └── state/                      # 💾 斷點續傳快照、TOC 預覽與 Dashboard 狀態
 │
-├── tests/                          # 🧪 [自動化測試體系] (186 個測試全部 PASS)
+├── tests/                          # 🧪 [自動化測試體系] (197 個測試全部 PASS)
 │   ├── __init__.py                 # 動態注入 sys.path，確保任何環境直跑 unittest/pytest
-│   └── test_*.py                   # 22 個測試檔案，平坦結構於 tests/ 頂層
-│                                   # (含 unit + integration 測試，包含 test_v36_literature_layout_refinement.py)
+│   └── test_*.py                   # 24 個測試檔案，平坦結構於 tests/ 頂層
+│                                   # (含 test_v37_semantic_figure_table_placement.py, test_v38_universal_literature_profiling.py)
 │
 ├── src/                            # 💻 [業務核心原始碼] (Clean Architecture)
 │   ├── guards/                     # 🛡️ 守衛防線

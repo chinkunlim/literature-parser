@@ -5,15 +5,18 @@
 
 ---
 
-### 🕒 最新交接時間：2026-09-25 04:06
+### 🕒 最新交接時間：2026-09-25 04:38
  
 #### 1. 剛剛完成了什麼？ (Session Accomplishments)
-- **Figure 與 Table 語義定位與跨頁句子自動縫合演算法上線**：
-  1. 解決 Figure 2 穿插於任務指示說明段落中間（截斷 `...all money in` 與 `your temporary bank is lost...`）的缺陷。
-  2. 實作 `FigureFormatter.reposition_figures`：提取所有 `<figure>` 並自動偵測內文第一次提及該圖表的完整段落（以 `\n\n` 結尾）進行錨定；未提及圖表優雅回退當前章節末尾。
-  3. 原圖表抽取位置處被切斷的句子與段落 100% 自動無縫縫合，任務指示說明段落恢復完整連續。
-  4. 新增 `tests/test_v37_semantic_figure_table_placement.py`，全套 193 項單元測試 100% 通過。
-  5. 重新處理 `2002-01194-001.pdf`，雙重審查 Content Continuity 與 Sentence Completeness 達成 0 瑕疵完全通過（PASS），Ollama 評定為 Excellent。
+- **文獻全自動幾何座標分析與 Profile 生成機制上線 (Universal Profiling)**：
+  1. 實作 `CoordinateCalibrator.calibrate_literature_geometry` 與 `calibrate_and_save_literature_profile`，自動掃描每篇文獻之頁面維度、邊界、Header/Footer 截斷點、單雙欄判定與正文起始 Y 座標。
+  2. 擴充出版商識別器 `PublisherDetector`，新增 AIP (`10.1063`)、Annual Reviews (`10.1146`)、Cambridge University Press (`10.1017`) 原型與設定檔。
+  3. 實作單欄稿件保護 (`is_single_col_doc`)，杜絕單欄稿件被割裂為雙欄。
+  4. 實作 NIH/HHS Author Manuscript 浮水印清除器與附錄段落（Author Note, Acknowledgments, Declarations, Funding 等）統一定位於 References 前。
+  5. 增強標題與首頁引言識別（解決無顯式 Abstract 標題導致開頭段落遺失問題）。
+  6. 解決 KaTeX 貨幣符號轉義（`$12.00` ➔ `&#36;12.00`）與不對稱雙錢號問題。
+  7. 全量批次處理 `data/input/literature/` 全部 10 篇學術文獻，**10 篇 100% 全部通過（PASS）驗證**！
+  8. 新增 `tests/test_v38_universal_literature_profiling.py`，全套 197 項單元測試 100% 通過。
 
 #### 2. 目前專案狀態與代碼位置
 - 分支：`main`

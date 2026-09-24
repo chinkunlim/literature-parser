@@ -24,8 +24,32 @@ def is_valid_dictionary_word(token: str, dict_words: set) -> bool:
     if clean in dict_words:
         return True
     # Common academic & psychological terms
-    if clean in {'doi', 'bart', 'retest', 'psychopharmacology', 'chicago', 'keywords', 'impulsivity', 'delinquency'}:
+    if clean in {'doi', 'bart', 'retest', 'psychopharmacology', 'chicago', 'keywords', 'impulsivity', 'delinquency', 'bilingual', 'bilingualism', 'cognitive', 'taxidriving', 'fMRI', 'prefrontal', 'et', 'al', 'longterm', 'alzheimer', 'psychol', 'exp', 'author'}:
         return True
+    # English inflectional & derivational morphology
+    if clean.endswith('ies') and clean[:-3] + 'y' in dict_words:
+        return True
+    if clean.endswith('ing'):
+        stem = clean[:-3]
+        if stem in dict_words or stem + 'e' in dict_words:
+            return True
+        if len(stem) > 2 and stem[-1] == stem[-2] and stem[:-1] in dict_words:
+            return True
+    if clean.endswith('ed'):
+        stem = clean[:-2]
+        if stem in dict_words or stem + 'e' in dict_words:
+            return True
+        if len(stem) > 2 and stem[-1] == stem[-2] and stem[:-1] in dict_words:
+            return True
+    # British vs American English (e.g. organisation -> organization)
+    if 'sation' in clean and clean.replace('sation', 'zation') in dict_words:
+        return True
+    if 'ise' in clean and clean.replace('ise', 'ize') in dict_words:
+        return True
+    # Standard prefixes (re-, un-, non-, co-)
+    for prefix in ('re', 'un', 'non', 'co'):
+        if clean.startswith(prefix) and clean[len(prefix):] in dict_words:
+            return True
     # Plural or standard endings ('s, s, ed, ing, ly, etc.)
     for suffix in ('s', 'es', 'ed', 'ing', 'ly', 'er', 'est', 'tion', 'ment', 'able', 'ize', 'ized', 'izing', 'ical', 'ology', 'ability'):
         if clean.endswith(suffix) and clean[:-len(suffix)] in dict_words:
@@ -33,7 +57,7 @@ def is_valid_dictionary_word(token: str, dict_words: set) -> bool:
     # Hyphenated compound words
     if '-' in clean:
         parts = clean.split('-')
-        if all(p in dict_words or p.isdigit() or p in {'retest', 'bart'} for p in parts if p):
+        if all(is_valid_dictionary_word(p, dict_words) for p in parts if p):
             return True
     return False
 

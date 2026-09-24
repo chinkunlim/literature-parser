@@ -1,0 +1,37 @@
+{
+  "publisher": "AIP Publishing",
+  "archetype": "literature_aip_standard",
+  "is_literature": true,
+  "is_journal": true,
+  "geometry": {
+    "page_width": 891.0,
+    "page_height": 1188.0,
+    "header_cut_ratio": 0.05,
+    "footer_cut_ratio": 0.05,
+    "odd_page_margin_x": [0.0, 1.0],
+    "even_page_margin_x": [0.0, 1.0]
+  },
+  "typography": {
+    "h1_min_size": 18.0,
+    "h2_min_size": 14.0,
+    "h3_min_size": 12.0
+  },
+  "special_blocks": {
+    "has_concept_map": false,
+    "has_margin_glossary": false,
+    "eoc_heading_patterns": [
+      "^References\\b",
+      "^Author Declarations\\b",
+      "^Conflict of Interest\\b",
+      "^Data Availability Statement\\b",
+      "^Acknowledgments?\\b",
+      "^Supplementary Material\\b"
+    ]
+  },
+  "column_roles": {
+    "even_left": "body",
+    "even_right": "body",
+    "odd_left": "body",
+    "odd_right": "body"
+  }
+}

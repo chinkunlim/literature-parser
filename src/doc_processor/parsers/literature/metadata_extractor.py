@@ -93,27 +93,86 @@ class LiteratureMetadataExtractor:
             except Exception as e:
                 logger.debug("pdftotext extraction skipped: %s", e)
 
+        pdf_text_joined = "\n".join(pdf_lines) if pdf_lines else ""
+
+        # Check NIH / HHS "Published in final edited form as:"
+        m_nih = re.search(
+            r'Published in final edited form as:\s*\n+([^\n\.]+?)\.\s*(\d{4}[^\n;]*);\s*([\d\(\)\:\s–\-]+)\.\s*(?:doi:\s*([^\s\n]+))?',
+            pdf_text_joined or raw_text,
+            re.I
+        )
+        if m_nih:
+            meta["journal"] = m_nih.group(1).strip()
+            meta["volume_info"] = f"{m_nih.group(2).strip()}; {m_nih.group(3).strip()}"
+            if m_nih.group(4):
+                meta["doi"] = m_nih.group(4).strip().rstrip('.,;)')
+            if pdf_lines:
+                try:
+                    nih_idx = -1
+                    for idx, l in enumerate(pdf_lines):
+                        if "Published in final edited form as:" in l:
+                            nih_idx = idx
+                            break
+                    if nih_idx != -1 and nih_idx + 2 < len(pdf_lines):
+                        title_candidate = pdf_lines[nih_idx + 2].strip()
+                        if not meta["title"] and len(title_candidate) > 5 and not title_candidate.lower().startswith("abstract"):
+                            meta["title"] = title_candidate
+                        if nih_idx + 3 < len(pdf_lines):
+                            author_cand = pdf_lines[nih_idx + 3].strip()
+                            affil_cand = pdf_lines[nih_idx + 4].strip() if nih_idx + 4 < len(pdf_lines) else ""
+                            if author_cand and not author_cand.lower().startswith("abstract") and not meta["authors"]:
+                                meta["authors"].append({
+                                    "name": author_cand,
+                                    "affiliation": affil_cand if not affil_cand.lower().startswith("abstract") else ""
+                                })
+                except Exception:
+                    pass
+
+        # Check CUP / AIP "Cite as" or "Cite this article"
+        m_cite = re.search(
+            r'Cite (?:this article|as):\s*([^\n\(\);]+?)\s*(\d+[\d\s,–\-\(\)]+)\.?\s*(?:;?\s*(?:https?://doi\.org/|doi:\s*)(10\.\d{4,9}/[^\s"\'<>]+))?',
+            pdf_text_joined or raw_text,
+            re.I
+        )
+        if m_cite:
+            if not meta["journal"]:
+                meta["journal"] = m_cite.group(1).strip()
+            if not meta["volume_info"]:
+                meta["volume_info"] = m_cite.group(2).strip()
+            if m_cite.group(3) and not meta["doi"]:
+                meta["doi"] = m_cite.group(3).strip().rstrip('.,;)')
+
+        # Check Elsevier format: Journal of Adolescence 26 (2003) 475–479
+        m_els = re.search(r'([A-Za-z\s]+)\s+(\d+)\s+\((\d{4})\)\s+([\d–\-]+)', pdf_text_joined or raw_text)
+        if m_els:
+            if not meta["journal"] and "journal" in m_els.group(1).lower():
+                meta["journal"] = m_els.group(1).strip()
+            if not meta["volume_info"]:
+                meta["volume_info"] = f"{m_els.group(3)}, Vol. {m_els.group(2)}, {m_els.group(4)}"
+
         if pdf_lines:
-            meta["journal"] = pdf_lines[0]
-            if len(pdf_lines) > 1:
-                vol_clean = re.sub(r'\s*-\s*', '–', pdf_lines[1])
+            clean_pdf_lines = [
+                l for l in pdf_lines
+                if not re.search(r'^(?:NIH Public Access|Author Manuscript|HHS Public Access|ARTICLE IN PRESS|RESEARCH ARTICLE)\b', l, re.I)
+                and not re.search(r'Author manuscript; available in PMC', l, re.I)
+            ]
+            if clean_pdf_lines and not meta["journal"]:
+                meta["journal"] = clean_pdf_lines[0]
+            if len(clean_pdf_lines) > 1 and not meta["volume_info"]:
+                vol_clean = re.sub(r'\s*-\s*', '–', clean_pdf_lines[1])
                 vol_clean = re.sub(r'(\d+)\s*–\s*(\d+)', r'\1–\2', vol_clean)
-                meta["volume_info"] = vol_clean
-            for l in pdf_lines[2:6]:
-                if l.lower().startswith("copyright"):
+                if re.search(r'\d{4}', vol_clean):
+                    meta["volume_info"] = vol_clean
+            for l in pdf_lines:
+                if l.lower().startswith("copyright") or l.startswith("©"):
                     meta["copyright"] = l
                     break
-            for l in pdf_lines[2:8]:
-                doi_m = re.search(r'10\.\d{4,9}/[^\s"\'<>]+', l)
-                if doi_m:
-                    meta["doi"] = doi_m.group(0).rstrip('.,;)')
-                    break
-            t_candidates = []
-            for l in pdf_lines[4:10]:
-                if l.startswith("Evaluation of") or l.startswith("The Balloon") or ("Risk Taking" in l):
-                    t_candidates.append(l)
-            if t_candidates:
-                meta["title"] = " ".join(t_candidates)
+            if not meta["doi"]:
+                for l in pdf_lines:
+                    doi_m = re.search(r'10\.\d{4,9}/[^\s"\'<>]+', l)
+                    if doi_m:
+                        meta["doi"] = doi_m.group(0).rstrip('.,;)')
+                        break
 
         # 1. DOI fallback
         if not meta["doi"]:
@@ -145,7 +204,7 @@ class LiteratureMetadataExtractor:
 
         # 3. Copyright fallback
         if not meta["copyright"]:
-            cpy_m = re.search(r'(Copyright\s+\d{4}\s+by\s+[^\n]+)', raw_text, re.I)
+            cpy_m = re.search(r'((?:Copyright|©)\s+\d{4}\s+(?:by\s+)?[^\n]+)', raw_text, re.I)
             if cpy_m:
                 meta["copyright"] = cpy_m.group(1).strip()
 
@@ -181,10 +240,19 @@ class LiteratureMetadataExtractor:
             raw_abs = abs_m.group(1).strip()
             raw_abs = re.sub(r'^>\s*', '', raw_abs, flags=re.M)
             meta["abstract"] = raw_abs.strip()
-        elif "The present study" in raw_text:
-            m_study = re.search(r'(The present study\s*\(.*?\).*?assessment of risk taking\.)', raw_text, re.DOTALL)
-            if m_study:
-                meta["abstract"] = m_study.group(1).strip()
+        else:
+            m_kw = re.search(r'(?m)^\*?Keywords:?\*?\s*(.+?)$', raw_text, re.I)
+            if m_kw:
+                pre_kw = raw_text[:m_kw.start()].strip()
+                paragraphs = [p.strip() for p in pre_kw.split('\n\n') if p.strip()]
+                for para in reversed(paragraphs):
+                    if len(para) > 100 and not para.startswith('#') and not para.startswith('<') and not ('University' in para[-35:] or 'College' in para[-35:]):
+                        meta["abstract"] = para
+                        break
+            elif "The present study" in raw_text:
+                m_study = re.search(r'(The present study\s*\(.*?\).*?assessment of risk taking\.)', raw_text, re.DOTALL)
+                if m_study:
+                    meta["abstract"] = m_study.group(1).strip()
 
         return meta
 
@@ -351,14 +419,22 @@ TEXT TO EXTRACT FROM:
                 cutoff = m_abs_hdr.end() + (m_p.end() if m_p else 0)
                 body_text = full_md[cutoff:].strip()
 
-        # If body_text not found via heading, match end of abstract paragraph
-        if not body_text and abstract_text:
-            lead = abstract_text[:40]
-            abs_pos = full_md.find(lead)
-            if abs_pos != -1:
-                p_end = full_md.find("\n\n", abs_pos)
-                if p_end != -1:
-                    body_text = full_md[p_end:].strip()
+        # If body_text not found via heading, match Introduction or end of Keywords
+        if not body_text:
+            m_intro = re.search(r'(?mi)^#*\s*Introduction(?:\s*:|\b)[^\n]*', full_md)
+            if m_intro and m_intro.start() > 100:
+                body_text = full_md[m_intro.start():].strip()
+            else:
+                m_kw = re.search(r'(?m)^\*?(?:Key\s*words|Keywords):?\*?[^\n]*\n+', full_md, re.I)
+                if m_kw:
+                    body_text = full_md[m_kw.end():].strip()
+                elif abstract_text:
+                    lead = abstract_text[:40]
+                    abs_pos = full_md.find(lead)
+                    if abs_pos != -1:
+                        p_end = full_md.find("\n\n", abs_pos + len(lead))
+                        if p_end != -1:
+                            body_text = full_md[p_end:].strip()
 
         # Fallback to page 2 or safe cutoff
         if not body_text:

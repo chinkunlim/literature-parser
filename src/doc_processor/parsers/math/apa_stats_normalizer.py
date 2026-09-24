@@ -151,7 +151,9 @@ class APAStatsNormalizer:
         # Normalize ps > .05
         res = cls.PS_PLURAL.sub(r'$p\\text{s} \1 \2$', res)
 
-        # Clean up any accidental nested $ e.g. $$...$$ inside prose where not intended
-        res = re.sub(r'\$\$([^\$]+)\$\$', r'$\1$', res)
+        # Clean up any accidental nested $ e.g. $$...$$ or $$...$ inside prose
+        res = re.sub(r'\${2,}([^\$\n]+)\${2,}', r'$\1$', res)
+        res = re.sub(r'\${2,}([^\$\n]+)\$', r'$\1$', res)
+        res = re.sub(r'\$([^\$\n]+)\${2,}', r'$\1$', res)
 
         return res

@@ -1,0 +1,208 @@
+{
+  "archetype": "journal",
+  "name": "Academic Journal Article",
+  "features": {
+    "is_journal_article": true,
+    "has_toc": false,
+    "has_learning_objectives": false,
+    "has_concept_map": false,
+    "has_margin_glossaries": false,
+    "has_anki_export": false,
+    "has_end_of_chapter": false,
+    "allow_blockquotes": false,
+    "two_column_priority": true,
+    "hanging_indent_references": true,
+    "academic_css": true
+  },
+  "geometry": {
+    "page_dimensions": {
+      "width": 918.0,
+      "height": 1188.0
+    },
+    "margins": {
+      "header_cutoff_y": 59.0,
+      "header_cutoff_ratio": 0.05,
+      "footer_cutoff_y": 1074.0,
+      "footer_cutoff_ratio": 0.904
+    },
+    "columns": {
+      "layout": "single_column",
+      "column_count": 1,
+      "column_split_x": 440.64,
+      "gutter_bounds": [
+        422.28,
+        495.72
+      ]
+    },
+    "content_start": {
+      "page_1_content_start_y": 197.0,
+      "page_1_content_start_ratio": 0.166
+    }
+  },
+  "sections": [
+    "Abstract",
+    "Keywords",
+    "Introduction",
+    "Method",
+    "Methods",
+    "Results",
+    "Discussion",
+    "Conclusions",
+    "References",
+    "Author Note",
+    "Acknowledgments"
+  ],
+  "publisher_config": {
+    "publisher": "apa",
+    "name": "American Psychological Association",
+    "doi_prefixes": [
+      "10.1037"
+    ],
+    "running_header_patterns": [
+      "\\bTEST-RETEST CHARACTERISTICS\\b",
+      "\\bEXPERIMENTAL AND CLINICAL PSYCHOPHARMACOLOGY\\b",
+      "\\bAMERICAN PSYCHOLOGICAL ASSOCIATION\\b",
+      "\\bPSYCHOLOGICAL ASSESSMENT\\b",
+      "\\bJOURNAL OF (ABNORMAL|CONSULTING|EXPERIMENTAL|PERSONALITY|SOCIAL) PSYCHOLOGY\\b",
+      "^\\d+\\s+[A-Z]{4,}.*[A-Z]{4,}\\s+\\d+$"
+    ],
+    "author_note_location": "page_1_col_1_bottom",
+    "author_note_patterns": [
+      "^Author Note[s]?\\b",
+      "^Correspondence concerning this article",
+      "^Requests for reprints",
+      "^Address correspondence",
+      "\\bThis (research|study|work|project) was (supported|funded|conducted)\\b",
+      "\\bWe (thank|gratefully acknowledge|acknowledge)\\b",
+      "^Preparation of (this|the) (article|manuscript|paper)\\b",
+      "^[A-Z][a-z]+ [A-Z][a-z]+,\\s+(Department of|Center for|School of|Institute of|Division of)\\b",
+      "^The (author|authors) (declare|report|wish)\\b",
+      "\\bNo (conflict|competing) (of interest|interests)\\b"
+    ],
+    "footer_noise_patterns": [
+      "^\\d+\\s+A computerized version",
+      "^\\d+\\s+The (original|full|complete) (version|study|dataset)",
+      "^Note\\.\\s+",
+      "^\\*\\s*Note[s]?\\.?\\s+",
+      "^BART indicates\\b",
+      "^Adapted from\\b",
+      "^Data from\\b",
+      "^Values? (are|represent|indicate)\\b",
+      "^Copyright \\(C\\)\\s+\\d{4}\\b",
+      "Copyright \\d{4} (by|the) (American Psychological|APA)\\b"
+    ],
+    "copyright_patterns": [
+      "Copyright \\d{4} by the American Psychological Association",
+      "Copyright \\d{4}, American Psychological Association",
+      "Psychological Assessment, Vol\\.",
+      "Journal of Consulting and Clinical Psychology"
+    ],
+    "table_note_patterns": [
+      "^Note\\.\\s+",
+      "^\\*Note\\.\\s+",
+      "^BART indicates\\b",
+      "^Adapted from\\b",
+      "^\\*p\\s*[<>]",
+      "^\\*\\*p\\s*[<>]",
+      "^\\*\\*\\*p\\s*[<>]",
+      "^[a-z]\\s+",
+      "^CI =",
+      "^SD =",
+      "^SE =",
+      "^df =",
+      "^n =",
+      "^N ="
+    ],
+    "ocr_stat_fix_patterns": [
+      [
+        "p o (0\\.\\d+)",
+        "p < $1"
+      ],
+      [
+        "p o 0(\\d{2})",
+        "p < 0.$1"
+      ],
+      [
+        "r = 0\\$ (\\d+)",
+        "r = 0.$1"
+      ],
+      [
+        "r 2 = 0\\$ (\\d+)",
+        "r² = 0.$1"
+      ],
+      [
+        "r (\\d{4})",
+        "© $1"
+      ],
+      [
+        "\\br (\\d{4})\\b",
+        "© $1"
+      ]
+    ],
+    "hanging_indent_reference_style": "apa_7th"
+  },
+  "publisher": "apa",
+  "shared_sections": [
+    {
+      "name": "Author Note & Acknowledgments",
+      "aliases": [
+        "Author Note",
+        "Author Notes",
+        "Acknowledgments",
+        "Acknowledgement"
+      ],
+      "patterns": [
+        "(?i)^Author Note\\b",
+        "(?i)^Correspondence concerning this article\\b",
+        "(?i)We thank .*? for their assistance",
+        "(?i)This research was supported by"
+      ],
+      "target_heading_level": 2,
+      "typical_location": "end_of_paper_or_page_1"
+    },
+    {
+      "name": "History & Received Dates",
+      "aliases": [
+        "Article History",
+        "Dates"
+      ],
+      "patterns": [
+        "(?i)^Received\\s+\\d{1,2}\\s+[A-Za-z]+\\s+\\d{4}",
+        "(?i)^Revision received\\s+[A-Za-z]+",
+        "(?i)^Accepted\\s+[A-Za-z]+"
+      ],
+      "target_heading_level": 3,
+      "typical_location": "end_of_paper"
+    },
+    {
+      "name": "Funding & Conflict of Interest",
+      "aliases": [
+        "Funding",
+        "Conflict of Interest",
+        "Role of the Funding Source"
+      ],
+      "patterns": [
+        "(?i)^Role of the Funding Source\\b",
+        "(?i)^Conflict of Interest\\b",
+        "(?i)^Financial Disclosure\\b"
+      ],
+      "target_heading_level": 2,
+      "typical_location": "before_references"
+    }
+  ],
+  "shared_symbols": {
+    "⫽": "=",
+    "⫹": "+",
+    "⬍": "<",
+    "ⱕ": "\\le ",
+    "␳": "\\rho",
+    "ⴱ": "*",
+    "¼": "=",
+    "⫾": "\\pm ",
+    "⫺": "-",
+    "–": "-",
+    "—": "—",
+    "′": "'",
+    "″": "\""
+  }
+}

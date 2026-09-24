@@ -147,12 +147,121 @@ class CoordinateCalibrator:
         logger.info("Saved calibrated geometry to %s: %s", profile_path, geom)
         return profile
 
+    @classmethod
+    def calibrate_literature_geometry(cls, sample_pdf: str, total_pages: int = 10) -> Dict[str, Any]:
+        """
+        Samples pages of academic literature to calibrate:
+        1. Exact page width and height.
+        2. Running header cutoff Y and ratio.
+        3. Running footer cutoff Y and ratio.
+        4. Single-column vs two-column layout and gutter split coordinates.
+        5. Page 1 content start Y coordinate (below journal banner/issn/doi).
+        """
+        sample_pages = range(1, min(total_pages + 1, 6))
+        pw, ph = 600.0, 800.0
+        header_cutoffs = []
+        footer_cutoffs = []
+        p1_content_start_y = None
 
-if __name__ == "__main__":
-    import sys
-    b_dir = Path("./data/output/books/Research Methods, Design, and Analysis 13th ed")
-    ch_pdf = b_dir / "chapters/Ch02 Research Approaches and Methods of Data Collection/Ch02 Research Approaches and Methods of Data Collection.pdf"
-    if ch_pdf.exists():
-        geom = CoordinateCalibrator.calibrate_book_geometry(str(ch_pdf))
-        print("Calibrated Geometry Result:")
-        print(json.dumps(geom, indent=2))
+        wide_count = 0
+        left_count = 0
+        right_count = 0
+
+        for p in sample_pages:
+            xml = cls.extract_page_xml(sample_pdf, p)
+            if not xml or '<page' not in xml:
+                continue
+            try:
+                page_part = xml[xml.find('<page'):xml.rfind('</page>') + 7]
+                root = ET.fromstring(page_part)
+            except Exception:
+                continue
+
+            pw = float(root.attrib.get('width', pw))
+            ph = float(root.attrib.get('height', ph))
+
+            texts = root.findall('text')
+            for t in texts:
+                top = float(t.attrib.get('top', 0))
+                left = float(t.attrib.get('left', 0))
+                w = float(t.attrib.get('width', 0))
+                txt = ''.join(t.itertext()).strip()
+                if not txt:
+                    continue
+
+                if p > 1:
+                    if top < ph * 0.10:
+                        header_cutoffs.append(top)
+                    elif top > ph * 0.88:
+                        footer_cutoffs.append(top)
+                    else:
+                        if w > pw * 0.60:
+                            wide_count += 1
+                        elif left + w <= pw * 0.52:
+                            left_count += 1
+                        elif left >= pw * 0.48:
+                            right_count += 1
+                else:
+                    if top > ph * 0.08 and p1_content_start_y is None:
+                        p1_content_start_y = top
+
+        is_two_col = (left_count >= 15 and right_count >= 15 and (left_count + right_count) > wide_count * 1.2)
+        layout = 'two_column' if is_two_col else 'single_column'
+
+        hdr_cut = min(header_cutoffs) if header_cutoffs else ph * 0.06
+        ftr_cut = max(footer_cutoffs) if footer_cutoffs else ph * 0.92
+
+        return {
+            'page_dimensions': {'width': round(pw, 2), 'height': round(ph, 2)},
+            'margins': {
+                'header_cutoff_y': round(hdr_cut, 2),
+                'header_cutoff_ratio': round(hdr_cut / ph, 3),
+                'footer_cutoff_y': round(ftr_cut, 2),
+                'footer_cutoff_ratio': round(ftr_cut / ph, 3)
+            },
+            'columns': {
+                'layout': layout,
+                'column_count': 2 if is_two_col else 1,
+                'column_split_x': round(pw * 0.48, 2),
+                'gutter_bounds': [round(pw * 0.46, 2), round(pw * 0.54, 2)]
+            },
+            'content_start': {
+                'page_1_content_start_y': round(p1_content_start_y or ph * 0.15, 2),
+                'page_1_content_start_ratio': round((p1_content_start_y or ph * 0.15) / ph, 3)
+            }
+        }
+
+    @classmethod
+    def calibrate_and_save_literature_profile(cls, doc_dir: Path, sample_pdf: Path, total_pages: int = 10) -> Dict[str, Any]:
+        """Calibrates coordinates for an academic literature document and saves document_profile.json."""
+        profile_path = doc_dir / "document_profile.json"
+        profile = {
+            "archetype": "literature",
+            "doc_name": doc_dir.name
+        }
+        if profile_path.exists():
+            try:
+                with open(profile_path, "r", encoding="utf-8") as f:
+                    profile = json.load(f)
+            except Exception:
+                pass
+
+        geom = cls.calibrate_literature_geometry(str(sample_pdf), total_pages=total_pages)
+        profile["geometry"] = geom
+
+        # Detect publisher
+        try:
+            from doc_processor.fingerprinting.publisher_detector import PublisherDetector
+            p1_xml = cls.extract_page_xml(str(sample_pdf), 1)
+            p1_text = re.sub(r'<[^>]+>', ' ', p1_xml) if p1_xml else ""
+            pub = PublisherDetector.detect_from_text(p1_text)
+            if pub:
+                profile["publisher"] = pub
+        except Exception as e:
+            logger.debug("Publisher detection skipped in literature profiler: %s", e)
+
+        with open(profile_path, "w", encoding="utf-8") as f:
+            json.dump(profile, f, indent=2, ensure_ascii=False)
+
+        logger.info("Saved literature profile to %s", profile_path)
+        return profile

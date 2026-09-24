@@ -15,10 +15,29 @@
     "academic_css": true
   },
   "geometry": {
-    "header_cut_ratio": 0.08,
-    "footer_cut_ratio": 0.06,
-    "gutter_min_width": 20.0,
-    "span_min_width_ratio": 0.48
+    "page_dimensions": {
+      "width": 894.0,
+      "height": 1192.0
+    },
+    "margins": {
+      "header_cutoff_y": 83.0,
+      "header_cutoff_ratio": 0.07,
+      "footer_cutoff_y": 1076.0,
+      "footer_cutoff_ratio": 0.903
+    },
+    "columns": {
+      "layout": "two_column",
+      "column_count": 2,
+      "column_split_x": 429.12,
+      "gutter_bounds": [
+        411.24,
+        482.76
+      ]
+    },
+    "content_start": {
+      "page_1_content_start_y": 140.0,
+      "page_1_content_start_ratio": 0.117
+    }
   },
   "sections": [
     "Abstract",

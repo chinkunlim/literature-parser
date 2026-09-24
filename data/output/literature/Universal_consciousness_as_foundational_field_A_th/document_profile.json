@@ -1,0 +1,119 @@
+{
+  "archetype": "journal",
+  "name": "Academic Journal Article",
+  "features": {
+    "is_journal_article": true,
+    "has_toc": false,
+    "has_learning_objectives": false,
+    "has_concept_map": false,
+    "has_margin_glossaries": false,
+    "has_anki_export": false,
+    "has_end_of_chapter": false,
+    "allow_blockquotes": false,
+    "two_column_priority": true,
+    "hanging_indent_references": true,
+    "academic_css": true
+  },
+  "geometry": {
+    "page_dimensions": {
+      "width": 891.0,
+      "height": 1188.0
+    },
+    "margins": {
+      "header_cutoff_y": 56.0,
+      "header_cutoff_ratio": 0.047,
+      "footer_cutoff_y": 1118.0,
+      "footer_cutoff_ratio": 0.941
+    },
+    "columns": {
+      "layout": "two_column",
+      "column_count": 2,
+      "column_split_x": 427.68,
+      "gutter_bounds": [
+        409.86,
+        481.14
+      ]
+    },
+    "content_start": {
+      "page_1_content_start_y": 142.0,
+      "page_1_content_start_ratio": 0.12
+    }
+  },
+  "sections": [
+    "Abstract",
+    "Keywords",
+    "Introduction",
+    "Method",
+    "Methods",
+    "Results",
+    "Discussion",
+    "Conclusions",
+    "References",
+    "Author Note",
+    "Acknowledgments"
+  ],
+  "publisher": null,
+  "shared_sections": [
+    {
+      "name": "Author Note & Acknowledgments",
+      "aliases": [
+        "Author Note",
+        "Author Notes",
+        "Acknowledgments",
+        "Acknowledgement"
+      ],
+      "patterns": [
+        "(?i)^Author Note\\b",
+        "(?i)^Correspondence concerning this article\\b",
+        "(?i)We thank .*? for their assistance",
+        "(?i)This research was supported by"
+      ],
+      "target_heading_level": 2,
+      "typical_location": "end_of_paper_or_page_1"
+    },
+    {
+      "name": "History & Received Dates",
+      "aliases": [
+        "Article History",
+        "Dates"
+      ],
+      "patterns": [
+        "(?i)^Received\\s+\\d{1,2}\\s+[A-Za-z]+\\s+\\d{4}",
+        "(?i)^Revision received\\s+[A-Za-z]+",
+        "(?i)^Accepted\\s+[A-Za-z]+"
+      ],
+      "target_heading_level": 3,
+      "typical_location": "end_of_paper"
+    },
+    {
+      "name": "Funding & Conflict of Interest",
+      "aliases": [
+        "Funding",
+        "Conflict of Interest",
+        "Role of the Funding Source"
+      ],
+      "patterns": [
+        "(?i)^Role of the Funding Source\\b",
+        "(?i)^Conflict of Interest\\b",
+        "(?i)^Financial Disclosure\\b"
+      ],
+      "target_heading_level": 2,
+      "typical_location": "before_references"
+    }
+  ],
+  "shared_symbols": {
+    "⫽": "=",
+    "⫹": "+",
+    "⬍": "<",
+    "ⱕ": "\\le ",
+    "␳": "\\rho",
+    "ⴱ": "*",
+    "¼": "=",
+    "⫾": "\\pm ",
+    "⫺": "-",
+    "–": "-",
+    "—": "—",
+    "′": "'",
+    "″": "\""
+  }
+}

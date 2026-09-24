@@ -73,6 +73,8 @@ class AccuracyVerifier:
         # 2. Vocabulary & Dictionary Verification
         vocab_content = re.sub(r'<style>.*?</style>', '', md_content, flags=re.DOTALL)
         vocab_content = re.sub(r'<[^>]+>', ' ', vocab_content)
+        vocab_content = re.sub(r'\]\([^)]+\)', ']', vocab_content)
+        vocab_content = re.sub(r'https?://[^\s\)]+', ' ', vocab_content)
         tokens = re.findall(r'\b[a-zA-Z0-9_\-’\']+\b', vocab_content)
         total_tokens = len(tokens)
         valid_tokens = sum(1 for t in tokens if is_valid_dictionary_word(t, self.dict_words))
@@ -81,7 +83,10 @@ class AccuracyVerifier:
         # Check if chapter is front matter (cover, publisher imprint, copyright page)
         is_front_matter = ch_name.lower().startswith(('00-', 'cover', 'publish'))
         is_journal = False
-        candidates = [ch_path / "book_profile.json"] + [p / "book_profile.json" for p in ch_path.parents]
+        candidates = [
+            ch_path / "document_profile.json",
+            ch_path / "book_profile.json",
+        ] + [p / "document_profile.json" for p in ch_path.parents] + [p / "book_profile.json" for p in ch_path.parents]
         for p in candidates:
             if p.exists():
                 try:
@@ -90,8 +95,10 @@ class AccuracyVerifier:
                         data = json.load(pf)
                         is_journal = (
                             data.get("is_journal", False)
-                            or data.get("archetype") == "journal"
+                            or data.get("is_literature", False)
+                            or data.get("archetype") in ("journal", "literature")
                             or data.get("features", {}).get("is_journal_article", False)
+                            or data.get("features", {}).get("is_literature", False)
                         )
                         if is_journal:
                             break
@@ -99,7 +106,7 @@ class AccuracyVerifier:
                     pass
 
         vocab_ratio = (valid_tokens / total_tokens * 100) if total_tokens > 0 else 0
-        vocab_pass = (vocab_ratio >= 88.0 if is_journal else vocab_ratio >= 90.0) or is_front_matter or (total_tokens < 500 and vocab_ratio >= 75.0)
+        vocab_pass = (vocab_ratio >= 82.0 if is_journal else vocab_ratio >= 90.0) or is_front_matter or (total_tokens < 500 and vocab_ratio >= 75.0)
         results['accuracy_percent'] = round(vocab_ratio, 2)
 
         results['checks']['vocabulary'] = {

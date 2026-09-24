@@ -5,17 +5,15 @@
 
 ---
 
-### 🕒 最新交接時間：2026-09-25 03:53
+### 🕒 最新交接時間：2026-09-25 04:06
  
 #### 1. 剛剛完成了什麼？ (Session Accomplishments)
-- **文獻重新輸出與 Verified 黃金版本全方位比對**：
-  1. 對比 `2002-01194-001.md` 與 `2002-01194-001_Verified.md`：17 個大綱標題、6 個 HTML5 表格、2 個圖表 `<figure>` 達成 100% 精準吻合。
-  2. 徹底根除 Table 1~6 跨欄 OCR 碎片，並將 Discussion 與 Method 中因跨欄表格被中斷的句子完美縫合。
-  3. 在 `MarginParser` 增加 `gloss_placement == 'none'` 與 `is_literature` 守衛，根除學術文獻誤生教科書邊欄詞彙卡片（如 `**.547 .814 .679**`）的問題。
-  4. 75k 字元長度差異縮小至 16 字元（75,133 vs 75,149），正規化詞彙相似度達 95.44%。
-- **核心架構與測試**：
-  1. 套件遷移 `src/doc_processor`、根除 `journal`、190 項單元測試 100% 通過。
-  2. 轉檔管線通過 Ollama 雙重驗證評定為 Excellent (PASS)。
+- **Figure 與 Table 語義定位與跨頁句子自動縫合演算法上線**：
+  1. 解決 Figure 2 穿插於任務指示說明段落中間（截斷 `...all money in` 與 `your temporary bank is lost...`）的缺陷。
+  2. 實作 `FigureFormatter.reposition_figures`：提取所有 `<figure>` 並自動偵測內文第一次提及該圖表的完整段落（以 `\n\n` 結尾）進行錨定；未提及圖表優雅回退當前章節末尾。
+  3. 原圖表抽取位置處被切斷的句子與段落 100% 自動無縫縫合，任務指示說明段落恢復完整連續。
+  4. 新增 `tests/test_v37_semantic_figure_table_placement.py`，全套 193 項單元測試 100% 通過。
+  5. 重新處理 `2002-01194-001.pdf`，雙重審查 Content Continuity 與 Sentence Completeness 達成 0 瑕疵完全通過（PASS），Ollama 評定為 Excellent。
 
 #### 2. 目前專案狀態與代碼位置
 - 分支：`main`

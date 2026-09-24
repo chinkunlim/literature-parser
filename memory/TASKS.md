@@ -6,6 +6,11 @@
 
 ## 🏃 當前 Sprint (v1.0.0-rc1 專案治理與守衛上線)
 
+- [x] [2026-09-25] 實作 Figure 與 Table 語義定位與句子自動縫合演算法 (`FigureFormatter.reposition_figures`)：
+  - 解決 Figure 2 穿插於跨頁指示說明段落中間（截斷 `...all money in` 與 `your temporary bank is lost...`）之缺陷
+  - 所有 Figure 和 Table 精確放置於內文第一次提及之完整段落（以 `\n\n` 結尾）之後
+  - 原位置被圖表切斷之段落 100% 自動無縫縫合，未提及圖表優雅回退章節末尾
+  - 新增 `tests/test_v37_semantic_figure_table_placement.py`，全套 193 項單元測試 100% 通過，Content Continuity 達成 0 abrupt cut [PASS]
 - [x] [2026-09-25] 對比驗證 `2002-01194-001.md` 與 `2002-01194-001_Verified.md`：
   - 17 個標題與 6 個 HTML 表格 100% 精準對齊
   - 清理 Table 1~6 所有 OCR 殘留碎片，縫合跨欄截斷之討論段落

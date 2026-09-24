@@ -235,9 +235,20 @@ class LiteraturePipeline(BasePipeline):
                 if m:
                     body = body[:m.start()] + t_html + "\n\n" + body[m.end():]
                 else:
-                    m_res = re.search(r'##\s+Results\b', body)
-                    if m_res:
-                        body = body[:m_res.end()] + "\n\n" + t_html + "\n\n" + body[m_res.end():]
+                    # Anchor immediately after the paragraph of the first in-text mention
+                    m_mention = re.search(rf'(?i)\bTable\s+{t_num}\b', body)
+                    if m_mention:
+                        p_end = body.find('\n\n', m_mention.end())
+                        if p_end != -1:
+                            body = body[:p_end] + "\n\n" + t_html + "\n\n" + body[p_end:].lstrip()
+                        else:
+                            body = body + "\n\n" + t_html + "\n\n"
+                    else:
+                        m_res = re.search(r'##\s+Results\b', body)
+                        if m_res:
+                            body = body[:m_res.end()] + "\n\n" + t_html + "\n\n" + body[m_res.end():]
+                        else:
+                            body = body + "\n\n" + t_html + "\n\n"
 
         return toc_prefix + body
 
@@ -379,6 +390,9 @@ class LiteraturePipeline(BasePipeline):
         if verified_path.exists():
             full_md = self.sync_verified_tables(full_md, verified_path)
             logger.info("LiteraturePipeline: synchronized verified tables from %s", verified_path.name)
+
+        # 8b. Reposition all figures to appear strictly after the paragraph of their first in-text mention
+        full_md = FigureFormatter.reposition_figures(full_md)
 
         # 9. Clean HTML entities (&amp; -> &) and ensure KaTeX safety
         full_md = full_md.replace("&amp;", "&")

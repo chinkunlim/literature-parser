@@ -5,23 +5,17 @@
 
 ---
 
-### 🕒 最新交接時間：2026-09-24 16:31
-
+### 🕒 最新交接時間：2026-09-24 18:18
+ 
 #### 1. 剛剛完成了什麼？ (Session Accomplishments)
-- **6 大功能增強全量落地**：
-  1. `config/publishers/springer.json` 與 `ieee.json` 出版商版面範本與雜訊過濾規則上線。
-  2. `run.py batch <dir>` 目錄級批次轉檔指令（具備逐檔硬體守衛巡檢與冷卻防護）。
-  3. `obsidian_linker.py` + `run.py obsidian-link` 自動生成全書 `index.md` 與前後章節雙鏈導航。
-  4. `GlobalStateManager` + `run.py status` 全域進度中心化管理（原子維護 `data/state/global_status.json`）。
-  5. `LiteraturePipeline` 領域客製化（支援子類型識別、IEEE 作者簡介/浮水印清理、Index Terms 標籤重構與預印本警示）。
-  6. `dashboard/index.html` + `run.py dashboard` 靜態零依賴 HTML 視覺化儀表板。
-- **核心 Bug 修復**：
-  - 修復 `ScannedPDFParser` 內部方法名稱呼叫不匹配問題（`process_scanned_page` ➔ `parse_page_to_markdown`），打通掃描版書籍 OCR 管線。
-  - 修復 `GlobalStateManager` 對單篇原子學術論文的統計映射。
-- **全量文獻與電子書 100% 輸出**：
-  - 3 篇學術文獻（APA、Elsevier 雙欄）全量重新輸出完畢並通過 Ollama 審查。
-  - 4 本電子書（`Research Methods 13th ed`、`Group Counseling`、`Groups Process and Practice`、`Psychology.epub`）全數輸出並生成 Obsidian 雙鏈與目錄索引。
-- **測試驗證**：179 個單元測試全數通過（`Ran 179 tests in 0.176s — OK (skipped=34)`）。
+- **學術文獻排版體系徹底解耦與升級**：
+  1. 建立獨立專屬的 `literature_style.py`，徹底分離書籍與文獻的樣式管理。
+  2. 確立 `LiteraturePipeline` 作為第一公民主管線，`JournalPipeline` 降為相容別名。
+  3. 實裝 `SemanticHeaderFormatter`，利用本機 Ollama 實現精確期刊元資訊 (`.article-meta`)、作者群卡片 (`.author-block`)、動態超連結目錄 (`Table of Contents`) 與 `> Abstract` 引言重構。
+  4. 修復 `TableParser` 誤判小數為編號列表的缺陷，並實現 `LiteraturePipeline.sync_verified_tables` 表格同步機制。
+  5. 徹底根治根目錄 `output/` 幽靈資料夾（修正單元測試寫死路徑）。
+  6. 重新輸出並驗證 `2008-17521-013.md` 與 `2002-01194-001.md`，包含 6 大 APA 表格與專屬樣式全部 100% 完美呈現。
+- **測試驗證**：179 個單元測試全數通過（`Ran 179 tests in 5.443s — OK (skipped=6)`）。
 
 #### 2. 目前專案狀態與代碼位置
 - 分支：`main`

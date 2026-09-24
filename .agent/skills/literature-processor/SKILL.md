@@ -54,15 +54,19 @@ orchestrator.py (detect_archetype='journal')
                │     └── config/archetypes/literature.json  (原 journal.json)
                │     └── config/publishers/<publisher>.json (author_note_patterns 等)
                ├── DigitalPDFParser.parse_page_to_markdown()
-               │     └── LayoutDetector.separate_footnotes()  ← Bug Fixed
+               │     └── LayoutDetector.separate_footnotes()
                │           (載入 _STYLE['_publisher_config'] 動態萃取 Author Note)
                ├── IMRADResolver.resolve_structure()
-               │     ├── _bond_table_notes()  ← New
-               │     └── _fix_ocr_stats()     ← New
-               └── ReferenceParser.clean_document_references()
+               │     ├── _bond_table_notes()
+               │     └── _fix_ocr_stats()
+               ├── SemanticHeaderFormatter.format_header() (Ollama 語意重構作者群、TOC超連結、> Abstract)
+               ├── LiteraturePipeline.sync_verified_tables() (高精確度 APA 數據表格同步還原)
+               ├── ReferenceParser.clean_document_references()
+               └── literature_style.build_literature_css() (獨立專屬學術樣式注入)
          └──► LiteraturePipeline 子類型後處理 (IEEE/preprint 擴充)
 ```
 
+- 樣式模組：`src/book_processor/literature_style.py` (與 `book_style.py` 徹底解耦)
 - 解析子模組：`src/book_processor/parsers/literature/` (原 `parsers/journal/`，已遷移)
 - `parsers/journal/` 保留為向後相容 shim（自動轉導至 `parsers.literature`）
 - 輸出檔案：`document_profile.json`（非 `book_profile.json`）

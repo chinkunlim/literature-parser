@@ -68,9 +68,11 @@ books-project/
 │   ├── utils/                      # 🛠️ 通用工具
 │   │   └── logger.py               # 結構化診斷日誌工具
 │   └── book_processor/             # ⚙️ 書籍與文獻處理核心引擎 (後續計畫更名 doc_processor)
+│       ├── book_style.py           # 📖 教科書專屬排版樣式表 (紫李主題、Anki 閃卡、學習目標)
+│       ├── literature_style.py     # 📑 學術文獻專屬排版樣式表 (APA 三線表、作者卡片、期刊元數據)
 │       ├── pipelines/              # 管線層
 │       │   ├── textbook_pipeline.py    # 長篇書籍章節切分管線
-│       │   ├── journal_pipeline.py     # 內部基礎管線 (被 LiteraturePipeline 繼承)
+│       │   ├── journal_pipeline.py     # 向後相容別名管線
 │       │   └── literature_pipeline.py  # 🎯 學術文獻主管線 (orchestrator 直接調用此管線)
 │       ├── parsers/                # 解析層 (PDF, EPUB, LaTeX, 雙欄版面)
 │       │   ├── literature/         # 🎯 學術文獻解析子模組 (IMRAD, Reference)  [原 journal/]

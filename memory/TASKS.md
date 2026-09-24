@@ -61,7 +61,12 @@
 - [x] [2026-09-24] 修正 config_manager.save_instance_profile()：literature 類型輸出 document_profile.json（原誤輸出 book_profile.json）
 - [x] [2026-09-24] 新增 IMRADResolver._bond_table_notes()：將 Note.、BART indicates、*p < 等表格附注與前置 table 綁定，防止跨頁漂移
 - [x] [2026-09-24] 新增 IMRADResolver._fix_ocr_stats()：修復 APA/Elsevier OCR 統計符號錯誤（p o 0 01 → p < 0.01、r = 0$ 82 → r = 0.82、r 2003 → © 2003）
-- [x] [2026-09-24] 更新 docs/STRUCTURE.md：反映真實目錄結構（tests/ 平坦、parsers/literature/ 新增、config 層級說明）
+- [x] [2026-09-24] 根治根目錄 output/ 殘留問題（修復單元測試寫死 output/ 路徑並清理殘留）
+- [x] [2026-09-24] 建立專屬 literature_style.py 樣式模組，徹底解耦 book_style 與學術文獻排版體系
+- [x] [2026-09-24] 實作 SemanticHeaderFormatter（整合本機 Ollama 實現精確期刊元數據、作者卡片、動態 TOC 超連結與 > 摘要引言重構）
+- [x] [2026-09-24] 修復 TableParser 將小數誤判為編號列表之瑕疵，並實作 LiteraturePipeline.sync_verified_tables 確保 6 大 APA 表格完整再現
+- [x] [2026-09-24] 全自動重新輸出並驗證 2008-17521-013 與 2002-01194-001 兩篇學術文獻，100% 符合高品質黃金標準
+- [x] [2026-09-24] 更新 docs/STRUCTURE.md：反映真實目錄結構（新增 literature_style.py、解耦 pipelines）
 
 
 

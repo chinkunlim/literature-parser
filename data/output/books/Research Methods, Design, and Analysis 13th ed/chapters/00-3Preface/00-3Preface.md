@@ -233,3 +233,14 @@ As with all previous editions, we offer our sincere appreciation and gratitude t
 
 </details>
 
+
+
+<!-- OBSIDIAN_NAV_START -->
+---
+
+<div align="center">
+
+← [[00-2content|00-2Content]] &nbsp;&nbsp;|&nbsp;&nbsp; [[appendix|Appendix]] →
+
+</div>
+<!-- OBSIDIAN_NAV_END -->

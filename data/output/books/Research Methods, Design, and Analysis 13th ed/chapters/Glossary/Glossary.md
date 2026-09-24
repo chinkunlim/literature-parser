@@ -851,3 +851,14 @@
 ***Y**-intercept—**The point at which a regression line crosses the *Y* (vertical) axis
 
 **Z** ***z**score—**A score that has been transformed into standard deviation units
+
+
+<!-- OBSIDIAN_NAV_START -->
+---
+
+<div align="center">
+
+← [[ch17_preparing_the_research_report_using_apa_style|Ch17 Preparing the Research Report Using APA Style]] &nbsp;&nbsp;|&nbsp;&nbsp; [[index|Index]] →
+
+</div>
+<!-- OBSIDIAN_NAV_END -->

@@ -1910,3 +1910,14 @@ d.  .05
 5 5 a.  Are there any main effects present? If yes, what main effect(s) is(are) present? b.  Is there a two-way interaction between independent variables *A* and *B*? If yes, what does this interaction mean (i.e., interpret the interaction).
 
 2. What statistical analysis procedure would be appropriate in each of the following situations? Assume your independent variables are between-participants independent variables. a.  You have one quantitative dependent variable and one categorical independent variable. b.  You have one quantitative dependent variable and two categorical independent variables. c.  You have one quantitative dependent variable and three categorical independent variables. d.  You have one quantitative dependent variable and one categorical independent variable and one quantitative independent variable/covariate. e.  You have one quantitative dependent variable and one quantitative independent variable.
+
+
+<!-- OBSIDIAN_NAV_START -->
+---
+
+<div align="center">
+
+← [[ch15_descriptive_statistics|Ch15 Descriptive Statistics]] &nbsp;&nbsp;|&nbsp;&nbsp; [[ch17_preparing_the_research_report_using_apa_style|Ch17 Preparing the Research Report Using APA Style]] →
+
+</div>
+<!-- OBSIDIAN_NAV_END -->

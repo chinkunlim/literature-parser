@@ -961,3 +961,14 @@ d.  an abbreviated title
 1.  Choose an empirical article and prepare a poster presentation. Make sure that your presentation is easy to read and comprehend.
 
 2.  Interview a faculty member in your department that regularly publishes articles. What does he/she find most challenging? Most fun? Why does he/she publish?
+
+
+<!-- OBSIDIAN_NAV_START -->
+---
+
+<div align="center">
+
+← [[ch16_inferential_statistics|Ch16 Inferential Statistics]] &nbsp;&nbsp;|&nbsp;&nbsp; [[glossary|Glossary]] →
+
+</div>
+<!-- OBSIDIAN_NAV_END -->

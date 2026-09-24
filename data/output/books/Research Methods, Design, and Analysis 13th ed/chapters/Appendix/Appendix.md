@@ -189,3 +189,14 @@ Answers to Practice Tests
 ### Chapter 17
 
 1.  b 2.  b 3.  c 4.  b 5.  d
+
+
+<!-- OBSIDIAN_NAV_START -->
+---
+
+<div align="center">
+
+← [[00-3preface|00-3Preface]] &nbsp;&nbsp;|&nbsp;&nbsp; [[ch01_introduction_to_scientific_research|Ch01 Introduction to Scientific Research]] →
+
+</div>
+<!-- OBSIDIAN_NAV_END -->

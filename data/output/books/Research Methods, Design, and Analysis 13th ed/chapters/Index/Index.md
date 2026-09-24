@@ -151,3 +151,14 @@ within-participants designs, 175–6.
 *See also*research designs in quantitative research*;* between-participants designs definition of, 175 design, 175 posttest-only design, 175 repeated measures designs, 175 strengths and weaknesses, 175–6 within-participants posttest-only design, 175 within-participants independent variable, 176 World Wide Web, 52–3 search engine, 52 writing research reports, 79 writing style, for research report, 364–5
 
 *Y*-intercept, 316 *z* scores, 307–9
+
+
+<!-- OBSIDIAN_NAV_START -->
+---
+
+<div align="center">
+
+← [[glossary|Glossary]] &nbsp;&nbsp;|&nbsp;&nbsp; [[references|References]] →
+
+</div>
+<!-- OBSIDIAN_NAV_END -->

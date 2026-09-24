@@ -95,3 +95,14 @@
 # 00-0Cover
 
 
+
+
+<!-- OBSIDIAN_NAV_START -->
+---
+
+<div align="center">
+
+[[00-1publish|00-1Publish]] →
+
+</div>
+<!-- OBSIDIAN_NAV_END -->

@@ -1345,3 +1345,14 @@ scale? Why? (You can rely on our discussion as well as other discussions you mig
 
 **3.** Think of an issue about which you wonder what
 people might think (e.g., attitudes toward research with animals, psychology students’ understanding of the different specializations of applied psychology) and construct a 10-item questionnaire. Make sure that you include some demographic items at the end so that you would be able to check to see if the attitudes differ by group. Then evaluate your questionnaire ac- cording to the 19 checkpoints provided in Table 13.7 (Questionnaire Construction Checklist). Give yourself a numerical grade between 0 and 100% (where 100% means you properly followed all 19 checkpoints).
+
+
+<!-- OBSIDIAN_NAV_START -->
+---
+
+<div align="center">
+
+← [[ch12_nonexperimental_quantitative_research_methods|Ch12 Nonexperimental Quantitative Research Methods]] &nbsp;&nbsp;|&nbsp;&nbsp; [[ch14_qualitative_and_mixed_methods_research|Ch14 Qualitative and Mixed Methods Research]] →
+
+</div>
+<!-- OBSIDIAN_NAV_END -->

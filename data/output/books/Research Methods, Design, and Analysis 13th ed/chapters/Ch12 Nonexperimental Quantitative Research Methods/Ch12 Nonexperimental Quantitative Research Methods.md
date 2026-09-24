@@ -685,3 +685,14 @@ why some young adults become addicted to opioids. Describe the design you would 
 
 **3.** You want to conduct a measurement research study
 for a new instrument you just constructed to measure empathy. Describe the design you would use for this nonexperimental quantitative research study. (*Note:* You might want to also look back at Chapter 5 to get some ideas for this design. You might also  look at some published validity studies.)
+
+
+<!-- OBSIDIAN_NAV_START -->
+---
+
+<div align="center">
+
+← [[ch11_single-case_research_designs|Ch11 Single-Case Research Designs]] &nbsp;&nbsp;|&nbsp;&nbsp; [[ch13_survey_research|Ch13 Survey Research]] →
+
+</div>
+<!-- OBSIDIAN_NAV_END -->

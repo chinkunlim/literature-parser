@@ -167,3 +167,14 @@ ScoutAutomatedPrintCode
 
 </details>
 
+
+
+<!-- OBSIDIAN_NAV_START -->
+---
+
+<div align="center">
+
+← [[00-0cover|00-0Cover]] &nbsp;&nbsp;|&nbsp;&nbsp; [[00-2content|00-2Content]] →
+
+</div>
+<!-- OBSIDIAN_NAV_END -->

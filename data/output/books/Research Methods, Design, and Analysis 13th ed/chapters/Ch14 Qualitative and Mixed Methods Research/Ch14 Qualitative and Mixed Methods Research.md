@@ -1290,3 +1290,14 @@ d.  What is your personal evaluation of this research
 article?
 e.  What are the primary strengths of this article?
 f.  What are the primary weaknesses of this article? g.  What would be a good follow-up study? (*Hint*: Perhaps a study that eliminates the weaknesses you identified would be a good follow-up study.)
+
+
+<!-- OBSIDIAN_NAV_START -->
+---
+
+<div align="center">
+
+← [[ch13_survey_research|Ch13 Survey Research]] &nbsp;&nbsp;|&nbsp;&nbsp; [[ch15_descriptive_statistics|Ch15 Descriptive Statistics]] →
+
+</div>
+<!-- OBSIDIAN_NAV_END -->

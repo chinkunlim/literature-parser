@@ -483,3 +483,14 @@ e.  All of the above are functions of debriefing
 **1.**Employment agencies are in the business of finding employment for individuals. One of the difficulties these agencies have is identifying individuals with the necessary skills to keep a job after they are placed. Let’s assume that you are aware of this difficulty and you have developed a four-week course designed to teach individuals the skills they need to retain a job. Your four-week course consists of training in dealing with a boss, dealing with other difficult employees, dressing for the job, and other skills such as just ensuring that the worker arrives on time for work. The basic design you want to use is a simple posttest-only control group design. With this as your research question and experimental design, answer the following questions: a.  What research participants do you plan to use, and how do you plan to obtain these participants? b.  How many participants should you use?
 
 Identify how you would decide on the number of participants to use if you do not have sufficient information to identify the specific number. c.  What factors do you have to take into consideration in presenting the treatment condition and control conditions, and how will you implement these factors? What outcome measures will you use to test the effectiveness of the treatment condition? d.  What type of approval is needed to enable you to conduct this study? e.  Prepare a short consent form for this study. f.  Prepare a short debriefing statement for this study.
+
+
+<!-- OBSIDIAN_NAV_START -->
+---
+
+<div align="center">
+
+← [[ch07_control_techniques_in_research|Ch07 Control Techniques in Research]] &nbsp;&nbsp;|&nbsp;&nbsp; [[ch09_experimental_research_design|Ch09 Experimental Research Design]] →
+
+</div>
+<!-- OBSIDIAN_NAV_END -->

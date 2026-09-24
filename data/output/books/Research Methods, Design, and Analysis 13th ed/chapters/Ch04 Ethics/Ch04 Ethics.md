@@ -945,3 +945,14 @@ assignment necessary? When?
 e.  Should research conducted in universities be
 required to have a practical benefit? f.  At the current time, are there any groups in society that university research should focus on? Elaborate. g.  On what topics should research psychologists conduct their research? h.  What topics should research psychologists
 *avoid*?
+
+
+<!-- OBSIDIAN_NAV_START -->
+---
+
+<div align="center">
+
+← [[ch03_identifying_research_questions_and_forming_hypotheses|Ch03 Identifying Research Questions and Forming Hypotheses]] &nbsp;&nbsp;|&nbsp;&nbsp; [[ch05_measuring_variables_and_sampling|Ch05 Measuring Variables and Sampling]] →
+
+</div>
+<!-- OBSIDIAN_NAV_END -->

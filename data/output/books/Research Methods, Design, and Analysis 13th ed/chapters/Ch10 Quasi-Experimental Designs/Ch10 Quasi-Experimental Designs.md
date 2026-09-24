@@ -668,3 +668,14 @@ Control group: Pretest = 5 Posttest = 10
 Fourth Experimental Pretest = 4 Posttest = 13 outcome: group:
 
 > Control group: Pretest = 15 Posttest = 15
+
+
+<!-- OBSIDIAN_NAV_START -->
+---
+
+<div align="center">
+
+← [[ch09_experimental_research_design|Ch09 Experimental Research Design]] &nbsp;&nbsp;|&nbsp;&nbsp; [[ch11_single-case_research_designs|Ch11 Single-Case Research Designs]] →
+
+</div>
+<!-- OBSIDIAN_NAV_END -->

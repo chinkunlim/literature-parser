@@ -771,3 +771,14 @@ concern about the fact that the average weight among Americans is increasing. Th
 
 **3.** What would happen to the science of psychology if
 none of the assumptions underlying science existed? What would happen in our daily lives if these as- sumptions did not exist?
+
+
+<!-- OBSIDIAN_NAV_START -->
+---
+
+<div align="center">
+
+← [[appendix|Appendix]] &nbsp;&nbsp;|&nbsp;&nbsp; [[ch02_research_approaches_and_methods_of_data_collection|Ch02 Research Approaches and Methods of Data Collection]] →
+
+</div>
+<!-- OBSIDIAN_NAV_END -->

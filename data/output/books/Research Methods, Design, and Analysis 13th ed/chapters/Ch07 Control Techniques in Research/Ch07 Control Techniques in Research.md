@@ -855,3 +855,14 @@ children with attention deficit disorder, but this time you want all the childre
 
 **3.** Dr. Know developed a new type of therapy for treat-
 ing individuals’ depression. He wanted to find out if the therapy technique he developed was effective and resulted in an amelioration of depression. Assume that he enlisted your aid in setting up a study that would test the effectiveness of this therapy. Identify the extraneous variables that could confound the results of this experiment, explain how the confound- ing would take place, and identify how you would control for these extraneous variables.
+
+
+<!-- OBSIDIAN_NAV_START -->
+---
+
+<div align="center">
+
+← [[ch06_research_validity|Ch06 Research Validity]] &nbsp;&nbsp;|&nbsp;&nbsp; [[ch08_procedure_for_conducting_a_research_study|Ch08 Procedure for Conducting a Research Study]] →
+
+</div>
+<!-- OBSIDIAN_NAV_END -->

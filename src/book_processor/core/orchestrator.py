@@ -629,7 +629,26 @@ class BookProcessorOrchestrator:
                 except Exception as e:
                     logger.debug("Failed copying root markdown: %s", e)
 
+        # Generate Obsidian index.md and inter-chapter navigation footers
+        try:
+
+            from book_processor.utils.obsidian_linker import generate_book_index, inject_chapter_navigation
+            ch_list = [
+                {
+                    "name": s["name"],
+                    "md_path": os.path.join(chapters_root, s["name"], f"{s['name']}.md")
+                }
+                for s in sections
+            ]
+            idx_file = generate_book_index(book_out, ch_list)
+            nav_count = inject_chapter_navigation(ch_list)
+            if nav_count > 0:
+                print(f"  [🔗 Obsidian] 已生成 {idx_file.name}，並為 {nav_count} 個章節加入導航雙鏈。")
+        except Exception as _obs_err:
+            logger.debug("Obsidian linker skipped: %s", _obs_err)
+
         print(f"\n{'='*70}\nBOOK RUN COMPLETE! Progress saved in: {ckpt.md_path}\n{'='*70}\n")
+
 
         # Archive completed book if all chapters are verified
         all_verified = all(ckpt.is_chapter_verified(s['name']) for s in sections)

@@ -737,3 +737,14 @@ b.  Specify the type of design used.
 
 **4.** Assume a mother came to you with the following
 problem. Every time her child was around other kids, he bit them severely. She did not know how to elimi- nate this problem and wanted your help. You suggest that a combination of reinforcement and punishment would probably work. As a researcher, design a study that will test the effectiveness of your suggestion. Construct a design using two participants that will test the effectiveness of the combined effects of rein- forcement and punishment in eliminating children’s biting of other children.
+
+
+<!-- OBSIDIAN_NAV_START -->
+---
+
+<div align="center">
+
+← [[ch10_quasi-experimental_designs|Ch10 Quasi-Experimental Designs]] &nbsp;&nbsp;|&nbsp;&nbsp; [[ch12_nonexperimental_quantitative_research_methods|Ch12 Nonexperimental Quantitative Research Methods]] →
+
+</div>
+<!-- OBSIDIAN_NAV_END -->

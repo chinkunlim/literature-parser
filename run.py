@@ -915,12 +915,55 @@ if __name__ == "__main__":
     print(f"👉 第一步執行：python run.py doctor\n")
 
 
+def cmd_obsidian_link(args):
+    """
+    Scans a processed book output directory, generates index.md with Obsidian
+    wikilinks, and injects inter-chapter previous/next navigation footers.
+    """
+    from book_processor.utils.obsidian_linker import generate_book_index, inject_chapter_navigation
+
+    book_dir = Path(args.book_dir).resolve()
+    if not book_dir.is_dir():
+        print(f"🛑 錯誤：找不到書籍輸出資料夾: {book_dir}")
+        sys.exit(1)
+
+    chapters_root = book_dir / "chapters"
+    ch_list = []
+
+    if chapters_root.is_dir():
+        for ch_dir in sorted(chapters_root.iterdir()):
+            if ch_dir.is_dir() and not ch_dir.name.startswith("."):
+                md_file = ch_dir / f"{ch_dir.name}.md"
+                if md_file.exists():
+                    ch_list.append({"name": ch_dir.name, "md_path": md_file})
+    else:
+        # Check if direct markdown files exist in book_dir
+        for md_file in sorted(book_dir.glob("*.md")):
+            if md_file.name != "index.md" and md_file.name != "processing_status.md":
+                ch_list.append({"name": md_file.stem, "md_path": md_file})
+
+    if not ch_list:
+        print(f"⚠️ 在 {book_dir} 中未找到任何章節 Markdown 檔案。")
+        return
+
+    print(f"\n🔗 [OBSIDIAN LINKER] 為書籍建立雙鏈網絡: {book_dir.name}")
+    print(f"• 找到章節數量: {len(ch_list)} 個")
+
+    idx = generate_book_index(book_dir, ch_list)
+    nav_count = inject_chapter_navigation(ch_list)
+
+    print(f"✅ [1/2] 已生成全書索引檔案: {idx.name}")
+    print(f"✅ [2/2] 已為 {nav_count} 個章節檔案成功注入前/後篇導航雙鏈。")
+    print("🎉 在 Obsidian 中開啟此書籍資料夾，即可使用 Graph View 視覺化章節網絡！\n")
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="python run.py",
         description="Book & Journal Processor Unified Command Center",
     )
     subparsers = parser.add_subparsers(dest="subcommand", required=True)
+
 
     # doctor
     p_doc = subparsers.add_parser("doctor", help="執行系統軟硬體與 Ollama 健康檢查")
@@ -982,8 +1025,14 @@ def main():
     p_init_proj.add_argument("--name", default=None, help="可選：新專案 Python 套件名稱 (預設為目錄名)")
     p_init_proj.set_defaults(func=cmd_init_project)
 
+    # obsidian-link
+    p_obs = subparsers.add_parser("obsidian-link", help="為已轉換書籍自動生成 index.md 全書索引與章節前後導航雙鏈")
+    p_obs.add_argument("book_dir", help="書籍輸出資料夾 (例如 data/output/books/ResearchMethods/)")
+    p_obs.set_defaults(func=cmd_obsidian_link)
+
     args = parser.parse_args()
     args.func(args)
+
 
 
 if __name__ == "__main__":

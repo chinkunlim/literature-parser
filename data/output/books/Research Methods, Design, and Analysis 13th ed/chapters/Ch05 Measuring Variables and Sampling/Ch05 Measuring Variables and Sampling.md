@@ -1382,3 +1382,14 @@ c.  The test does not correlate with another test of
 emotional intelligence but does correlate with self-efficacy.
 d.  The test does not correlate with other tests of
 emotional intelligence nor with self-efficacy. Next, explain why your answer is correct. Finally, search the published research literature and decide what specific tests you would use in this validation process.
+
+
+<!-- OBSIDIAN_NAV_START -->
+---
+
+<div align="center">
+
+← [[ch04_ethics|Ch04 Ethics]] &nbsp;&nbsp;|&nbsp;&nbsp; [[ch06_research_validity|Ch06 Research Validity]] →
+
+</div>
+<!-- OBSIDIAN_NAV_END -->

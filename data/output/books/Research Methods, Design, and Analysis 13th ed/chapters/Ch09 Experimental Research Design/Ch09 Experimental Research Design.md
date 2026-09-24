@@ -1134,3 +1134,14 @@ technology, or extensive technology. This study produced the following data.
 *Technology use* None Moderate Extensive *Student sex* Male 30 55 75 Female 38 60 28 a.  Does there seem to be a technology main effect?
 
 If there is, what does it mean? (*Hint*: calculate marginal means for the three technology use conditions) b.  Does there seem to be a sex main effect? If there is, what does it mean? (*Hint*: calculate marginal means for the two student sex conditions) c.  Does there seem to be an interaction? If there is, graph the interaction and explain what it means. (*Hint*: plot the cell means and see if the lines are parallel or not)
+
+
+<!-- OBSIDIAN_NAV_START -->
+---
+
+<div align="center">
+
+← [[ch08_procedure_for_conducting_a_research_study|Ch08 Procedure for Conducting a Research Study]] &nbsp;&nbsp;|&nbsp;&nbsp; [[ch10_quasi-experimental_designs|Ch10 Quasi-Experimental Designs]] →
+
+</div>
+<!-- OBSIDIAN_NAV_END -->

@@ -2179,3 +2179,14 @@ b.  50
 ![Diagram](images/diagram_p27_01.png)
 
 *Diagram*
+
+
+<!-- OBSIDIAN_NAV_START -->
+---
+
+<div align="center">
+
+← [[ch14_qualitative_and_mixed_methods_research|Ch14 Qualitative and Mixed Methods Research]] &nbsp;&nbsp;|&nbsp;&nbsp; [[ch16_inferential_statistics|Ch16 Inferential Statistics]] →
+
+</div>
+<!-- OBSIDIAN_NAV_END -->

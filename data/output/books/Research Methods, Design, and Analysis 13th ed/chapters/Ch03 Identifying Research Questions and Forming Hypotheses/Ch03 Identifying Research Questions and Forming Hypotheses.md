@@ -797,3 +797,14 @@ d)  Does the web page report the results of a
 study or a summary of several studies? Does it provide some acknowledgment of the limitations of the information?
 e)  What type of information is being provided
 (scholarly, popular, trade, etc.)?
+
+
+<!-- OBSIDIAN_NAV_START -->
+---
+
+<div align="center">
+
+← [[ch02_research_approaches_and_methods_of_data_collection|Ch02 Research Approaches and Methods of Data Collection]] &nbsp;&nbsp;|&nbsp;&nbsp; [[ch04_ethics|Ch04 Ethics]] →
+
+</div>
+<!-- OBSIDIAN_NAV_END -->

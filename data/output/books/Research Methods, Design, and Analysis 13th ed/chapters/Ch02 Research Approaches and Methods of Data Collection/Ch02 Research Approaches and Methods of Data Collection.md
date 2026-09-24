@@ -1192,3 +1192,14 @@ There are many beliefs about events in the world that different people hold, suc
 
 **4.**
 We discussed six major ways to collect data. Compare and contrast interviews and observations. What are the strengths and weaknesses of interviews and observa- tions? What are the advantages of collecting multiple types of data?
+
+
+<!-- OBSIDIAN_NAV_START -->
+---
+
+<div align="center">
+
+← [[ch01_introduction_to_scientific_research|Ch01 Introduction to Scientific Research]] &nbsp;&nbsp;|&nbsp;&nbsp; [[ch03_identifying_research_questions_and_forming_hypotheses|Ch03 Identifying Research Questions and Forming Hypotheses]] →
+
+</div>
+<!-- OBSIDIAN_NAV_END -->

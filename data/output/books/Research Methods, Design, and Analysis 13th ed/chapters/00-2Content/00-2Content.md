@@ -478,3 +478,14 @@ of Variance 342 Index 401 The *t* Test for Regression Coefficients 344
 
 </details>
 
+
+
+<!-- OBSIDIAN_NAV_START -->
+---
+
+<div align="center">
+
+← [[00-1publish|00-1Publish]] &nbsp;&nbsp;|&nbsp;&nbsp; [[00-3preface|00-3Preface]] →
+
+</div>
+<!-- OBSIDIAN_NAV_END -->

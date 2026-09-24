@@ -20,6 +20,7 @@ import re
 import argparse
 import datetime
 import subprocess
+from typing import Optional, List, Dict, Any
 from pathlib import Path
 
 # Add project root and src to sys.path
@@ -119,19 +120,15 @@ def cmd_doctor(args):
 
 
 
-# ==============================================================================
-# 2. PROCESS: Convention-based Routing & Pipeline Execution
-# ==============================================================================
-def cmd_process(args):
-    filepath = Path(args.file)
+def _run_process_pipeline(filepath: Path, doc_type: Optional[str] = None, ignore_battery: bool = False) -> bool:
+    """Executes the conversion pipeline for a single file. Returns True on success, False on failure."""
     if not filepath.exists():
         print(f"🛑 錯誤：找不到指定的輸入檔案: {filepath}")
-        sys.exit(1)
+        return False
 
     # Determine pipeline by directory convention or flag.
     # Use anchor-based detection: compare resolved path against known input roots
     # to avoid false matches when the user's home path contains 'books' or 'literature'.
-    doc_type = args.type
     if not doc_type:
         try:
             rel = filepath.resolve().relative_to(ROOT)
@@ -146,7 +143,6 @@ def cmd_process(args):
             pass  # file is outside ROOT — fall through to keyword scan
         if not doc_type:
             # Last-resort: keyword scan on the portion after the last path separator
-            fname_lower = filepath.name.lower()
             parent_lower = filepath.parent.name.lower()
             if parent_lower in ("literature", "journals", "papers"):
                 doc_type = "literature"
@@ -155,14 +151,13 @@ def cmd_process(args):
     elif doc_type == "journal":
         doc_type = "literature"  # normalize alias
 
-
     print(f"\n🚀 啟動處理管線: [{doc_type.upper()}] 檔案: {filepath.name}")
 
     # Run quick hardware check
-    hw = check_hardware_safety(ignore_battery=args.ignore_battery)
+    hw = check_hardware_safety(ignore_battery=ignore_battery)
     if not hw["safe_for_batch_ocr"]:
         print(f"🛑 硬體空間不足拒絕啟動: {'; '.join(hw['reasons'])}")
-        sys.exit(1)
+        return False
 
     output_base = Path("data/output") / ("books" if doc_type == "book" else "literature")
     output_base.mkdir(parents=True, exist_ok=True)
@@ -183,8 +178,90 @@ def cmd_process(args):
     res = subprocess.run(cli_cmd)
     if res.returncode == 0:
         print(f"\n✅ 處理完成！結果已儲存至 {output_base}")
+        return True
     else:
         print(f"\n⚠️ 處理過程中遇到警告或錯誤，請檢視 logs/process.log 或 data/needs_review/")
+        return False
+
+
+def cmd_process(args):
+    filepath = Path(args.file)
+    success = _run_process_pipeline(filepath, doc_type=args.type, ignore_battery=args.ignore_battery)
+    if not success:
+        sys.exit(1)
+
+
+# ==============================================================================
+# 2b. BATCH: Multi-File Batch Processing with Hardware Guard
+# ==============================================================================
+def cmd_batch(args):
+    """
+    Processes ALL PDF/EPUB files in a given directory, one-by-one, with
+    hardware safety checks between each file to prevent system overload.
+    """
+    import time
+
+    input_dir = Path(args.directory)
+    if not input_dir.is_dir():
+        print(f"🛑 錯誤：目錄不存在: {input_dir}")
+        sys.exit(1)
+
+    # Collect all processable files
+    all_files = sorted(set(
+        f for pat in ["*.pdf", "*.epub", "*.PDF", "*.EPUB"]
+        for f in input_dir.glob(pat)
+    ))
+
+    if not all_files:
+        print(f"ℹ️ 目錄內沒有找到 PDF/EPUB 檔案: {input_dir}")
+        return
+
+    # Determine doc_type from parent dir name or explicit flag
+    doc_type = args.type
+    if not doc_type:
+        parent_name = input_dir.name.lower()
+        doc_type = "literature" if parent_name in ("literature", "journals", "papers") else "book"
+    elif doc_type == "journal":
+        doc_type = "literature"
+
+    print(f"\n{'='*65}")
+    print(f"📦 [BATCH] 批次處理: {len(all_files)} 個檔案 ({doc_type.upper()})")
+    print(f"{'='*65}\n")
+
+    success, failed, skipped = [], [], []
+
+    for idx, fpath in enumerate(all_files, 1):
+        print(f"\n[{idx:02d}/{len(all_files):02d}] 📄 {fpath.name}")
+
+        # Hardware safety check before EACH file
+        hw = check_hardware_safety(ignore_battery=getattr(args, "ignore_battery", False))
+        if not hw["safe_for_batch_ocr"]:
+            reason = "; ".join(hw.get("reasons", []))
+            print(f"  ⏸️  硬體資源不足，暫停批次: {reason}")
+            skipped.extend(f.name for f in all_files[idx-1:])
+            break
+
+        try:
+            ok = _run_process_pipeline(fpath, doc_type=doc_type, ignore_battery=getattr(args, "ignore_battery", False))
+            if ok:
+                success.append(fpath.name)
+            else:
+                failed.append(fpath.name)
+        except Exception as e:
+            logger.error("Batch: unexpected error for '%s': %s", fpath.name, e)
+            failed.append(fpath.name)
+
+        if idx < len(all_files):
+            time.sleep(1.5)  # cool-down between files
+
+    print(f"\n{'='*65}")
+    print(f"📊 [BATCH 完成] 成功: {len(success)} | 失敗: {len(failed)} | 跳過: {len(skipped)}")
+    if failed:
+        print(f"  ❌ 失敗清單: {', '.join(failed)}")
+    if skipped:
+        print(f"  ⏭️  跳過清單: {', '.join(skipped)}")
+    print(f"{'='*65}\n")
+
 
 
 # ==============================================================================
@@ -856,6 +933,14 @@ def main():
     p_proc.add_argument("--type", choices=["book", "literature", "journal"], default=None, help="強制指定處理類型 (book 或 literature)")
     p_proc.add_argument("--ignore-battery", action="store_true", help="忽略電池電量限制")
     p_proc.set_defaults(func=cmd_process)
+
+    # batch
+    p_batch = subparsers.add_parser("batch", help="批次處理目錄內所有 PDF/EPUB 檔案")
+    p_batch.add_argument("directory", help="輸入資料夾路徑 (例如 data/input/books/)")
+    p_batch.add_argument("--type", choices=["book", "literature", "journal"], default=None, help="強制指定處理類型 (book 或 literature)")
+    p_batch.add_argument("--ignore-battery", action="store_true", help="忽略電池電量限制")
+    p_batch.set_defaults(func=cmd_batch)
+
 
     # save
     p_save = subparsers.add_parser("save", help="日常本地存檔 (先更新文檔日期後 commit)")

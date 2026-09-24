@@ -1,0 +1,17 @@
+{
+  "chapter": "00-2Content",
+  "total_proposals": 1,
+  "auto_accepted_count": 1,
+  "pending_count": 0,
+  "proposals": [
+    {
+      "id": "rev-1",
+      "original": "Summary  106 • Key Terms and Concepts  107 • Re",
+      "proposed": "Summary 106 • Key Terms and Concepts 107 • Related Internet",
+      "reason": "The text is cut off at 'Re', likely a result of an incomplete scrape or OCR truncation. Contextually, it should match the preceding patterns of 'Related Internet'.",
+      "category": "ocr_typo",
+      "confidence": 0.95,
+      "status": "AUTO_ACCEPTED"
+    }
+  ]
+}

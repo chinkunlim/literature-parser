@@ -1,0 +1,29 @@
+{
+  "geometry": {
+    "page_width": 616.0,
+    "page_height": 942.0,
+    "header_cut_ratio": 0.04,
+    "footer_cut_ratio": 0.04,
+    "odd_page_margin_x": [
+      0.7,
+      1.0
+    ],
+    "even_page_margin_x": [
+      0.0,
+      0.3
+    ]
+  },
+  "book_name": "Group Counseling- Strategies and Skills - Standalone Book -- Ed E. Jacobs, Christine J. Schimmel, Robert L. L. Masson, -",
+  "special_blocks": {
+    "has_concept_map": false,
+    "has_margin_glossary": false
+  },
+  "discovered_blocks": [],
+  "column_roles": {
+    "even_left": "margin_glossary",
+    "even_right": "body",
+    "odd_left": "body",
+    "odd_right": "margin_glossary"
+  },
+  "scan_complete": true
+}

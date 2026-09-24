@@ -24,7 +24,8 @@
     border-bottom: 2px solid #842959;
   }
   .textbook-table {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     border-collapse: collapse;
     font-size: 0.9em;
   }
@@ -95,12 +96,36 @@
 <summary>📑 <b>Table of Contents</b></summary>
 
 - [Brief Contents](#brief-contents)
+  - [1](#1)
+  - [2](#2)
+  - [3](#3)
+  - [4](#4)
+  - [5](#5)
+  - [6](#6)
+  - [7](#7)
+  - [8](#8)
+  - [9](#9)
+  - [11](#11)
+  - [12](#12)
+  - [13](#13)
+  - [42 14](#42-14)
+  - [87 15](#87-15)
+  - [109 16](#109-16)
+  - [17](#17)
   - [References 392](#references-392)
   - [Summary  39 • Key Terms and Concepts  40 • Related Internet](#summary-39-key-terms-and-concepts-40-related-internet)
   - [Summary  15 • Key Terms and Concepts  16 • Related Internet](#summary-15-key-terms-and-concepts-16-related-internet)
   - [Summary  57 • Key Terms and Concepts  58 • Related Internet](#summary-57-key-terms-and-concepts-58-related-internet)
   - [4](#4)
-  - [Summary  106 • Key Terms and Concepts  107 • Related Internet](#summary-106-key-terms-and-concepts-107-related-internet)
+  - [
+<!-- AI-REVIEW-START id="rev-1" category="ocr_typo" -->
+<!-- ORIGINAL:
+Summary 106 • Key Terms and Concepts 107 • Related Internet
+-->
+<!-- REASON: The text is cut off at 'Re', likely a result of an incomplete scrape or OCR truncation. Contextually, it should match the preceding patterns of 'Related Internet'. -->
+Summary 106 • Key Terms and Concepts 107 • Related Internet
+<!-- AI-REVIEW-END -->
+lated Internet](#summary-106-key-terms-and-concepts-107-related-internet)
   - [Summary  83 • Key Terms and Concepts  84 • Related Internet](#summary-83-key-terms-and-concepts-84-related-internet)
   - [Summary  127 • Key Terms and Concepts  128 • Related Internet](#summary-127-key-terms-and-concepts-128-related-internet)
   - [Summary  146 • Key Terms and Concepts  147 • Related](#summary-146-key-terms-and-concepts-147-related)
@@ -122,87 +147,91 @@
 <!-- Page 1 -->
 ## Brief Contents
 
-```mermaid
-graph LR
-    Root["11"]
-    N56["8"] --> N63["Part IV"]
-    N56["8"] --> N67["9"]
-    N56["8"] --> N70["10"]
-    N59["Study 149"] --> N68["Experimental Research Design"]
-    N59["Study 149"] --> N71["Quasi-Experimental Designs"]
-    N48["Inferential Statistics"] --> N60["Preparing the Research Report"]
-    N48["Inferential Statistics"] --> N61["Using APA Style"]
-    N55["354"] --> N74["iii"]
-    N6["Introduction to Scientific Research"] --> N10["Research Approaches and Methods"]
-    N52["131"] --> N65["165"]
-    N52["131"] --> N72["193"]
-    N58["17"] --> N62["Appendix 379"]
-    N58["17"] --> N66["Glossary 380"]
-    N58["17"] --> N69["References 392"]
-    N58["17"] --> N73["Index 401"]
-    N38["Data 295"] --> N54["Writing the Research Report"]
-    N36["Foundations of Research"] --> N64["Experimental Methods"]
-    Root["11"] --> N1["Part I"]
-    Root["11"] --> N5["1"]
-    Root["11"] --> N9["2"]
-    Root["11"] --> N6["Introduction to Scientific Research"]
-    Root["11"] --> N2["Introduction 1"]
-    Root["11"] --> N7["Part V"]
-    Root["11"] --> N3["Single-Case Research Designs"]
-    Root["11"] --> N8["Nonexperimental,  Qualitative,"]
-    Root["11"] --> N4["210"]
-    N4["210"] --> N12["228"]
-    N8["Nonexperimental,  Qualitative,"] --> N11["and Mixed Methods Research"]
-    N6["Introduction to Scientific Research"] --> N13["of Data Collection"]
-    N5["1"] --> N14["18"]
-    N7["Part V"] --> N15["12"]
-    N7["Part V"] --> N16["Nonexperimental Quantitative"]
-    N16["Nonexperimental Quantitative"] --> N17["Research Methods 228"]
-    N9["2"] --> N18["Part II"]
-    N13["of Data Collection"] --> N19["Planning the Research Study"]
-    N14["18"] --> N20["42"]
-    N15["12"] --> N21["13"]
-    N16["Nonexperimental Quantitative"] --> N22["Survey Research"]
-    N17["Research Methods 228"] --> N23["247"]
-    N18["Part II"] --> N24["3"]
-    N13["of Data Collection"] --> N25["Identifying Research Questions and"]
-    N25["Identifying Research Questions and"] --> N26["Forming Hypotheses"]
-    N20["42"] --> N20["42"]
-    N21["13"] --> N27["14"]
-    N22["Survey Research"] --> N28["Qualitative and Mixed Methods"]
-    N22["Survey Research"] --> N29["Research 270"]
-    N24["3"] --> N30["4"]
-    N25["Identifying Research Questions and"] --> N31["Ethics"]
-    N20["42"] --> N32["60"]
-    N27["14"] --> N33["Part VI"]
-    N29["Research 270"] --> N34["Analyzing and Interpreting"]
-    N30["4"] --> N35["Part III"]
-    N20["42"] --> N37["87"]
-    N26["Forming Hypotheses"] --> N36["Foundations of Research"]
-    N34["Analyzing and Interpreting"] --> N38["Data 295"]
-    N35["Part III"] --> N39["5"]
-    N35["Part III"] --> N40["Measuring Variables and Sampling"]
-    N37["87"] --> N37["87"]
-    N33["Part VI"] --> N41["15"]
-    N33["Part VI"] --> N42["Descriptive Statistics"]
-    N34["Analyzing and Interpreting"] --> N43["295"]
-    N39["5"] --> N44["6"]
-    N40["Measuring Variables and Sampling"] --> N45["Research Validity"]
-    N37["87"] --> N46["109"]
-    N33["Part VI"] --> N47["16"]
-    N42["Descriptive Statistics"] --> N48["Inferential Statistics"]
-    N43["295"] --> N49["322"]
-    N39["5"] --> N50["7"]
-    N40["Measuring Variables and Sampling"] --> N51["Control Techniques in Research"]
-    N46["109"] --> N52["131"]
-    N47["16"] --> N53["Part VII"]
-    N49["322"] --> N55["354"]
-    N44["6"] --> N56["8"]
-    N45["Research Validity"] --> N57["Procedure for Conducting a Research"]
-    N53["Part VII"] --> N58["17"]
-    N51["Control Techniques in Research"] --> N59["Study 149"]
-    N55["354"] --> N55["354"]
-```
+**Part I** Introduction 1
+
+### 1
+
+Introduction to Scientific Research
+
+### 2
+
+> Research Approaches and Methods of Data Collection
+
+**Part II** Planning the Research Study
+
+### 3
+
+> Identifying Research Questions and Forming Hypotheses
+
+### 4
+
+Ethics
+
+**Part III** Foundations of Research
+
+### 5
+
+Measuring Variables and Sampling
+
+### 6
+
+Research Validity
+
+### 7
+
+Control Techniques in Research
+
+### 8
+
+> Procedure for Conducting a Research Study 149
+
+**Part IV** Experimental Methods
+
+### 9
+
+Experimental Research Design
+
+### 11
+
+Single-Case Research Designs 210
+
+1
+
+> **Part V** Nonexperimental,  Qualitative, and Mixed Methods Research 228 18
+
+### 12
+
+> Nonexperimental Quantitative Research Methods 228 42
+
+### 13
+
+Survey Research 247
+
+### 42 14
+
+> Qualitative and Mixed Methods Research 270 60
+
+> **Part VI** Analyzing and Interpreting 87 Data 295
+
+### 87 15
+
+Descriptive Statistics 295
+
+### 109 16
+
+Inferential Statistics 322
+
+131
+
+> **Part VII** Writing the Research Report 354
+
+### 17
+
+> Preparing the Research Report Using APA Style 354
+
+165 Appendix 379
+
+Glossary 380 165
 
 ### References 392
 
@@ -250,33 +279,19 @@ Advantages of Experimental Research 26 Sites  58 • Practice Test  58 • Chall
 <!-- Page 4 -->
 ### 4
 
-Research Ethics: What Are They? 61 Relationship Between Society and Science 61 Professional Issues
+Ethics 60
 
-62 Treatment of Research Participants 64 Ethical Dilemmas
+Research Ethics: What Are They? Relationship Between Society and Science 61 Professional Issues 62 Treatment of Research Participants 64 Ethical Dilemmas 64 Ethical Guidelines 66 Beneficence and Nonmaleficence 67 Fidelity and Responsibility 67 Integrity 68 Justice 68 Respect for People’s Rights and Dignity 68 APA Ethical Standards for Research 68 Institutional Approval 69 Informed Consent 70
 
-64 Ethical Guidelines
+Validity 91 Validity Evidence Based on Content  92 • Validity Evidence Based on Internal Structure  93 • Validity Evidence Based on Relations to Other Variables  93
 
-66 Beneficence and Nonmaleficence 67 Fidelity and Responsibility
+Using Reliability and Validity Information 95 Sources of Information About Tests 95 Sampling Methods 95
 
-67 Integrity 68 Justice 68 Respect for People’s Rights and Dignity 68 Random Selection and Random Assignment APA Ethical Standards for Research 68 Determining the Sample Size When Random Institutional Approval
+Terminology Used in Sampling 96 Random Sampling Techniques 97 Simple Random Sampling  97 • Stratified Random Sampling  99 • Cluster Random Sampling  101 • Systematic Sampling 101
 
-69 Sampling Is Used Informed Consent
+Nonrandom Sampling Techniques 102 Random Selection and Random Assignment 103
 
-> 70 Sampling in Qualitative Research Validity 91 Ethics 60 Validity Evidence Based on Content  92 • Validity Evidence Based on Internal Structure  93 • Validity Evidence Based on Relations to Other Variables  93
-
-> Using Reliability and Validity Information 95 Sources of Information About Tests 95
-
-Sampling Methods
-
-95
-
-> Terminology Used in Sampling 96 Random Sampling Techniques 97 Simple Random Sampling  97 • Stratified Random Sampling  99 • Cluster Random Sampling  101 • Systematic Sampling 101
-
-Nonrandom Sampling Techniques 102
-
-103
-
-104 105
+Determining the Sample Size When Random Sampling Is Used 104 Sampling in Qualitative Research 105
 
 ### Summary  106 • Key Terms and Concepts  107 • Related Internet
 
@@ -304,39 +319,21 @@ Sites  128 • Practice Test  128 • Challenge Exercises  129
 Control Techniques in Research 131 Control Techniques Carried Out at the Beginning of the Study 133 Random Assignment 133 Matching 136 Matching by Holding Variables Constant 136 Matching by Equating Participants 137 Building the Extraneous Variable into the Design 138 Statistical Control 139
 
 <!-- Page 5 -->
-Control Techniques Carried Out During the Study Counterbalancing 139 and Within) Randomized Counterbalancing
+Control Techniques Carried Out During the Study Counterbalancing 139 Randomized Counterbalancing Complete Counterbalancing Incomplete Counterbalancing Blind Technique Double-Blind Technique Single-Blind Technique Partial-Blind Technique Automation 145 Likelihood of Achieving Control Detecting Participant Interpretation
 
-Double-Blind Technique Single-Blind Technique Partial-Blind Technique Automation 145 Designs 186 Likelihood of Achieving Control Detecting Participant Interpretation
+> Mixed Designs (i.e., Combination of Between and Within)
 
-> 139 Mixed Designs (i.e., Combination of Between
+Pretest–Posttest Control-Group Design 141 Advantages and Disadvantages of Including a Pretest 177 142
 
-176
+Factorial Designs 179 143
 
-> 141 Pretest–Posttest Control-Group Design 177
+Factorial Designs Based on Within-Participants 144
 
-> Advantages and Disadvantages of Including Complete Counterbalancing 141 a Pretest
+Independent Variables 184 144
 
-177 Incomplete Counterbalancing 142
+Factorial Designs Based on a Mixed Model 185 144
 
-Factorial Designs
-
-179 Blind Technique
-
-> 143 144 Factorial Designs Based on Within-Participants
-
-Independent Variables
-
-184
-
-144
-
-> Factorial Designs Based on a Mixed Model 185
-
-144
-
-> Nature of Independent Variables in Factorial
-
-> 145 Strengths and Weaknesses of Factorial 145 Designs 186
+Nature of Independent Variables in Factorial Designs 186 145 Strengths and Weaknesses of Factorial 145 Designs 186
 
 ### Summary  146 • Key Terms and Concepts  147 • Related
 
@@ -368,8 +365,8 @@ Exercises 208
 165 Single-Case Research Designs 210 History of Single-Case Designs 211 165 Single-Case Designs 213 ABA and ABAB Designs 214 167 Combination Design 216 168 Multiple-Baseline Design 217 168 Changing-Criterion Design 218 169 Methodological Considerations in 170 Using Single-Case Designs 220 172 Baseline 220 172 Changing One Variable at a Time 221 Length of Phases 222 Criteria for Evaluating Change 222 175 Experimental Criterion 223 175 Therapeutic Criterion 224
 
 <!-- Page 6 -->
-Rival Hypotheses 224 Principle
-11. Make Sure the Questionnaire Is Easy to Use from the Beginning to the End 263
+Rival Hypotheses Principle
+11. Make Sure the Questionnaire Is Easy to Use from the Beginning to the End
 
 ### Summary  225 • Key Terms and Concepts  226 • Related Internet
 
@@ -418,17 +415,9 @@ Descriptive Statistics 295 Descriptive Statistics 296 Frequency Distributions 29
 <!-- Page 7 -->
 Measures of Central Tendency
 
-304 Nonparametric Statistics
+Mode 304 Median 304 Mean 304
 
-346 Mode 304 Chi-Square Test for Independence
-
-347 Median 304 Other Significance Tests
-
-348 Mean 304 Hypothesis Testing and Research Design
-
-348 Measures of Variability
-
-305
+Measures of Variability Nonparametric Statistics Chi-Square Test for Independence Other Significance Tests Hypothesis Testing and Research Design 348 305
 
 ### Summary  350 • Key Terms and Concepts  351 • Related Internet
 

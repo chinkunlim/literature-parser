@@ -31,6 +31,7 @@
 - [x] [2026-09-24] 確立 Git、對話記憶 (Sessions) 與核心文檔 (Markdown) 全生命週期自動化管理管線規範，並升級 run.py publish 支援本地自動打標籤 (Git Tagging)
 - [x] [2026-09-24] 深度分析使用者 6 大操作習慣並整合至 PROJECT_INIT_STANDARD（升級至 30 大工程鐵律），並實作 run.py init-project 達成 3 秒全自動企業級一鍵開案腳手架
 - [x] [2026-09-24] 新增 Springer 與 IEEE 出版商版面範本與雜訊過濾規則 (`config/publishers/springer.json`, `config/publishers/ieee.json`)
+- [x] [2026-09-24] 實現目錄級全自動批次轉檔指令 (`run.py batch <dir>`)，具備逐檔硬體巡檢保護與冷卻防護機制
 
 ---
 

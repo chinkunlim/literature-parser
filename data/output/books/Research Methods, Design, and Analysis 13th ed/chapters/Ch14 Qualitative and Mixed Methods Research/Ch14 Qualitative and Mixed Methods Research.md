@@ -24,7 +24,8 @@
     border-bottom: 2px solid #842959;
   }
   .textbook-table {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     border-collapse: collapse;
     font-size: 0.9em;
   }
@@ -104,7 +105,15 @@
   - [Internal (Causation) Validity](#internal-causation-validity)
   - [External (Generalizing) Validity](#external-generalizing-validity)
   - [Summary of Qualitative Methods](#summary-of-qualitative-methods)
-  - [Ethnography](#ethnography)
+  - [
+<!-- AI-REVIEW-START id="rev-1" category="ocr_typo" -->
+<!-- ORIGINAL:
+Ethnography
+-->
+<!-- REASON: Contextual completion of the word 'Ethnography' based on the text's focus on qualitative research methods. -->
+Ethnography
+<!-- AI-REVIEW-END -->
+aphy](#ethnography)
   - [Case Study Research](#case-study-research)
   - [Grounded Theory](#grounded-theory)
 - [Mixed Methods Research](#mixed-methods-research)
@@ -171,9 +180,10 @@ Table  14.1 shows the key differences among quantitative, qualitative, and mixed
 
 **Table 14.1** *Characteristics of Quantitative, Qualitative, and Mixed Methods Research Approaches**
 
-<table class="textbook-table">
+<table class="textbook-table" style="width: auto; max-width: 100%; border-collapse: collapse; margin: 1.5em 0;">
   <thead>
     <tr>
+      <th></th>
       <th>Quantitative Research</th>
       <th>Mixed Methods Research</th>
       <th>Qualitative Research</th>
@@ -181,84 +191,56 @@ Table  14.1 shows the key differences among quantitative, qualitative, and mixed
   </thead>
   <tbody>
     <tr>
-      <td>Scientific emphasis Confirmation and falsification. Focuses on</td>
-      <td>Equal emphasis. Combines hypothesis/</td>
-      <td>Exploratory. Focuses on generating</td>
+      <td>Scientific emphasis</td>
+      <td>Confirmation and falsification. Focuses on testing hypotheses and theories.</td>
+      <td>Equal emphasis. Combines hypothesis/ theory generation and testing.</td>
+      <td>Exploratory. Focuses on generating hypotheses and theories.</td>
     </tr>
     <tr>
-      <td>testing hypotheses and theories.</td>
-      <td>theory generation and testing.</td>
-      <td>hypotheses and theories.</td>
+      <td>View of the world</td>
+      <td>Mental processes and behavior are regular and predictable.</td>
+      <td>Thought and behavior contain predictable and particularistic/contextual elements.</td>
+      <td>Mental processes and  behavior are situational,   dynamic,  social,   contextual, and personal.</td>
     </tr>
     <tr>
-      <td>View of the world Mental processes and behavior are</td>
-      <td>Thought and behavior contain</td>
-      <td>Mental processes and  behavior are</td>
-    </tr>
-    <tr>
-      <td>regular and predictable.</td>
-      <td>predictable and particularistic/contextual elements.</td>
-      <td>situational,   dynamic,  social,   contextual, and personal.</td>
-    </tr>
-    <tr>
-      <td>Primary view of reality Objective (material, physical, causal).</td>
+      <td>Primary view of reality</td>
+      <td>Objective (material, physical, causal).</td>
       <td>Combination of objective, subjective, and intersubjective.</td>
       <td>Subjective.</td>
     </tr>
     <tr>
-      <td>Research objectives Explain (cause and effect), control,</td>
+      <td>Research objectives</td>
+      <td>Explain (cause and effect), control, predict,  description of characteristics of populationons.</td>
       <td>Combination of objectives.</td>
-      <td>Explore, particular description, depth</td>
+      <td>Explore, particular description, depth of understanding, social “construction” of reality.</td>
     </tr>
     <tr>
-      <td>predict,  description of characteristics of</td>
-      <td></td>
-      <td>of understanding, social “construction”</td>
-    </tr>
-    <tr>
-      <td>populations.</td>
-      <td></td>
-      <td>of reality.</td>
-    </tr>
-    <tr>
-      <td>Research purpose Find general and complex laws of</td>
+      <td>Research purpose</td>
+      <td>Find general and complex laws of thought and behavior.</td>
       <td>Integrate the general and the particular.</td>
-      <td>Describe and understand  particular</td>
+      <td>Describe and understand  particular groups and individuals in particular contexts.</td>
     </tr>
     <tr>
-      <td>thought and behavior.</td>
-      <td></td>
-      <td>groups and individuals in particular contexts.</td>
-    </tr>
-    <tr>
-      <td>Data Quantitatively measured variables</td>
-      <td>All data types are relevant; quantitative</td>
+      <td>Data</td>
+      <td>Quantitatively measured variables (numbers).</td>
+      <td>All data types are relevant; quantitative and qualitative data are both used in a single study.</td>
       <td>Words, text, images, documents.</td>
     </tr>
     <tr>
-      <td>(numbers).</td>
-      <td>and qualitative data are both used in a single study.</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>Results Generalizable findings.</td>
+      <td>Results</td>
+      <td>Generalizable findings.</td>
       <td>Attempts to integrate general and particular, and produce “practical theory.”</td>
       <td>Particularistic findings and claims.</td>
     </tr>
     <tr>
-      <td>Final report Statistical results (with significance  testing</td>
-      <td>Mixture of statistics and qualitative data</td>
-      <td>Narrative with rich contextual description</td>
+      <td>Final report</td>
+      <td>Statistical results (with significance  testing of  correlations, differences between means) with  discussion of results.</td>
+      <td>Mixture of statistics and qualitative data reporting.</td>
+      <td>Narrative with rich contextual description and many direct quotations.</td>
     </tr>
-    <tr>
-      <td>of  correlations, differences between</td>
-      <td>reporting.</td>
-      <td>and many direct quotations.</td>
-    </tr>
-    <tr class="category-header"><td colspan="3"><strong>means) with  discussion of results.</strong></td></tr>
   </tbody>
   <tfoot>
-    <tr class="table-notes"><td colspan="3"><em>* Although this chapter only covers qualitative and mixed methods research, we have included the characteristics of quantitative research in this table for comparison.</em></td></tr>
+    <tr class="table-notes"><td colspan="4"><em>* Although this chapter only covers qualitative and mixed methods research, we have included the characteristics of quantitative research in this table for comparison.</em></td></tr>
   </tfoot>
 </table>
 
@@ -273,19 +255,14 @@ Michael Patton (2015) has done a good job of summarizing the characteristics of 
 
 **Table 14.2** *Twelve Major Characteristics of Qualitative Research*
 
-<div class="framed-card">
-  <div class="framed-card-header">Twelve Major Characteristics of Qualitative Research</div>
-  <ol class="framed-card-body">
-    <li>Naturalistic inquiry —Studying real-world situations as they unfold naturally; nonmanipulative and noncon- trolling; openness to whatever emerges (lack of predetermined constraints on findings).</li>
-    <li>Emergent design flexibility —Openness to adapting inquiry as understanding deepens and/or situations change; the researcher avoids getting locked into rigid designs that eliminate responsiveness and pur- sues new paths of discovery as they emerge.</li>
-    <li>Purposeful sampling —Cases for study (e.g., people, organizations, communities, cultures, events, criti- cal incidences) are selected because they are “information rich” and illuminative, that is, they offer useful manifestations, of the phenomenon of interest; sampling, then, is aimed at insight about the phenom- enon, not empirical generalization from a sample to a population. Data-Collection and Fieldwork Strategies</li>
-    <li>Qualitative data —Observations that yield detailed, thick description; inquiry in depth; interviews that capture direct quotations about people’s personal perspectives and experiences; case studies; careful document review.</li>
-    <li>Personal experience and engagement —The researcher has direct contact with and gets close to the people, situation, and phenomenon under study; the researcher’s personal experiences and insights are an important part of the inquiry and critical to understanding the phenomenon.</li>
-    <li>Empathic neutrality and mindfulness —An empathic stance in interviewing seeks vicarious understanding without judgment (neutrality) by showing openness, sensitivity, respect, awareness, and responsiveness; in observation it means being fully present (mindfulness).</li>
-    <li>Dynamic systems —Attention to process; assumes change as ongoing whether focus is on an individual, an organization, a community, or an entire culture; therefore, mindful of and attentive to system and situation dynamics. Analysis Strategies</li>
-    <li>Unique case orientation —Assumption that each case is special and unique; the first level of analysis is being true to, respecting, and capturing the details of the individual cases being studied; cross-case analysis follows from and depends on the quality of individual case studies.</li>
-  </ol>
-</div>
+1. Naturalistic inquiry —Studying real-world situations as they unfold naturally; nonmanipulative and noncon- trolling; openness to whatever emerges (lack of predetermined constraints on findings).
+2. Emergent design flexibility —Openness to adapting inquiry as understanding deepens and/or situations change; the researcher avoids getting locked into rigid designs that eliminate responsiveness and pur- sues new paths of discovery as they emerge.
+3. Purposeful sampling —Cases for study (e.g., people, organizations, communities, cultures, events, criti- cal incidences) are selected because they are “information rich” and illuminative, that is, they offer useful manifestations, of the phenomenon of interest; sampling, then, is aimed at insight about the phenom- enon, not empirical generalization from a sample to a populationon. Data-Collection and Fieldwork Strategies
+4. Qualitative data —Observations that yield detailed, thick description; inquiry in depth; interviews that capture direct quotations about people’s personal perspectives and experiences; case studies; careful document review.
+5. Personal experience and engagement —The researcher has direct contact with and gets close to the people, situation, and phenomenon under study; the researcher’s personal experiences and insights are an important part of the inquiry and critical to understanding the phenomenon.
+6. Empathic neutrality and mindfulness —An empathic stance in interviewing seeks vicarious understanding without judgment (neutrality) by showing openness, sensitivity, respect, awareness, and responsiveness; in observation it means being fully present (mindfulness).
+7. Dynamic systems —Attention to process; assumes change as ongoing whether focus is on an individual, an organization, a community, or an entire culture; therefore, mindful of and attentive to system and situation dynamics. Analysis Strategies
+8. Unique case orientation —Assumption that each case is special and unique; the first level of analysis is being true to, respecting, and capturing the details of the individual cases being studied; cross-case analysis follows from and depends on the quality of individual case studies.
 
 > [!TIP] **Study Question 14.1**
 > In what ways does qualitative research differ from quantitative research? Which differences do you find most intriguing?
@@ -298,7 +275,7 @@ Michael Patton (2015) has done a good job of summarizing the characteristics of 
 >
 > 11. *Context sensitivity* —Places findings in a social, historical, and temporal context; careful about, even dubious of, the possibility or meaningfulness of generalizations across time and space; emphasizes instead careful comparative case analyses and extrapolating patterns for possible transferability and adaptation in new settings.
 
-[^12]: *Voice, perspective, and reflexivity* —The qualitative analyst owns and is reflective about her or his own voice and perspective; a credible voice conveys authenticity and trustworthiness; complete objectivity being impossible and pure subjectivity undermining credibility, the researcher’s focus becomes balance- understanding and depicting the world authentically in all its complexity while being self-analytical, politi- cally aware, and reflexive in consciousness. *Source:* **** From Patton, M.Q. (2013, January 14). “Strategic themes of qualitative inquiry.” *Qualitative Evaluation Methods workshop.* Washington, DC: The Evaluators’ Institute.
+[^12]: *Voice, perspective, and reflexivity* —The qualitative analyst owns and is reflective about her or his own voice and perspective; a credible voice conveys authenticity and trustworthiness; complete objectivity being impossible and pure subjectivity undermining credibility, the researcher’s focus becomes balance- understanding and depicting the world authentically in all its complexity while being self-analytical, politi- cally aware, and reflexive in consciousness. *Source:* ** From Patton, M.Q. (2013, January 14). “Strategic themes of qualitative inquiry.” *Qualitative Evaluation Methods workshop.* Washington, DC: The Evaluators’ Institute.
 
 <!-- Page 4 -->
 ## Research Validity in Qualitative Research
@@ -311,7 +288,7 @@ One threat to watch out for is **researcher bias**, which might take the form of
 
 **Table 14.3** *Validity Strategies That Should Be Used in Qualitative Research*
 
-<table class="textbook-table">
+<table class="textbook-table" style="width: auto; max-width: 100%; border-collapse: collapse; margin: 1.5em 0;">
   <thead>
     <tr>
       <th>Strategy</th>
@@ -356,7 +333,7 @@ One threat to watch out for is **researcher bias**, which might take the form of
       <td>and other members of the participant community for verification and insight.</td>
     </tr>
     <tr>
-      <td>Pattern matching</td>
+      <td>Pattern matchingg</td>
       <td>Predicting a series of results that form a distinctive pattern and then determining the degree to which the actual results fit the predicted pattern or “fingerprint.”</td>
     </tr>
     <tr>
@@ -387,7 +364,7 @@ The second type of validity for qualitative research focuses on the primary purp
 
 ### Theoretical Validity
 
-Maxwell calls the third type of validity **theoretical validity**. It is present to the degree that the theoretical explanation provided by the researcher accurately fits the data. Four validity strategies provided in Table 14.3 are especially helpful for obtaining theoretical validity. The first strategy is **extended fieldwork**, which means that the researcher should collect data in the field over an extended period of time. The second strategy is **theory triangulation**, which involves the consideration of multiple theories and multiple perspectives to help interpret and understand the qualitative data. Out of this, a fuller explanation is expected to result. The third strategy is **pattern   matching**. This is a hypothesis-construction-and-testing strategy in which the researcher makes a unique and complex prediction (rather than a very simple prediction) and determines whether it is supported. That is, did the “fingerprint” pattern of results that the researcher predicted actually occur? If it does, the theory will have significant predictive power. The fourth strategy that is especially relevant for theoretical validity is **peer review**. This requires you to discuss your interpretations, conclusions, and explanations with your peers or colleagues, who can provide a different perspective. If you are deeply involved in a qualitative study, the use of objective outsiders, who are not deeply involved in the study, can be quite helpful in providing a fresh perspective.
+Maxwell calls the third type of validity **theoretical validity**. It is present to the degree that the theoretical explanation provided by the researcher accurately fits the data. Four validity strategies provided in Table 14.3 are especially helpful for obtaining theoretical validity. The first strategy is **extended fieldwork**, which means that the researcher should collect data in the field over an extended period of time. The second strategy is **theory triangulation**, which involves the consideration of multiple theories and multiple perspectives to help interpret and understand the qualitative data. Out of this, a fuller explanation is expected to result. The third strategy is **pattern   matchingg**. This is a hypothesis-construction-and-testing strategy in which the researcher makes a unique and complex prediction (rather than a very simple prediction) and determines whether it is supported. That is, did the “fingerprint” pattern of results that the researcher predicted actually occur? If it does, the theory will have significant predictive power. The fourth strategy that is especially relevant for theoretical validity is **peer review**. This requires you to discuss your interpretations, conclusions, and explanations with your peers or colleagues, who can provide a different perspective. If you are deeply involved in a qualitative study, the use of objective outsiders, who are not deeply involved in the study, can be quite helpful in providing a fresh perspective.
 
 ### Internal (Causation) Validity
 
@@ -407,7 +384,7 @@ To enable naturalistic generalizations, the qualitative research report should i
 <!-- Page 7 -->
 **Table 14.4** *Summary of Qualitative Methods*
 
-<table class="textbook-table">
+<table class="textbook-table" style="width: auto; max-width: 100%; border-collapse: collapse; margin: 1.5em 0;">
   <thead>
     <tr>
       <th>Method</th>
@@ -518,7 +495,7 @@ In classical ethnography, the data collection process is called **fieldwork**. O
 
 What you see and hear and think during fieldwork are recorded in your **fieldnotes**. The setting and context also should be richly described in the fieldnotes. You might also take photographs of surroundings and note the clothing worn by the group members. In the Harley-Davidson study, Schouten and McAlexander took pictures of the members’ dress and appearance (see Figure 14.1). When the researcher has moments to reflect and when he or she leaves the group, fieldnotes must be finished, checked, and edited, and notes must be written about his or her emerging interpretations and what kinds of data that should be collected during the next field entry period. Through this back-and-forth process between insider and outsider roles, the ethnographer produces an “objective” ethnography that also reflects the inner world of the culture.
 
-**Data Analysis and Report Writing** As data are collected, they should be analyzed for themes, patterns, and meanings. You have to make some sense of the volumes of information that are collected. Throughout the process, the data should be checked for their validity. Once the themes, meanings, and patterns have been identified and validated, the ethnographer writes a narrative account that provides a description and interpretation of the culture being studied. This narrative report might include the characteristics of the group, how members of the group interact with one another, what the group has in common, what some of the group’s norms and rituals are, and what the group’s identity is. Schouten and McAlexander’s (1995) narrative report of their ethnographic study of Harley-Davidson bikers first discussed the structure of the Harley-Davidson biker groups and then proceeded to present a narrative of the core values of the biker groups, such as the feeling of personal freedom and machismo surrounding the Harley-Davidson culture. The narrative report should also discuss how one becomes transformed into a group member and how, once a person (Photograph courtesy of Harley-Davidson Photograph &amp; Imaging.
+**Data Analysis and Report Writing** As data are collected, they should be analyzed for themes, patterns, and meanings. You have to make some sense of the volumes of information that are collected. Throughout the process, the data should be checked for their validity. Once the themes, meanings, and patterns have been identified and validated, the ethnographer writes a narrative account that provides a description and interpretation of the culture being studied. This narrative report might include the characteristics of the group, how members of the group interact with one another, what the group has in common, what some of the group’s norms and rituals are, and what the group’s identity is. Schouten and McAlexander’s (1995) narrative report of their ethnographic study of Harley-Davidson bikers first discussed the structure of the Harley-Davidson biker groups and then proceeded to present a narrative of the core values of the biker groups, such as the feeling of personal freedom and machismo surrounding the Harley-Davidson culture. The narrative report should also discuss how (Photograph courtesy of Harley-Davidson Photograph &amp; Imaging. one becomes transformed into a group member and how, once a person
 
 ![Illustration](images/012_001.jpg)
 
@@ -601,13 +578,10 @@ to understand how clients experienced persecutory paranoia and how these beliefs
 As defined earlier, *mixed methods research* is the research approach in which quantitative *and* qualitative data or techniques are combined or mixed in a single research study or in a set of closely related studies. Mixed methods research is the third major research approach, but it is also the newest (after quantitative research and qualitative research) and, therefore, is the least developed at present. Mixed methods research as discussed here has only recently been systematically and formally developed (Johnson et al., 2007; Tashakkori &amp; Teddlie, 2003). Although much of its potential still is to be realized in practice, mixed methods research often offers an attractive approach to research because it can be used to strengthen both quantitative and qualitative research. Some of the strengths and weaknesses that have been proposed are listed in Table 14.5.
 
 <!-- Page 18 -->
-fully worked out.
-
 **Table 14.5** *Strengths and Weaknesses of Mixed Methods Research*
 
 <div class="comparison-card">
   <div class="banner-strengths">
-    <div class="banner-header">Strengths:</div>
     <ul class="banner-list">
       <li>Can provide multiple sources of evidence.</li>
       <li>Can reduce alternative explanations of a finding.</li>
@@ -623,18 +597,15 @@ fully worked out.
       <li>Can be used to check the implementation of a study (including its meaning to the participants).</li>
       <li>Can be used to check the operation and meaning of measurement instruments.</li>
       <li>Can provide rich, detailed, subjective data and objective quantitative data in the same study.</li>
-      <li>Can add an exploratory dimension to theory/hypothesis testing research (or vice versa).</li>
-    </ul>
-  </div>
-  <div class="banner-weaknesses">
-    <div class="banner-header">Weaknesses:</div>
-    <ul class="banner-list">
+      <li>Can add an exploratory dimension to theory/hypothesis testing research (or vice versa). Weaknesses:</li>
       <li>Requires skill in both quantitative and qualitative research by a single researcher or the use of a mixed methods research team.</li>
       <li>Can be more time consuming and expensive.</li>
       <li>Because it’s a new methodology, many design, implementation, and analysis procedures remain to be</li>
     </ul>
   </div>
 </div>
+
+**Strengths:** fully worked out.
 
 Proponents of mixed methods research typically adhere to a compatibility thesis and follow the philosophy of pragmatism. In this context, the **compatibility thesis** is the idea that quantitative and qualitative methods are complementary and can be used effectively together in a single research study. That is, quantitative and qualitative research approaches can be used together in a single research study to address a single research question or a set of related research questions. The philosophy of **pragmatism** provides empirical justification for the use of mixed approaches to the degree that they work in practice and produce desired outcomes. According to this philosophy, it is an “empirical question” whether combining or mixing quantitative and qualitative approaches is justified in practice (for more information on pragmatism in behavioral/social research, see Johnson, de Waal, Stefurak, &amp; Hildebrand, 2017; Johnson, Onwuegbuzie, de Waal, Stefurak, &amp; Hildebrand, 2017).
 
@@ -652,7 +623,7 @@ The second kind of mixed methods validity is called **weakness minimization** **
 
 In the next section, we discuss the design of mixed methods research studies. Sometimes the quantitative and qualitative parts are conducted at the same time, but at other times the parts will be carried out sequentially. When the quantitative and qualitative study components are carried out sequentially you need to consider the third kind of mixed methods validity, **sequential validity**, to (a) make sure your results are not due to the ordering of the quantitative and qualitative components and (b) make sure that later phases in sequential designs appropriately build on prior stages. For example, perhaps you first collect qualitative data through individual in-depth interviews about a sensitive topic, and you follow this with a standardized test measuring some psychological construct. The sequential validity questions are this: (a) Would you have obtained different results if you had conducted the standardized testing first and the indepth interviews second? and (b) Did later phases/stages in the mixed methods design execution appropriately build on any earlier stage(s)? You could empirically test for the ordering effect by conducting the study in different orders for different participants, but this is not always feasible. You can check for the “building on earlier phases/stages” idea, by checking to see if the researchers used ideas and findings from earlier stages to inform later stages.
 
-The fourth kind of mixed methods validity is called **sample integration** **validity**. This is present when you make appropriate claims from the combination of your qualitative and quantitative data. Perhaps you have conducted a structured survey research study with a random sample of 1,000 participants, and you interviewed a subset of 15 participants. The in-depth interviews would provide useful information, but you certainly could not generalize to the entire population like <!-- Page 20 -->
+The fourth kind of mixed methods validity is called **sample integration** **validity**. This is present when you make appropriate claims from the combination of your qualitative and quantitative data. Perhaps you have conducted a structured survey research study with a random sample of 1,000 participants, and you interviewed a subset of 15 participants. The in-depth interviews would provide useful information, but you certainly could not generalize to the entire populationon like <!-- Page 20 -->
 you could with your survey sample. The point is to always remember what you can conclude from your quantitative and qualitative data taken separately and combined.
 
 The fifth kind of mixed methods validity is called pragmatic validity. **Pragmatic** **validity** refers to the extent to which the research purpose(s) was met, research questions were adequately answered, and actionable results were provided. Did the researchers succeed in what they promised? Does the study meet the “So what?” test? The sixth kind of mixed methods validity is called multiple stakeholder validity. **Multiple-stakeholder validity** refers to the degree to which the mixed methods research study addresses the interests, values, and viewpoints of different groups with a stake in the research (e.g., researchers, funders, participants, practitioners). It is important that all important voices are heard and considered, including those with the least power.
@@ -681,9 +652,9 @@ In order to understand the designs, you must first understand the notation. Here
 
 - Lowercase letters denote lower priority or weight or emphasis.
 
-- A plus sign ( + ) indicates the concurrent conduct of the quantitative and  qualitative parts (e.g., collection of data).
+> - A plus sign ( + ) indicates the concurrent conduct of the quantitative and  qualitative parts (e.g., collection of data).
 
-- An arrow ( $\approx$ ) represents a sequential conduct of the quantitative and qualitative parts (e.g., collection of data).
+> - An arrow ( $\approx$ ) represents a sequential conduct of the quantitative and qualitative parts (e.g., collection of data).
 
 Now we will use the notation. Here is a design: qual $\approx$ QUAN. Using the notation, you can see that this refers to a quantitatively-driven sequential mixed methods design. The overall thrust of the study would be quantitative in emphasis, and the supplemental qualitative part would precede the quantitative part or phase. A researcher might use this design to explore the factors related to employees leaving an organization. Based on the factors identified in the exploratory phase with employees who have left the organization and on the relevant turnover research literature, the researcher could construct a structured questionnaire for predicting turnover in the organization. Then, in phase two, the researcher could select a random sample of employees (or use all employees if the organization is not too large) and have the sample participants complete the instrument. Then the organizational researcher could start testing the predictive validity of the instrument by checking to see if it accurately predicts turnover during the next 6 months. In this example, the quantitative part was primary and the qualitative part was supportive. The qualitative part also occurred first because it was a sequential design.
 
@@ -702,9 +673,7 @@ want your study to provide both the subjective insider and objective outsider pe
 
 Third, and most importantly, always remember that mixed methods research is not an excuse to rely on weak quantitative or weak qualitative methods. To conduct good mixed methods research, you must collect good quantitative data and good qualitative data and meet the relevant validities for each. You also must interrelate and “integrate” your findings. These practices will help ensure that you have met *multiple* *validities legitimation* (i.e., you have identified and met the relevant set of quantitative, qualitative, *and* mixed methods validities for your particular study).
 
-It is very important to understand that you are not limited to the mixed methods designs provided here. Our designs are provided to get you started. You can and should use the design notation we provided to construct more complex designs.
-
-+ $\approx$ For example, a (qual QUAN) QUAN design combines concurrent and sequential design characteristics. In this quantitatively driven design, both quantitative and qualitative data are collected in phase one; in phase two, quantitative data are collected to build on the first phase. You might make this design even more complex by adding a phase three, where you conduct focus groups at the end; you could depict that design as (qual + QUAN) $\approx$ QUAN $\approx$ qual. *Once you master the notation system, you* *will be free to design and depict many mixed methods designs*, including a design you might want to use in your research!
+It is very important to understand that you are not limited to the mixed methods designs provided here. Our designs are provided to get you started. You can and should use the design notation we provided to construct more complex designs. For example, a (qual + QUAN) $\approx$ QUAN design combines concurrent and sequential design characteristics. In this quantitatively driven design, both quantitative and qualitative data are collected in phase one; in phase two, quantitative data are collected to build on the first phase. You might make this design even more complex by adding a phase three, where you conduct focus groups at the end; you could depict that design as (qual + QUAN) $\approx$ QUAN $\approx$ qual. *Once you master the notation system, you* *will be free to design and depict many mixed methods designs*, including a design you might want to use in your research!
 
 You should feel free to mix and match other characteristics into a mixed methods research design that best fits your needs. Your goal, always, is to answer your research question(s) and to design a study that will help you to do that well. There is much more that we could have discussed here. We recommend that you refer to the *Oxford* *Handbook of Mixed and Multiple Methods Research* (Hesse-Biber &amp; Johnson, 2015) and the *Sage Handbook of Mixed Methods in Social and Behavioral Research* (Tashakkori &amp; Teddlie, 2010). Both of these books are excellent resources for additional information about mixed methods designs, sampling strategies, validity strategies, and so forth. Another excellent resource is the *Journal of Mixed Methods Research*. Here is the link to a recent special issue on mixed methods research (in the *International Journal of Multiple Research* *Approaches*) that includes 43 articles written by many well-known authors: http:// ijmra.org/inaugural-special-issue/. For more information on constructing mixed methods designs (including additional dimensions for mixing), please see Schoonenboom and Johnson (2017; available for free here: http://rdcu.be/tXiS).
 
@@ -830,8 +799,8 @@ are summarized in Table 14.4. We covered seven kinds of validity specifically fo
 
 </details>
 
-<details id="flashcard-pattern-matching">
-<summary>📇 <b>Pattern matching</b> *(p. 5)*</summary>
+<details id="flashcard-pattern-matchingg">
+<summary>📇 <b>Pattern matchingg</b> *(p. 5)*</summary>
 
 > **Definition:** Construction and testing of a complex hypothesis
 
@@ -1235,7 +1204,7 @@ are summarized in Table 14.4. We covered seven kinds of validity specifically fo
 | [Fieldwork *p. 281*](#term-fieldwork) | [Paradigm emphasis *p. 289*](#term-paradigm-emphasis) | [Theory *p. 283*](#term-theory) |
 | [Gatekeepers *p. 280*](#term-gatekeepers) | [Participant feedback *p. 274*](#term-participant-feedback) | [Theory triangulation *p. 274*](#term-theory-triangulation) |
 | [Going native *p. 281*](#term-going-native) | [Participant observation *p. 280*](#term-participant-observation) | [Time order *p. 289*](#term-time-order) |
-| [Grounded theory *p. 283*](#term-grounded-theory) | [Pattern matching *p. 274*](#term-pattern-matching) | Weakness minimization |
+| [Grounded theory *p. 283*](#term-grounded-theory) | [Pattern matchingg *p. 274*](#term-pattern-matchingg) | Weakness minimization |
 | [Holism *p. 279*](#term-holism) | [Peer review *p. 274*](#term-peer-review) | [validity *p. 288*](#term-validity) |
 
 ### Related Internet Sites
@@ -1250,7 +1219,9 @@ are summarized in Table 14.4. We covered seven kinds of validity specifically fo
   Lots of materials on qualitative research are found at this link.
 
 <!-- Page 25 -->
-**http://mmr.sagepub.com/** Link to the *Journal of Mixed Methods Research.* This is an important article on how to design mixed methods research studies. **http://rdcu.be/tXiS** This is a link to a special journal issue on mixed methods research. **http://ijmra.org/inaugural-special-issue/**
+**http://mmr.sagepub.com/**
+
+This is an important article on how to design mixed methods research studies. **http://rdcu.be/tXiS** This is a link to a special journal issue on mixed methods research. **http://ijmra.org/inaugural-special-issue/**
 
 ### Practice Test
 
@@ -1260,7 +1231,7 @@ are summarized in Table 14.4. We covered seven kinds of validity specifically fo
 research?
 a.  Operational measures of constructs
 b.  Context sensitivity
-c.  Importance of generalization to populations
+c.  Importance of generalization to populationons
 d.  A priori hypotheses
 
 **2.** Which of the following is characteristic of qualitative

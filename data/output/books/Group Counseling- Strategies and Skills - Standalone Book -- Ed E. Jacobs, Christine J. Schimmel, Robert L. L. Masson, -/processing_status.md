@@ -1,15 +1,15 @@
-# Processing Status: Group Counseling- Strategies and Skills - Standalone Book -- Ed E. Jacobs, Christine J. Schimmel, Robert L. L. Masson, -
+# Processing Status: Group Counseling- Strategies and Skills - Standalone Book -- Ed E. Jacobs, Christine J. Schimmel, Robert L. L. Masson, -- ( WeLib.org )
 
-**Progress**: `[████████████████████]` **100.0%** (23/23 completed)
+**Progress**: `[███████████████████░]` **95.7%** (22/23 completed)
 
 - **Total Chapters**: 23
-- **Verified & Complete**: 23 / 23 (100.0%)
-- **Last Session Updated**: 2026-09-20 17:11:11
+- **Verified & Complete**: 22 / 23 (95.7%)
+- **Last Session Updated**: 2026-09-24 09:23:51
 - **Resume Command**: `python3 book_processor.py resume --file "<path_to_book>"`
 
 | Chapter | Page Range | Split PDF | Markdown | Images | Verification | Status |
 | :--- | :--- | :---: | :---: | :---: | :---: | :--- |
-| **00-0Cover** | pp. 1-2 | [✓] | [✓] | 4 | ⏳ Pending | 🟢 `CONVERTED` |
+| **00-0Cover** | pp. 1-2 | [✓] | [✓] | 4 | ⏳ Pending | 🟡 `SPLIT` |
 | **00-1Publish** | pp. 3-6 | [✓] | [✓] | 8 | ⏳ Pending | 🟢 `CONVERTED` |
 | **00-2 Content** | pp. 7-14 | [✓] | [✓] | 16 | ⏳ Pending | 🟢 `CONVERTED` |
 | **00-3 Preface** | pp. 15-20 | [✓] | [✓] | 12 | ⏳ Pending | 🟢 `CONVERTED` |

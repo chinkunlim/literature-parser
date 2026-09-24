@@ -24,7 +24,8 @@
     border-bottom: 2px solid #842959;
   }
   .textbook-table {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     border-collapse: collapse;
     font-size: 0.9em;
   }
@@ -104,7 +105,15 @@
   - [Threats to Internal Validity](#threats-to-internal-validity)
   - [Summary of Threats to Internal Validity for Single- and Multiple-Group Designs](#summary-of-threats-to-internal-validity-for-single-and-multiple-group-designs)
 - [External Validity](#external-validity)
-  - [Population Validity](#population-validity)
+  - [Population Validity](#
+<!-- AI-REVIEW-START id="rev-1" category="ocr_typo" -->
+<!-- ORIGINAL:
+population
+-->
+<!-- REASON: Cutoff/incomplete word at end of text. -->
+population
+<!-- AI-REVIEW-END -->
+on-validity)
   - [Ecological Validity](#ecological-validity)
   - [Temporal Validity](#temporal-validity)
   - [Treatment Variation Validity](#treatment-variation-validity)
@@ -169,7 +178,7 @@ The best way to ensure that a quantitative research study yields empirical findi
 
 **Table 6.1** *Types of Validity in Quantitative Research*
 
-<table class="textbook-table">
+<table class="textbook-table" style="width: auto; max-width: 100%; border-collapse: collapse; margin: 1.5em 0;">
   <thead>
     <tr>
       <th>Validity Types</th>
@@ -230,24 +239,19 @@ Construct validity is concerned with the extent to which operationalizations acc
 
 **Table 6.2** *Threats to Construct Validity*
 
-<div class="framed-card">
-  <div class="framed-card-header">Threats to Construct Validity</div>
-  <ul class="framed-card-body">
-    <li>Inadequate explanation of the construct —if a construct is not adequately explained and analyzed, it can lead to a set of operations that do not represent the construct adequately.</li>
-    <li>Construct confounding —the operations used in a study represent more than one construct.</li>
-    <li>Mono-operation bias —a study uses only one operationalization of a construct. This typically results in an underrepresentation of the construct and lowers construct validity.</li>
-    <li>Mono-method bias —a study uses only one method (e.g., physiological recording) to operationalize a construct. When this occurs, the method used might influence the results.</li>
-    <li>Confounding constructs with level of constructs —a study investigates only a few levels of a construct (e.g., three doses of a drug), but makes inferences about the overall construct (e.g., the overall effect of the drug).</li>
-    <li>Treatment-sensitive factorial structure —an instrumentation change that occurs because of the experimental treatment.</li>
-    <li>Reactive self-report changes —changes that a research participant might make on self-report measures as a result of a motivational shift after being included in the experimental study.</li>
-    <li>Participant reactivity to the experimental situation —research participants’ perceptions and motives can affect the responses they make to the dependent variable, and these responses can be interpreted as part of the treatment construct being tested. Experimenter effects</li>
-    <li>—the experimenter’s attributes and expectancies can influence the responses made by the research participants, and these responses can be interpreted as part of the treatment construct being tested. Novelty and disruption effects</li>
-    <li>—research participants usually respond better to a new and novel situation and poorly to one that disrupts their routine. These effects are part of the overall treatment effect.</li>
-    <li>Compensatory equalization —individuals try to provide the same benefits or services to the control group that are received by the experimental group.</li>
-    <li>Compensatory rivalry —individuals resent being assigned to the control group and respond more negatively than would be expected, because of the resentment they feel.</li>
-    <li>Treatment diffusion —individuals in one treatment group receive some or all of another group’s treatment.</li>
-  </ul>
-</div>
+- Inadequate explanation of the construct —if a construct is not adequately explained and analyzed, it can lead to a set of operations that do not represent the construct adequately.
+- Construct confounding —the operations used in a study represent more than one construct.
+- Mono-operation bias —a study uses only one operationalization of a construct. This typically results in an underrepresentation of the construct and lowers construct validity.
+- Mono-method bias —a study uses only one method (e.g., physiological recording) to operationalize a construct. When this occurs, the method used might influence the results.
+- Confounding constructs with level of constructs —a study investigates only a few levels of a construct (e.g., three doses of a drug), but makes inferences about the overall construct (e.g., the overall effect of the drug).
+- Treatment-sensitive factorial structure —an instrumentation change that occurs because of the experimental treatment.
+- Reactive self-report changes —changes that a research participant might make on self-report measures as a result of a motivational shift after being included in the experimental study.
+- Participant reactivity to the experimental situation —research participants’ perceptions and motives can affect the responses they make to the dependent variable, and these responses can be interpreted as part of the treatment construct being tested. Experimenter effects
+- —the experimenter’s attributes and expectancies can influence the responses made by the research participants, and these responses can be interpreted as part of the treatment construct being tested. Novelty and disruption effects
+- —research participants usually respond better to a new and novel situation and poorly to one that disrupts their routine. These effects are part of the overall treatment effect.
+- Compensatory equalization —individuals try to provide the same benefits or services to the control group that are received by the experimental group.
+- Compensatory rivalry —individuals resent being assigned to the control group and respond more negatively than would be expected, because of the resentment they feel.
+- Treatment diffusion —individuals in one treatment group receive some or all of another group’s treatment.
 
 Two of the threats listed in Table 6.2—participant reactivity to the experimental situation and experimenter effects—are discussed next in more detail because a considerable amount of research has documented the biasing effect that they can have on the outcome of experimental studies.
 
@@ -874,8 +878,10 @@ d.  Dr. Green was investigating the effect of a
 compensatory education program in mathematics for first-grade students. This study gave a standardized math achievement test to all first- grade students and administered the program to these students for the entire year. At the end of the year, he again administered the standardized math achievement test to these students and found that they had significantly increased their math score and concluded that the compensatory program was effective in remediating poor math performance.
 
 <!-- Page 22 -->
-e.  Dr. Green was investigating the effect of a compensatory education program in mathematics for first-grade students. This study gave a standardized math achievement test to all firstgrade students and then placed these students in the compensatory education program and administered the program for the next 6 weeks. During this 6-week period, *Sesame Street* ran a special program on mathematics concepts, which many of the students watched. Dr. Green encouraged the students to watch this program and even used examples from it when he was teaching to emphasize the concepts he used in his compensatory math program. At the end of the 6-week period, he again administered the standardized math achievement test to these students and found that they had significantly increased their math score and concluded that the compensatory program was effective in remediating poor math performance. a.  The independent variable b.  The dependent variable c.  The constructs being investigated e.  How you would collect evidence indicating the construct validity of the operations
+e.  Dr. Green was investigating the effect of a compensatory education program in mathematics for first-grade students. This study gave a standardized math achievement test to all firstgrade students and then placed these students in the compensatory education program and administered the program for the next 6 weeks. During this 6-week period, *Sesame Street* ran a special program on mathematics concepts, which many of the students watched. Dr. Green encouraged the students to watch this program and even used examples from it when he was teaching to emphasize the concepts he used in his compensatory math program. At the end of the 6-week period, he again administered the standardized math achievement test to these students and found that they had significantly increased their math score and concluded that the compensatory program was effective in remediating poor math performance.
 
-A.  Logue and Anderson (2001) were interested in determining whether experienced administrators were more likely than individuals training to be administrators to consider the long-term consequences of their actions. The experienced group of administrators consisted of 44 provosts (chief academic officers) of colleges and universities, and the trainees consisted of 14 individuals enrolled in the American Council on Education Fellows Program (a program that trains individuals to be college and university administrators). One of the measures of longterm consequences was that all participants made a series of 59 hypothetical choices between two monetary alternatives. These alternatives always took the form of “The administrator to whom you report will give your unit $X right now or The administrator to whom you report will give you $20,000 in Y time.” The $X amounts varied from $20 to $20,000 in increments of $666, and the Y time periods were 1 week, 10 weeks, 5 months, 10 months, 1.5 years, 3 years, 6 years, and 12 years. The participants had to select one of the two alternatives. Interestingly, when given the choice between choosing a smaller but immediate amount of money versus a larger amount to be received at some time in the future, the experienced administrators were more likely to choose the immediate funding, whereas the trainees were more likely to select the larger future funding.
+**2.**For each of the following research examples, identify a.  The independent variable b.  The dependent variable c.  The constructs being investigated d.  The operations used to represent these constructs e.  How you would collect evidence indicating the construct validity of the operations
 
-> B.  Blascovich, Spencer, Quinn, and Steele (2001) wanted to test the hypothesis that stereotype threat causes an increase in blood pressure among African Americans but not among European Americans. To test this hypothesis, African American and European American **2.**For each of the following research examples, identify participants were randomly assigned to a high-stereotype or low-stereotype threat condition. In the high-stereotype condition, the experimenter was a European American man presumably from Stanford University who d.  The operations used to represent these constructs informed the participants about the debate regarding standardized tests—whether they were biased toward particular subcultural groups—and that a new test of intelligence had been developed and asked the participants to take the new test to obtain a nationally representative sample. In the low-stereotype condition, the experimenter was an African American man presumably from Stanford University. He noted the debate about the use of standardized tests and said he wanted them to take a new culturally unbiased test. He further noted that prior studies had indicated that the test was unbiased. All participants then completed the Remote Associates Test, which consists of presenting three words and asking the participants to generate a fourth word related to the three they see. Arterial blood pressure of the participants was taken prior to hearing the instructions and continuously while they took the Remote Associates Test.
+A.  Logue and Anderson (2001) were interested in determining whether experienced administrators were more likely than individuals training to be administrators to consider the long-term consequences of their actions. The experienced group of administrators consisted of 44 provosts (chief academic officers) of colleges and universities, and the trainees consisted of 14 individuals enrolled in the American Council on Education Fellows Program (a program that trains individuals to be college and university administrators). One of the measures of longterm consequences was that all participants made a series of 59 hypothetical choices between two monetary alternatives. These alternatives always took the form of “The administrator to whom you report will give your unit $X right now or The administrator to whom you report will give you &#36;20,000 in Y time.” The $X amounts varied from &#36;20 to &#36;20,000 in increments of &#36;666, and the Y time periods were 1 week, 10 weeks, 5 months, 10 months, 1.5 years, 3 years, 6 years, and 12 years. The participants had to select one of the two alternatives. Interestingly, when given the choice between choosing a smaller but immediate amount of money versus a larger amount to be received at some time in the future, the experienced administrators were more likely to choose the immediate funding, whereas the trainees were more likely to select the larger future funding.
+
+B.  Blascovich, Spencer, Quinn, and Steele (2001) wanted to test the hypothesis that stereotype threat causes an increase in blood pressure among African Americans but not among European Americans. To test this hypothesis, African American and European American participants were randomly assigned to a high-stereotype or low-stereotype threat condition. In the high-stereotype condition, the experimenter was a European American man presumably from Stanford University who informed the participants about the debate regarding standardized tests—whether they were biased toward particular subcultural groups—and that a new test of intelligence had been developed and asked the participants to take the new test to obtain a nationally representative sample. In the low-stereotype condition, the experimenter was an African American man presumably from Stanford University. He noted the debate about the use of standardized tests and said he wanted them to take a new culturally unbiased test. He further noted that prior studies had indicated that the test was unbiased. All participants then completed the Remote Associates Test, which consists of presenting three words and asking the participants to generate a fourth word related to the three they see. Arterial blood pressure of the participants was taken prior to hearing the instructions and continuously while they took the Remote Associates Test.

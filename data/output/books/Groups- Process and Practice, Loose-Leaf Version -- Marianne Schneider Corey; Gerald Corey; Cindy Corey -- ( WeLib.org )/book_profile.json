@@ -1,0 +1,27 @@
+{
+  "geometry": {
+    "page_width": 918.0,
+    "page_height": 1174.0,
+    "header_cut_ratio": 0.04,
+    "footer_cut_ratio": 0.04,
+    "odd_page_margin_x": [
+      0.7,
+      1.0
+    ],
+    "even_page_margin_x": [
+      0.0,
+      0.3
+    ]
+  },
+  "book_name": "Groups- Process and Practice, Loose-Leaf Version -- Marianne Schneider Corey; Gerald Corey; Cindy Corey -- ( WeLib.org )",
+  "special_blocks": {
+    "has_concept_map": false,
+    "has_margin_glossary": false
+  },
+  "discovered_blocks": [],
+  "column_roles": {
+    "odd_left": "body",
+    "odd_right": "margin_glossary"
+  },
+  "scan_complete": true
+}

@@ -24,7 +24,8 @@
     border-bottom: 2px solid #842959;
   }
   .textbook-table {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     border-collapse: collapse;
     font-size: 0.9em;
   }
@@ -207,75 +208,87 @@ Will random assignment *always* result in equal distributions of the variables t
 
 Consider the following example using the random assignment of participants. Professor X was conducting a study on learning. The extraneous variable intelligence is correlated with learning, so this factor must be controlled for, or equated across the groups. Let us consider two possibilities—one that provides the needed control through the use of random assignment and one that does not. Assume first that no random assignment of participants existed, but that the first 10 participants who showed up for the experiment were assigned to the control group, and the second 10 participants were assigned to the treatment group. Assume further that the results of the experiment revealed that the treatment group learned significantly faster than the control group. Is this difference caused by the treatment or by the fact that the participants in the treatment group *may* have been more intelligent than those in the control group? Suppose the investigator also considers intelligence to be a possible confounding variable and gives all participants an intelligence test. The left-hand side of Table 7.1 depicts the hypothetical distribution of IQ scores of these 20 participants. From this table, you can see that the mean IQ score of the people in the treatment group is 10.6 points higher than that
 
+**Based on Arrival Sequence** **of Participants to Groups**
+
 Difference between Control mean and Treatment mean: 10.6 Difference between Control mean and Treatment mean:.2
 
 **Table 7.1** *Hypothetical Distribution of 20 Research Participants’ IQ Scores*
 
-<table class="textbook-table">
+<table class="textbook-table" style="width: auto; max-width: 100%; border-collapse: collapse; margin: 1.5em 0;">
   <thead>
     <tr>
+      <th></th>
       <th>Group Assignment</th>
       <th>Random Assignment</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>Based on Arrival Sequence</td>
-      <td>of Participants to Groups</td>
-    </tr>
-    <tr>
-      <td>Control Group Treatment Group</td>
+      <td>Control Group</td>
+      <td>Treatment Group</td>
       <td>Control Group Treatment Group</td>
     </tr>
     <tr>
-      <td>Participants IQ Scores Participants IQ Scores</td>
+      <td>Participants</td>
+      <td>IQ Scores Participants IQ Scores</td>
       <td>Participants IQ Scores Participants IQ Scores</td>
     </tr>
     <tr>
-      <td>1 97 11 100</td>
+      <td>1</td>
+      <td>97 11 100</td>
       <td>1 97 3 100</td>
     </tr>
     <tr>
-      <td>2 97 12 108</td>
+      <td>2</td>
+      <td>97 12 108</td>
       <td>2 97 4 103</td>
     </tr>
     <tr>
-      <td>3 100 13 110</td>
+      <td>3</td>
+      <td>100 13 110</td>
       <td>11 100 6 108</td>
     </tr>
     <tr>
-      <td>4 103 14 113</td>
+      <td>4</td>
+      <td>103 14 113</td>
       <td>5 105 12 108</td>
     </tr>
     <tr>
-      <td>5 105 15 117</td>
+      <td>5</td>
+      <td>105 15 117</td>
       <td>13 110 7 109</td>
     </tr>
     <tr>
-      <td>6 108 16 119</td>
+      <td>6</td>
+      <td>108 16 119</td>
       <td>9 113 8 111</td>
     </tr>
     <tr>
-      <td>7 109 17 120</td>
+      <td>7</td>
+      <td>109 17 120</td>
       <td>15 117 14 113</td>
     </tr>
     <tr>
-      <td>8 111 18 122</td>
+      <td>8</td>
+      <td>111 18 122</td>
       <td>10 118 16 119</td>
     </tr>
     <tr>
-      <td>9 113 19 128</td>
+      <td>9</td>
+      <td>113 19 128</td>
       <td>19 128 17 120</td>
     </tr>
     <tr>
-      <td>10 118 20 130</td>
+      <td>10</td>
+      <td>118 20 130</td>
       <td>20 130 18 122</td>
     </tr>
     <tr>
-      <td>Mean 106.1 116.7</td>
+      <td>Mean</td>
+      <td>106.1 116.7</td>
       <td>111.5 111.3</td>
     </tr>
-    <tr class="category-header"><td colspan="2"><strong>IQ score</strong></td></tr>
+    <tr class="category-header"><td colspan="3"><strong>IQ score</strong></td></tr>
   </tbody>
 </table>
 
@@ -372,11 +385,9 @@ A third problem is that matching can limit the generalizability of the results o
 
 **design.**
 
-Another useful way to control the effect of one or more extraneous variables is to build the extraneous variable into the research design so that you can systematically study its effects. This is often done when you also have theoretical interest in the extraneous variable. (In the psychological literature, this technique sometimes is called “blocking.”) This idea is demonstrated in Figure 7.4.
+Another useful way to control the effect of one or more extraneous variables is to build the extraneous variable into the research design so that you can systematically study its effects. This is often done when you also have theoretical interest in the extraneous variable. (In the psychological literature, this technique sometimes is called “blocking.”) This idea is demonstrated in Figure 7.4. Assume that we are conducting an aggression study and want to control for the effects of gender. Also assume that we considered the technique of holding the variable constant by selecting only males but thought it unwise and inexpedient to do so. Instead, we decided to treat gender as an independent variable of interest to the research. This allows us to control for and detect the influence of the gender variable. Therefore, gender is not confounded with the IV because we can examine the effects of the IV separately for males and females.
 
-> Assume that we are conducting an aggression study and want to control for the effects of gender. Also assume that we considered the technique of holding the variable constant by selecting only males but thought it unwise and inexpedient to do so. Instead, we decided to treat gender as an independent variable of interest to the research. This allows us to control for and detect the influence of the gender variable. Therefore, gender is not confounded with the IV because we can examine the effects of the IV separately for males and females.
-
-> Building the extraneous variable into the research design is a good technique for achieving control over the extraneous variable. The technique is recommended if we are interested in the differences produced by the various levels of the extraneous variable or in the interaction between the extraneous variable and other independent variables. In the hypothetical aggression study, we might be interested in the differences between males and females and how these differences may
+Building the extraneous variable into the research design is a good technique for achieving control over the extraneous variable. The technique is recommended if we are interested in the differences produced by the various levels of the extraneous variable or in the interaction between the extraneous variable and other independent variables. In the hypothetical aggression study, we might be interested in the differences between males and females and how these differences may
 
 ![Figure 7.4 Illustration of building the extraneous variable into the research design.](images/figure_7_4.png)
 
@@ -426,27 +437,28 @@ Let us assume that one or more of these extraneous variables does enhance perfor
 
 **Table 7.2** *Hypothetical Order Effects*
 
-<table class="textbook-table">
+<table class="textbook-table" style="width: auto; max-width: 100%; border-collapse: collapse; margin: 1.5em 0;">
   <thead>
     <tr>
+      <th></th>
       <th>List Learned</th>
       <th>Reversed Order of List</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>S M</td>
-      <td>F F M S</td>
-    </tr>
-    <tr>
-      <td>Increment in performance 0 4</td>
+      <td>Increment in performance</td>
+      <td>0 4</td>
       <td>2 0 4 2</td>
     </tr>
   </tbody>
 </table>
 
-The second type of sequencing effect that can occur is a carryover effect. A **carryover effect** occurs when performance in a treatment condition is affected by the treatment condition that preceded it. Consider an experiment studying the relative <!-- Page 11 -->
-effectiveness of three types of therapy (e.g., client-centered therapy, rational–emotive therapy, and Gestalt therapy). Perhaps participants tend to be relaxed after clientcentered therapy and somewhat on edge after rational–emotive therapy, and these effects carry over to any subsequent conditions, changing the apparent effectiveness of the later treatment conditions. Counterbalancing can control for these carryover effects. Another strategy for minimizing carryover effects is to provide a sufficient time period between conditions for the effects of the previous condition to wear off. This sometimes is called the “wash out” period. Use of washout periods is especially important in drug studies and learning studies, or any other type of study where the effects linger over some period of time.
+The second type of sequencing effect that can occur is a carryover effect. A **carryover effect** occurs when performance in a treatment condition is affected by the treatment condition that preceded it. Consider an experiment studying the relative effectiveness of three types of therapy (e.g., client-centered therapy, rational–emotive therapy, and Gestalt therapy). Perhaps participants tend to be relaxed after clientcentered therapy and somewhat on edge after rational–emotive therapy, and these effects carry over to any subsequent conditions, changing the apparent effectiveness of the later treatment conditions. Counterbalancing can control for these carryover effects. Another strategy for minimizing carryover effects is to provide a sufficient time period between conditions for the effects of the previous condition to wear off. This sometimes is called the “wash out” period. Use of washout periods is especially important in drug studies and learning studies, or any other type of study where the effects linger over some period of time.
+
+<!-- Page 11 -->
+
+*S* *M* *F* *F* *M* *S*
 
 Order effects and carryover effects are potential sources of bias in any studies in which the participant takes part in several treatment conditions. In such cases, the sequencing effects need to be controlled, and researchers often use counterbalancing. We now discuss several counterbalancing techniques for dealing with sequencing effects.
 
@@ -493,7 +505,7 @@ If the number of treatment conditions is odd, as with five treatment conditions,
 
 number of times is not fulfilled if the above procedure is followed. For example, the foregoing procedure would give the following set of sequences:
 
-> **Sequence** A $\rightarrow$ B $\rightarrow$ E $\rightarrow$ C $\rightarrow$ D B $\rightarrow$ C A $\rightarrow$ D $\rightarrow$ E C $\rightarrow$ D $\rightarrow$ B $\rightarrow$ E A D $\rightarrow$ E $\rightarrow$ C A $\rightarrow$ B E A $\rightarrow$ D $\rightarrow$ B $\rightarrow$ C
+> **Sequence** A $\rightarrow$ B $\rightarrow$ E $\rightarrow$ C B $\rightarrow$ C A $\rightarrow$ D C $\rightarrow$ D $\rightarrow$ B $\rightarrow$ E D $\rightarrow$ E $\rightarrow$ C A E A $\rightarrow$ D $\rightarrow$ B D E A B C
 
 In this case, each treatment condition appears in every possible position; but, for example, D is immediately preceded by A twice but never by B. To remedy this situation, we must enumerate five additional sequences that are exactly the reverse of the first five sequences. In the five-treatment-condition example, the additional five sequences appear as follows:
 
@@ -776,7 +788,7 @@ In conducting research that attempts to identify a causal relationship, the rese
 ### Related Internet Sites
 
 - <http://www.randomizer.org>
-  This site permits the user, or student, to randomly sample participants from a defined population or to randomly assign participants to an experimental treatment condition.
+  This site permits the user, or student, to randomly sample participants from a defined populationon or to randomly assign participants to an experimental treatment condition.
 
 - <http://skepdic.com/experimentereffect.html>
   This site gives a good example of experimenter expectancy effects and how they can influence the outcome of a study.

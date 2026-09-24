@@ -1,15 +1,15 @@
 # Processing Status: Groups- Process and Practice, Loose-Leaf Version -- Marianne Schneider Corey; Gerald Corey; Cindy Corey -- ( WeLib.org )
 
-**Progress**: `[████████████████████]` **100.0%** (20/20 completed)
+**Progress**: `[███████████████████░]` **95.0%** (19/20 completed)
 
 - **Total Chapters**: 20
-- **Verified & Complete**: 20 / 20 (100.0%)
-- **Last Session Updated**: 2026-09-20 17:11:49
+- **Verified & Complete**: 19 / 20 (95.0%)
+- **Last Session Updated**: 2026-09-24 09:23:54
 - **Resume Command**: `python3 book_processor.py resume --file "<path_to_book>"`
 
 | Chapter | Page Range | Split PDF | Markdown | Images | Verification | Status |
 | :--- | :--- | :---: | :---: | :---: | :---: | :--- |
-| **00-0Cover** | pp. 1-1 | [✓] | [✓] | 1 | ⏳ Pending | 🟢 `CONVERTED` |
+| **00-0Cover** | pp. 1-1 | [✓] | [✓] | 1 | ⏳ Pending | 🟡 `SPLIT` |
 | **00-1Publish** | pp. 2-4 | [✓] | [✓] | 14 | ⏳ Pending | 🟢 `CONVERTED` |
 | **00-2About Authors** | pp. 5-7 | [✓] | [✓] | 6 | ⏳ Pending | 🟢 `CONVERTED` |
 | **00-3Content** | pp. 8-16 | [✓] | [✓] | 18 | ⏳ Pending | 🟢 `CONVERTED` |

@@ -24,7 +24,8 @@
     border-bottom: 2px solid #842959;
   }
   .textbook-table {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     border-collapse: collapse;
     font-size: 0.9em;
   }
@@ -188,17 +189,12 @@ The course in which you are now enrolled will provide you with important knowled
 
 **Table 1.1** *Reasons for Taking a Research Methods Course*
 
-<div class="framed-card">
-  <div class="framed-card-header">Reasons for Taking a Research Methods Course</div>
-  <ul class="framed-card-body">
-    <li>Learn how to conduct psychological research.</li>
-    <li>Provides a foundation for topic-specific courses such as abnormal, social, cognitive, biopsychology, and developmental psychology.</li>
-    <li>Can be a more informed and critical consumer of information.</li>
-    <li>Helps develop critical and analytical thinking.</li>
-    <li>Provides information needed to critically read a research article.</li>
-    <li>Necessary for admission into most graduate programs in psychology.</li>
-  </ul>
-</div>
+- Learn how to conduct psychological research.
+- Provides a foundation for topic-specific courses such as abnormal, social, cognitive, biopsychology, and developmental psychology.
+- Can be a more informed and critical consumer of information.
+- Helps develop critical and analytical thinking.
+- Provides information needed to critically read a research article.
+- Necessary for admission into most graduate programs in psychology.
 
 ## Traditional Methods of Acquiring Knowledge
 
@@ -346,7 +342,7 @@ In psychological research we study the relations among constructs (e.g., depress
 
 *Figure 1.1 Example of an operationalization of a good car salesperson.*
 
-> Once this construct has been operationalized, meaning can be communicated with minimal ambiguity and maximum precision. When you read published psychological research, you always need to look at how the researchers operationalized the constructs, making sure that you are completely satisfied with their measurement procedures.
+Once this construct has been operationalized, meaning can be communicated with minimal ambiguity and maximum precision. When you read published psychological research, you always need to look at how the researchers operationalized the constructs, making sure that you are completely satisfied with their measurement procedures.
 
 ### Replication
 
@@ -397,19 +393,14 @@ Table 1.2 shows how you can start evaluating the quality of theories. For exampl
 
 **Table 1.2** *How to Evaluate the Quality of a Theory*
 
-<div class="framed-card">
-  <div class="framed-card-header">How to Evaluate the Quality of a Theory</div>
-  <ol class="framed-card-body">
-    <li>Does the theory/explanation fit the empirical data?</li>
-    <li>Is it logical and coherent?</li>
-    <li>Is it simple, clear, and parsimonious?</li>
-    <li>Does it provide testable claims (i.e., propositions that can be tested)?</li>
-    <li>Has it been tested and supported in multiple research studies?</li>
-    <li>Does it work better than alternative or rival theories?</li>
-    <li>Is it general enough to apply to multiple places, situations, and kinds of people?</li>
-    <li>Can practitioners use the theory to produce desired outcomes in the world?</li>
-  </ol>
-</div>
+1. Does the theory/explanation fit the empirical data?
+2. Is it logical and coherent?
+3. Is it simple, clear, and parsimonious?
+4. Does it provide testable claims (i.e., propositions that can be tested)?
+5. Has it been tested and supported in multiple research studies?
+6. Does it work better than alternative or rival theories?
+7. Is it general enough to apply to multiple places, situations, and kinds of people?
+8. Can practitioners use the theory to produce desired outcomes in the world?
 
 <!-- Page 13 -->
 > [!TIP] **Study Questions 1.5**
@@ -460,18 +451,13 @@ We have introduced you to science in this chapter. We pointed out that science i
 <!-- Page 15 -->
 **Table 1.3** *Strategies Used in Pseudoscience*
 
-<div class="framed-card">
-  <div class="framed-card-header">Strategies Used in Pseudoscience</div>
-  <ul class="framed-card-body">
-    <li>Creating new (ad hoc) hypotheses in order to explain away negative findings.</li>
-    <li>Exclusive use of confirmation and reinterpretation of negative findings as supporting the claim.</li>
-    <li>Absence of self-correction through continual and rigorous testing of the claim.</li>
-    <li>Reversed burden of proof (i.e., stating that the onus of proof is on the critics).</li>
-    <li>Overreliance on testimonials and anecdotal evidence supporting a claim.</li>
-    <li>Use of ambiguous or confusing language to make a claim sound as if it has survived scientific scrutiny.</li>
-    <li>Absence of any connection to other disciplines that study issues related to the claim.</li>
-  </ul>
-</div>
+- Creating new (ad hoc) hypotheses in order to explain away negative findings.
+- Exclusive use of confirmation and reinterpretation of negative findings as supporting the claim.
+- Absence of self-correction through continual and rigorous testing of the claim.
+- Reversed burden of proof (i.e., stating that the onus of proof is on the critics).
+- Overreliance on testimonials and anecdotal evidence supporting a claim.
+- Use of ambiguous or confusing language to make a claim sound as if it has survived scientific scrutiny.
+- Absence of any connection to other disciplines that study issues related to the claim.
 
 > [!TIP] **Study Questions 1.7**
 > - What is pseudoscience?

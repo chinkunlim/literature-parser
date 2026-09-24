@@ -24,7 +24,8 @@
     border-bottom: 2px solid #842959;
   }
   .textbook-table {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     border-collapse: collapse;
     font-size: 0.9em;
   }
@@ -105,7 +106,15 @@
 - [The Psychological Experiment](#the-psychological-experiment)
   - [Example of an Experiment and Its Logic](#example-of-an-experiment-and-its-logic)
   - [Experimental Research Settings](#experimental-research-settings)
-  - [Advantages of Experimental Research](#advantages-of-experimental-research)
+  - [
+<!-- AI-REVIEW-START id="rev-1" category="ocr_typo" -->
+<!-- ORIGINAL:
+Advantages of Experimental Research
+-->
+<!-- REASON: The text is clearly cut off in the middle of the word 'Experimental' and likely incomplete in its final section heading. -->
+Advantages of Experimental Research
+<!-- AI-REVIEW-END -->
+tal Research](#advantages-of-experimental-research)
   - [Disadvantages of Experimental Research](#disadvantages-of-experimental-research)
 - [Nonexperimental Quantitative Research](#nonexperimental-quantitative-research)
   - [Advantages and Disadvantages of Nonexperimental](#advantages-and-disadvantages-of-nonexperimental)
@@ -206,7 +215,7 @@ The other set of variables shown in Table 2.1 (under the heading “Role Taken b
 
 **Table 2.1** *Types of Variables Classified by Level of Measurement and by Role of Variable*
 
-<table class="textbook-table">
+<table class="textbook-table" style="width: auto; max-width: 100%; border-collapse: collapse; margin: 1.5em 0;">
   <thead>
     <tr>
       <th>Variable Type</th>
@@ -345,11 +354,11 @@ Now we want you to see what a basic experimental design looks like. Here is a de
 *Diagram*
 
 <!-- Page 8 -->
-- Subscript T denotes the treatment condition of the IV (i.e., the treatment group that gets the drug with the active agent)
+> - Subscript T denotes the treatment condition of the IV (i.e., the treatment group that gets the drug with the active agent)
 
-- Subscript P denotes the placebo condition of the IV (i.e., the control group that gets the drug without the active ingredient)
+> - Subscript P denotes the placebo condition of the IV (i.e., the control group that gets the drug without the active ingredient)
 
-- RA stands for random assignment of participants to the two groups in this experimental  design
+> - RA stands for random assignment of participants to the two groups in this experimental  design
 
 Because random assignment is the best way to make the two groups similar on all possible variables at the beginning of an experiment (i.e., the groups will not systematically differ), we have used it in the above research design. (You will learn exactly how to perform random assignment in Chapter 7.) Let’s assume that we have a convenience or purposive sample of 100 people experiencing generalized anxiety and that we randomly assign them to form two groups with 50 participants in each group.
 
@@ -518,7 +527,7 @@ that there are six major methods of data collection and that these methods incor
   </div>
 </div>
 
-As a general rule, you should *not* construct a new test if one is already available. For psychological research purposes, the best source of information about the tests is the published psychological research literature. You should always examine the best research and locate the measures that they use. Another useful source of tests and measures is *The Directory of Unpublished Experimental Mental* *Measures* (2008), edited by Goldman and Mitchell and published by the American Psychological Association. We discuss standardized tests in Chapter 5, and we explain the psychometric properties of reliability and validity and provide some additional sources for locating tests and reviews of tests.
+As a general rule, you should *not* construct a new test if one is already available. For psychological research purposes, the best source of information about the tests is the published psychological research literature. You should always examine the best research and locate the measures that they use. Another useful source of tests and measures is *The Directory of Unpublished Experimental Mental* *Measures* (2008), edited by discuss standardized tests in Chapter 5, and we explain the psychometric properties of reliability and validity and provide some additional sources for locating tests and reviews of tests.
 
 In addition to standardized tests, however, researchers must sometimes develop a new test to measure the specific knowledge, skills, behavior, or cognitive activity that is being studied. For example, a researcher might need to measure response time to a memory task using a computer or develop a test to measure a specific mental or cognitive activity (which obviously cannot be directly observed). Again, the best source for this information is the psychological research literature.
 
@@ -597,12 +606,7 @@ The fourth method of data collection involves the use of focus groups. A **focus
       <li>Interviewees might not recall important information and might lack self-awareness.</li>
       <li>Perceived anonymity by respondents might be low.</li>
       <li>Data analysis can be time consuming for open-ended items.</li>
-      <li>Measures need validation. Table 2.6</li>
-    </ul>
-  </div>
-  <div class="banner-weaknesses">
-    <div class="banner-header">Strengths and Weaknesses of Focus Groups</div>
-    <ul class="banner-list">
+      <li>Measures need validation. Table 2.6 Strengths and Weaknesses of Focus Groups</li>
     </ul>
   </div>
 </div>
@@ -649,15 +653,15 @@ in quantitative observation. Sampling procedures are sometimes used so that the 
 
 In qualitative research, observation procedures usually are exploratory and open ended, and the researcher takes extensive field notes. It is helpful to consider qualitative observation as falling on a continuum originally developed by social scientist Raymond Gold (1958). Following are the types from least-qualitative (complete observer) to the most-qualitative observation (complete participant) in nature:
 
-- *Complete observer***.**Here the researcher observes from the “outside” and, if the setting is a public one, the researcher does not inform the participants that he or she is studying them.
+> - *Complete observer***.**Here the researcher observes from the “outside” and, if the setting is a public one, the researcher does not inform the participants that he or she is studying them.
 
 - *Observer-as-participant***.**Here the researcher spends a limited amount of time
 
-“inside” the situation and obtains informed consent to observe the participants for a research study.
+> “inside” the situation and obtains informed consent to observe the participants for a research study.
 
-- *Participant-as-observer***.**Here the researcher spends extensive time “inside” the group or situation and always informs the participants that they are being studied and obtains informed consent.
+> - *Participant-as-observer***.**Here the researcher spends extensive time “inside” the group or situation and always informs the participants that they are being studied and obtains informed consent.
 
-- *Complete participant***.**Here the researcher becomes a full participating member of the group. In most cases, the group must be informed and permission granted.
+> - *Complete participant***.**Here the researcher becomes a full participating member of the group. In most cases, the group must be informed and permission granted.
 
 If you ever collect observational data, remember the following: (1) Make sure all observers are well trained; (2) be sensitive to your appearance and how people being observed react to you; (3) establish rapport, but do not promise anything you cannot deliver; (4) be reflexive, unobtrusive, empathetic, and alert at all times; (5) find an effective way to record what is observed (e.g., note taking, tape recordings); (6) try to validate and corroborate what you think you are seeing; (7) make observations in multiple settings; and (8) spend enough time in the “field” to obtain sufficient  information. The strengths and weaknesses of observational data are provided in Table 2.7.
 

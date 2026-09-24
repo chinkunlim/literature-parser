@@ -24,7 +24,8 @@
     border-bottom: 2px solid #842959;
   }
   .textbook-table {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     border-collapse: collapse;
     font-size: 0.9em;
   }
@@ -101,7 +102,15 @@
   - [One-Group Posttest-Only Design](#one-group-posttest-only-design)
   - [Posttest-Only Design with Nonequivalent Groups](#posttest-only-design-with-nonequivalent-groups)
   - [Summary of Threats to Internal Validity for Strong Experimental Designs](#summary-of-threats-to-internal-validity-for-strong-experimental-designs)
-- [Between-Participants Designs](#between-participants-designs)
+- [Between-Participants Designs](#
+<!-- AI-REVIEW-START id="rev-1" category="ocr_typo" -->
+<!-- ORIGINAL:
+between-participants-designs)
+-->
+<!-- REASON: Missing closing parenthesis in Markdown link. -->
+between-participants-designs)
+<!-- AI-REVIEW-END -->
+)
   - [Posttest-Only Control-Group Design](#posttest-only-control-group-design)
 - [Within-Participants Designs](#within-participants-designs)
   - [Strengths and Weaknesses of Within-Participants Designs](#strengths-and-weaknesses-of-within-participants-designs)
@@ -170,7 +179,7 @@ The goal in research is to use the strongest design that is possible, ethical, a
 
 **Table 9.1** *Experimental Designs Covered in Chapter 9*
 
-<table class="textbook-table">
+<table class="textbook-table" style="width: auto; max-width: 100%; border-collapse: collapse; margin: 1.5em 0;">
   <thead>
     <tr>
       <th>Weak Designs</th>
@@ -230,23 +239,12 @@ This chapter is very important because experimental research is the best type of
 <!-- Page 3 -->
 **Table 9.2** *Summary of Threats to Internal Validity for Weak Experimental Designs*
 
-<div class="framed-card">
-  <div class="framed-card-header">Summary of Threats to Internal Validity for Weak Experimental Designs</div>
-  <ul class="framed-card-body">
-    <li></li>
-    <li>NA NA NA</li>
-    <li>NA NA only design One-group pretest–</li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li>+ NA NA posttest design Posttest-only with + + NA NA + +</li>
-    <li></li>
-    <li>nonequivalent groups design*</li>
-    <li>If a basic threat acts differentially, it is subsumed under additive/interactive effects and is a threat. Note: A negative sign (</li>
-    <li>) indicates a potential threat to internal validity, a positive sign ( + ) indicates that the threat is controlled, and NA indicates that the threat does not apply to that design.</li>
-  </ul>
-</div>
+- NA NA NA
+- NA NA only design One-group pretest–
+- + NA NA posttest design Posttest-only with + + NA NA + +
+- nonequivalent groups design*
+- If a basic threat acts differentially, it is subsumed under additive/interactive effects and is a threat. Note: A negative sign (
+- ) indicates a potential threat to internal validity, a positive sign ( + ) indicates that the threat is controlled, and NA indicates that the threat does not apply to that design.
 
 Now we cover the different types of experimental designs. We start with a discussion of several weak designs that do not control for important threats to internal validity. We then cover strong designs that provide excellent control for the threats to internal validity and, therefore, provide strong evidence about causal relationships between independent and dependent variables. Next, we dis- cuss factorial designs; these designs are strong and very important because they enable researchers to test for the separate and interactive effects of two or more independent variables. We conclude with comments on choosing or constructing a research design. Study Question 9.1 What is a research design and what is its purpose? Weak Experimental Research Designs
 **9.1**
@@ -288,7 +286,7 @@ NA NA - NA NA - - - + NA NA NA + + - - + ) indicates that the threat is controll
 
 In the **one-group posttest-only design**, a single group of research participants is measured on a dependent variable after having undergone an experimental treatment.
 
-> For example, imagine that your school district adopted an expen-
+For example, imagine that your school district adopted an expen-
 
 ![Figure 9.2  One-group pretest–posttest design.](images/figure_9_2.png)
 
@@ -312,20 +310,13 @@ The only way to ensure that the groups are equated is to assign participants ran
 *Figure 9.3  Posttest-only design with nonequivalent groups. The dashed line indicates nonequivalent groups.*
 
 <!-- Page 6 -->
-****
-
 **Table 9.3** *Summary of Threats to Internal Validity for Strong Experimental Designs*
 
-<div class="framed-card">
-  <div class="framed-card-header">Summary of Threats to Internal Validity for Strong Experimental Designs</div>
-  <ul class="framed-card-body">
-    <li>control-group design Within-participants + + + + + + NA NA</li>
-    <li>* posttest-only design Pretest–posttest + + + + + + + + control-group design* Factorial designs: All between- + + + + + + + + participants IVs* All within- NA NA + + + + + + participants IVs**</li>
-    <li>If a basic threat acts differentially, it is subsumed under additive/interactive effects and is a threat.</li>
-    <li>*Assuming counterbalancing for within-participants variable(s). Note: A negative sign (</li>
-    <li>) indicates a potential threat to internal validity, a positive sign ( + ) indicates that the threat is controlled, and NA indicates that the threat does not apply to that design.</li>
-  </ul>
-</div>
+- control-group design Within-participants + + + + + + NA NA
+- * posttest-only design Pretest–posttest + + + + + + + + control-group design* Factorial designs: All between- + + + + + + + + participants IVs* All within- NA NA + + + + + + participants IVs**
+- If a basic threat acts differentially, it is subsumed under additive/interactive effects and is a threat.
+- *Assuming counterbalancing for within-participants variable(s). Note: A negative sign (
+- ) indicates a potential threat to internal validity, a positive sign ( + ) indicates that the threat is controlled, and NA indicates that the threat does not apply to that design.
 
 in Figure 9.3 is used to indicate that random assignment is *not* included in the non- equivalent posttest-only design. In studies in which it is not possible to assign partici- pants randomly, the next best technique is to match on relevant variables. However, matching is no substitute for random assignment because it does not control for many other variables. This design, therefore, does not eliminate selection effects and should be considered a weak design. Study Questions 9.2 •  What are the components and structure of weak experimental research designs?
 
@@ -418,7 +409,7 @@ Second, because the posttest-only control-group design lacks a pretest, it lacks
 
 *Figure 9.5  Posttest-only control-group design with three levels of variation of the independent variable.*
 
-When *statistical power* is increased, the researcher is more likely to detect a statistically significant difference between the groups if there is a true difference in the populations from which the groups were sampled. (This idea is demonstrated in Chapter 16 when we discuss a statistical technique called the *analysis of covariance.*) More advantages of including a pretest in an experiment are provided below when we discuss the pretest–posttest control-group design.
+When *statistical power* is increased, the researcher is more likely to detect a statistically significant difference between the groups if there is a true difference in the populationons from which the groups were sampled. (This idea is demonstrated in Chapter 16 when we discuss a statistical technique called the *analysis of covariance.*) More advantages of including a pretest in an experiment are provided below when we discuss the pretest–posttest control-group design.
 
 The most basic version of the posttest-only control-group design contains only two groups (i.e., an experimental group and a control group), but it illustrates the two key features of all strong between-participants designs: inclusion of a control group and random assignment of participants to the groups. These features produce a very strong design for eliminating threats to internal validity. However, experiments are seldom confined to just two levels of variation of one independent variable. Instead, most studies use several levels of variation of the independent variable, resulting in more than two groups.
 
@@ -442,7 +433,7 @@ For example, let’s say that a recent study found that college students who wer
 
 🎯 **9.4** Describe the structure, strengths, and weaknesses of within-participants
 
-**designs.** *Note:* **** *X* is condition 1, *X* is condition 2, *X* is condition 3, P stands for participant, and O stands for 1 2 3 In a **within-participants design**, all research participants are members of all experi- posttest measurement. Note that participants 1–15 mental conditions in the experiment. Within-participants designs are also called **repeated measures designs** because all participants are measured “repeatedly” (i.e., under each experimental condition). The basic within-participants design is the **within-participants posttest-only design** in which the participants are given a posttest measuring their performance on the dependent variable after they have been exposed to each experimental condition. This design is depicted in Figure 9.6.
+**designs.***Note:*** *X* is condition 1, *X* is condition 2, *X* is con1 2 3 dition 3, P stands for participant, and O stands for In a **within-participants design**, all research participants are members of all experi- posttest measurement. Note that participants 1–15 mental conditions in the experiment. Within-participants designs are also called **repeated measures designs** because all participants are measured “repeatedly” (i.e., under each experimental condition). The basic within-participants design is the **within-participants posttest-only design** in which the participants are given a posttest measuring their performance on the dependent variable after they have been exposed to each experimental condition. This design is depicted in Figure 9.6.
 
 Because of the likelihood of carryover effects when the same participants receive all experimental conditions, many researchers use the control technique discussed in Chapter 7 called *counterbalancing.* The idea of counterbalancing is to give the experimental conditions in different orders to different sets of participants. In this way, the researcher can average out basic (linear) carryover effects. A depiction of the withinparticipants posttest-only design with counterbalancing is shown in Figure 9.7. Notice that all of the participants still receive all of the experimental conditions in the counterbalanced version of the within-participants posttest-only design.
 
@@ -476,7 +467,7 @@ As you can see, there are some problems associated with the within-participants 
 
 🎯 **9.5** Describe the structure, strengths, and weaknesses of mixed designs.
 
-Earlier we explained *between-participants designs*, where the different levels of the independent variable were experienced by different people (e.g., the experimental and control groups included different people). We didn’t mention it, but this kind of independent variable is called a **between-participants independent variable** (also called a between-subjects independent variable). The particular between-participants design we discussed was the *posttest-only control-group design*—where the sample of research participants is randomly divided (via random assignment) into the different groups, with each group receiving only one level of the IV. We also explained *within-participants* *designs* where all levels of the independent variable are administered to all participants. This kind of independent variable is called a **within-participants independent** **** **variable** (also called a within-subjects independent variable). The particular withinparticipants design we discussed was the *within-participants  posttest-only design*—where everyone in the sample receives all levels of the IV (at different times, of course).
+Earlier we explained *between-participants designs*, where the different levels of the independent variable were experienced by different people (e.g., the experimental and control groups included different people). We didn’t mention it, but this kind of independent variable is called a **between-participants independent variable** (also called a between-subjects independent variable). The particular between-participants design we discussed was the *posttest-only control-group design*—where the sample of research participants is randomly divided (via random assignment) into the different groups, with each group receiving only one level of the IV. We also explained *within-participants* *designs* where all levels of the independent variable are administered to all participants. This kind of independent variable is called a **within-participants independent** ** **variable** (also called a within-subjects independent variable). The particular withinparticipants design we discussed was the *within-participants  posttest-only design*—where everyone in the sample receives all levels of the IV (at different times, of course).
 
 <!-- Page 13 -->
 You can probably guess from the title of the current section that a *mixed design* has a combination of between- and within-participants independent variables. It must have at least one between-participants IV *and* at least one within-participants IV. The pretest–posttest control-group design is an example of a mixed design.
@@ -502,9 +493,9 @@ There are several reasons researchers often prefer to include a pretest in this 
 
 *Figure 9.9  Mean results of pretest–posttest control-group design studying effectiveness of anxiety reduction therapy.*
 
-> how well the randomization process (i.e., random assignment) worked. Although random assignment provides the greatest assurance possible of *initial comparability* of research participants, it is not infallible. When a pretest is included, the researcher does not have to assume that randomization worked properly; the researcher can check to see if the groups are similar on the dependent variable after random assignment but before the experimental conditions are introduced. If the researcher measures the participants on additional variables relevant to the study, initial comparability can also be checked on those variables (e.g., motivation, intelligence, attitudes).
+how well the randomization process (i.e., random assignment) worked. Although random assignment provides the greatest assurance possible of *initial comparability* of research participants, it is not infallible. When a pretest is included, the researcher does not have to assume that randomization worked properly; the researcher can check to see if the groups are similar on the dependent variable after random assignment but before the experimental conditions are introduced. If the researcher measures the participants on additional variables relevant to the study, initial comparability can also be checked on those variables (e.g., motivation, intelligence, attitudes).
 
-> Second, if a pretest is included, the researcher can determine if a ceiling effect or floor effect is likely to occur (when pretest scores are examined before introducing the experimental conditions). A **ceiling effect** occurs when the participants’ scores on the dependent variable are so high that they cannot go up from pretest to posttest. A **floor effect** occurs when scores are so low that they cannot go down from pretest to posttest. For example, if a dependent variable had a maximum value of 100 and the average score for some participants was 98 or 99 on the pretest, then there would be little room left for improvement. If no treatment effect is
+Second, if a pretest is included, the researcher can determine if a ceiling effect or floor effect is likely to occur (when pretest scores are examined before introducing the experimental conditions). A **ceiling effect** occurs when the participants’ scores on the dependent variable are so high that they cannot go up from pretest to posttest. A **floor effect** occurs when scores are so low that they cannot go down from pretest to posttest. For example, if a dependent variable had a maximum value of 100 and the average score for some participants was 98 or 99 on the pretest, then there would be little room left for improvement. If no treatment effect is
 
 Third, if the experimental and control groups are slightly different on the dependent variable measure at the pretest, the researcher can use a statistical technique (explained in Chapter 16) called **analysis of covariance** to statistically control for these pretest differences. Not only does this statistical technique adjust for pretest differences, it also provides a more accurate and powerful test of the differences between the experimental and control group posttest scores. This means that if the experiment has an impact, this design is slightly more likely to pick up on the impact because of the inclusion of the pretest.
 
@@ -530,7 +521,7 @@ As you know from Chapter 6, external validity is the degree to which the results
 
 The posttest-only control-group, within-participants, and pretest–posttest controlgroup designs have only one independent variable of interest to the researcher, and that variable is the independent variable manipulated by the researcher. However, in psychological research, our interest often includes two or more independent variables acting in concert. When there is more than one independent variable of interest, a factorial design is the experimental design of choice. In a **factorial** **design**, two or more independent variables are simultaneously studied to determine their separate and interactive effects on the dependent variable. The independent variables in factorial designs can be between-participants variables (i.e., participants experience only one level of the independent variable), withinparticipants variables (i.e., participants experience all levels of the independent variable), or a combination of between and within-participants variables (producing a mixed design).
 
-In this section, we focus on a factorial design with two between-participants independent variables. Figure 9.10 depicts the *design layout* (i.e., a picture showing logical structure) of a factorial design in which one of the independent variables has three levels (variable A) and the other has two levels (variable B). The levels of variable A are A, A, and A, and the levels of variable B are B and B. There are six combina- tions of these two independent variables—A B,  A B,  A B,  A B,  A B, and A B. 1 1 1 2 2 1 2 2 3 1 3 2 Each of these combinations is referred to as a **cell** in the design layout and represents an experimental condition. The number of cells in a design layout is obtained by multiplying the number of levels of the independent variables—in this case there are six cells (3 * 2 = 6 ).
+In this section, we focus on a factorial design with two between-participants independent variables. Figure 9.10 depicts the *design layout* (i.e., a picture showing logical structure) of a factorial design in which one of the independent variables has three levels (variable A) and the other has two levels (variable B). The levels of variable A are A, A, and A, and the levels of variable B are B and B. There are six combina1 tions of these two independent variables—A B,  A B,  A B,  A B,  A B, and A B. 1 1 1 2 2 1 2 2 3 1 3 2 Each of these combinations is referred to as a **cell** in the design layout and represents an experimental condition. The number of cells in a design layout is obtained by multiplying the number of levels of the independent variables—in this case there are six cells (3 * 2 = 6 ).
 
 The participants would be randomly assigned to the six cells and would receive the appropriate treatment combination when the experiment is conducted.
 
@@ -539,7 +530,7 @@ The participants would be randomly assigned to the six cells and would receive t
 *Figure 9.10  Factorial design with two independent variables.*
 
 <!-- Page 16 -->
-The participants randomly assigned to A B receive the A level of the first inde- pendent variable and the B 1 level of the second independent variable. In like manner, the participants randomly assigned to the other cells receive the designated combination of the two independent variables. Once the experiment is conducted, the researcher obtains the two types of means shown in Figure 9.10: cell means and marginal means. A **cell mean** is the mean score of the participants in a cell. A **mar-** **ginal mean** is the mean score of all participants receiving one level of an independent variable (ignoring or averaging across the levels of the other independent variable).
+The participants randomly assigned to A B receive the A level of the first independent variable and the B level of the second independent variable. In like manner, the participants randomly assigned to the other cells receive the designated combination of the two independent variables. Once the experiment is conducted, the researcher obtains the two types of means shown in Figure 9.10: cell means and marginal means. A **cell mean** is the mean score of the participants in a cell. A **mar-** **ginal mean** is the mean score of all participants receiving one level of an independent variable (ignoring or averaging across the levels of the other independent variable).
 
 The factorial design allows the investigation of two types of effects: main effects and interaction effects. A **main effect** refers to the separate influence of each independent variable on the dependent variable. The term *main effect* did not arise in the previous designs in this chapter because only one independent variable existed (and therefore, only one main effect). However, more than one independent variable exists in a factorial design, and the separate effects of each independent variable must be identified. To distinguish the influence of the different independent variables, we refer to each one as a separate main effect. In a design with two independent variables, two main effects are investigated.
 
@@ -549,7 +540,7 @@ You might ask: Why not just conduct a separate experiment for each independent v
 
 Let’s make these concepts more concrete with an example. Let’s say that we are interested in factors that affect driving performance. Our first independent variable (variable A) is caffeine consumption with the levels of low (A ), medium (A ), and 1 2 high (A ). The second independent variable (variable B) is sleep deprivation with the 3 levels of not deprived (B ) and deprived (B ). Students are randomly assigned to each 1 2 combination of these two independent variables (i.e., to each cell). The dependent variable is driving performance (operationalized as the number of correct maneuvers on the training course).
 
-The cell and marginal means for this hypothetical experiment are provided in
+> The cell and marginal means for this hypothetical experiment are provided in
 
 ![Figure 9.11. To determine if there are any main effects, you compare the marginal means for each independent variable. The marginal means for caffeine consumption are 2.2, 7.3, and 5.3, which suggests that (ignoring the sleep deprivation variable) driving perfor-](images/figure_9_11_.png)
 
@@ -587,72 +578,57 @@ Main and Interaction Effects
 
 (Note: Cell means are inside the cells, and the marginal means are in the margins.)
 
-A A A
+A A A 1 2 3
 
-B 10 20 30 20 $\rightarrow$ B
-
-B 10 20 30 20 $\rightarrow$ B
+B 10 20 30 20[^1] B 10 20 30 20 2
 
 
 
 (a) A is significant; B and the interaction are not significant
 
-A A A
+A A A 1 2 3
 
-B 30 40 50 40 $\rightarrow$ B
-
-B 2 50 40 30 40 $\rightarrow$ B 2
+B 30 40 50 40 1 B 2 50 40 30 40
 
 
 
 (c) Interaction is significant; A and B are not significant
 
-A 1 A 2 A 3
+A A A 1 2 3
 
-B 1 20 30 40 30 $\rightarrow$ B 1
-
-B 30 30 30 30 $\rightarrow$ B
+B 20 30 40 30 1 B 30 30 30 30 2
 
 
 
 (e) A and the interaction are significant; B is not significant
 
+A A A
+
 A A A 1 2 3
 
-B 30 50 70 50 1
-
-B 2 20 30 40 30
-
-A A A 1 2 3 1 2 3
+B 20 20 20 20 1 B 30 30 30 30 2
 
 
 
+(b) B is significant; A and the interaction are not significant
+
+A A A 1 2 3
+
+B 10 20 30 20 1 B 2 40 50 60 50
 
 
 
+(d) A and B are significant; interaction is not significant
 
-> (b) B is significant; A and the interaction are not significant
+A A A 1 2 3
 
-A A A 1 2 3 1 2 3
-
-
-
+B 10 20 30 20 1 B 50 40 30 40 2
 
 
 
+(f) B and the interaction are significant; A is not significant
 
-> (d) A and B are significant; interaction is not significant
-
-A 1 A 2 A 3
-
-
-
-
-
-
-
-> (f) B and the interaction are significant; A is not significant
-
+[^1]: 2 3 B 30 50 70 50 1 B 20 30 40 30 2
 [^25]: 40 55 (g) A, B, and the interaction are significant
 
 <!-- Page 19 -->
@@ -660,22 +636,23 @@ A 1 A 2 A 3
 
 *Figure 9.13  Graphic presentation of hypothetical data illustrating different kinds of main and interaction effects.*
 
-outside of each box are the *marginal means*, which are used to determine if main effects are present. To determine the same at all levels of A. if an interaction effect is present, the cell means are plotted in Figure 9.13 for each table from Table 9.4. Remember: If Neither main effect is significant, as indicated by the fact the lines in the plot of cell means are parallel, there is no interaction; if they are not parallel, there is an interaction.
+outside of each box are the *marginal means*, which are used to determine if main effects are present. To determine if an interaction effect is present, the cell means are plotted in Figure 9.13 for each table from Table 9.4. Remember: If the lines in the plot of cell means are parallel, there is no interaction; if they are not parallel, there is an interaction.
 
-Parts (a), (b), and (d) of Figure 9.13 represent situations in which one or both of the main effects are significant, but there is no interaction. In each case, the mean scores for the level of variation of at least one of the main effects differ. This can be seen from both the marginal means in the in Figure 9.13. Note also from Figure 9.13 that the lines for
+Parts (a), (b), and (d) of Figure 9.13 represent situations in which one or both of the main effects are significant, but there is no interaction. In each case, the mean scores for the level of variation of at least one of the main effects differ. This can be seen from both the marginal means in the numerical examples presented in Table 9.4 and the graphs in Figure 9.13. Note also from Figure 9.13 that the lines for levels B and B are parallel in each of these (a), (b), and (d).
 
-In such a situation an interaction cannot exist, because an depends on the level of the other variable being considered, the information. such as A, A, or A. In each of these cases, the B effect is 1 2 3
+In such a situation an interaction cannot exist, because an *interaction* means that the effect of one variable, such as B, depends on the level of the other variable being considered, such as A, A, or A. In each of these cases, the B effect is the same at all levels of A.
 
-> Part (c) depicts the classic example of an interaction. that the three-column means are identical and the two-row means are identical and reveal no variation in Table 9.4.
+> Part (c) depicts the classic example of an interaction.
 
-> However, if the variable A treatment effect is considered only for level B, we note that the scores systematically increase 1 from level A to A. In like manner, if only level B is consid1 3 2 ered, then there is a systematic decrease from level A to A. 1 3
+Neither main effect is significant, as indicated by the fact that the three-column means are identical and the two-row means are identical and reveal no variation in Table 9.4.
 
-> In other words, A *is* effective but in opposite directions for numerical examples presented in Table 9.4 and the graphs levels B 1 and B 2, or the effect of A depends on which level of
+However, if the variable A treatment effect is considered only for level B, we note that the scores systematically increase 1 from level A to A. In like manner, if only level B is consid1 3 2 ered, then there is a systematic decrease from level A to A. 1 3 In other words, A *is* effective but in opposite directions for levels B and B, or the effect of A depends on which level of
 
-> B we are considering. Therefore, there is an *interaction.* We levels B and B are parallel in each of these (a), (b), and (d). find graphs to be more helpful than tables in depicting interaction, but you should use whichever mode better conveys *interaction* means that the effect of one variable, such as B, 1
+B we are considering. Therefore, there is an *interaction.* We find graphs to be more helpful than tables in depicting interaction, but you should use whichever mode better conveys 1 the information.
 
 ( *Continued* )
 
+[^1]: 2
 [^1]: 2
 
 <!-- Page 20 -->

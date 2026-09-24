@@ -24,7 +24,8 @@
     border-bottom: 2px solid #842959;
   }
   .textbook-table {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     border-collapse: collapse;
     font-size: 0.9em;
   }
@@ -194,24 +195,49 @@ In addition to helping define measurement, Stevens (1946) showed that measuremen
 
 **Table 5.1** *Stevens’ Four Scales of Measurement*
 
-<div class="framed-card">
-  <div class="framed-card-header">Stevens’ Four Scales of Measurement</div>
-  <ul class="framed-card-body">
-    <li>Scale Characteristics Examples Nominal Used to name, categorize, or classify. Gender, marital status, memory strategy, personality type, type of therapy, experimental condition (treatment vs. control). Ordinal Used to rank order objects or individuals. Order of finish in race, social class (e.g., low, medium, high), ranking of need for therapy, letter grade (A, B, C, D, F). Interval Used to rank order, plus has equal intervals or distances between Celsius temperature, Fahrenheit temperature, IQ scores, year. adjacent numbers. Ratio Fully quantitative, includes rank ordering, equal intervals, plus has Kelvin temperature, response time, height, weight, annual income, an absolute zero point. group size.</li>
-    <li>The first letters of the four scales spells NOIR (which means black in French). You can use this acronym to help you remember the order of the four scales of measurement, from least quantitative to the most quantitative.</li>
-  </ul>
-</div>
+<table class="textbook-table" style="width: auto; max-width: 100%; border-collapse: collapse; margin: 1.5em 0;">
+  <thead>
+    <tr>
+      <th>Scale*</th>
+      <th>Characteristics</th>
+      <th>Examples</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Nominal</td>
+      <td>Used to name, categorize, or classify.</td>
+      <td>Gender, marital status, memory strategy, personality type, type of therapy, experimental condition (treatment vs. control).</td>
+    </tr>
+    <tr>
+      <td>Ordinal</td>
+      <td>Used to rank order objects or individuals.</td>
+      <td>Order of finish in race, social class (e.g., low, medium, high), ranking of  need for therapy, letter grade (A, B, C, D, F).</td>
+    </tr>
+    <tr>
+      <td>Interval</td>
+      <td>Used to rank order, plus has equal intervals or distances between adjacent numbers.</td>
+      <td>Celsius temperature, Fahrenheit temperature, IQ scores, year.</td>
+    </tr>
+    <tr>
+      <td>Ratio</td>
+      <td>Fully quantitative, includes rank ordering, equal intervals, plus has an absolute zero point.</td>
+      <td>Kelvin temperature, response time, height, weight, annual income, group size.</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr class="table-notes"><td colspan="3"><em>* The first letters of the four scales spells NOIR (which means black in French). You can use this acronym to help you remember the order of the four scales of measurement, from least</em></td></tr>
+  </tfoot>
+</table>
 
-**Nominal Scale** The simplest and most basic level of measurement is what Stevens called a nominal scale. It is a nonquantitative scale of measurement because it identifies  *types* rather than amounts of something. A **nominal scale** uses symbols, such as words or numbers, to classify or categorize the values of a variable
+**Nominal Scale** The simplest and most basic level of measurement is what Stevens called a nominal scale. It is a nonquantitative scale of measurement because it identifies  *types* rather than amounts of something. A **nominal scale** uses symbols, such as words or numbers, to classify or categorize the values of a variable quantitative to the most quantitative.
 
 <!-- Page 3 -->
 (i.e., nominal scaled variables) into groups or types. Numbers can be used to label the categories of a nominal variable, but these numbers serve only as markers, not as indicators of amount or quantity. For example, you might mark the categories of the variable  “college major” with 1 = psychology, 2 = engineering, and 3 = philosophy. Some other examples of nominal-level variables are personality type, country you were born in, gender, and research group (e.g., experimental group or control group).
 
 **Ordinal Scale** An **ordinal scale** is a *rank-order* scale of measurement. Any variable where the levels can be ranked (but you don’t know if the distance between the levels is the same) is an ordinal variable. It allows you to determine which person is higher or lower on a variable of interest, but it does not allow you to know exactly how much higher or lower a person is compared to another. Some examples of ordinal-level variables are the order of finish in a marathon, social class (e.g., high, medium, and low), rank ordering of applicants for a job, and rank ordering of need for special services. In a marathon, for example, the distance between the first-place and second-place runners might be different from the distance between the second-place and third-place runners. That is, the scores on an ordinal variable do not tell you about the distance between each score but they do tell you the ranking.
 
-**Interval Scale** The third level of measurement, the **interval scale**, has equal distances between adjacent values on the scale (called *equal intervals*) as well as the characteristics of the lower-level scales (i.e., marking/naming of levels and rank ordering of levels). For example, the difference between 1 5 and 2 5 Fahrenheit is the same amount of temperature as the distance between 50 and 51 Fahrenheit. Other examples of 5
-
-5 interval-level variables are Celsius temperature, year, and IQ scores.
+**Interval Scale** The third level of measurement, the **interval scale**, has equal distances between adjacent values on the scale (called *equal intervals*) as well as the characteristics of the lower-level scales (i.e., marking/naming of levels and rank ordering of levels). For example, the difference between 1 5 and 2 5 Fahrenheit is the same amount of temperature as the distance between 50 5 and 51 5 Fahrenheit. Other examples of interval-level variables are Celsius temperature, year, and IQ scores.
 
 Although the distance between adjacent points on an interval scale is equal, an interval scale does not possess an absolute zero point. The zero point is somewhat arbitrary. You can see this by noting that neither 0 5 Celsius nor 0 5 Fahrenheit means no temperature. Zero degrees Celsius (0 5 C) is the freezing point of water, and zero degrees Fahrenheit (0 5 F) is 32 degrees below freezing.
 
@@ -270,7 +296,7 @@ Validity is based on evidence revealing that the target construct can correctly 
 
 **1.**Do the items appear to represent the thing a researcher is attempting to measure?
 
-(This prima facie judgment is sometimes called **face validity**.)
+> (This prima facie judgment is sometimes called **face validity**.)
 
 **2.**Does the set of items underrepresent the construct’s content (i.e., did the researcher exclude any important content areas or topics)?
 
@@ -298,7 +324,7 @@ We have listed several kinds of validity evidence here, but we reiterate our poi
 
 **Table 5.2** *Summary of Methods for Obtaining Evidence of Validity*
 
-<table class="textbook-table">
+<table class="textbook-table" style="width: auto; max-width: 100%; border-collapse: collapse; margin: 1.5em 0;">
   <thead>
     <tr>
       <th>Type of Evidence</th>
@@ -378,9 +404,9 @@ Before discussing the specific methods of sampling, you need to know the definit
 
 When you want your sample to represent the population, the best way is to use an  **equal probability of selection method (EPSEM)**. An EPSEM is any sampling method in which each individual member of the population has an equal chance of being selected for inclusion in the sample. If everyone has an equal chance, then the kinds of people in large groups will be selected more often and the kinds of people in small groups will be selected less often, but every single individual person will have the same chance of inclusion. For example, if the composition of a population is 55% female, 75% young adults aged 18–28, and 80% individuals who have completed an introductory psychology course, then a representative sample would have approximately the same percentages on these characteristics. Approximately 55% of the *sample* participants would be female, approximately 75% would be young adults, and approximately 80% would have completed an introductory psychology course. You will learn presently that there are several equal probability sampling methods, but simple random sampling, perhaps, is the most common (Peters &amp; Eachus, 2008).
 
-Once you collect data from the research participants in your sample, you must analyze the data. During analysis, you will determine characteristics of your sample such as the mean and variance of variables, as well as relationships between variables; these results calculated from your sample data are known as statistics. A **statistic** is a numerical characteristic of the sample data. For example, perhaps the mean income in a particular sample (i.e., the statistic) is $56,000 per year. Oftentimes a researcher also wants to make statements about population characteristics based on the sample results, such as an estimate of the population mean based on the sample mean. In statistical jargon, the researcher wants to make statements about parameters. A **parameter** is a numerical characteristic of a population. Perhaps the mean income in the entire population (i.e., the parameter) is $51,323 per year.
+Once you collect data from the research participants in your sample, you must analyze the data. During analysis, you will determine characteristics of your sample such as the mean and variance of variables, as well as relationships between variables; these results calculated from your sample data are known as statistics. A **statistic** is a numerical characteristic of the sample data. For example, perhaps the mean income in a particular sample (i.e., the statistic) is &#36;56,000 per year. Oftentimes a researcher also wants to make statements about population characteristics based on the sample results, such as an estimate of the population mean based on the sample mean. In statistical jargon, the researcher wants to make statements about parameters. A **parameter** is a numerical characteristic of a population. Perhaps the mean income in the entire population (i.e., the parameter) is &#36;51,323 per year.
 
-Notice that our sample mean and population mean income levels are different ($56,000 in the sample vs. $51,323 in the population). That’s the typical situation in sampling, even when the best sampling methods are used. The term **sampling error** is used to refer to the difference between the value of a sample statistic and the value of the population parameter. In our case of annual income, the sampling error was equal to $4,677 (i.e., 56,000 - 51,323 = 4,677). A key point is that some error is always present in sampling. With random sampling methods, errors are random (i.e., the sample could result in an over- or underestimate of the population parameter) rather than being systematically wrong. With random sampling, the errors will be relatively small if large samples are drawn—that’s why larger sample sizes are preferred to smaller sample sizes. When error is random, as in random sampling, the average of all possible samples is equal to the true population parameter, and the values of the samples vary randomly around the true parameter. This is the best we can hope for with sampling. If you need to have no sampling error, you will have to avoid sampling and conduct a **census**—you will have to collect data from everyone in the population. Conducting a census is rarely an option because most populations are very large, and it would be too expensive and virtually impossible to have everyone participate in your study.
+Notice that our sample mean and population mean income levels are different (&#36;56,000 in the sample vs. &#36;51,323 in the population). That’s the typical situation in sampling, even when the best sampling methods are used. The term **sampling error** is used to refer to the difference between the value of a sample statistic and the value of the population parameter. In our case of annual income, the sampling error was equal to &#36;4,677 (i.e., 56,000 - 51,323 = 4,677). A key point is that some error is always present in sampling. With random sampling methods, errors are random (i.e., the sample could result in an over- or underestimate of the population parameter) rather than being systematically wrong. With random sampling, the errors will be relatively small if large samples are drawn—that’s why larger sample sizes are preferred to smaller sample sizes. When error is random, as in random sampling, the average of all possible samples is equal to the true population parameter, and the values of the samples vary randomly around the true parameter. This is the best we can hope for with sampling. If you need to have no sampling error, you will have to avoid sampling and conduct a **census**—you will have to collect data from everyone in the population. Conducting a census is rarely an option because most populations are very large, and it would be too expensive and virtually impossible to have everyone participate in your study.
 
 <!-- Page 11 -->
 ![Figure 5.1. This sampling frame includes all the presidents of the American Psychological Association since its founding in 1892. The population is “Presidents of the APA.” This sampling frame also includes an identification number for each population member,](images/figure_5_1_.png)
@@ -443,20 +469,6 @@ The resulting set of numbers from the random number generator was 1, 4, 22, 29, 
 *Figure 5.1 A sampling frame of presidents of the American Psychological Association.* 1. Granville Stanley Hall (1892)
 2. George Trumbull Ladd (1893)*
 
-> 87. M. Brewster Smith (1978)
-88. Nicholas A. Cummings (1979)
-89. Florence L. Denmark (1980)
-90. John J. Conger (1981)
-91. William Bevan (1982)
-92. Max Siegal (1983)
-93. Janet T. Spence (1984)
-94. Robert Perloff (1985)
-95. Logan Wright (1986)
-96. Bonnie R. Strickland (1987)
-97. Raymond D. Fowler (1988)
-98. Joseph D. Matarazzo (1989)
-99. Stanley Graham (1990) 100. Charles Spielberger (1991) 101. Jack Wiggins, Jr. (1992) 102. Frank Farley (1993) 103. Ronald E. Fox (1994) 104. Robert J. Resnick (1995) 105. Dorothy W. Cantor (1996) 106. Norman Abeles (1997)
-
 22. Howard Crosby Warren (1913)
 65. Theodore M. Newcombe (1956)
 23. Robert Sessions Woodworth (1914)
@@ -501,11 +513,25 @@ The resulting set of numbers from the random number generator was 1, 4, 22, 29, 
 
 *Year of each president’s term is provided in parentheses.
 
+87. M. Brewster Smith (1978)
+88. Nicholas A. Cummings (1979)
+89. Florence L. Denmark (1980)
+90. John J. Conger (1981)
+91. William Bevan (1982)
+92. Max Siegal (1983)
+93. Janet T. Spence (1984)
+94. Robert Perloff (1985)
+95. Logan Wright (1986)
+96. Bonnie R. Strickland (1987)
+97. Raymond D. Fowler (1988)
+98. Joseph D. Matarazzo (1989)
+99. Stanley Graham (1990) 100. Charles Spielberger (1991) 101. Jack Wiggins, Jr. (1992) 102. Frank Farley (1993) 103. Ronald E. Fox (1994) 104. Robert J. Resnick (1995) 105. Dorothy W. Cantor (1996) 106. Norman Abeles (1997) 107. Martin E. P. Seligman (1998) 108. Richard M. Suinn (1999) 109. Patrick H. Deleon (2000) 110. Norine G. Johnson (2001) 111. Philip G. Zimbardo (2002) 112. Robert J. Sternberg (2003) 113. Diane F. Halpern (2004) 114. Ronald F. Levant (2005) 115. Gerald P. Koocher (2006) 116. Sharon Stephens Brehm (2007) 117. Alan E. Kazdin (2008) 118. James H. Bray (2009) 119. Carol D. Goodheart (2010) 120. Melba J. T. Vasquez (2011) 121. Suzanne Bennett Johnson (2012) 122. Donald N. Bersoff (2013) 123. Nadine Kaslow (2014) 124. Barry S. Anton (2015) 125. Susan H. McDonald (2016) 126. Antonio E. Puente (2017) 127. Jessica H. Daniel (2018) 128. Rosie P. Davis (2019)
+
 **Stratified Random Sampling** A second type of random sampling is  **stratified random** **sampling** (or stratified sampling). In stratified sampling, the population is divided into mutually exclusive groups (the strata), and then a random sample is selected from each of the groups. The set of groups make up the levels of the  **stratification variable**.
 
 For example, if gender were the stratification variable, the population sampling frame would be divided into a group of all the females and a group of all the males. Figure 5.2 shows our sampling frame stratified by gender. Stratification variables can be categorical variables (e.g., gender, ethnicity, personality type) or quantitative variables (e.g., intelligence, height, age), and more than one stratification variable can be used.
 
-Here is how you obtain a stratified sample with just one stratification variable:
+> Here is how you obtain a stratified sample with just one stratification variable:
 
 **1.**Stratify your sampling frame (e.g., divide the list into the males and the females if gender is your stratification variable), and give the elements in each set identification numbers.
 
@@ -515,8 +541,6 @@ Here is how you obtain a stratified sample with just one stratification variable
 
 There are actually two different kinds of stratified sampling: proportional stratified sampling and disproportional stratified sampling. In **proportional stratified sampling**,
 
-> 107. Martin E. P. Seligman (1998) 108. Richard M. Suinn (1999) 109. Patrick H. Deleon (2000) 110. Norine G. Johnson (2001) 111. Philip G. Zimbardo (2002) 112. Robert J. Sternberg (2003) 113. Diane F. Halpern (2004) 114. Ronald F. Levant (2005) 115. Gerald P. Koocher (2006) 116. Sharon Stephens Brehm (2007) 117. Alan E. Kazdin (2008) 118. James H. Bray (2009) 119. Carol D. Goodheart (2010) 120. Melba J. T. Vasquez (2011) 121. Suzanne Bennett Johnson (2012) 122. Donald N. Bersoff (2013) 123. Nadine Kaslow (2014) 124. Barry S. Anton (2015) 125. Susan H. McDonald (2016) 126. Antonio E. Puente (2017) 127. Jessica H. Daniel (2018) 128. Rosie P. Davis (2019)
-
 <!-- Page 14 -->
 ![Figure 5.2 Sampling frame stratified by gender.* Female APA Presidents:
 
@@ -525,24 +549,6 @@ There are actually two different kinds of stratified sampling: proportional stra
 *Figure 5.2 Sampling frame stratified by gender.* Female APA Presidents:
 
 1. Mary Whiton Calkins (1905)*
-
-> 13. Melba J. T. Vasquez (2011)
-14. Suzanne Bennett Johnson (2012)
-15. Nadine Kaslow (2014)
-16. Susan H. McDonald (2016)
-17. Jessica H. Daniel (2018)
-18. Rosie P. Davis (2019)
-
-> 75. A. H. Maslow (1968)
-76. George A. Miller (1969)
-77. George W. Albee (1970)
-78. Kenneth B. Clark (1971)
-79. Albert Bandura (1974)
-80. Donald T. Campbell (1975)
-81. Wilbert J. Mckeachie (1976)
-82. Theodore Blau (1977)
-83. Brewster Smith (1978)
-84. Nicholas A. Cummings (1979)
 
 12. William Lowe Bryan (1903)
 49. Calvin Perry Stone (1942)
@@ -593,21 +599,26 @@ There are actually two different kinds of stratified sampling: proportional stra
 37. Herbert Sidney Langfeld (1930)
 74. Gardner Lindzey (1967)
 
-*The 18 female presidents are listed first, followed by the 110 male presidents. the numbers of people selected from the groups (e.g., females and males) are proportional to their sizes in the population. For example, if 60% of the population is female, then you select 60% of your sample from the female stratum. In  **disproportional** **stratified  sampling**, the numbers of people selected from the groups are not proportional to their sizes in the population. For example, if 60% of the population is female, but you want equal numbers of males and females in your study, you might select only
+*The 18 female presidents are listed first, followed by the 110 male presidents.
 
-50% of the sample to be female.
+13. Melba J. T. Vasquez (2011)
+14. Suzanne Bennett Johnson (2012)
+15. Nadine Kaslow (2014)
+16. Susan H. McDonald (2016)
+17. Jessica H. Daniel (2018)
+18. Rosie P. Davis (2019)
 
-> Assume that you want to stratify on the basis of the variable gender, and the large population is 75% female and 25% male. Also assume that you want a sample of size
-
-> 100. For proportional stratified sampling, you would randomly select 75 females and
-
-> 25 males from the stratified sampling frame; the final sample would exactly match the population on gender percentages (75%, 25%). Proportional stratified sampling is an
-
-> EPSEM (each individual has an equal chance of being included in the final sample), and you can directly generalize from the sample to the population.
-
-> For disproportional stratified sampling, you might randomly select 50 females and 50 males from the gender populations. Disproportional stratified sampling is not
-
-> 85. John J. Conger (1981)
+75. A. H. Maslow (1968)
+76. George A. Miller (1969)
+77. George W. Albee (1970)
+78. Kenneth B. Clark (1971)
+79. Albert Bandura (1974)
+80. Donald T. Campbell (1975)
+81. Wilbert J. Mckeachie (1976)
+82. Theodore Blau (1977)
+83. Brewster Smith (1978)
+84. Nicholas A. Cummings (1979)
+85. John J. Conger (1981)
 86. William Bevan (1982)
 87. Max Siegal (1983)
 88. Robert Perloff (1985)
@@ -621,7 +632,19 @@ There are actually two different kinds of stratified sampling: proportional stra
 96. Ronald E. Fox (1994)
 97. Robert J. Resnick (1995)
 98. Norman Abeles (1997)
-99. Martin E. P. Seligman (1998) 100. Richard M. Suinn (1999) 101. Patrick H. Deleon (2000) 102. Philip G. Zimbardo (2002) 103. Robert J. Sternberg (2003) 104. Ronald F. Levant (2005) 105. Gerald P. Koocher (2006) 106. Alan E. Kazdin (2008) 107. James H. Bray (2009) 108. Donald N. Bersoff (2013) 109. Barry S. Anton (2015) 110. Antonio E. Puente (2017)
+99. Martin E. P. Seligman (1998) 100. Richard M. Suinn (1999) 101. Patrick H. Deleon (2000) 102. Philip G. Zimbardo (2002) 103. Robert J. Sternberg (2003) 104. Ronald F. Levant (2005) 105. Gerald P. Koocher (2006) 106. Alan E. Kazdin (2008) 107. James H. Bray (2009) 108. Donald N. Bersoff (2013) 109. Barry S. Anton (2015) 110. Antonio E. Puente (2017) the numbers of people selected from the groups (e.g., females and males) are proportional to their sizes in the population. For example, if 60% of the population is female, then you select 60% of your sample from the female stratum. In  **disproportional** **stratified  sampling**, the numbers of people selected from the groups are not proportional to their sizes in the population. For example, if 60% of the population is female, but you want equal numbers of males and females in your study, you might select only
+
+50% of the sample to be female.
+
+> Assume that you want to stratify on the basis of the variable gender, and the large population is 75% female and 25% male. Also assume that you want a sample of size
+
+> 100. For proportional stratified sampling, you would randomly select 75 females and
+
+> 25 males from the stratified sampling frame; the final sample would exactly match the population on gender percentages (75%, 25%). Proportional stratified sampling is an
+
+> EPSEM (each individual has an equal chance of being included in the final sample), and you can directly generalize from the sample to the population.
+
+> For disproportional stratified sampling, you might randomly select 50 females and 50 males from the gender populations. Disproportional stratified sampling is not
 
 <!-- Page 15 -->
 EPSEM because everyone does not have an equal chance. In this case, the population is 75% female and 25% male, but the sample is 50% female and 50% male. You have undersampled females and oversampled males. When you under- or oversample groups like this, your sampling method is no longer an equal probability of selection method. You cannot combine the samples of 50 females and 50 males and directly generalize to the population.[^1] Even though disproportional stratified sampling is not an EPSEM, it is still used sometimes because small groups might be missed if they are not oversampled.
@@ -646,12 +669,12 @@ Cluster sampling is an EPSEM if the clusters are approximately the same size. Re
 
 *Figure 5.1. The population size is 128 and the desired sample size is 10; therefore, k is 128 divided by 10, which is approximately equal to 13 (12.8 used the random number generator to select a number between 1 and 13, and we*
 
-systematic sampling, you must follow three steps. First, determine the **sampling****** **interval**, which is the population size divided by the desired sample size. The sampling interval can be symbolized by “*k.*” Second, randomly select a number between 1 and *k*, and include that person in your sample. Third, also include each *k*th element in your sample. For example, assume your population is 100 in size and you want a sample of
+systematic sampling, you must follow three steps. First, determine the **sampling** **interval**, which is the population size divided by the desired sample size. The sampling interval can be symbolized by “*k.*” Second, randomly select a number between 1 and *k*, and include that person in your sample. Third, also include each *k*th element in your sample. For example, assume your population is 100 in size and you want a sample of
 10. In this case, *k* is equal to 10 (i.e., 100/10 = 10), which is your sampling interval. Next, assume your randomly selected number between 1 and 10 is
 5. Last, in addition to person 5, include every 10th person (e.g., the second person will be person 15 because 5 + 10 is 15, and the third person will be person 25 because 15 + 10 is 25, and continue this process). The final sample will include persons 5, 15, 25, 35, 45, 55, 65, 75, 85, and
 95. If you follow the three steps, then when you get to the end of your sampling frame, you will always have all the people to be included in your sample. In systematic sampling, you essentially take a random starting point and work your way through a list of names.
 
-Let’s now select a systematic sample of size 10 from our sampling frame in
+> Let’s now select a systematic sample of size 10 from our sampling frame in
 
 &amp; 13). Second, we
 
@@ -690,7 +713,7 @@ This chapter is about measurement and sampling techniques. It is not about assig
 
 <!-- Page 18 -->
 **Random assignment** is not used to obtain a sample. Random assignment is used in experimental research to produce treatment and control groups (or comparison groups) that are similar on all possible characteristics. When conducting random assignment, you start with a set of people (typically you will have a *convenience sample*), and then you randomly divide the set of people into two or more groups. Then one group can be given the treatment condition, and the other can serve as the control condition (determined randomly), and you conduct the experiment. *The random assignment  process is a* *key element in producing the strongest experimental designs available for the study of causation.* Randomized designs are explained in Chapter
-9. It is important to remember that the difference between random selection and random assignment is the purpose. *The* ***purpose*** ***of random selection*** *is to obtain a representative sample, and the* ***purpose of  random assign-*** ***ment*** *is to produce two or more probabilistically equivalent groups for use in an experiment.*
+9. It is important to remember that the difference between random selection and random assignment is the purpose. *The* ***purpose*** ***of random selection****is to obtain a representative sample, and the****purpose of  random assign-*** ***ment*** *is to produce two or more probabilistically equivalent groups for use in an experiment.*
 
 > [!TIP] **Study Question 5.6**
 > Compare and contrast random selection and random assignment.
@@ -707,9 +730,7 @@ Here are five relatively “simple” answers to the important question about sa
 We complete this section with a few additional points about sample sizes. First, you will need a larger sample size when your population is heterogeneous (i.e., composed of widely different kinds of people). Second, you will need larger sample sizes when you want to break down your data into multiple subcategories. For example, if you want to conduct a separate analysis for males and females (rather than just looking at the overall group) or by ethnic groups, you will need a sufficient sample size for every subgroup. Third, you will need larger sample sizes when you want to obtain a
 
 <!-- Page 19 -->
-**Table 5.3** *Sample Sizes for Various Populations of Size 10–50 Million*
-
-***N*** **stands for the size of the population.** ***n*** **stands for the size of the recommended sample.** **The sample sizes are based on the 95% confidence level.** ***N*** ***n*** ***N*** ***n*** ***N*** ***n*** ***N*** ***n*** ***N*** ***n*** 10 10 130 97 250 152 950 274 10,000 370 20 19 140 103 260 155 1,000 278 20,000 377 30 28 150 108 270 159 1,100 285 30,000 379 40 36 160 113 280 162 1,200 291 40,000 380 50 44 170 118 290 165 1,300 297 50,000 381 60 52 180 123 300 169 1,400 302 75,000 382 70 59 190 127 400 196 1,500 306 100,000 384 80 66 200 132 500 217 2,000 322 250,000 384 90 73 210 136 600 234 3,000 341 500,000 384 100 80 220 140 700 248 3,500 346 1,000,000 384 110 86 230 144 800 260 4,000 351 10,000,000 384 120 92 240 148 900 269 5,000 357 50,000,000 384 Numbers in table were calculated by author. relatively narrow (i.e., precise) confidence interval. For example, a confidence interval estimate that 75% of clinical psychologists support a new prescription licensing bill *plus* *or minus 4%* is narrower (i.e., more precise) than a confidence interval estimate of *plus or* *minus 8%.* Unfortunately, increased precision will come at a cost: You will need a larger sample if you want increased precision. Fourth, you will need a larger sample size when you expect a weak relationship or a small effect. It takes a larger sample to detect weak relationships. There tends to be a lot of random error or “noise” present in data from a small sample, making it difficult to pick up a “weak signal” given by a weak relationship. Fifth, you will need a larger sample size when you use a less-efficient technique of random sampling (e.g., cluster sampling is less efficient than proportional stratified sampling). Sixth, some statistical techniques require different sample sizes. We provide a table with recommended sample sizes for several different statistical tests in Chapter 8 (Table 8.1, page 155). You will learn more about this issue when you take a statistics course. Last, you will need a larger sample size when you expect to have a low response rate. As you learned earlier, the response rate is the percentage of people in your sample who agree to be in your study. If many people refuse to participate in your research study, you will need to select more people in order to obtain the desired sample size.
+**Table 5.3***Sample Sizes for Various Populations of Size 10–50 Million****N*** **stands for the size of the population.** ***n*** **stands for the size of the recommended sample.** **The sample sizes are based on the 95% confidence level.** ***N*** ***n*** ***N*** ***n*** ***N*** ***n*** ***N*** 10 10 130 97 250 152 950 20 19 140 103 260 155 1,000 30 28 150 108 270 159 1,100 40 36 160 113 280 162 1,200 50 44 170 118 290 165 1,300 60 52 180 123 300 169 1,400 70 59 190 127 400 196 1,500 80 66 200 132 500 217 2,000 90 73 210 136 600 234 3,000 100 80 220 140 700 248 3,500 110 86 230 144 800 260 4,000 120 92 240 148 900 269 5,000 Numbers in table were calculated by author. ***n*** ***N*** ***n*** 274 10,000 370 278 20,000 377 285 30,000 379 291 40,000 380 297 50,000 381 302 75,000 382 306 100,000 384 322 250,000 384 341 500,000 384 346 1,000,000 384 351 10,000,000 384 357 50,000,000 384 relatively narrow (i.e., precise) confidence interval. For example, a confidence interval estimate that 75% of clinical psychologists support a new prescription licensing bill *plus* *or minus 4%* is narrower (i.e., more precise) than a confidence interval estimate of *plus or* *minus 8%.* Unfortunately, increased precision will come at a cost: You will need a larger sample if you want increased precision. Fourth, you will need a larger sample size when you expect a weak relationship or a small effect. It takes a larger sample to detect weak relationships. There tends to be a lot of random error or “noise” present in data from a small sample, making it difficult to pick up a “weak signal” given by a weak relationship. Fifth, you will need a larger sample size when you use a less-efficient technique of random sampling (e.g., cluster sampling is less efficient than proportional stratified sampling). Sixth, some statistical techniques require different sample sizes. We provide a table with recommended sample sizes for several different statistical tests in Chapter 8 (Table 8.1, page 155). You will learn more about this issue when you take a statistics course. Last, you will need a larger sample size when you expect to have a low response rate. As you learned earlier, the response rate is the percentage of people in your sample who agree to be in your study. If many people refuse to participate in your research study, you will need to select more people in order to obtain the desired sample size.
 
 > [!TIP] **Study Question 5.7**
 > Explain how to determine the appropriate sample size for a study.

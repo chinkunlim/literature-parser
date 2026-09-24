@@ -24,7 +24,8 @@
     border-bottom: 2px solid #842959;
   }
   .textbook-table {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     border-collapse: collapse;
     font-size: 0.9em;
   }
@@ -147,7 +148,7 @@ graph LR
 <!-- Page 2 -->
 **Table 10.1** *Summary of Quasi-Experimental Designs*
 
-<table class="textbook-table">
+<table class="textbook-table" style="width: auto; max-width: 100%; border-collapse: collapse; margin: 1.5em 0;">
   <thead>
     <tr>
       <th>Design Name</th>
@@ -204,14 +205,9 @@ Causal inferences can be made using quasi-experimental designs, but these infere
 
 **Table 10.2** *Principles Used to Rule out Rival Explanations in Quasi-Experiments*
 
-<div class="framed-card">
-  <div class="framed-card-header">Principles Used to Rule out Rival Explanations in Quasi-Experiments</div>
-  <ol class="framed-card-body">
-    <li>Identification and study of plausible threats to internal validity: This principle involves identifying plausible rival explanations and then probing and investigating them to determine how likely it is that they can ex- plain the covariation between the treatment and the outcome.</li>
-    <li>Control by design: This principle involves adding design elements, such as additional pretest time points or additional control groups, to either eliminate a rival explanation or obtain evidence about the plausibility of the rival explanation.</li>
-    <li>Coherent pattern matching: This principle can be used when a complex prediction can be made about a causal hypothesis and there are few, if any, rival explanations that would make the same prediction. If the complex prediction is supported by the data, most rival explanations are eliminated. The more complex the prediction, the less likely it is that a rival explanation can explain the prediction and the more likely that the independent variable is producing the effect.</li>
-  </ol>
-</div>
+1. Identification and study of plausible threats to internal validity: This principle involves identifying plausible rival explanations and then probing and investigating them to determine how likely it is that they can ex- plain the covariation between the treatment and the outcome.
+2. Control by design: This principle involves adding design elements, such as additional pretest time points or additional control groups, to either eliminate a rival explanation or obtain evidence about the plausibility of the rival explanation.
+3. Coherent pattern matching: This principle can be used when a complex prediction can be made about a causal hypothesis and there are few, if any, rival explanations that would make the same prediction. If the complex prediction is supported by the data, most rival explanations are eliminated. The more complex the prediction, the less likely it is that a rival explanation can explain the prediction and the more likely that the independent variable is producing the effect.
 
 Principle two (i.e., control by design) involves the use of design components to control for plausible threats. As a review from the last chapter, here are the six major **design components** that are usually available to a researcher: (1) control or comparison groups (zero, one, or more than one), (2) pretest (zero, one, or more than one), (3) posttest (one or more than one), (4) within-participants and/ or  between-participants independent variables, (5) inclusion of one or more theoretically interesting independent variables, and (6) measurement of one or more theoretically interesting dependent variables. You can view the quasi-experimental designs presented as design improvements upon the weak designs explained in Chapter
 9. For example, you will see that the interrupted time-series design (a quasi-experimental design) discussed in this chapter is like the one-group pretest–posttest design (a weak design from Chapter  9) with additional pretests and posttests added. Likewise, nonequivalent comparison group design (a quasiexperimental design) is like the posttest-only design with nonequivalent groups (a weak design from  Chapter 9) with a pretest added. You can also think of quasiexperimental designs as like strong designs with one or more components removed (typically random assignment to groups).
@@ -260,25 +256,20 @@ quasi-experimental designs (Shadish et al., 2002). This design includes both an 
 
 *Figure 10.2 Nonequivalent comparison group design.*
 
-Treatment Posttest measure X 1 O 2 X O 2 2 included, you will end up with the weak design discussed in the Chapter 9—the posttestonly design with nonequivalent groups. From a design perspective, be sure to notice that the *nonequivalent comparison group design* presented here (a quasi-experimental design) is an improvement over the *posttest-only design with nonequivalent groups*, but is not as good as the *pretest–posttest control-group design* (a strong, randomized design). The point is to notice what happens when design components (such as pretests and random assignment) are added or subtracted from designs.
+Treatment Posttest measure X 1 O 2 X 2 O 2 included, you will end up with the weak design discussed in the Chapter 9—the posttestonly design with nonequivalent groups. From a design perspective, be sure to notice that the *nonequivalent comparison group design* presented here (a quasi-experimental design) is an improvement over the *posttest-only design with nonequivalent groups*, but is not as good as the *pretest–posttest control-group design* (a strong, randomized design). The point is to notice what happens when design components (such as pretests and random assignment) are added or subtracted from designs.
 
 Pretesting allows for testing and examination of possible group differences that often threaten the design. As shown in Table 10.3, the threats for the nonequivalent comparison-group design are selection and additive/interaction effects. There are actually several kinds of additive/interaction effects, and they are listed in Table 10.4. *All* of these threats to internal validity would have been minimized if the researcher could randomly assign participants, but that’s not possible with the  nonequivalent comparison group design. *Selection bias* is the most obvious result of the lack of random assignment—the groups likely will not be equivalent on all extraneous variables. Because participants are not randomly assigned, you cannot assume that the groups are equivalent; in fact, you should assume that the groups are different or “nonequivalent” on variables in addition to the independent variable. Remember, you want the groups to be different *only* on the levels of the independent variable.
 
 **Table 10.4** *Selection and Additive/Interaction Threats to the Internal Validity of the Nonequivalent Comparison Group Design*
 
-<div class="framed-card">
-  <div class="framed-card-header">Selection and Additive/Interaction Threats to the Internal Validity of the Nonequivalent Comparison Group Design</div>
-  <ol class="framed-card-body">
-    <li>Selection bias —Because groups are nonequivalent, there will always be a potential selection bias. However, the pretest allows the exploration of the possible size and direction of the bias on any variables measured at pretesting.</li>
-    <li>Selection-attrition bias —This might exist if there is differential attrition in the groups. The pretest allows examination of the nature of attrition to see if there is a difference between those that drop out or do not complete the experiment and those that do.</li>
-    <li>Selection-maturation bias —This might exist if one group of participants matures at a different rate than the other group.</li>
-    <li>Selection-instrumentation bias —This might exist if the nonequivalent groups of participants react differently to a change in instrumentation.</li>
-    <li>Selection–testing bias —This might exist if the nonequivalent groups react differently to a pretest.</li>
-    <li>Selection-regression-artifact bias —This might exist if the two groups show different amounts of regression to the mean.</li>
-    <li>Selection-history bias —This might exist if the nonequivalent groups react differently to a history effect.</li>
-    <li>Differential-history bias —This might exist if one of the groups experiences a history effect and the other group does not.</li>
-  </ol>
-</div>
+1. Selection bias —Because groups are nonequivalent, there will always be a potential selection bias. However, the pretest allows the exploration of the possible size and direction of the bias on any variables measured at pretesting.
+2. Selection-attrition bias —This might exist if there is differential attrition in the groups. The pretest allows examination of the nature of attrition to see if there is a difference between those that drop out or do not complete the experiment and those that do.
+3. Selection-maturation bias —This might exist if one group of participants matures at a different rate than the other group.
+4. Selection-instrumentation bias —This might exist if the nonequivalent groups of participants react differently to a change in instrumentation.
+5. Selection–testing bias —This might exist if the nonequivalent groups react differently to a pretest.
+6. Selection-regression-artifact bias —This might exist if the two groups show different amounts of regression to the mean.
+7. Selection-history bias —This might exist if the nonequivalent groups react differently to a history effect.
+8. Differential-history bias —This might exist if one of the groups experiences a history effect and the other group does not.
 
 Because of the lack of random assignment and resulting nonequivalent groups, participants might be more likely (a) to drop out of one group than from another group
 
@@ -324,7 +315,7 @@ Other rival explanations of the pattern shown in Figure 10.3 are possible. For e
 
 *Figure 10.5 Experimental-group-lower-than- control-group-at-pretest effect.*
 
-> program is given to the children with unusually low scores on the pretest measure of the dependent variable and the control condition was given to  average-scoring children, then we would expect regression to
+program is given to the children with unusually low scores on the pretest measure of the dependent variable and the control condition was given to  average-scoring children, then we would expect regression to
 
 Figure 10.6 depicts the  **crossover**
 
@@ -334,13 +325,13 @@ The outcome pattern shown in Figure 10.6 provides the strongest this entire proc
 
 In an attempt to eliminate the potential impact of selection biases, researchers try to ensure the similarity of groups by either matching on variables that pose rival explanations or using statistical control procedures. For example, in a Head Start program, you might want to match on income, intelligence, parental involvement, and so forth. This list raises an important issue: It is often impossible to identify and match on all of the important variables. Matching also should be carried out on the dependent variable, which is assumed to equate participants on additional variables. Matching equates the groups on the matched variables at the start of the experiment. Unfortunately, you can never fully match, and matching is not a perfect replacement for the much stronger control technique of random assignment available in strong experimental research designs. Nonetheless, when random assignment is not possible, you should carefully examine the literature and local situation to determine the most important variables to use in matching.
 
-You must be careful when matching, however, for the following two situations that can occur as a result of selection-regression-artifact effects. Assume that a researcher wants to match individuals from a population of students at-risk of academic failure with individuals from a population of students that are not at-risk. Assume that the average pretest performance score in the at-risk population is 44 and <!-- Page 9 -->
-in the not at-risk population is
-88. Also assume that both populations’ scores are normally distributed around the mean (where most scores are near the mean with far fewer scores at the extremes). This situation is shown in Figure 10.7.
+You must be careful when matching, however, for the following two situations that can occur as a result of selection-regression-artifact effects. Assume that a researcher wants to match individuals from a populationon of students at-risk of academic failure with individuals from a populationon of students that are not at-risk. Assume that the average pretest performance score in the at-risk populationon is 44 and <!-- Page 9 -->
+in the not at-risk populationon is
+88. Also assume that both populationons’ scores are normally distributed around the mean (where most scores are near the mean with far fewer scores at the extremes). This situation is shown in Figure 10.7.
 
 In our first case, the experimenter decides to match on pretest scores by giving the education program (i.e., the treatment) to at-risk individuals and locating individuals from the not-at-risk group *with similar pretest scores* to serve in the control group. To do this, the researcher takes high-scoring at-risk individuals and finds matches from low-scoring not-at-risk individuals. The resulting treatment and control groups will have similar scores on the pretest and will appear to be fairly matched (equated on pretest scores). However, in this situation, the at-risk individuals will tend to regress downward from pretest to posttest (closer to the at-risk group average), and the not at-risk individuals will tend to regress upward from pretest to posttest (closer to the not-at-risk group average), independently of any treatment effect. If the experimental condition is administered to the at-risk individuals (and the not-at-risk serve as controls), then finding a positive program effect becomes highly unlikely because the at-risk individuals must improve enough to overcome their own propensity to regress downward (to their group mean), and they must also offset the not-at-risk individuals’ propensity to regress upward (to their group mean) in this situation. This use of individuals from opposite ends of preexisting groups works against finding a positive improvement due to the program, *even if the program* *is effective.*
 
-Second, in our scenario, if the program was given to the low-scoring not-at-risk individuals (and high-scoring at-risk individuals served as controls), then *the program* *might appear effective, even if it was an ineffective program.* The key message is to be careful of selection-regression-artifact effects when matching participants from different populations because you might end up matching individuals that come from the opposite extremes of their respective groups. This can result in an effective treatment appearing to be ineffective or an ineffective treatment appearing to be effective!
+Second, in our scenario, if the program was given to the low-scoring not-at-risk individuals (and high-scoring at-risk individuals served as controls), then *the program* *might appear effective, even if it was an ineffective program.* The key message is to be careful of selection-regression-artifact effects when matching participants from different populationons because you might end up matching individuals that come from the opposite extremes of their respective groups. This can result in an effective treatment appearing to be ineffective or an ineffective treatment appearing to be effective!
 
 Another strategy for equating groups is to attempt to determine what variables (other than your independent variable) your groups will likely differ on and measure those variables. Then, during data analysis, statistical control techniques can be used to adjust for pretest differences on the measured variables. Although this process can help, statistical control cannot fully equate the groups on all known and unknown variables. Also, statistical control techniques tend to be especially susceptible to measurement error on the pretest. To help deal with this problem, a statistical procedure known as *reliability adjusted analysis of covariance* (ANCOVA) is recommended (see Trochim &amp; Donnelly, 2008). This approach and additional statistical approaches such as *propensity score matching* and *selection modeling* are beyond the scope of this text, but are discussed in more advanced books and articles (e.g., Rindskopf, 1992; Shadish et al., 2002).
 
@@ -409,7 +400,7 @@ The **regression discontinuity design** is a design that is used to determine wh
 
 For example, a researcher might measure college students on an English test that measures English deficiency and assign those students with scores above the median deficiency to an English remediation program and use those with scores below the median as controls (Leake &amp; Lesik, 2007). Although this might sound like a bad idea (i.e., to construct groups that are different at the start of the experiment), it actually is the assignment variable p
 
-> O $\rightarrow$ C X $\rightarrow$ O p 2 O p $\rightarrow$ C O
+> O p $\rightarrow$ C X $\rightarrow$ O 2 O p $\rightarrow$ C O
 
 ![Figure 10.10 Structure of the regression discontinuity design. O measure; C indicates the assignment measure cutoff score used to assign participants to conditions (where participants with scores above the cutoff are assigned to the treatment condition and par-](images/figure_10_10.png)
 
@@ -436,17 +427,12 @@ which makes it quite unlikely).
 
 **Table 10.5** *Requirements of the Regression Discontinuity Design*
 
-<div class="framed-card">
-  <div class="framed-card-header">Requirements of the Regression Discontinuity Design</div>
-  <ul class="framed-card-body">
-    <li>Assignment to comparison groups must be based only on the cutoff score.</li>
-    <li>The assignment variable must be at least an ordinal variable, and it is best if it is a continuous variable. It cannot be a nominal variable such as sex, ethnicity, religious preference, or status as a drug user or nonuser.</li>
-    <li>The cutoff score ideally should be located at the mean of the distribution of scores. The closer the cutoff score is to the extremes, the lower the statistical power of the design.</li>
-    <li>Assignment to comparison groups must be under the control of the experimenter to avoid a selection bias. This requirement rules out most retrospective uses of the design.</li>
-    <li>The relationship between the assignment and outcome variables (whether it is linear, curvilinear, etc.) must be known to avoid a biased assessment of the treatment effect.</li>
-    <li>All participants must be from the same population. With respect to the regression discontinuity design, this means that it must have been possible for all participants to receive the treatment condition. This means that the design is not appropriate, for example, if the experimental participants are selected from one school and control participants from another. the effectiveness of a treatment condition. When these criteria are met, the regression discontinuity design is a very good design to use for testing the effect of a treatment condition and is typically more powerful than other quasi-experimental designs. Any threat to the validity of the regression discontinuity design would have to cause a sudden discontinuity in the regression line that coincides with the cutoff. As Shadish et al. (2002) have pointed out, this is implausible, although possible. The primary threat that could produce such an effect is a differential history effect (which is a type of “additive/interactive” effect in Table 10.3). This history effect would have to be one that affected only participants on one side of the cutoff (i.e.,</li>
-  </ul>
-</div>
+- Assignment to comparison groups must be based only on the cutoff score.
+- The assignment variable must be at least an ordinal variable, and it is best if it is a continuous variable. It cannot be a nominal variable such as sex, ethnicity, religious preference, or status as a drug user or nonuser.
+- The cutoff score ideally should be located at the mean of the distribution of scores. The closer the cutoff score is to the extremes, the lower the statistical power of the design.
+- Assignment to comparison groups must be under the control of the experimenter to avoid a selection bias. This requirement rules out most retrospective uses of the design.
+- The relationship between the assignment and outcome variables (whether it is linear, curvilinear, etc.) must be known to avoid a biased assessment of the treatment effect.
+- All participants must be from the same populationon. With respect to the regression discontinuity design, this means that it must have been possible for all participants to receive the treatment condition. This means that the design is not appropriate, for example, if the experimental participants are selected from one school and control participants from another. the effectiveness of a treatment condition. When these criteria are met, the regression discontinuity design is a very good design to use for testing the effect of a treatment condition and is typically more powerful than other quasi-experimental designs. Any threat to the validity of the regression discontinuity design would have to cause a sudden discontinuity in the regression line that coincides with the cutoff. As Shadish et al. (2002) have pointed out, this is implausible, although possible. The primary threat that could produce such an effect is a differential history effect (which is a type of “additive/interactive” effect in Table 10.3). This history effect would have to be one that affected only participants on one side of the cutoff (i.e.,
 
 > [!TIP] **Study Question 10.5**
 > - What are the characteristics of the regression discontinuity design?
@@ -661,18 +647,24 @@ d.  Time-series design
 **1.** For each of the following design briefs, identify
 a.  The type of quasi-experimental design used
 b.  The potential threat(s) to internal validity that
-might exist in concluding that the treatment produced the observed effect A.  The National Institutes of Health wanted to improve the research careers of promising young scientists by giving them a significant grant to allow them to devote time to their research careers. They requested and received applica- tions from 100 scientists who were assistant professors and had been in their first job for less than 5 years. From this pool of 100 applicants, they selected the 50 most promising individuals in terms of number of publications, school from which they had received their terminal degree, and letters of recommendation. After 5 years had elapsed, they compared the performance of the 50  applicants who had received the award with the  applicants who had not. It was found that the applicants who received the award were more productive in terms of number of publications, more of them had been promoted to associate professor, and their salary was higher than those who did not receive the award. Based on this evi- dence it was concluded that the program should be continued because it was a great success. B.  MADD (Mothers against Drunk Drivers) has lobbied for tougher laws against drunk drivers for years. Assume that it was successful in convincing the legislators in your state to pass a tougher law against drunk drivers that required a mandatory jail sentence of at least 6 months, loss of driver’s license for 5 years, and a fine of at least $10,000. You want to test the effect of this tougher law, so you record the number of people arrested and convicted for DUI (driving under the influence of alcohol) for each of the 5 years prior to the passage of this law and for each of the 5 years after passage of this law. You find that the number of arrests and convictions decreased after the law was passed, so you conclude that the tougher laws are effective. C.  School systems frequently provide instruction and classes for individuals who are behind in particular academic subject areas. You want to determine if a reading program is effective for children with reading difficulties, so you test all second-grade children on reading ability. The children who score below 30 on your test of reading ability are required to participate in the reading program. After these children have been in the reading program for a time, you again test all the second-grade children on reading ability. You find that the children given the program improved more than would be expected and conclude that it indicates that the program was effective.
+might exist in concluding that the treatment produced the observed effect A.  The National Institutes of Health wanted to improve the research careers of promising young scientists by giving them a significant grant to allow them to devote time to their research careers. They requested and received applica- tions from 100 scientists who were assistant professors and had been in their first job for less than 5 years. From this pool of 100 applicants, they selected the 50 most promising individuals in terms of number of publications, school from which they had received their terminal degree, and letters of recommendation. After 5 years had elapsed, they compared the performance of the 50  applicants who had received the award with the  applicants who had not. It was found that the applicants who received the award were more productive in terms of number of publications, more of them had been promoted to associate professor, and their salary was higher than those who did not receive the award. Based on this evi- dence it was concluded that the program should be continued because it was a great success. B.  MADD (Mothers against Drunk Drivers) has lobbied for tougher laws against drunk drivers for years. Assume that it was successful in convincing the legislators in your state to pass a tougher law against drunk drivers that required a mandatory jail sentence of at least 6 months, loss of driver’s license for 5 years, and a fine of at least &#36;10,000. You want to test the effect of this tougher law, so you record the number of people arrested and convicted for DUI (driving under the influence of alcohol) for each of the 5 years prior to the passage of this law and for each of the 5 years after passage of this law. You find that the number of arrests and convictions decreased after the law was passed, so you conclude that the tougher laws are effective. C.  School systems frequently provide instruction and classes for individuals who are behind in particular academic subject areas. You want to determine if a reading program is effective for children with reading difficulties, so you test all second-grade children on reading ability. The children who score below 30 on your test of reading ability are required to participate in the reading program. After these children have been in the reading program for a time, you again test all the second-grade children on reading ability. You find that the children given the program improved more than would be expected and conclude that it indicates that the program was effective.
 
 **2.** A youth center wants to improve the family life for
 teenagers at risk for violence. One of the current pro- grams that is being implemented is a type of therapy <!-- Page 17 -->
-called Functional Family Therapy. To assess the effectiveness of this type of therapy in reducing violence among youth, two youth centers are selected. They both conduct a pretest. One provides Functional First Experimental Pretest = 27 Posttest = 13 Family Therapy to the families of teenagers who have outcome: group: been at the youth center and are being released back into the care of their parents; the other youth center continues its standard practice of follow-up and brief Second Experimental Pretest = 16 Posttest = 4 counseling of parents. For each teenager who is being outcome: group: released to his or her family, data are collected on the number of violent encounters with other teenagers, the law, and other family members for 1 month before Third Experimental Pretest = 14 Posttest = 27 and after the Functional Family Therapy treatment outcome: group: program was initiated. The following shows four different outcomes that could occur. a.  Graph each outcome. b.  State whether the treatment condition seems to have been effective. c.  Identify the rival hypotheses that might explain the observed effect.
+called Functional Family Therapy. To assess the effectiveness of this type of therapy in reducing violence among youth, two youth centers are selected. They both conduct a pretest. One provides Functional Family Therapy to the families of teenagers who have been at the youth center and are being released back into the care of their parents; the other youth center continues its standard practice of follow-up and brief counseling of parents. For each teenager who is being released to his or her family, data are collected on the number of violent encounters with other teenagers, the law, and other family members for 1 month before and after the Functional Family Therapy treatment program was initiated. The following shows four different outcomes that could occur. a.  Graph each outcome. b.  State whether the treatment condition seems to have been effective. c.  Identify the rival hypotheses that might explain the observed effect.
+
+First Experimental Pretest = 27 Posttest = 13 outcome: group:
 
 > Control group: Pretest = 10 Posttest = 10
 
+Second Experimental Pretest = 16 Posttest = 4 outcome: group:
+
 > Control group: Pretest = 10 Posttest = 27
+
+Third Experimental Pretest = 14 Posttest = 27 outcome: group:
 
 Control group: Pretest = 5 Posttest = 10
 
-> Fourth Experimental Pretest = 4 Posttest = 13 outcome: group:
+Fourth Experimental Pretest = 4 Posttest = 13 outcome: group:
 
 > Control group: Pretest = 15 Posttest = 15

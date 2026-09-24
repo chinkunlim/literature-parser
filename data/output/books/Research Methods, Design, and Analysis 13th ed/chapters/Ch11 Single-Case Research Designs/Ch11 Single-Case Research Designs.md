@@ -24,7 +24,8 @@
     border-bottom: 2px solid #842959;
   }
   .textbook-table {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     border-collapse: collapse;
     font-size: 0.9em;
   }
@@ -105,7 +106,15 @@
 - [Methodological Considerations in Using Single-Case Designs](#methodological-considerations-in-using-single-case-designs)
   - [Baseline](#baseline)
   - [Changing One Variable at a Time](#changing-one-variable-at-a-time)
-  - [Length of Phases](#length-of-phases)
+  - [
+<!-- AI-REVIEW-START id="rev-1" category="ocr_typo" -->
+<!-- ORIGINAL:
+Length of P
+-->
+<!-- REASON: The text is abruptly cut off at the end of the file. However, given the context 'Length of P' and the typical structure of 'Length of Project' or 'Length of Program', 'Length of Project' is a common academic phrase. However, since the exact word is missing, it's technically a truncation error. -->
+Length of Project
+<!-- AI-REVIEW-END -->
+hases](#length-of-phases)
 - [Criteria for Evaluating Change](#criteria-for-evaluating-change)
   - [Experimental Criterion](#experimental-criterion)
   - [EXHIBIT 11.2 Analysis of Data Obtained from Single-Case](#exhibit-11-2-analysis-of-data-obtained-from-single-case)
@@ -158,7 +167,7 @@ This chapter presents the most frequently used single-case designs and demonstra
 
 **Table 11.1** *Summary of Single-Case Designs*
 
-<table class="textbook-table">
+<table class="textbook-table" style="width: auto; max-width: 100%; border-collapse: collapse; margin: 1.5em 0;">
   <thead>
     <tr>
       <th>Design Name</th>
@@ -180,8 +189,6 @@ This chapter presents the most frequently used single-case designs and demonstra
     </tr>
   </tbody>
 </table>
-
-****
 
 ### Summary of Single-Case Designs
 
@@ -307,7 +314,7 @@ Although the multiple-baseline design avoids the problem of reversibility, it ha
 
 what is happening with one participant must be independent from what is happening with another participant). Or, if the
 
-The problem of interdependence of targets is real and needs
+> The problem of interdependence of targets is real and needs
 
 ![Figure 11.7  Changing-criterion design. T 4 refer to four different phases of the experiment.](images/figure_11_7.png)
 
@@ -511,16 +518,6 @@ single-case designs discussed, we have listed a number of requirements for prope
 In conducting an experimental research study that uses only one participant, you must reorient your thinking because extraneous variables cannot be controlled by using a randomization control technique nor can they be handled by the inclusion of a control group. To begin to rule out the possible confounding effect of extraneous variables, re- searchers can use a form of a time-series design. This means that multiple premeasures and postmeasures on the dependent variable are made in order to rule out potential rival hypotheses such as maturation and history. A commonly used single-case design is the ABA type, which requires the investigator to take baseline measures before and after the experimental treatment. The experimental treatment effect is demonstrated by a change in behavior when the treatment condition is introduced and a *reversal* of the behavior to its pretreatment level when the experimental treatment condition is withdrawn. The success of this design depends on the reversal. Many extensions of the basic ABA design have been made. The combination de- sign attempts to assess the combined effect of two or more variables. The influence of each variable is assessed separately and in combination. In addition, the influence of the combination of variables must be compared with that of each variable sepa- rately. This usually means that at least two participants must be used in the study. A third type of single-case design is the multiple-baseline design. This design avoids the necessity for reversal required in the ABA design by relying on the succes- sive administration of the experimental treatment condition to different target partici- pants (or target behaviors or target contexts). The influence of the treatment condition is revealed if a change in behavior occurs simultaneously with each successive intro- duction of the treatment condition. Although the multiple-baseline design avoids the problem of reversibility, it requires that target participants, behaviors, or contexts be- ing studied are independent. The changing-criterion design is useful in studies that require the shaping of be- havior over a period of time. This design requires that, following the baseline phase, a treatment condition is implemented and continued across a series of intervention phases. For each intervention phase, a stronger criterion level of performance is required in order for the participant to advance to the next intervention phase. The experimenter makes the criterion level progressively more difficult. In this way, be- havior can gradually be shaped to a desired criterion level.
 
 <!-- Page 17 -->
-****
-
-****
-
-****
-
-****
-
-****
-
 In addition to a basic knowledge of the single-case designs, you should also un- derstand the methodological considerations required to appropriately implement the designs. These include the following:
 
 **1.** *Baseline.*
@@ -733,7 +730,7 @@ a.  The effectiveness of the treatment
 b.  An ineffective treatment
 
 **3.** Assume that you wanted to evaluate the effectiveness
-of a program designed to help people get over their claustrophobia. This program consisted of having them give you $50. Each day they were able to stay in a small enclosed room for an additional 10 minutes, you returned $10, until they were able to remain in there for a total of 50 minutes. On the first day that they stayed in the room for 10 minutes, they received $10. Then they had to stay in the room for 20 minutes to receive another $10, and so forth, until they were able to remain for 50 minutes and get the last $10.
+of a program designed to help people get over their claustrophobia. This program consisted of having them give you &#36;50. Each day they were able to stay in a small enclosed room for an additional 10 minutes, you returned &#36;10, until they were able to remain in there for a total of 50 minutes. On the first day that they stayed in the room for 10 minutes, they received &#36;10. Then they had to stay in the room for 20 minutes to receive another &#36;10, and so forth, until they were able to remain for 50 minutes and get the last &#36;10.
 a.  Construct a graph depicting the effectiveness of
 this strategy.
 b.  Specify the type of design used.

@@ -24,7 +24,8 @@
     border-bottom: 2px solid #842959;
   }
   .textbook-table {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     border-collapse: collapse;
     font-size: 0.9em;
   }
@@ -121,11 +122,19 @@
 *University of South Alabama*
 
 <!-- Page 2 -->
-**Portfolio Manager:** *Tanimaa Mehra* **Content Producer:** *Sugandh Juneja* **Portfolio Manager Assistant:** *Anna Austin* **Product Marketer:** *Marianela Silvestri* **Art/Designer:***Integra Software Service Pvt. Ltd.* **Full-Service Vendor:** *Integra Software Service Pvt. Ltd.* **Full-Service Project Managers:** *Denise Forlow and Pradeep Subramani* **Printer/Binder:** *LSC Communications, Inc*. **Cover Printer:** *LSC Communications, Inc*. **Cover Design:** *Lumina Datamatics, Inc*. **Cover Art:** *cwa/Alamy Stock Photo*
+**Portfolio Manager:***Tanimaa Mehra***Content Producer:***Sugandh Juneja***Portfolio Manager Assistant:***Anna Austin***Product Marketer:***Marianela Silvestri***Art/Designer:***
+<!-- AI-REVIEW-START id="rev-1" category="ocr_typo" -->
+<!-- ORIGINAL:
+Integra Software Services
+-->
+<!-- REASON: Sentence cut off; likely OCR error for 'Services'. -->
+Integra Software Services
+<!-- AI-REVIEW-END -->
+ce Pvt. Ltd.* **Full-Service Vendor:***Integra Software Service Pvt. Ltd.***Full-Service Project Managers:***Denise Forlow and Pradeep Subramani***Printer/Binder:** *LSC Communications, Inc*. **Cover Printer:** *LSC Communications, Inc*. **Cover Design:** *Lumina Datamatics, Inc*. **Cover Art:** *cwa/Alamy Stock Photo*
 
 Acknowledgments of third-party content appear on pages within the text, which constitutes an extension of this copyright  page.
 
-**Copyright © 2020, 2014, 2011 by Pearson Education, Inc. 221 River Street, Hoboken, NJ 07030**.**All Rights Reserved**. Printed in the United States of America. This publication is protected by copyright, and permission should be obtained from the publisher prior to any prohibited reproduction, storage in a retrieval system, or transmission in any form or by any means, electronic, mechanical, photocopying, recording, or otherwise. For information regarding permissions, request forms and the appropriate contacts within the Pearson Education Global Rights &amp; Permissions department, please visit www.pearsoned.com/permissions/.
+Printed in the United States of America. This publication is protected by copyright, and permission should be obtained from the publisher prior to any prohibited reproduction, storage in a retrieval system, or transmission in any form or by any means, electronic, mechanical, photocopying, recording, or otherwise. For information regarding permissions, request forms and the appropriate contacts within the Pearson Education Global Rights &amp; Permissions department, please visit www.pearsoned.com/permissions/.
 
 PEARSON and ALWAYS LEARNING are exclusive trademarks owned by Pearson Education, Inc. or its affiliates, in the United States, and/or other countries.
 

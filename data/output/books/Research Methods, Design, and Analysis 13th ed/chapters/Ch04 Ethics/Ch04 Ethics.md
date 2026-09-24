@@ -24,7 +24,8 @@
     border-bottom: 2px solid #842959;
   }
   .textbook-table {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     border-collapse: collapse;
     font-size: 0.9em;
   }
@@ -105,7 +106,15 @@
 - [Ethical Dilemmas](#ethical-dilemmas)
   - [EXHIBIT 4.2 Sample Consent Form](#exhibit-4-2-sample-consent-form)
 - [Ethical Guidelines](#ethical-guidelines)
-  - [EXHIBIT 4.3 The Tuskegee Syphilis Experiment](#exhibit-4-3-the-tuskegee-syphilis-experiment)
+  - [EXHIBIT 4.3 The Tuskegee 
+<!-- AI-REVIEW-START id="rev-1" category="ocr_typo" -->
+<!-- ORIGINAL:
+Syphilis
+-->
+<!-- REASON: The word is cut off at the end of the segment. It is clearly 'Syphilis' in the context of 'Tuskegee Syphilis Study'. -->
+Syphilis
+<!-- AI-REVIEW-END -->
+is Experiment](#exhibit-4-3-the-tuskegee-syphilis-experiment)
   - [Beneficence and Nonmaleficence](#beneficence-and-nonmaleficence)
   - [Fidelity and Responsibility](#fidelity-and-responsibility)
   - [Integrity](#integrity)
@@ -206,7 +215,9 @@ The ethical issue concerning the relationship between society and science concer
 The corporate world also provides extensive research funding, which frequently comes with a set of potential biases and restrictions. For example, most of the research sponsored by drug companies has focused on the development of variants of existing drugs with the goal of improving sales rather than developing new drugs. When comparisons are made between a new drug and a traditional therapy, studies funded by the company that produced the new drug are more likely to find that the new drug is more effective than are studies funded by other sources (Lexchin, Bero, Djulbegovic, &amp; Clark, 2003). Drug companies obviously want their newly patented drugs to turn out <!-- Page 3 -->
 to be superior because this leads to sales of the new drug and increases the profit that can be made by the company.
 
-While corporate support of research can be a good way for researchers to advance their program of research, corporate funding can become a conflict of interest when the researcher’s activities and decision making are unduly affected by the corporate interest. Such actual or potential conflicts of interest run the risk of influencing one or more aspects of a research study and can threaten the public’s trust in science. This is why the American Psychological Association (APA) Ethics Code includes a standard (Standard 3.06, Conflict of Interest, APA, 2010) stating that psychologists should refrain from engaging in professional activities where they have such a conflict of interest.
+While corporate support of research can be a good way for researchers to advance their program of research, corporate funding can become a conflict of interest when the researcher’s activities and decision making are unduly affected by the corporate interest. Such actual or potential conflicts of interest run the risk of influencing one or more aspects of a research study and can threaten the public’s trust in science. This is
+
+(Standard 3.06, Conflict of Interest, APA, 2010) stating that psychologists should refrain from engaging in professional activities where they have such a conflict of interest.
 
 ### Professional Issues
 
@@ -241,18 +252,13 @@ The increased frequency and interest in scientific misconduct have naturally sti
 
 **Table 4.1** *Information that must be Presented in a Research Protocol Presented to the IRB*
 
-<div class="framed-card">
-  <div class="framed-card-header">Information that must be Presented in a Research Protocol Presented to the IRB</div>
-  <ul class="framed-card-body">
-    <li>Purpose of the research</li>
-    <li>Relevant background and rationale for the research</li>
-    <li>Participant sample</li>
-    <li>Experimental design and methodology</li>
-    <li>Incentives offered, if any</li>
-    <li>Risks and benefits to the participants and precautions to be taken</li>
-    <li>Privacy and confidentiality of the data collected</li>
-  </ul>
-</div>
+- Purpose of the research
+- Relevant background and rationale for the research
+- Participant sample
+- Experimental design and methodology
+- Incentives offered, if any
+- Risks and benefits to the participants and precautions to be taken
+- Privacy and confidentiality of the data collected
 
 Additionally, the National Institutes of Health (NIH) require that all investigators who receive funding from NIH, as well as other key personnel such as coinvestigators and study coordinators, complete an education module on the protection of human participants. The National Science Foundation (NSF) has recently mandated that any research projects supported by NSF funds provide appropriate training and oversight in the responsible and ethical conduct of research for undergraduates, graduate <!-- Page 5 -->
 students, and postdoctoral researchers. Starting January 25, 2010, NIH requires similar training in the Responsible Conduct of Research for NIH supported career development awards, research education grants, and dissertation research grants. Most universities extend these requirements to all investigators, including other key personnel such as graduate and undergraduate students who are conducting research with human participants whose research does not receive NIH funding.
@@ -356,13 +362,15 @@ In July 1972, the Associated Press released a story that revealed that the U.S. 
 
 This study had nothing to do with the treatment of syphilis; no drugs or alternative therapies were tested. It was a study aimed strictly at compiling data on the effects of the disease. The various components of the study, and not the attempt to learn more about syphilis, made it an extremely unethical experiment. The participants in the study were mostly poor and illiterate, and the PHS offered incentives to participate, including free physical examinations, free rides
 
-to and from the clinic, hot meals, free treatment for other ailments, and a $50 burial stipend. The participants were not told the purpose of the study or that they were not be- ing treated for their illness. Even more damning is the fact that the participants were monitored by a PHS nurse, who informed local physicians that those individuals were tak- ing part in the study and that they were not to be treated for syphilis. Participants who were offered treatment by other physicians were advised that they would be dropped from the study if they took the treatment.
+to and from the clinic, hot meals, free treatment for other ailments, and a &#36;50 burial stipend. The participants were not told the purpose of the study or that they were not be- ing treated for their illness. Even more damning is the fact that the participants were monitored by a PHS nurse, who informed local physicians that those individuals were tak- ing part in the study and that they were not to be treated for syphilis. Participants who were offered treatment by other physicians were advised that they would be dropped from the study if they took the treatment.
 
 As you can see, the participants were not aware of the purpose of the study or the danger it posed to them, and no attempt was ever made to explain the situation to them. In fact, they were enticed with a variety of inducements and were followed to ensure that they did not receive treatment from other physicians. This study seems to have included just about every possible violation of our present standard of ethics for research with humans.
 
 (From Jones, 1981.)
 
-The widespread concern over ethical violations led to the development of several sets of guidelines, such as the Belmont Report (Office for Protection from Research Risks [OPRR], 1979) and the American Psychological Association’s *Ethical Principles of* *Psychologists and Code of Conduct* (APA, 2010), one section of which is for researchers to use when conducting their research.
+The widespread concern over ethical violations led to the development of several sets of guidelines, such as the Belmont Report (Office for Protection from Research
+
+*Psychologists and Code of Conduct* (APA, 2010), one section of which is for researchers to use when conducting their research.
 
 The APA Ethics Code includes five general aspirational or moral principles: (a) beneficence and nonmaleficence, (b) fidelity and responsibility, (c) integrity, (d) justice, and (e) respect for people’s rights and dignity. The hope and intention of the APA is that these principles will inspire all psychologists to the highest ethical behavior possible.
 
@@ -400,7 +408,7 @@ This principle states that psychologists are to respect the worth and dignity of
 
 **conducting research.**
 
-Any psychologist conducting research must ensure that the dignity and welfare of the research participants are maintained and that the investigation is carried out in accordance with federal and state regulations and with the standards set forth by the American Psychological Association. The Ethics Code, first published in 1953
+Any psychologist conducting research must ensure that the dignity and welfare of the research participants are maintained and that the investigation is carried out in accordance with federal and state regulations and with the standards set forth by
 
 <!-- Page 10 -->
 (APA, 1953), was the outcome of about 15 years of discussion within APA. Since that time, the code has been revised several times. The most recent revision was approved in October of 2002 and amended in 2010 and 2016. The Ethics Code for research and publication can be found at http://www.apa.org/ethics/code/. The code includes discussion of important topics such as institutional approval, informed consent, deception, debriefing, humane care and use of animals, plagiarism, and issues relevant for publication. We strongly  recommend that you visit this APA site and study the Ethics Code.

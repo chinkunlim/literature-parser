@@ -1,0 +1,17 @@
+{
+  "chapter": "Ch02 Research Approaches and Methods of Data Collection",
+  "total_proposals": 1,
+  "auto_accepted_count": 1,
+  "pending_count": 0,
+  "proposals": [
+    {
+      "id": "rev-1",
+      "original": "Advantages of Experimen",
+      "proposed": "Advantages of Experimental Research",
+      "reason": "The text is clearly cut off in the middle of the word 'Experimental' and likely incomplete in its final section heading.",
+      "category": "ocr_typo",
+      "confidence": 0.95,
+      "status": "AUTO_ACCEPTED"
+    }
+  ]
+}

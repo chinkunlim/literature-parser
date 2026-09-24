@@ -24,7 +24,8 @@
     border-bottom: 2px solid #842959;
   }
   .textbook-table {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     border-collapse: collapse;
     font-size: 0.9em;
   }
@@ -173,7 +174,9 @@ Where do research ideas, questions, and topics originate? In all fields, there a
 
 ### Everyday Life
 
-As we proceed through our daily routine, we come into contact with many questions in need of solution. Parents want to know how to handle their children; students want to know how to learn material faster. When we interact with others or see others react, we note many individual differences. If we observe children on a playground, these differences are readily apparent. One child might be very aggressive and another much more reserved, waiting for others to encourage interaction. The responses of a particular person also vary according to the situation. A person who is very aggressive in one situation might be passive in another. Why do these differences exist? What produces these varying responses? Why are some people leaders and others followers? Why do we like some people and not others? Many such researchable questions can be identified from everyone’s interactions and personal experiences.
+As we proceed through our daily routine, we come into contact with many questions in need of solution. Parents want to know how to handle their children; students want to know how to learn material faster. When we interact with others or see others react, we note many individual differences. If we observe children on a playground, these differences are readily apparent. One child might be very aggres-
+
+The responses of a particular person also vary according to the situation. A person who is very aggressive in one situation might be passive in another. Why do these differences exist? What produces these varying responses? Why are some people leaders and others followers? Why do we like some people and not others? Many such researchable questions can be identified from everyone’s interactions and personal experiences.
 
 ### Practical Issues
 
@@ -188,7 +191,7 @@ Previously conducted research is an excellent source of research ideas. Past res
 
 A **theory** is a statement or group of statements that explain “how” and “why” some part of the world works, and a theory helps researchers make new theoretical predictions about the world. Theoretical predictions become hypotheses to be empirically tested. Theories must be continually tested with different people in different contexts to determine their accuracy and conditions of applicability. Some theoretical predictions will apply broadly. The operant conditioning principle of positive reinforcement (i.e., the frequency of occurrence of a behavior increases following reinforcement) applies very broadly. Other predictions will depend on person, place, context, and other variables. For example, Roth and Fonagy (2005) explain that psychotherapeutic research must focus on “what works for whom.” As you might guess, theories are therefore excellent sources of researchable ideas.
 
-Leon Festinger’s (1957) theory of cognitive dissonance is an example of a theory that stimulated an extraordinary amount of research in the decade that followed its publication. From this theory, Festinger and Carlsmith (1959) hypothesized and validated the less-than-obvious prediction that, after completing a boring task, participants who were given $1 to tell someone else that the boring task was interesting and fun actually stated that they had enjoyed the task more than did the participants who were given $20 to do the same thing. The theory of cognitive dissonance continues to influence recent research as its interactions with additional variables are understood (Hinojosa, Gardner, Walker, Cogliser, &amp; Gullifor, 2017).
+Leon Festinger’s (1957) theory of cognitive dissonance is an example of a theory that stimulated an extraordinary amount of research in the decade that followed its publication. From this theory, Festinger and Carlsmith (1959) hypothesized and validated the less-than-obvious prediction that, after completing a boring task, participants who were given &#36;1 to tell someone else that the boring task was interesting and fun actually stated that they had enjoyed the task more than did the participants who were given &#36;20 to do the same thing. The theory of cognitive dissonance continues to influence recent research as its interactions with additional variables are understood (Hinojosa, Gardner, Walker, Cogliser, &amp; Gullifor, 2017).
 
 The four sources of research ideas—everyday life, practical issues, past research, and theory—barely scratch the surface of circumstances that can inspire a creative idea. The important issue is not the identification of sources of ideas but the generation of these ideas, as illustrated in Exhibit 3.1. In fact, the best research ideas often come from integrating theory, past research, and practical issues. One way of looking at this integration is to view practical problems as providing motivation to study a problem. The research literature provides you with a knowledge base relating to the practical problem and theory helps integrate the knowledge and gives insight into the practical problem in a way that cannot be achieved just from the research literature. To develop researchable ideas requires the development of a way of thinking. You have to develop a questioning and inquisitive approach to life, see what answers might already be available, and build on what is known to produce something better.
 
@@ -289,13 +292,15 @@ Most books do not, however, provide a comprehensive review of all research condu
 
 How should one proceed in reviewing the work cited in the journals? There are so many psychological journals that it would be impossible to go through each and every one looking for relevant information.
 
-**Computerized or Electronic Databases** **PsycINFO** is an electronic bibliographic database providing abstracts and citations to the scholarly literature in the behavioral sciences and in mental health. It is a department of the American Psychological Association and has the mission of locating and summarizing psychologically relevant documents from a variety of disciplines and disseminating these summaries in a form that is easy to access and retrieve.
+**Computerized or Electronic Databases** **PsycINFO** is an electronic bibliographic database providing abstracts and citations to the scholarly literature in the behav-
+
+Association and has the mission of locating and summarizing psychologically relevant documents from a variety of disciplines and disseminating these summaries in a form that is easy to access and retrieve.
 
 The PsycINFO database contains more than 4 million references to the psychological literature accumulated from 1887 to the present day. It covers publications from approximately 50 countries and literature written in more than 29 languages. Because of its depth and breadth of coverage, PsycINFO is the database of choice for a search of psychologically relevant material. For additional up-to-date information on PsycINFO, you can check out the website at http://www.apa.org/psycinfo/. This website will also give you information about other electronic products such as those listed in Table 3.1.
 
 **Table 3.1** *Additional Electronic Products from PsycINFO*
 
-<table class="textbook-table">
+<table class="textbook-table" style="width: auto; max-width: 100%; border-collapse: collapse; margin: 1.5em 0;">
   <thead>
     <tr>
       <th>Product</th>
@@ -455,18 +460,13 @@ When you find the articles that you want to read, you need to think about how to
 <!-- Page 10 -->
 **Table 3.2** *Guide for Reading Journal Articles*
 
-<div class="framed-card">
-  <div class="framed-card-header">Guide for Reading Journal Articles</div>
-  <ol class="framed-card-body">
-    <li>Read and remember the title because it tells you what is being investigated in the article.</li>
-    <li>Read the abstract very carefully because it summarizes what is being investigated as well as what was found in the study.</li>
-    <li>As you read the introduction to the article, pay particular attention to the first paragraph because this typically gives a general statement of the topic area and research question being studied.</li>
-    <li>Toward the end of the introduction, typically in the last paragraph, the author(s) usually state the purpose of the study and, perhaps, the hypotheses being tested in the study. Keep these two in mind as you read the rest of the article, and see how the author(s) go about testing the hypotheses or meeting the purpose of the study and what the results have to say about them.</li>
-    <li>As you read the Method section, make note of the type of research participants used and then pay particular attention to the Procedure section be- cause this section tells you how the author(s) designed the study to test their hypotheses and meet the purpose of the study. Pay attention to what was done to the participants and what the participants were asked to do and then ask yourself if this tested the hypotheses of the study.</li>
-    <li>The Results section might be the hardest for you to read and comprehend because the author(s) might have used statistical procedures unfamiliar to you. Rather than spending time trying to understand the statistical analysis, look at what the authors say about the results of the statistical analysis. Look at any tables and figures presented, and try to relate the information in them to the hypotheses and purpose of the study.</li>
-    <li>If you have difficulty with the Results section, read the first paragraph of the Discussion section. This typically summarizes the results of the study in a form that is easier to understand. In addition to helping understand the results, the Discussion section is where the author(s) explain why the study turned out as it did: Did it support the hypotheses? As you read this section, think about the purpose and hypotheses and look for the explanation of why the study did or did not support the hypotheses and fulfill the purpose of the study. Table 3.3 Databases Incorporating Psychological Publications Database Subject Coverage Internet Address PsycINFO Psychology, mental health, biomedicine Connect through your university library ERIC Education Connect through your university library</li>
-  </ol>
-</div>
+1. Read and remember the title because it tells you what is being investigated in the article.
+2. Read the abstract very carefully because it summarizes what is being investigated as well as what was found in the study.
+3. As you read the introduction to the article, pay particular attention to the first paragraph because this typically gives a general statement of the topic area and research question being studied.
+4. Toward the end of the introduction, typically in the last paragraph, the author(s) usually state the purpose of the study and, perhaps, the hypotheses being tested in the study. Keep these two in mind as you read the rest of the article, and see how the author(s) go about testing the hypotheses or meeting the purpose of the study and what the results have to say about them.
+5. As you read the Method section, make note of the type of research participants used and then pay particular attention to the Procedure section be- cause this section tells you how the author(s) designed the study to test their hypotheses and meet the purpose of the study. Pay attention to what was done to the participants and what the participants were asked to do and then ask yourself if this tested the hypotheses of the study.
+6. The Results section might be the hardest for you to read and comprehend because the author(s) might have used statistical procedures unfamiliar to you. Rather than spending time trying to understand the statistical analysis, look at what the authors say about the results of the statistical analysis. Look at any tables and figures presented, and try to relate the information in them to the hypotheses and purpose of the study.
+7. If you have difficulty with the Results section, read the first paragraph of the Discussion section. This typically summarizes the results of the study in a form that is easier to understand. In addition to helping understand the results, the Discussion section is where the author(s) explain why the study turned out as it did: Did it support the hypotheses? As you read this section, think about the purpose and hypotheses and look for the explanation of why the study did or did not support the hypotheses and fulfill the purpose of the study. Table 3.3 Databases Incorporating Psychological Publications Database Subject Coverage Internet Address PsycINFO Psychology, mental health, biomedicine Connect through your university library ERIC Education Connect through your university library
 
 When you read scholarly articles, you might have a difficult time comprehending some of the material. If you follow these simple steps, you will get the most out of the article: introduction ends with a brief rationale for the current study and the goals of the current study. The next section, Methods, describes the participants of the study and the methods that were used in the study. This will include a description of how the variables were measured. Now you are ready for the results. The results section can be intimidating if you are not yet comfortable with statistics. The results section describes the analyses and the findings from the study. Even if you are not comfortable with the statistics, the results section also includes clear statements about what the statistical findings mean. The next section in the journal article is the discussion. The discussion often begins with a summary of the findings. These findings are then discussed and compared with the hypotheses of the study and the previous research literature. The discussion often ends with acknowledgments of the weaknesses of the study and ideas for future research.
 
@@ -476,7 +476,7 @@ Electronic Mail. E-mail, or electronic mail, is probably one of the most frequen
 
 **Table 3.3** *Databases Incorporating Psychological Publications*
 
-<table class="textbook-table">
+<table class="textbook-table" style="width: auto; max-width: 100%; border-collapse: collapse; margin: 1.5em 0;">
   <thead>
     <tr>
       <th>Database</th>
@@ -544,7 +544,7 @@ Regional and national psychological association meetings are excellent sources o
 
 **Table 3.4** *Psychological Associations*
 
-<table class="textbook-table">
+<table class="textbook-table" style="width: auto; max-width: 100%; border-collapse: collapse; margin: 1.5em 0;">
   <thead>
     <tr>
       <th>National</th>
@@ -600,7 +600,7 @@ These two studies represent opposite ends of the continuum with respect to the i
 
 You should now be prepared to make a clear and exact statement of the purpose of your research. The literature review has revealed not only what is currently known about your research topic, but also the ways in which it has been studied in the past. Such information is a tremendous aid helping you to decide what needs to be researched and how it can be researched. We recommend that you fill in the blank in the following sentence to state the purpose of your research study:
 
-The purpose of the (proposed) research is to ____________.
+> The purpose of the (proposed) research is to ____________.
 
 ### Defining the Research Question
 
@@ -643,7 +643,7 @@ Why should research hypotheses be set up in the first place? Why not just forget
 ### Summary
 
 In order to conduct research, it is first necessary to identify a research question in need of an answer. Psychological research questions arise from several traditional sources: theories, practical issues, and past research. In addition, in psychology, we have our personal experience to draw on for researchable topics, because psychological research is concerned with behavior. Once a researchable topic has been identified, the literature <!-- Page 17 -->
-relevant to this idea should be reviewed. A literature review will reveal the current state of knowledge about the selected topic. It will indicate ways of investigating the topic and will point out related methodological problems. The literature review should probably begin with books written on the topic and progress from there to the actual research as reported in journals. In surveying the past research conducted on a topic, the scientist can make use of an electronic database, one of which is operated by the American Psychological Association. In addition to using these sources, the researcher can search the World Wide Web and obtain information by attending professional conventions or by calling, writing, or e-mailing other individuals conducting research on the given topic.
+relevant to this idea should be reviewed. A literature review will reveal the current state of knowledge about the selected topic. It will indicate ways of investigating the topic and will point out related methodological problems. The literature review should probably begin with books written on the topic and progress from there to the actual research as reported in journals. In surveying the past research conducted on a topic, the scientist can make use of an electronic database, one of which is operated by the can search the World Wide Web and obtain information by attending professional conventions or by calling, writing, or e-mailing other individuals conducting research on the given topic.
 
 When the literature review has been completed, the researcher must determine whether it is feasible to conduct the study. This means that an assessment must be made of the time, research participant population, expertise, and expense requirements, as well as the ethical sensitivity of the study. If this assessment indicates that it is feasible to conduct the study, the researcher must make a clear and exact statement of the research question to be investigated. This means that the researcher must formulate the research question asking about the relationship between two or more variables. This research question must express a relation and be capable of being tested empirically. The question must also be specific enough to assist the researcher in making decisions about such factors as participants, apparatus, and general design of the study.
 

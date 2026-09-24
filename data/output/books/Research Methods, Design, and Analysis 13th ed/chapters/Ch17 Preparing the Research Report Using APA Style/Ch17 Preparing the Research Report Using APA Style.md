@@ -24,7 +24,8 @@
     border-bottom: 2px solid #842959;
   }
   .textbook-table {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     border-collapse: collapse;
     font-size: 0.9em;
   }
@@ -163,11 +164,13 @@ graph LR
 🎯 **17.4** Summarize the recommendations for oral and poster presentations at professional conferences.
 
 <!-- Page 2 -->
-Throughout this text, we have presented the steps involved in the research process and discussed in detail the intricacies of each. A thorough presentation was made to enable you to conduct a sound scientific research study. As a scientist, however, you have a responsibility not only to conduct a well-designed and well-executed study, but also to communicate the results of the study to the rest of the scientific community. Your study might have answered a very significant research question, but the results are of limited value unless they are made public. The primary mechanism for communicating results is through professional journals. Within the field of psychology, the Association for Psychological Science (APS) publishes four journals, and the American Psychological Association (APA) journal programs include 58 journals and a magazine. Table 17.1 highlights many of these journals and illustrates that these journals cover a wide variety of areas and provide an outlet for studies conducted within just about any field of interest. There are other journals that also publish the results of  psychological studies. In order to facilitate the clear communication of research results, the APA has published a manual (American Psychological Association, 2010) that gives a standardized format for authors to follow when preparing research reports. Because many periodicals instruct their authors to prepare their manuscripts according to the style specified in the APA manual, this is the format we present here for writing a research report.
+Throughout this text, we have presented the steps involved in the research process and discussed in detail the intricacies of each. A thorough presentation was made to enable you to conduct a sound scientific research study. As a scientist, however, you have a responsibility not only to conduct a well-designed and well-executed study, but also to communicate the results of the study to the rest of the scientific community. Your study might have answered a very significant research question, but the results are of limited value unless they are made public. The primary mechanism for communicating results is through professional journals. Within the field of psychology, the Association for
+
+Association (APA) journal programs include 58 journals and a magazine. Table 17.1 highlights many of these journals and illustrates that these journals cover a wide variety of areas and provide an outlet for studies conducted within just about any field of interest. There are other journals that also publish the results of  psychological studies. In order to facilitate the clear communication of research results, the APA has pubformat for authors to follow when preparing research reports. Because many periodicals instruct their authors to prepare their manuscripts according to the style specified in the APA manual, this is the format we present here for writing a research report.
 
 **Table 17.1** *American Psychological Association and Association for Psychological Science Journals*
 
-<table class="textbook-table">
+<table class="textbook-table" style="width: auto; max-width: 100%; border-collapse: collapse; margin: 1.5em 0;">
   <thead>
     <tr>
       <th>Name of Journal</th>
@@ -180,14 +183,12 @@ Throughout this text, we have presented the steps involved in the research proce
 
 Prior to preparing a report on a study that you have completed, you must ask yourself if the study is important enough to justify publication. Would others be interested in it, and, more important, would it influence their work? As a general rule, you should never conduct a study you don’t think is publishable. If you think the study is significant, you must decide whether it is well designed. For example, you must ask yourself whether you have built in the controls needed to eliminate the influence of rival hypotheses. If you can satisfy yourself with regard to the quality of the research design and the significance of the results, then you should proceed with the  preparation of the research report.
 
-***American Psychological Association Journals***
-
-*American Psychologist* Contains archival documents and articles focusing on current issues in psychology, issues relating to the science and practice of psychology, and the contribution psychology makes to public policy *Behavioral Neuroscience* Contains original studies in anatomy, chemistry, endocrinology, genetics, pharmacology, and physiology as they relate to behavioral neuroscience *Developmental Psychology* Publishes articles relating to human development across the life span *Emotion* Publishes articles on all aspects of emotional processes *Experimental and Clinical Psychopharmacology* Publishes research integrating pharmacology and behavior *Health Psychology* Devoted to furthering an understanding of the relationship between behavioral principles and physical health or illness *History of Psychology* Historical description and analysis of psychological systems and theories *Journal of Abnormal Psychology* Publishes articles relating to the determinants, theories, and correlates of abnormal behavior *Journal of Applied Psychology* Publishes articles that contribute to our understanding of any applied area of psychology except clinical and applied experimental or human factors psychology *Journal of Comparative Psychology* Contains behavioral studies that relate to evolution, development, ecology, control, and functional significance of various species *Journal of Consulting and Clinical Psychology* Contains research investigations pertaining to development, validity, and use of various techniques for diagnosing and treating disturbed behavior in all populations *Journal of Counseling Psychology* Contains articles pertaining to evaluation, application, and theoretical issues related to counseling *Journal of Educational Psychology* Publishes studies and theoretical papers pertaining to education such as learning and cognition *Journal of Experimental Psychology: Animal* Publishes experimental and theoretical studies on animal behavior *Learning and Cognition* *Journal of Experimental Psychology: Applied* Focuses on studies that bridge practically oriented problems and psychological theory *Journal of Experimental Psychology: General* Publishes integrative articles of interest to all experimental psychologists ( *Continued* )
+*American Psychologist* Contains archival documents and articles focusing on current issues in psychology, issues relating to the science and practice of psychology, and the contribution psychology makes to public policy *Behavioral Neuroscience* Contains original studies in anatomy, chemistry, endocrinology, genetics, pharmacology, and physiology as they relate to behavioral neuroscience *Developmental Psychology* Publishes articles relating to human development across the life span *Emotion* Publishes articles on all aspects of emotional processes *Experimental and Clinical Psychopharmacology* Publishes research integrating pharmacology and behavior *Health Psychology* Devoted to furthering an understanding of the relationship between behavioral principles and physical health or illness *History of Psychology* Historical description and analysis of psychological systems and theories *Journal of Abnormal Psychology* Publishes articles relating to the determinants, theories, and correlates of abnormal behavior *Journal of Applied Psychology* Publishes articles that contribute to our understanding of any applied area of psychology except clinical and applied experimental or human factors psychology *Journal of Comparative Psychology* Contains behavioral studies that relate to evolution, development, ecology, control, and functional significance of various species *Journal of Consulting and Clinical Psychology* Contains research investigations pertaining to development, validity, and use of various techniques for diagnosing and treating disturbed behavior in all populationons *Journal of Counseling Psychology* Contains articles pertaining to evaluation, application, and theoretical issues related to counseling *Journal of Educational Psychology* Publishes studies and theoretical papers pertaining to education such as learning and cognition *Journal of Experimental Psychology: Animal* Publishes experimental and theoretical studies on animal behavior *Learning and Cognition* *Journal of Experimental Psychology: Applied* Focuses on studies that bridge practically oriented problems and psychological theory *Journal of Experimental Psychology: General* Publishes integrative articles of interest to all experimental psychologists ( *Continued* )
 
 <!-- Page 3 -->
 **Table 17.1** *American Psychological Association and Association for Psychological Science Journals ( Continued )*
 
-<table class="textbook-table">
+<table class="textbook-table" style="width: auto; max-width: 100%; border-collapse: collapse; margin: 1.5em 0;">
   <thead>
     <tr>
       <th>Name of Journal</th>
@@ -242,7 +243,7 @@ Publishes advances in methods and practices across multiple domains of psycholog
 
 🎯 **17.1** Describe the structure and format of an APA research report.
 
-The structure of the research report is very simple and tends to follow the steps one takes in conducting a research study. To illustrate the function and format of the research report, a short manuscript is reproduced on the following pages, using the format required when an article is submitted for publication. Each section of the research report also includes an explanation of the content that should be included in that section. This explanation might include some recommendations that are not illustrated in the research report, because each study will not include all the elements listed in the *Publication Manual* (American Psychological Association, 2010).
+The structure of the research report is very simple and tends to follow the steps one takes in conducting a research study. To illustrate the function and format of the research report, a short manuscript is reproduced on the following pages, using the format required when an article is submitted for publication. Each section of the research report also includes an explanation of the content that should be included in that section. This explanation might include some recommendations that are not illustrated in the research report, because each study will not include all the elements
 
 When reading through each section of the research report and then when writing your own report, you should remember the purpose of a research report. The primary goal is to report as precisely as possible what you did, including a statement of the problem investigated, the methods used to investigate the problem, the results of your investigation, and any conclusions you might have reached. Is there any criterion you can use to determine whether you have clearly and explicitly reported your study?
 
@@ -255,21 +256,29 @@ Running head: RELATION OF PARENTING TO ACADEMIC ENTITLEMENT
 
 **Running head** The running head is an abbreviated title typed flush left at the top of the first (title) page and on **Authors’ names and** all subsequent pages. It is typed in all uppercase letters. It **institutional affiliations** is not more than 50 characters in length, counting letters, The names of the authors punctuation, and spaces between words. in the order of their contribution to the study appear immediately below
 
-Psychological Control to Academic Entitlement and and last name, with titles and degrees omitted. The Lisa A. Turner institutional affiliation when the study was conducted is centered under the author’s be typed on separate lines.
+The Relation of Perceived Parental Warmth and the title typed in upperand lowercase letters and Psychological Control to Academic Entitlement centered on the page. The preferred form is to list Tully Garner first name, middle initial, and last name, with titles and and degrees omitted. The
 
-Author Note
+Lisa A. Turner institutional affiliation when the study was conducted is University of South Alabama centered under the author’s name on the next doublespaced line. Authors with no institutional affiliation should list the city and state of residence. Authors from different institutions should be typed on separate lines.
 
-Tully Garner, Department of Psychology, University of South Alabama; Lisa A. Turner, Department of
+> Author Note **Title** The title should be centered on the upper half of the first page of the manuscript and typed in upper- and lowercase letters. It should state the main topic of the study and concisely identify the variables or theoretical issues under investigation. A typical title should be no more than 12 words long.
+
+> **Author Note** The label “Author Note” is centered on the title page below the author affiliation and typed in upper- and lowercase letters. This note is used to identify each author’s institutional affiliation and to provide acknowledgments, disclaimers, and point of contact. Each paragraph should start with an indent. The first paragraph identifies the departmental affiliation of each author or the city and state if there is no institutional affiliation—country should be provided if outside the United States. The second paragraph states the author affiliation if subsequent to the time of study. The third paragraph identifies the grants or other support received for the study as well as any acknowledgments for assistance given in the conduct or completion of the study. The fourth and last paragraph identifies the person to contact for correspondence regarding the manuscript including the mailing address and e-mail of that person.
+
+> Tully Garner, Department of Psychology, University of South Alabama; Lisa A. Turner, Department of
 
 Psychology, University of South Alabama.
 
-Tully Garner is currently a doctoral student in Instructional Design and Development, University of RELATION OF PARENTING TO ACADEMIC ENTITLEMENT
+> Tully Garner is currently a doctoral student in Instructional Design and Development, University of
+
+> RELATION OF PARENTING TO ACADEMIC ENTITLEMENT
+
+2
 
 South Alabama.
 
-This research was supported, in part, by a Johnson Foundation Award (TTJ0798) to the first author. Abstract
+> This research was supported, in part, by a Johnson Foundation Award (TTJ0798) to the first author. Abstract
 
-Correspondence concerning this manuscript should be directed to Lisa A. Turner, Department of Academic entitlement refers to beliefs and attitudes indicating that one deserves special treatment in the
+> Correspondence concerning this manuscript should be directed to Lisa A. Turner, Department of Academic entitlement refers to beliefs and attitudes indicating that one deserves special treatment in the
 
 Psychology, University of South Alabama, Mobile, AL 36688, laturner@southalabama.edu academic environment. These beliefs undermine the student-teacher relationship and contribute to poor academic performance. The current study was designed to examine the relationship between perceived parenting and academic entitlement among emerging adults. College students completed questionnaires reporting perceptions of parental warmth and psychological control (Skinner, Johnson, &amp; Snyder, 2005) and current attitudes of academic entitlement (Chowning &amp; Campbell, 2009). In a multiple regression, gender, parental warmth and psychological control were entered as predictors of academic entitlement.
 
@@ -281,55 +290,35 @@ Psychology, University of South Alabama, Mobile, AL 36688, laturner@southalabama
 
 **Abstract** The abstract is a one-paragraph comprehensive summary of the contents of the research report typically ranging from 150 to 250 words in length. It is typed on a separate page, with the word “Abstract” centered at the top of the page in upper- and lowercase letters and no paragraph indentation for the first paragraph. The abstract of an empirical study should include a brief statement of the problem, a summary of the method used (including a description of the participants, instruments, or apparatus), the procedure, the results (including statistical significance levels), effect sizes, and any conclusions and implications.
 
-**1**
-
-> **Title** The title should be centered on the upper half of the the title typed in upper- The Relation of Perceived Parental Warmth and first page of the manuscript and typed in upper- and lowercase and lowercase letters and letters. It should state the main topic of the study and concisely centered on the page. The identify the variables or theoretical issues under investigation. preferred form is to list Tully Garner A typical title should be no more than 12 words long. first name, middle initial,
-
-> **Author Note** The label “Author Note” is centered on the title page below the author affiliation and typed in upper- and lowercase letters. This note is used to identify University of South Alabama each author’s institutional affiliation and to provide acknowledgments, disclaimers, and point of contact. Each paragraph should start with an indent. The first paragraph name on the next doubleidentifies the departmental affiliation of each author or the city and state if there is no spaced line. Authors with institutional affiliation—country should be provided if outside the United States. The no institutional affiliation second paragraph states the author affiliation if subsequent to the time of study. The should list the city and state third paragraph identifies the grants or other support received for the study as well as of residence. Authors from any acknowledgments for assistance given in the conduct or completion of the study. different institutions should The fourth and last paragraph identifies the person to contact for correspondence regarding the manuscript including the mailing address and e-mail of that person.
-
-2
-
 <!-- Page 5 -->
-RELATION OF PARENTING TO ACADEMIC ENTITLEMENT
-
 > The Relation of Perceived Parental Warmth and
 
-Academic entitlement is a behavioral trait in which individuals believe they deserve acceptable grades and in the sense that it is broad at the test scores for little or no effort (Chowning &amp; Campbell, 2009). Academic entitlement beliefs affect many aspects It should begin with a very general that entitled attitudes were related to cheating, expecting easy grades, and immediate responses from teachers. and that bear on the specific issue
+> Psychological Control to Academic Entitlement **Introduction** The text of the research report begins on a new page with the title of the paper typed at the top center of the page. The introductory text is not labeled because of its position in the paper. The introduction is funnel shaped in the sense that it is broad at the
 
-They concluded that academic entitlement is a predictor of these negative academic behaviors.
-
-Academic entitlement can be divided into two main components: entitled expectations and externalized responsibility (Chowning &amp; Campbell, 2009). Externalized responsibility consists of attributing outcomes to factors outside of one’s control and expecting other forces to assume control. Externalized expectations are
-
-Bailey, &amp; Barber, 2015). That is, they often perceive course requirements as unfair and do not see themselves as responsible for meeting these unfair course requirements. Entitled expectations, the second component
+Academic entitlement is a behavioral trait in which individuals believe they deserve acceptable grades and beginning and narrow at the end. test scores for little or no effort (Chowning &amp; Campbell, 2009). Academic entitlement beliefs affect many aspects It should begin with a very general introduction to the problem area of the student-teacher relationship in negative ways for both parties (Chowning &amp; Campbell, 2009). Greenburger, and then start to narrow by citing the results of prior works that Lessard, Chen, and Farruggia (2008) examined entitled attitudes and behaviors in college students and found have been conducted in the area that entitled attitudes were related to cheating, expecting easy grades, and immediate responses from teachers. and that bear on the specific issue that you are investigating, leading They concluded that academic entitlement is a predictor of these negative academic behaviors. into a statement of the variables to be investigated. In citing prior
 
 ```python
-Individuals with higher reports of entitled expectations believe that they deserve higher grades because they attend class or pay for an education.
+Academic entitlement can be divided into two main components: entitled expectations and externalized research, do not attempt to make responsibility (Chowning &amp; Campbell, 2009). Externalized responsibility consists of attributing outcomes to an exhaustive review of the literature. Cite only those studies factors outside of one’s control and expecting other forces to assume control. Externalized expectations are that are directly pertinent, and avoid tangential references. This defined as beliefs that affect how students perceive course requirements in relation to themselves (Taylor, pertinent literature should lead directly into your study and thereby Bailey, &amp; Barber, 2015). That is, they often perceive course requirements as unfair and do not see themselves show the continuity between what as responsible for meeting these unfair course requirements. Entitled expectations, the second component you are investigating and prior research. You should then state of academic entitlement, refers to the successful grades and test scores that one believes he/she deserves. the purpose of your study and your hypothesis. The introduction should Individuals with higher reports of entitled expectations believe that they deserve higher grades because they give the reader the rationale for attend class or pay for an education. the given investigation, explaining how it fits in with, and is a logical
 
 ```
-Academic entitlement has been studied in relation to the personality factors of the dark triad (Turnipseed extension of, prior research.
+> Academic entitlement has been studied in relation to the personality factors of the dark triad (Turnipseed extension of, prior research.
 
-&amp; Cohen, 2015). Turnipseed and Cohen reported that externalized responsibility correlated with psychopathy and narcissism and that entitled expectations correlated with Machiavellianism and narcissism. Psychopathic personality traits of irresponsibility, interpersonal manipulation, and lack of empathy are consistent with RELATION OF PARENTING TO ACADEMIC ENTITLEMENT externalized responsibility and correlate positively (Turnipseed &amp; Cohen, 2015). They concluded that narcissism
+&amp; Cohen, 2015). Turnipseed and Cohen reported that externalized responsibility correlated with psychopathy and narcissism and that entitled expectations correlated with Machiavellianism and narcissism. Psychopathic personality traits of irresponsibility, interpersonal manipulation, and lack of empathy are consistent with RELATION OF PARENTING TO ACADEMIC ENTITLEMENT
+
+4 externalized responsibility and correlate positively (Turnipseed &amp; Cohen, 2015). They concluded that narcissism
 
 In addition, Hazel, Crandal, and Caputo (2014) reported that students who scored high on academic traits of superiority, dominance, and grandiosity were positively correlated with externalized responsibility. entitlement were much more likely to rate teachers as misbehaving or devious. Given the importance of
 
-Numerous studies involving academic entitlement focus on a college population. Greenberger et al. (2008) academic entitlement beliefs, it seems pertinent to identify factors that may lead students to develop feelings of found that entitled attitudes were related to cheating, expecting easy grades, and expecting immediate responses academic entitlement. Although there are likely several important predictors of academic entitlement, the current from college teachers. investigation examines perceptions of parenting as it relates to academic entitlement. **Introduction** The text of the
-
-> 3 research report begins on a new page with the title of the paper typed at the top center of the page. The introductory text is not labeled because of its position in the paper. Psychological Control to Academic Entitlement The introduction is funnel shaped beginning and narrow at the end. introduction to the problem area of the student-teacher relationship in negative ways for both parties (Chowning &amp; Campbell, 2009). Greenburger, and then start to narrow by citing the results of prior works that Lessard, Chen, and Farruggia (2008) examined entitled attitudes and behaviors in college students and found have been conducted in the area that you are investigating, leading into a statement of the variables to be investigated. In citing prior research, do not attempt to make an exhaustive review of the literature. Cite only those studies that are directly pertinent, and avoid tangential references. This defined as beliefs that affect how students perceive course requirements in relation to themselves (Taylor, pertinent literature should lead directly into your study and thereby show the continuity between what you are investigating and prior research. You should then state of academic entitlement, refers to the successful grades and test scores that one believes he/she deserves. the purpose of your study and your hypothesis. The introduction should give the reader the rationale for the given investigation, explaining how it fits in with, and is a logical
-
-4
+Numerous studies involving academic entitlement focus on a college populationon. Greenberger et al. (2008) academic entitlement beliefs, it seems pertinent to identify factors that may lead students to develop feelings of found that entitled attitudes were related to cheating, expecting easy grades, and expecting immediate responses academic entitlement. Although there are likely several important predictors of academic entitlement, the current from college teachers. investigation examines perceptions of parenting as it relates to academic entitlement.
 
 <!-- Page 6 -->
-RELATION OF PARENTING TO ACADEMIC ENTITLEMENT
-
-5
-
 The current study is designed to measure the relation between academic entitlement and perceptions of parental warmth and parental psychological control. Based on the research reviewed, it is hypothesized that parental warmth will negatively predict academic entitlement, and parental psychological control will positively predict academic entitlement.
 
 **Method**
 
 **Participants**
 
-The participants were volunteers from an online participant pool at a regional university in the
+> The participants were volunteers from an online participant pool at a regional university in the
 
 Southeastern United States. The participant pool included primarily psychology department students who participated in research as an option for course credit. Two hundred seventy-eight undergraduates participated.
 
@@ -339,22 +328,26 @@ In the current study, 70.9% of participants were female, and the average age was
 
 > RELATION OF PARENTING TO ACADEMIC ENTITLEMENT
 
-6 The participants subsection should identify the demographic characteristics of the research with both parents while growing up, 23.4% lived with only their mother, 6.1% lived with their mother and participants, such as their age, sex, and ethnic or racial group. stepfather, and the remaining 6.5% reported other family arrangements. Any other pertinent information regarding the participants should also be included, such as **Materials** eligibility and exclusion criteria, The study included two questionnaires: the Academic Entitlement Questionnaire (AEQ; Chowning &amp; the number of participants that were selected for the study Campbell, 2009) and the Parents as Social Context Scale (PSC; Skinner, Johnson, &amp; Snyder, 2005). The but did not complete it (and
+6 The participants subsection should identify the demographic characteristics of the research with both parents while growing up, 23.4% lived with only their mother, 6.1% lived with their mother and participants, such as their age, sex, and ethnic or racial group. stepfather, and the remaining 6.5% reported other family arrangements. Any other pertinent information regarding the participants
 
 ```python
-Academic Entitlement Questionnaire includes two subscales: externalized responsibility and entitled why), and any inducements that were given to encourage expectations. Externalized responsibility consists of 10 items and is defined as attributing responsibility participation. You should also state how the sample size for academic success to others, such as teachers and peers. An example item is “It is unnecessary for me was determined (e.g., power analysis). If animals were used, to participate in class when the professor is paid for teaching, not for asking questions.” Chowning and their genus, species, strain Campbell report the internal consistency of the externalized responsibility scale to be.81. In the current number, and supplier should be specified, in addition to sample it was.85. The entitled expectations scale includes five items which address unusually high their gender, age, weight, and physiological condition. expectations of support, tools, and high grades provided from the professor in a class. An example item from the entitled expectations subscale is “My professors are obligated to help me prepare for exams.”
+**Materials** should also be included, such as eligibility and exclusion criteria, The study included two questionnaires: the Academic Entitlement Questionnaire (AEQ; Chowning &amp; the number of participants that were selected for the study Campbell, 2009) and the Parents as Social Context Scale (PSC; Skinner, Johnson, &amp; Snyder, 2005). The but did not complete it (and why), and any inducements Academic Entitlement Questionnaire includes two subscales: externalized responsibility and entitled that were given to encourage expectations. Externalized responsibility consists of 10 items and is defined as attributing responsibility participation. You should also state how the sample size for academic success to others, such as teachers and peers. An example item is “It is unnecessary for me was determined (e.g., power analysis). If animals were used, to participate in class when the professor is paid for teaching, not for asking questions.” Chowning and their genus, species, strain
 
 ```
+Campbell report the internal consistency of the externalized responsibility scale to be.81. In the current number, and supplier should be specified, in addition to sample it was.85. The entitled expectations scale includes five items which address unusually high their gender, age, weight, and physiological condition. expectations of support, tools, and high grades provided from the professor in a class. An example item from the entitled expectations subscale is “My professors are obligated to help me prepare for exams.”
+
 > Chowning and Campbell report the internal consistency of the entitled expectations scale to be
 
 **Apparatus, materials, measures, and instruments** In this subsection, the reader can learn what apparatus or materials were used. Sufficient detail should be used to enable the reader to obtain comparable equipment. In addition, the reader should be told why the equipment was used. Any mention of commercially marketed equipment should be accompanied by the firm’s name and the model number or, in the case of a measuring instrument such as an anxiety scale, a reference that will enable the reader to obtain the same scale. Custom-made equipment should be described; in the case of complex equipment, a diagram or photograph might need to be included.
 
 <!-- Page 7 -->
-RELATION OF PARENTING TO ACADEMIC ENTITLEMENT one scale. The internal consistency for the total scale was.83. Each item was answered on a 6-point scale
+**Procedure** In the procedure subsection, the reader is told exactly how the study was executed, from the moment.62. In the current sample it was.65. These constructs are correlated with each other and were combined into the participant and the one scale. The internal consistency for the total scale was.83. Each item was answered on a 6-point scale experimenter came into contact to the moment their contact 1 1 = *strongly* *disagree* and 6 = *strongly* *agree* 2 where strongly agree reflects higher academic entitlement. was terminated. Consequently, this subsection represents a
 
-1 1 = *strongly* *disagree* and 6 = *strongly* *agree* 2 where strongly agree reflects higher academic entitlement.
+The Parents as Social Context Scale (Skinner et al., 2005) was used to measure parental warmth and step-by-step account of what parental psychological control. The scale includes other constructs, but the current study is focused on perceived both the experimenter and the participant did during the study. parental warmth and psychological control. An example of parental warmth is “My parents think I’m special,” This subsection should include any instructions or stimulus and an example of psychological control is “My parents boss me.” The warmth and psychological control conditions presented to the scales each include four items. Skinner et al. (2005) report the internal consistency for warmth to be $\alpha$ =.88 participants and the responses that were required of them, as and the internal consistency for control to be $\alpha$ =.84. In the current study, the internal consistency for parental well as any control techniques used (such as randomization warmth was $\alpha$ =.93 and for parental psychological control was.85. Each question was answered on a 4-point or counterbalancing). In other words, you are to tell the reader scale 1 1 = *strongly* *disagree* and 4 = *strongly* *agree* 2 where high scores reflect greater warmth and greater exactly what both you and the psychological control. participants did and how you did it. After reading the procedure subsection, the reader should understand the research design used as well as how the research design was implemented to answer the research question.
 
-The Parents as Social Context Scale (Skinner et al., 2005) was used to measure parental warmth and parental psychological control. The scale includes other constructs, but the current study is focused on perceived both the experimenter and the parental warmth and psychological control. An example of parental warmth is “My parents think I’m special,” scales each include four items. Skinner et al. (2005) report the internal consistency for warmth to be $\alpha$ =.88 and the internal consistency for control to be $\alpha$ =.84. In the current study, the internal consistency for parental scale 1 1 = *strongly* *disagree* and 4 = *strongly* *agree* 2 where high scores reflect greater warmth and greater psychological control.
+8
+
+**Results**
 
 > To determine if males and females differed in academic entitlement, an ANOVA was conducted with gender as the independent variable and academic entitlement as the dependent variable. The gender effect was statistically significant $F(1, 275) = 8.46$, $p = .004$, est η 2 =.003. The mean for male participants (*M* = 2.59,
 
@@ -362,35 +355,29 @@ The Parents as Social Context Scale (Skinner et al., 2005) was used to measure p
 
 > To determine if males and females differed in perceived parenting, a MANOVA was conducted with gender as the independent variable and parental warmth and parental psychological control as the dependent variables.
 
-> The Wilks’s Lambda was statistically significant, $F(2, 276) = 4.78$, $p = .032$ *p* value) should be reported. Sufficient descriptive statistics (e.g., means, standard
-
-> 7 **Procedure** In the procedure subsection, the reader is told exactly how the study was executed, from the moment.62. In the current sample it was.65. These constructs are correlated with each other and were combined into the participant and the experimenter came into contact to the moment their contact was terminated. Consequently, this subsection represents a step-by-step account of what participant did during the study. This subsection should include any instructions or stimulus and an example of psychological control is “My parents boss me.” The warmth and psychological control conditions presented to the participants and the responses that were required of them, as well as any control techniques used (such as randomization warmth was $\alpha$ =.93 and for parental psychological control was.85. Each question was answered on a 4-point or counterbalancing). In other words, you are to tell the reader exactly what both you and the participants did and how you did it. After reading the procedure subsection, the reader should understand the research design used as well as how the research design was implemented to answer the research question.
-
-8
-
-**Results** *t* tests, *F*
+> The Wilks’s Lambda was statistically significant, $F(2, 276) = 4.78$, $p = .032$ *t* tests, *F* *p* value) should be reported. Sufficient descriptive statistics (e.g., means, standard
 
 <!-- Page 8 -->
-RELATION OF ACADEMIC ENTITLEMENT TO PARENTING
+.009, est η 2 =.034. The univariate gender effect for parental warmth was statistically significant,
 
-9 η 2.009, est =.034. The univariate gender effect for parental warmth was statistically significant, η 2 $F(1, 276) = 9.15$, $p = .003$, est =.032. The mean for male participants was 3.42 (*SD* =.40) and the mean for female participants was 3.66 (*SD* =.38). The gender effect on psychological control was not statistically significant.
+$F(1, 276) = 9.15$, $p = .003$, est η 2 =.032. The mean for male participants was 3.42 (*SD* =.40) and the mean for female participants was 3.66 (*SD* =.38). The gender effect on psychological control was not statistically significant.
 
 To determine the relations among the variables, Pearson correlations were computed for academic entitlement, parental warmth, and psychological control. As predicted, parental warmth was negatively related to academic entitlement, $r(276) = -.27$, $p = .003$, and psychological control was positively correlated with academic entitlement, $r(276) = .30$, $p = .002$. The correlations can be found in Table 1.
 
-We hypothesized that parental warmth would negatively predict academic entitlement and parental psychological control would positively predict academic entitlement. To investigate this hypothesis, a multiple
+We hypothesized that parental warmth would negatively predict academic entitlement and parental psychological control would positively predict academic entitlement. To investigate this hypothesis, a multiple regression was conducted. Gender, parental warmth, and parental psychological control were entered as RELATION OF ACADEMIC ENTITLEMENT TO PARENTING
 
-10 regression was conducted. Gender, parental warmth, and parental psychological control were entered as RELATION OF ACADEMIC ENTITLEMENT TO PARENTING predictors of academic entitlement. The model was statistically significant *F*(3,273) 12.79, *p* 6.001 and =
+10 predictors of academic entitlement. The model was statistically significant $F(3,273) = 12.79$, *p* 6.001 and
 
-**Discussion** **Discussion** The purpose of accounted for 18.8% of the variance. Gender ( $\beta$ = -.13, $p = .014$), parental warmth ( $\beta$ = -.25, $p = .004$), the discussion section of the The current study was designed to investigate the relationship of perceptions of parenting to academic research report is to interpret and and parental psychological control ( $\beta$ =.29, $p = .002$) were statistically significant predictors. 1 These findings evaluate the results obtained, entitlement among emerging adults. The findings indicated that students reporting greater parental warmth indicate that academic entitlement was higher among males, higher among those reporting less parental giving primary emphasis to the also reported lower academic entitlement. In contrast, students reporting greater parental psychological relationships between the results warmth, and higher among those reporting greater parental psychological control. See Figure 1. and the hypotheses of the study. control reported greater academic entitlement. These findings are worthy of attention because of the Begin the discussion by stating whether the hypothesis of the potential negative impact of academic entitlement in the lives of college students. Students who report high study was or was not supported. Following this statement, you academic entitlement also report less academic satisfaction, greater academic anxiety, and more negative should interpret the results, telling relations with faculty members (Chowning &amp; Campbell, 2009). Feelings of academic entitlement have the reader what you think they mean. In doing so, you should the potential to undermine growth and development. Therefore, it is important to consider the possible attempt to integrate your research findings with the results of prior developmental paths that may result in feelings of academic entitlement. research. This interpretation
+**Discussion** accounted for 18.8% of the variance. Gender ( The purpose of $\beta$ = -.13, $p = .014$), parental warmth ( $\beta$ **Discussion** = -.25, $p = .004$), the discussion section of the
 
-In this investigation, parental warmth appears to be a protective factor. Prior research has documented should include a consideration of potential bias, threats to internal that parental warmth is related to children’s internal locus of control and to higher self-esteem (Lowe &amp; validity, and other limitations and weaknesses. In general, the Dotterer, 2013). Perhaps a warm parental relationship communicates to the child that he/she is competent discussion should answer the following questions: (a) What does and is valued. Warm relationships also include involvement and support. This involvement may support the study contribute, (b) how has a sense of efficacy and protect the child from the type of external attributions that are associated with it helped solve the study problem, and (c) what conclusions and academic entitlement. In contrast, parental psychological control often communicates that the child is not theoretical implications can be drawn from the study? prepared to function independently. This lack of independence may contribute to the tendency to believe that others are responsible for one’s success which is a component of academic entitlement. The discussion section should also cover the weaknesses of the study. Limitations for this study were particularly potent. The internal consistency for the entitled When discussing the shortcomings, expectations measure was low. The scale may need to be refined and may currently be a limitation to you should mention only the flaws that might have had a significant the study of academic entitlement. The current study is also limited by the use of a convenience sample influence on the results obtained. You should accept a negative of psychology college students only from the earlier stages of college and only taking an introduction to finding as such and offer a post hoc psychology course. This study was a one-time correlational study, so no conclusion of a causal relationship explanation. You should not attempt to explain it as being due to some can be made from these data. Clearly, an experimental design would be unethical because you cannot methodological flaw (unless, as might occasionally occur, there is a very randomly assign parents to using different levels of warmth and psychological control. However, good and documented reason why a longitudinal data would be useful because it would provide an examination of the temporal order of the flaw may have caused the negative finding). variables, that is, parenting and academic entitlement could be measured throughout development.
+The current study was designed to investigate the relationship of perceptions of parenting to academic research report is to interpret and and parental psychological control ( $\beta$ =.29, $p = .002$) were statistically significant predictors. 1 These findings evaluate the results obtained, entitlement among emerging adults. The findings indicated that students reporting greater parental warmth giving primary emphasis to the indicate that academic entitlement was higher among males, higher among those reporting less parental relationships between the results also reported lower academic entitlement. In contrast, students reporting greater parental psychological warmth, and higher among those reporting greater parental psychological control. See Figure 1. and the hypotheses of the study. control reported greater academic entitlement. These findings are worthy of attention because of the Begin the discussion by stating whether the hypothesis of the potential negative impact of academic entitlement in the lives of college students. Students who report high study was or was not supported. Following this statement, you academic entitlement also report less academic satisfaction, greater academic anxiety, and more negative should interpret the results, telling relations with faculty members (Chowning &amp; Campbell, 2009). Feelings of academic entitlement have the reader what you think they mean. In doing so, you should the potential to undermine growth and development. Therefore, it is important to consider the possible attempt to integrate your research findings with the results of prior developmental paths that may result in feelings of academic entitlement. research. This interpretation should include a consideration of In this investigation, parental warmth appears to be a protective factor. Prior research has documented potential bias, threats to internal that parental warmth is related to children’s internal locus of control and to higher self-esteem (Lowe &amp; validity, and other limitations and weaknesses. In general, the Dotterer, 2013). Perhaps a warm parental relationship communicates to the child that he/she is competent discussion should answer the following questions: (a) What does and is valued. Warm relationships also include involvement and support. This involvement may support the study contribute, (b) how has a sense of efficacy and protect the child from the type of external attributions that are associated with it helped solve the study problem, and (c) what conclusions and academic entitlement. In contrast, parental psychological control often communicates that the child is not theoretical implications can be drawn from the study? prepared to function independently. This lack of independence may contribute to the tendency to believe that others are responsible for one’s success which is a component of academic entitlement. The discussion section should also cover the weaknesses of the study. Limitations for this study were particularly potent. The internal consistency for the entitled
+
+When discussing the shortcomings, expectations measure was low. The scale may need to be refined and may currently be a limitation to you should mention only the flaws that might have had a significant the study of academic entitlement. The current study is also limited by the use of a convenience sample influence on the results obtained. You should accept a negative of psychology college students only from the earlier stages of college and only taking an introduction to finding as such and offer a post hoc psychology course. This study was a one-time correlational study, so no conclusion of a causal relationship explanation. You should not attempt to explain it as being due to some can be made from these data. Clearly, an experimental design would be unethical because you cannot methodological flaw (unless, as might occasionally occur, there is a very randomly assign parents to using different levels of warmth and psychological control. However, good and documented reason why a flaw may have caused the negative longitudinal data would be useful because it would provide an examination of the temporal order of the finding). variables, that is, parenting and academic entitlement could be measured throughout development.
 
 <!-- Page 9 -->
-RELATION OF PARENTING TO ACADEMIC ENTITLEMENT
+Additionally, there are likely many other family and social factors that contribute to academic entitlement that were not measured in this study. Even through the limitations of the current study, we have evidence that perceived parenting and academic entitlement are related. Notably these entitlement ideas are likely rooted in a long history of parent child relationships, so changing them in emerging adulthood may be difficult.
 
-11
-
-Additionally, there are likely many other family and social factors that contribute to academic entitlement that were not measured in this study. Even through the limitations of the current study, we have evidence that perceived parenting and academic entitlement are related. Notably these entitlement ideas are likely rooted in a long history of parent child relationships, so changing them in emerging adulthood may be difficult. RELATION OF ACADEMIC ENTITLEMENT TO PARENTING
+> RELATION OF ACADEMIC ENTITLEMENT TO PARENTING
 
 12
 
@@ -413,21 +400,46 @@ the theory of basic individual values. *Journal of Personality and Social Psycho
 of each footnote is indented Turner, L.A. &amp; McCormick, W.H. (2018). Academic entitlement: Relations to perceptions of parental warmth and five spaces or one-half inch, psychological control. *Educational Psychology, 38*, 248–260. doi:10.1080/01443410.2017.1328487 and the superscript numeral of the footnote should appear Turnipseed. D. L., &amp; Cohen, S. R. (2015). Academic entitlement and socially aversive personalities: Does the in the space just preceding dark triad predict academic entitlement? *Personality and Individual Differences, 82*, 72–75. doi:10.1016/j. the beginning of the footnote. paid.2015.03.003 Footnotes are typed in the Weiner, B. (1985). An attributional theory of achievement motivation and emotion.  *Psychological Review, 92*, order in which they are 548–573. doi:10.1037/0033-295X.92.4.548 mentioned in the text. RELATION OF ACADEMIC ENTITLEMENT TO PARENTING 13 Footnote 1 The analyses were also conducted without gender in the model and the findings remained unchanged.
 
 <!-- Page 10 -->
-RELATION OF ACADEMIC ENTITLEMENT TO PARENTING 14
+**Table 1** *Relations among Academic Entitlement and Parental Warmth and Control*
 
-Table 1
-
-*Relations among Academic Entitlement and Parental Warmth and Control*
-
-Measure 1 2 3 *M* *SD* 1. Academic Entitlement -.27.30 2.49.81
-2. Parental Warmth
-
--.41 3.55.40
-3. Parental Psychological Control
-
-🎯 **2.43** .60
-
-> RELATION OF ACADEMIC ENTITLEMENT TO PARENTING 15
+<table class="textbook-table" style="width: auto; max-width: 100%; border-collapse: collapse; margin: 1.5em 0;">
+  <thead>
+    <tr>
+      <th>Measure</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>M</th>
+      <th>SD</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1. Academic Entitlement</td>
+      <td></td>
+      <td>- .27</td>
+      <td>.30</td>
+      <td>2.49</td>
+      <td>.81</td>
+    </tr>
+    <tr>
+      <td>2. Parental Warmth</td>
+      <td></td>
+      <td></td>
+      <td>- .41</td>
+      <td>3.55</td>
+      <td>.40</td>
+    </tr>
+    <tr>
+      <td>3. Parental Psychological Control</td>
+      <td>RELATION OF ACADEMIC ENTITLEMENT TO PARENTING</td>
+      <td></td>
+      <td></td>
+      <td>2.43</td>
+      <td>.60 15</td>
+    </tr>
+  </tbody>
+</table>
 
 2
 
@@ -512,9 +524,7 @@ Editorial style refers to the rules or guidelines used by a publisher to ensure 
 
 **Headings** Headings serve to outline the manuscript and to indicate the importance of each topic. There are five different levels of headings that can be used in a manuscript. They have the following top–down progression: (level 1) boldface, centered main heading, in uppercase and lowercase letters; (level 2) boldface, flush left-side heading, upper- and lowercase letters; (level 3) boldface, indented heading, lowercase paragraph style heading ending that ends with a period; (level 4) boldface, indented, italicized, lowercase paragraph heading ending with a period; (level 5) italicized, indented, lowercase paragraph heading ending with a period. Perhaps this is more easily shown that stated in words:
 
-**Level of heading** **Format of heading**
-
-> 1 **Boldface, Centered Main Heading, in** **Uppercase and Lowercase** 2 **Boldface, Flush Left, in Uppercase and** **Lowercase** 3 **Boldface, paragraph indented, in** **lowercase, and ending with a period.** 4 ***Boldface, paragraph indented, italicized,*** ***lowercase, ending with a period.*** 5 *Italicized, paragraph indented, lowercase, ending* *with a period.*
+**Level of heading** **Format of heading** 1 **Boldface, Centered Main Heading, in** **Uppercase and Lowercase** 2 **Boldface, Flush Left, in Uppercase and** **Lowercase** 3 **Boldface, paragraph indented, in** **lowercase, and ending with a period.** 4 ***Boldface, paragraph indented, italicized,*** ***lowercase, ending with a period.*** 5 *Italicized, paragraph indented, lowercase, ending* *with a period.*
 
 If you need two levels of headings, use levels 1 and 2; if you need three levels of headings, use levels 1, 2, and 3; if you need four levels of headings, use levels 1, 2, 3, and 4; if you need five levels of headings, use levels 1, 2, 3, 4, and
 5. For paragraph indented headings (i.e., levels 3, 4, and 5), *the written paragraph material starts* *on the same line as the heading*. Do not use numbers or letters to label your headings. Finally, remember that all headings are not used in every manuscript; the number of headings depends on the material, its complexity, and its levels of importance.
@@ -529,7 +539,9 @@ The number of levels needed will depend on the complexity and length of your man
 
 **Physical Measurements** All physical measurements are to be stated in metric units. If a measurement is expressed in nonmetric units, it must be accompanied, in parentheses, by its metric equivalent.
 
-**Presentation of Statistical Results** When presenting the results of statistical tests in the text, provide enough information to allow the reader to corroborate the results. Although what counts as sufficient information depends on the statistical test and analysis selected, in general, when reporting inferential statistics, it means including information about the magnitude or value of the test, the degrees of freedom, the probability level, the direction of the effect and associated effect size, or  confidence intervals. For example, a *t* and *F* test could be reported as follows: $t(36) = 4.52$, $p = .041$, $d = .54$, 95, CI [0.29, 0.95] $\omega^{2}$ $F(3, 52) = 17.35$, $p = .023$, est =.06
+**Presentation of Statistical Results** When presenting the results of statistical tests in the text, provide enough information to allow the reader to corroborate the results. Although what counts as sufficient information depends on the statistical test and analysis selected, in general, when reporting inferential statistics, it means including information about the magnitude or value of the test, the degrees of freedom, the probability level, the direction of the effect and associated effect size, or  confidence intervals. For example, a *t* and *F* test could be reported as follows: $t(36) = 4.52$, $p = .041$, $d = .54$, 95, CI [0.29, 0.95]
+
+$F(3, 52) = 17.35$, $p = .023$, est $\omega^{2}$ =.06
 
 Such common statistical tests as *t* and *F* tests are not referenced, and the formulas are not included in the text. Referencing and formulas are included only when the statistical test is new, rare, or essential to the manuscript, as when the article concerns a given statistical test.
 
@@ -550,7 +562,7 @@ After you have constructed a table, use the following checklist to ensure that y
 
 - Is the table necessary?
 
-- Does the table belong in the print version of the manuscript or can it be placed in an online supplemental file? There are times when it would be more appropriate to provide the data in a supplemental file and inform the reader as to where this file can be obtained.
+> - Does the table belong in the print version of the manuscript or can it be placed in an online supplemental file? There are times when it would be more appropriate to provide the data in a supplemental file and inform the reader as to where this file can be obtained.
 
 - Are tables that present comparable data presented in a consistent manner?
 
@@ -558,7 +570,7 @@ After you have constructed a table, use the following checklist to ensure that y
 
 - Does a column heading exist for each column?
 
-- Is there a note to explain all abbreviations and any special italics, dashes,  boldface, and special symbols?
+> - Is there a note to explain all abbreviations and any special italics, dashes,  boldface, and special symbols?
 
 - Do the notes have the appropriate order of (1) general note, (2) specific note, and
 
@@ -566,11 +578,11 @@ After you have constructed a table, use the following checklist to ensure that y
 
 - Have all vertical rules (lines) been eliminated?
 
-- Do all major point estimates have confidence intervals reported, and is the same confidence level used for all tables?
+> - Do all major point estimates have confidence intervals reported, and is the same confidence level used for all tables?
 
-- Are all probability levels correctly identified for statistical significance tests conducted?
+> - Are all probability levels correctly identified for statistical significance tests conducted?
 
-- Has any copyrighted table reproduced been given full credit, and has permission been received from the copyright holder?
+> - Has any copyrighted table reproduced been given full credit, and has permission been received from the copyright holder?
 
 - Have you referred to the table in the text?
 
@@ -640,17 +652,17 @@ You should consult the APA *Publication Manual* if you encounter references from
 
 **Reference List** All citations in the text of the research report must be accurately and completely cited in the reference list so that it is possible for readers to locate the works. This means that each entry should include the name of the author, year of publication, title, publishing data, and any other information necessary to identify the reference. All references are to appear in alphabetical order, typed double-spaced with a hanging indent on a separate page with the word *References* centered at the top of the page in upper- and lowercase letters.
 
-The general form of a reference is as follows for a periodical book chapter, and book:
+> The general form of a reference is as follows for a periodical book chapter, and book:
 
-Canned, I. B., &amp; Rad, U. B. (2002). Moderating violence in a peaceful society.
+> Canned, I. B., &amp; Rad, U. B. (2002). Moderating violence in a peaceful society.
 
 > *Journal of Violence and Peace Making, 32*, 231–234. doi:10.1543/0093
 
-Good, I. M. (2003). Moral development in violent children. In A. Writer &amp; N.
+> Good, I. M. (2003). Moral development in violent children. In A. Writer &amp; N.
 
 > Author (Eds.), *The anatomy of violent children* (pp. 134–187). Washington, DC: Killer Books.
 
-Wind, C. (2001). *Why children hurt*. New York, NY: Academic Publishers.
+> Wind, C. (2001). *Why children hurt*. New York, NY: Academic Publishers.
 
 Electronic publishing is currently the rule rather than the exception. While it has increased the efficiency of the publication process and enhanced the sharing of research results, it has created some confusion or difficulty in establishing a specific method of referencing such material. This difficulty has been compounded by the fact that it is sometimes difficult to determine if an online version of an article is the final version or an advanced online version. As a general rule, the APA *Publication Manual* recommends that you reference online material as you would a fixed-media source <!-- Page 19 -->
 and then add as much electronic retrieval information as you can to try to ensure that others can also locate the source you cited.
@@ -659,11 +671,11 @@ One fact about material appearing on the Internet is that it is prone to being m
 
 To use this system, publishers assign a DOI to each published article. Once the DOI is assigned, you can use it to link to the content of the article. The DOI of an article is typically located on the first page of an electronic journal article and on the first page of an APA journal next to the copyright notice. The *Publication Manual* recommends that you include the DOI when providing references to citations that have this identifier as follows:
 
-Hammerstein, J. R. (2010). The effectiveness of fatigue in predicting depression relapse. *Journal of Significant Depression Research, 104*, 225–267. doi:10.1087/15836542880
+> Hammerstein, J. R. (2010). The effectiveness of fatigue in predicting depression relapse. *Journal of Significant Depression Research, 104*, 225–267. doi:10.1087/15836542880
 
 If the source you are referencing does not have a doi, you naturally cannot include it in the reference. If you are referencing an online article that does not have a DOI, provide the home page URL of the source you are referencing as follows:
 
-Hammerstein, J. R. (2005). The effectiveness of fatigue in predicting depression relapse. *Journal of Significant Depression Research, 8*, 22–50. Retrieved from *http://* *jaba.lib.edu.au/articles.html*
+> Hammerstein, J. R. (2005). The effectiveness of fatigue in predicting depression relapse. *Journal of Significant Depression Research, 8*, 22–50. Retrieved from *http://* *jaba.lib.edu.au/articles.html*
 
 Many other items could be included in a reference list such as book chapters, brochures, monographs, magazine articles, and many types of information retrieved from the Internet. If you have included a source not mentioned here or if you have a variation of a source mentioned here and are not sure how it should be presented, you should consult the APA *Publication Manual.*
 
@@ -730,7 +742,7 @@ year. These conferences include the national meetings of the APA and the Associa
 
 If you are scheduled to make an oral presentation of your research at a professional conference, make sure that you read and follow the guidelines that you will receive because there are a number of restrictions that dictate what can be done during the oral presentation. Typically, the oral presentations by individuals conducting research on similar topical areas are grouped together for a session that usually lasts about 1  hour. Each person usually has 15 minutes to make his or her presentation and answer any questions. Because time has to be allowed for questions, you should make sure that your presentation does not exceed 12 minutes, and because you have only 12 minutes to present the results of your research, the preparation for the presentation differs from a written report that you would prepare for publication. Here are some recommendations for the preparation of an oral presentation:
 
-- Concentrate on only one or two points. Keep reminding the audience of the central theme by relating each section to that theme. In other words, tell the audience what you are going to say, and then say it.
+> - Concentrate on only one or two points. Keep reminding the audience of the central theme by relating each section to that theme. In other words, tell the audience what you are going to say, and then say it.
 
 - Focus on the following points:
 
@@ -738,34 +750,34 @@ If you are scheduled to make an oral presentation of your research at a professi
 
 **2.**State why you studied it.
 
-**3.**State how you studied it—give a general description of your research design.
+> **3.**State how you studied it—give a general description of your research design.
 
 **4.**State what you found.
 
-**5.**State the implications of your results.
+> **5.**State the implications of your results.
 
-- Do not read your presentation because this tends to be boring. Instead, talk to the audience as if you were having a conversation with them. This means that you must know your topic well and have the presentation rehearsed. It is better to have notes from which you can talk in a conversational tone than to read from a prepared document.
+> - Do not read your presentation because this tends to be boring. Instead, talk to the audience as if you were having a conversation with them. This means that you must know your topic well and have the presentation rehearsed. It is better to have notes from which you can talk in a conversational tone than to read from a prepared document.
 
-- If you include audio visual content, make sure it is readable and comprehensible from a distance and works on varied computers.
+> - If you include audio visual content, make sure it is readable and comprehensible from a distance and works on varied computers.
 
-- Practice giving the presentation to others to ensure that you stay within your time limit and that everything flows smoothly.
+> - Practice giving the presentation to others to ensure that you stay within your time limit and that everything flows smoothly.
 
-- Being prepared will make your presentation most informative to your audience and will allow you to feel most confident, especially if this is your first presentation.
+> - Being prepared will make your presentation most informative to your audience and will allow you to feel most confident, especially if this is your first presentation.
 
 ### Poster Presentation
 
 If you are scheduled to make a poster presentation of your research at a professional conference, you should read the directions that you will receive carefully because different associations have specific requirements, such as the size of the poster and the <!-- Page 23 -->
 recommended font size. A poster presentation consists of presenting your research as a poster at a specific session on that topic or theme along with many other individuals at the same time. This means that you need to prepare a visual presentation of your research and present it as a poster that anyone can see and read. After you have placed the visual presentation of your research on the poster, you are to remain by the poster for the duration of the poster session, which is typically 1 hour. It is important that you bring a number of written copies of your research report to give to interested individuals. The advantage of this procedure is that you can discuss your research with interested individuals who walk by and read your poster, and they can get a copy of your research that they can take home with them. In this way, you increase your chances of finding other individuals with similar interests. As a result of these conversations, you might develop new research ideas and might even meet individuals with whom you will collaborate on subsequent research projects.
 
-Here are some tips that you can use in preparing your poster:
+> Here are some tips that you can use in preparing your poster:
 
 - The layout of the poster is important and should flow naturally from the introduction to the results and conclusion. Figure 17.1 presents one possible layout.
 
 - When preparing the poster, use a typeface that is easy to read, such as Times New
 
-Roman. Do not try to get fancy because this will generally reduce readability.
+> Roman. Do not try to get fancy because this will generally reduce readability.
 
-- Use a font size that is large enough to read from a distance of about 10 feet. A font size of 24 points or greater should be sufficient.
+> - Use a font size that is large enough to read from a distance of about 10 feet. A font size of 24 points or greater should be sufficient.
 
 - Make your points with as few words as possible.
 

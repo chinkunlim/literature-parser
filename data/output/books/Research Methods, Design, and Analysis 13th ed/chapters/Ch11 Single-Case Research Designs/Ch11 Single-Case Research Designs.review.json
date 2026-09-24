@@ -1,0 +1,17 @@
+{
+  "chapter": "Ch11 Single-Case Research Designs",
+  "total_proposals": 1,
+  "auto_accepted_count": 0,
+  "pending_count": 1,
+  "proposals": [
+    {
+      "id": "rev-1",
+      "original": "Length of P",
+      "proposed": "Length of Project",
+      "reason": "The text is abruptly cut off at the end of the file. However, given the context 'Length of P' and the typical structure of 'Length of Project' or 'Length of Program', 'Length of Project' is a common academic phrase. However, since the exact word is missing, it's technically a truncation error.",
+      "category": "ocr_typo",
+      "confidence": 0.85,
+      "status": "PENDING"
+    }
+  ]
+}

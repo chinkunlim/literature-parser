@@ -24,7 +24,8 @@
     border-bottom: 2px solid #842959;
   }
   .textbook-table {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     border-collapse: collapse;
     font-size: 0.9em;
   }
@@ -109,7 +110,15 @@
   - [Mode](#mode)
   - [Median](#median)
   - [Mean](#mean)
-- [Measures of Variability](#measures-of-variability)
+- [
+<!-- AI-REVIEW-START id="rev-1" category="ocr_typo" -->
+<!-- ORIGINAL:
+Measures of Variability](#measures-of-variability)
+-->
+<!-- REASON: The line is cut off in the Markdown, likely due to an incomplete closing parenthesis or a sentence structure. -->
+Measures of Variability](#measures-of-variability)
+<!-- AI-REVIEW-END -->
+res-of-variability)
   - [Range](#range)
   - [Variance and Standard Deviation](#variance-and-standard-deviation)
   - [Standard Deviation and the Normal Curve](#standard-deviation-and-the-normal-curve)
@@ -171,7 +180,7 @@ graph LR
 
 *Figure 15.1 Major divisions of the field of statistics.*
 
-The field of statistics can be divided into the two broad categories called descriptive statistics and inferential statistics. In **descriptive statistics**, the goal is to describe or summarize your research data. This allows you to make sense of your set of data and to make the key characteristics easily understandable to others. In **inferential   statistics**, the goal is to go beyond the immediate set of data and to infer characteristics of populations based on your sample data. As you can see in Figure 15.1, inferential statistics can be subdivided into estimation and hypothesis testing, and estimation can be subdivided into point estimation and interval estimation.
+The field of statistics can be divided into the two broad categories called descriptive statistics and inferential statistics. In **descriptive statistics**, the goal is to describe or summarize your research data. This allows you to make sense of your set of data and to make the key characteristics easily understandable to others. In **inferential   statistics**, the goal is to go beyond the immediate set of data and to infer characteristics of populationons based on your sample data. As you can see in Figure 15.1, inferential statistics can be subdivided into estimation and hypothesis testing, and estimation can be subdivided into point estimation and interval estimation.
 
 In this chapter, we will explain descriptive statistical analysis, and in Chapter 16, we will explain inferential statistical analysis. We assume no prior knowledge of the material, and both chapters are written so that everyone can understand the  material. Our discussion requires very little mathematical background, so don’t worry! We focus on showing you what  statistical procedures to select to understand your data and on how to interpret and communicate your results. Before moving to the next section, however, please read
 
@@ -330,31 +339,24 @@ Please take a moment now to examine the data set shown in Table 15.1. Notice tha
 <!-- Page 4 -->
 **Table 15.1** *Hypothetical Data Set for Nonexperimental Research for 25 Recent College Graduates*
 
-<div class="framed-card">
-  <div class="framed-card-header">Hypothetical Data Set for Nonexperimental Research for 25 Recent College Graduates</div>
-  <ol class="framed-card-body">
-    <li>5 1 0 1,110 36 2 25,000</li>
-    <li>5 1 0 1,100 26 3 27,500</li>
-    <li>0 1 0 1,300 31 4 28,500</li>
-    <li>4 2 1 1,100 18 5 30,500</li>
-    <li>0 2 0 1,150 26 6 30,500</li>
-    <li>9 2 1 1,130 18 7 31,000</li>
-    <li>1 1 0 1,180 16 8 31,000</li>
-    <li>3 1 0 1,160 11 9 31,500</li>
-    <li>9 2 0 1,170 25 10 32,000</li>
-    <li>6 1 0 1,250 12 11 32,000</li>
-    <li>6 1 1 1,230 26 12 32,500</li>
-    <li>1 2 0 1,130 21 13 32,500</li>
-    <li>2 2 1 1,200 17 14 32,500</li>
-    <li>0 3 1 1,150 14 15 33,000</li>
-    <li>7 1 0 1,260 29 16 33,500</li>
-    <li>1 2 1 1,170 21 17 33,500</li>
-    <li>7 2 1 1,140 22 18 34,500</li>
-    <li>0 3 0 1,240 14</li>
-  </ol>
-</div>
-
-**Days**
+2. 5 1 0 1,110 36 2 25,000
+2. 5 1 0 1,100 26 3 27,500
+3. 0 1 0 1,300 31 4 28,500
+2. 4 2 1 1,100 18 5 30,500
+3. 0 2 0 1,150 26 6 30,500
+2. 9 2 1 1,130 18 7 31,000
+3. 1 1 0 1,180 16 8 31,000
+3. 3 1 0 1,160 11 9 31,500
+2. 9 2 0 1,170 25 10 32,000
+3. 6 1 0 1,250 12 11 32,000
+2. 6 1 1 1,230 26 12 32,500
+3. 1 2 0 1,130 21 13 32,500
+3. 2 2 1 1,200 17 14 32,500
+3. 0 3 1 1,150 14 15 33,000
+3. 7 1 0 1,260 29 16 33,500
+3. 1 2 1 1,170 21 17 33,500
+2. 7 2 1 1,140 22 18 34,500
+3. 0 3 0 1,240 14
 
 **Person** **Salary**
 
@@ -374,17 +376,7 @@ Please take a moment now to examine the data set shown in Table 15.1. Notice tha
 
 25 41,500
 
-> *Note:* For the categorical variable “major,” 1 = psychology, 2 = philosophy, and 3 = business. For the  categorical variable  “gender,” 0 = male and 1 = female.
-
-## Frequency Distributions
-
-🎯 **15.2** Explain the concept of a frequency distribution.
-
-> One basic way to display the data values for a variable is to use a frequency distribution. A **frequency distribution** is a systematic arrangement of data values in which the unique data values are rank-ordered and the frequencies are provided for each of these values. Oftentimes, the percentages for each frequency are also included in a frequency distribution. The first column shows the unique data values for the variable, the second column the frequencies for each of these values, and the third column the percentages.
-
-> For example, look at Table 15.2. This is the frequency distribution of the variable *starting salary* from our college graduate data set. You can see that in column 1 the lowest salary is $24,000 and the highest is $41,500. The frequencies are shown in column
-
-> 2. The most frequently occurring salary for our sample of recent college graduates was $32,500; three of the 25 recent graduates had this starting salary. The third column shows the percentage distribution. Four percent of the 25 cases had a salary of $24,000, and 8% of the cases had a salary of $32,000.
+**Days**
 
 > **GPA** **Major** **Gender** **SAT** **Missed**
 
@@ -402,10 +394,22 @@ Please take a moment now to examine the data set shown in Table 15.1. Notice tha
 
 🎯 **3.5** 3 1 1,330 2
 
+> *Note:* For the categorical variable “major,” 1 = psychology, 2 = philosophy, and 3 = business. For the  categorical variable  “gender,” 0 = male and 1 = female.
+
+## Frequency Distributions
+
+🎯 **15.2** Explain the concept of a frequency distribution.
+
+> One basic way to display the data values for a variable is to use a frequency distribution. A **frequency distribution** is a systematic arrangement of data values in which the unique data values are rank-ordered and the frequencies are provided for each of these values. Oftentimes, the percentages for each frequency are also included in a frequency distribution. The first column shows the unique data values for the variable, the second column the frequencies for each of these values, and the third column the percentages.
+
+> For example, look at Table 15.2. This is the frequency distribution of the variable *starting salary* from our college graduate data set. You can see that in column 1 the lowest salary is &#36;24,000 and the highest is &#36;41,500. The frequencies are shown in column
+
+> 2. The most frequently occurring salary for our sample of recent college graduates was &#36;32,500; three of the 25 recent graduates had this starting salary. The third column shows the percentage distribution. Four percent of the 25 cases had a salary of &#36;24,000, and 8% of the cases had a salary of &#36;32,000.
+
 <!-- Page 5 -->
 **Table 15.2** *Frequency Distribution of Starting Salary*
 
-<table class="textbook-table">
+<table class="textbook-table" style="width: auto; max-width: 100%; border-collapse: collapse; margin: 1.5em 0;">
   <thead>
     <tr>
       <th>(1) Starting Salary</th>
@@ -558,7 +562,7 @@ social skills training, we see a very different result; the participants in the 
 
 **Table 15.3** *Hypothetical Data Set for Experimental Research Study Examining the Effectiveness of Social Skills Training*
 
-<table class="textbook-table">
+<table class="textbook-table" style="width: auto; max-width: 100%; border-collapse: collapse; margin: 1.5em 0;">
   <thead>
     <tr>
       <th>Person</th>
@@ -684,7 +688,7 @@ after the experimental intervention; treatment condition = 1 for control group (
 
 **Table 15.3** *Hypothetical Data Set for Experimental Research Study Examining the Effectiveness of Social Skills Training ( Continued )*
 
-<table class="textbook-table">
+<table class="textbook-table" style="width: auto; max-width: 100%; border-collapse: collapse; margin: 1.5em 0;">
   <thead>
     <tr>
       <th>Person</th>
@@ -755,12 +759,15 @@ after the experimental intervention; treatment condition = 1 for control group (
       <td>6</td>
     </tr>
     <tr>
-      <td>Note: Pretest =</td>
+      <td>Pretest =</td>
       <td>number of appropriate interactions at the beginning of the experiment; posttest</td>
       <td></td>
       <td>= number of appropriate interactions</td>
     </tr>
   </tbody>
+  <tfoot>
+    <tr class="table-notes"><td colspan="4"><em>* Note:</em></td></tr>
+  </tfoot>
 </table>
 
 ### Scatterplots
@@ -802,7 +809,7 @@ The most basic, and the crudest, measure of central tendency is the mode. The **
 
 0, 2, 3, 4, 5, 5, 5, 7, 8, 8, 9, 10 the mode is 5 because 5 is the most frequently occurring number. Five occurs three times. If there is a tie for the most frequently occurring number, then you would need to report both and point out that the data for the variable are bimodal.
 
-For practice, determine the mode for the following set of numbers:
+> For practice, determine the mode for the following set of numbers:
 
 1, 2, 2, 5, 5, 7, 10, 10, 10
 
@@ -828,11 +835,13 @@ The **mean** is the name researchers use to refer to the arithmetic average. You
 <!-- Page 11 -->
 The formula is easy if you note that *X* stands for the variable you are using, *n* is the number of numbers you have, and $\sum$ is a sum sign (it says to add up the numbers that follow it). In our simple case where the three values of our variable are 1, 2, and 3, the formula is applied as follows:
 
-*X* $\sum^{1}$ + 2 + 3 6
+$\sum$ *X* 1 + 2 + 3
 
-Mean = =
+6
 
-- = 2 *n* 3
+Mean = = =
+
+- 2 *n* 3
 
 3
 
@@ -859,7 +868,7 @@ The more different your numbers, the more variability you have.
 
 Now, let’s test your understanding of variability. Which of the following sets of data have the most variability present?
 
-Data for group one: 44, 45, 45, 45, 46, 46, 47, 47, 48, 49 Data for group two: 34, 37, 45, 51, 58, 60, 77, 88, 90, 98
+> Data for group one: 44, 45, 45, 45, 46, 46, 47, 47, 48, 49 Data for group two: 34, 37, 45, 51, 58, 60, 77, 88, 90, 98
 
 As you can see, the data for group two have more variability than group one. Sometimes when there is little variability in a group, we say that the scores are homogeneous. When the scores show a lot of variability, we say that the scores are heterogeneous.
 
@@ -870,7 +879,7 @@ Now we introduce you to three of the types of variability that psychologists mig
 
 > The simplest measure of variability, but also the most crude, is the range. The **range** is the highest (i.e., largest) number minus the lowest (i.e., smallest) number in a set of numbers. Here is the formula:
 
-Range *H* - *L* = where
+Range = *H* - *L* where
 
 > *H* is the highest number, and *L* is the lowest number.
 
@@ -894,7 +903,7 @@ Range *H* - *L* = where
 
 🎯 **99.7** percent rule
 
-If the data were fully normally distributed, the standard deviation would have addi- **68, 95, 99.7 percent rule** Rule tional meaning. Examine the standard normal distribution in Figure 15.8, and you stating percentage of cases falling within 1, 2, and 3  standard devia- will see that the normal curve or **normal distribution** has a bell shape; it is high in tions from the mean on a normal the middle and it tapers off to the left and the right. If the data were fully normally distributed, then you would be able to apply the **68, 95, 99.7 percent rule**. This rule distribution
+If the data were fully normally distributed, the standard deviation would have addi**68, 95, 99.7 percent rule** Rule tional meaning. Examine the standard normal distribution in Figure 15.8, and you stating percentage of cases falling within 1, 2, and 3  standard devia- will see that the normal curve or **normal distribution** has a bell shape; it is high in tions from the mean on a normal the middle and it tapers off to the left and the right. If the data were fully normally distribution distributed, then you would be able to apply the **68, 95, 99.7 percent rule**. This rule
 
 <!-- Page 13 -->
 ![Diagram](images/diagram_p13_01.png)
@@ -903,9 +912,10 @@ If the data were fully normally distributed, the standard deviation would have a
 
 **Table 15.4** *Calculating the Variance and Standard Deviation*
 
-<table class="textbook-table">
+<table class="textbook-table" style="width: auto; max-width: 100%; border-collapse: collapse; margin: 1.5em 0;">
   <thead>
     <tr>
+      <th></th>
       <th>(1)</th>
       <th>(2)</th>
       <th>(3)</th>
@@ -914,85 +924,48 @@ If the data were fully normally distributed, the standard deviation would have a
   </thead>
   <tbody>
     <tr>
-      <td>( X )</td>
-      <td>( X )</td>
-      <td>( X - X )</td>
-      <td>2 ( X - X )</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>6</td>
-      <td>- 4</td>
-      <td>16</td>
-    </tr>
-    <tr>
-      <td>4</td>
-      <td>6</td>
-      <td>- 2</td>
-      <td>4</td>
-    </tr>
-    <tr>
-      <td>6</td>
-      <td>6</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <td>8</td>
-      <td>6</td>
-      <td>2</td>
-      <td>4</td>
-    </tr>
-    <tr>
-      <td>10</td>
-      <td>6</td>
-      <td>4</td>
-      <td>16</td>
-    </tr>
-    <tr>
-      <td>30</td>
-      <td></td>
-      <td>0</td>
-      <td>40</td>
-    </tr>
-    <tr>
-      <td>c</td>
-      <td></td>
-      <td></td>
-      <td>c</td>
-    </tr>
-    <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
       <td>Sums</td>
-      <td></td>
-      <td></td>
-      <td>2</td>
-    </tr>
-    <tr>
       <td>X a</td>
       <td></td>
       <td></td>
-      <td>( X - X ) a</td>
+      <td>2 ( X - X ) a</td>
     </tr>
-    <tr class="category-header"><td colspan="4"><strong>Steps:</strong></td></tr>
-    <tr>
-      <td>(1)  Insert your data values in the</td>
-      <td>X column.</td>
-      <td></td>
-      <td></td>
-    </tr>
+    <tr class="category-header"><td colspan="5"><strong>Steps:</strong></td></tr>
   </tbody>
 </table>
+
+( *X* ) ( *X* ) ( *X* - *X* )
+
+2 6 - 4
+
+4 6 - 2
+
+
+
+
+
+
+
+30 0 c
+
+(1)  Insert your data values in the
+
+( *X* - *X* ) 2
+
+16
+
+$4 0 4$16
+
+40 c
 
 (2)   Calculate the mean of the values in column 1, and place this value in column
 2. In our example, the mean is 6.
 
-(3)   Subtract the values in column 2 from the values in column 1, and place these into column 3. (4)   Square the numbers in column 3 (i.e., multiply the number by itself), and place these in column 4. ( *Note:* You can ignore the minus signs in column 3 because a negative number multiplied by a negative number produces a positive number.)
+(3)   Subtract the values in column 2 from the values in column 1, and place these into column 3.
+
+(4)   Square the numbers in column 3 (i.e., multiply the number by itself), and place these in column 4.
+
+> ( *Note:* You can ignore the minus signs in column 3 because a negative number multiplied by a negative number produces a positive number.)
 
 (5)  Insert the appropriate values into the following formula for the variance: where
 
@@ -1000,9 +973,13 @@ If the data were fully normally distributed, the standard deviation would have a
 
 In this example, the variance
 
-(6)   The standard deviation is the square root of the variance (SD. In this example, the variance is 8 (see step 5), and the standard deviation is 2.83 (i.e., the square root of 8 = 2.83). says that 68% of the cases fall within one standard deviation from the mean, 95% fall within two standard deviations, and 99.7% fall within three standard deviations. Actually, the rule is a slight approximation because the more exact percentages are 68.26, 95.44, and 99.74, but the rule is easy to remember, and it is a very close approximation.
+(6)   The standard deviation is the square root of the variance (SD
 
-In practice, it is important to understand that sample data are never fully normally distributed in the sense of perfectly matching the normal distribution described here. That’s because we have described what also can be called the theoretical normal distribution. The theoretical normal distribution is what researchers are referring to when they report the degree to which their data are normally distributed. The normal distribution also has many applications in more advanced statistics courses. ***z*** **scores** The last concept covered in this section is that researchers sometimes like to convert their observed data into a type of standardized scores called ***z*****scores**. These scores are the values for a variable that have been transformed from their original “raw scores” into a new “standardized” metric that has a mean of zero and a standard deviation of one. This is convenient because the data values now can be interpreted in
+. In this example, the variance is 8 (see step 5), and the standard deviation is 2.83 (i.e., the square root of 8 = 2.83). says that 68% of the cases fall within one standard deviation from the mean, 95% fall within two standard deviations, and 99.7% fall within three standard deviations. Actually, the rule is a slight approximation because the more exact percentages are 68.26, 95.44, and 99.74, but the rule is easy to remember, and it is a very close approximation.
+
+In practice, it is important to understand that sample data are never fully normally distributed in the sense of perfectly matchingg the normal distribution described here. That’s because we have described what also can be called the theoretical normal distribution. The theoretical normal distribution is what researchers are referring to when they report the degree to which their data are normally distributed. The normal distribution also has many applications in more advanced statistics courses. ***z*** **scores** The last concept covered in this section is that researchers sometimes like to convert their observed data into a type of standardized scores called ***z**scores**. These scores are the values for a variable that have been transformed from their original
+
+“raw scores” into a new “standardized” metric that has a mean of zero and a standard deviation of one. This is convenient because the data values now can be interpreted in
 
 ![Diagram](images/diagram_p13_02.png)
 
@@ -1019,7 +996,7 @@ In practice, it is important to understand that sample data are never fully norm
 
 terms of how far they are from their mean. If a data value is + 1.00, we can say that this value falls one standard deviation above the mean, a value of + 2.00 falls two standard deviations above the mean, a value of - 1.5 falls one and a half standard deviations below the mean, and so on. “Standardized units” or “*z* scores” were used with the normal curve just shown in Figure 15.8.
 
-You can easily standardize your data using the following formula:
+> You can easily standardize your data using the following formula:
 
 To use this formula, you need the raw scores that you wish to convert to *z* scores and you need to know the mean and standard deviation for the raw scores. For example, take the set of scores used in Table 15.4: 2, 4, 6, 8, 10. In Table 15.4, we showed that the mean of these five numbers was 6, and the standard deviation (which we calculated in the table) was 2.83. Therefore, we can convert any or all of these numbers into *z* scores. Here is the conversion of the last number, 10, to a *z* score: *z* score =
 
@@ -1059,7 +1036,7 @@ In this last section, we will describe several approaches used to examine relati
 
 When you have a quantitative dependent variable and a categorical independent variable, your first evidence on whether these variables are related is obtained by calculating the means on the dependent variable for each group making up the categorical variable and then comparing those means. The most direct and simplest way to determine the magnitude of difference between two means is to subtract one mean from another and examine the size of the difference. This is called the **unstandardized difference between means** because you use the natural units of the data. Then you make the decision about whether the difference between the means is large or small.
 
-For example, in our college graduate data set, the mean (i.e., the average) starting salary for males is $34,791.67, and the mean starting salary for females is $31,269.23. Therefore, the unstandardized difference between these two means is $34,791.67 minus $31,269.23, which is $3,522.44. This appears to us to be a sizable difference between the two means. Another way of making this point is to state that “there appears to be a sizable relationship between gender and starting salary such that males have higher salaries than females” in our data. In the next chapter, we will teach
+For example, in our college graduate data set, the mean (i.e., the average) starting salary for males is &#36;34,791.67, and the mean starting salary for females is &#36;31,269.23. Therefore, the unstandardized difference between these two means is &#36;34,791.67 minus &#36;31,269.23, which is &#36;3,522.44. This appears to us to be a sizable difference between the two means. Another way of making this point is to state that “there appears to be a sizable relationship between gender and starting salary such that males have higher salaries than females” in our data. In the next chapter, we will teach
 
 <!-- Page 16 -->
 ![Diagram](images/diagram_p16_01.png)
@@ -1068,19 +1045,15 @@ For example, in our college graduate data set, the mean (i.e., the average) star
 
 > you how to determine if the difference between the means is “statistically significant”; for now, we are just interested in showing how to obtain descriptive information about your data.
 
-To aid in deciding how different the group means are, the difference between the **** means is often transformed into a standardized measure. For group means, **Cohen’s** ***d*** is a popular standardized measure of the difference between the means. Cohen’s *d* is one of many effect size indicators that researchers use. An **effect size indicator** is a standardized measure of the magnitude or strength of a relationship between variables. We will tell you about some additional effect size indicators later; for now, we will focus on how to obtain Cohen’s *d.* Here is the formula: where is the mean for group 1 is the mean for group 2
+To aid in deciding how different the group means are, the difference between the ** means is often transformed into a standardized measure. For group means, **Cohen’s** ***d*** is a popular standardized measure of the difference between the means. Cohen’s *d* is one of many effect size indicators that researchers use. An **effect size indicator** is a standardized measure of the magnitude or strength of a relationship between variables. We will tell you about some additional effect size indicators later; for now, we will focus on how to obtain Cohen’s *d.* Here is the formula: where is the mean for group 1 is the mean for group 2
 
 > *SD*  is the standard deviation of either group (traditionally it’s the control group’s standard deviation in an experiment; some researchers prefer a pooled stan-
 
 > As a rough starting point for interpreting *d*, Cohen defined effect sizes of $d = .2$ as “small,” $d = .5$ as “medium,” and $d = .8$ as “large.” When you first start interpreting the sizes of Cohen’s *d*, you can start with Cohen’s criteria of.2,.5, and.8, but with experience you will learn how to adjust your interpretation based on additional information, such as the size of differences provided in published research on your topic.
 
-> Now let’s calculate Cohen’s *d* to compare the average male and female incomes from our college student data set. 1 Gender is the categorical independent or predictor variable, and starting salary is the quantitative dependent variable. The mean starting salary for males is $34,791.67 and that for females is $31,269.23. The unstandardized difference between the means is $3,522.44. Using a statistical program (i.e., SPSS), we determined that the standard deviation for females is $4,008.40. Now we have the three pieces of information needed to use the formula for Cohen’s *d.* We have the two group means, and we have the standard deviation for the group we chose as our comparison group (i.e., females). Here are the three pieces of information plugged into the formula.
+> Now let’s calculate Cohen’s *d* to compare the average male and female incomes from our college student data set. 1 Gender is the categorical independent or predictor variable, and starting salary is the quantitative dependent variable. The mean starting salary for males is &#36;34,791.67 and that for females is &#36;31,269.23. The unstandardized difference between the means is &#36;3,522.44. Using a statistical program (i.e., SPSS), we determined that the standard deviation for females is &#36;4,008.40. Now we have the three pieces of information needed to use the formula for Cohen’s *d.* We have the two group means, and we have the standard deviation for the group we chose as our comparison group (i.e., females). Here are the three pieces of information plugged into the formula.
 
-> *M* - *M* + 34,791.67 - + 31,269.23 + 3,522.44 1 2 *d* =
-
-- = =.88
-
-*SD*
+*M* - *M* + 34,791.67 - + 31,269.23 + 3,522.44 $d = 1$ 2 = = =.88 *SD*
 
 + 4,008.40 + 4,008.40
 
@@ -1670,13 +1643,13 @@ T
 
 $\approx$
 
--. $\sum$ *X* *Y* c
+$\sum$ *X* *Y* =. c
 
 > This is the sum you need for the formula.
 
 -.943
 
-Although researchers do not calculate correlation
+> Although researchers do not calculate correlation
 
 The correlation between hours spent studying ( *X* ) and coefficients by hand these days (because they use
 
@@ -1734,9 +1707,9 @@ You might remember from your high school algebra class that the two important ch
 
 Now we provide the regression equation for the regression line shown in Figure 15.12. The dependent variable (*Y*) is starting salary, and the independent or predictor variable (*X* ) is GPA. You will be glad to know that researchers rarely, if ever, calculate 1 the regression equation by hand! Instead, they use statistical programs such as SPSS or SAS (which is exactly what we did). Here is the regression equation:
 
-***Y*****-intercept** is defined as the point where the regression line crosses the *Y*-axis. In our regression equation, the *Y*-intercept is $9,405.55. Therefore, the regression line shown in Figure 15.12 crosses the *Y*-axis at exactly $9,405.55. This is the predicted starting salary if a person had a GPA of 0 (i.e., an *F* average).
+***Y**-intercept** is defined as the point where the regression line crosses the *Y*-axis. In our regression equation, the *Y*-intercept is &#36;9,405.55. Therefore, the regression line shown in Figure 15.12 crosses the *Y*-axis at exactly &#36;9,405.55. This is the predicted starting salary if a person had a GPA of 0 (i.e., an *F* average).
 
-The **regression coefficient** is defined as the predicted change in the dependent variable (*Y*), given a one-unit change in the independent variable (*X*). The regression coefficient or slope in our example is $7,687.48. This regression coefficient says
+The **regression coefficient** is defined as the predicted change in the dependent variable (*Y*), given a one-unit change in the independent variable (*X*). The regression coefficient or slope in our example is &#36;7,687.48. This regression coefficient says
 
 ![Diagram](images/diagram_p22_02.png)
 
@@ -1747,27 +1720,31 @@ The **regression coefficient** is defined as the predicted change in the depende
 *Diagram*
 
 <!-- Page 23 -->
-that starting salary is expected to increase by $7,687.48 for every one unit increase in GPA (or decrease by $7,687.48 for every one unit decrease in GPA). For example, a student with a 3 on the GPA variable (i.e., a *B*) is predicted to start at a salary of $7,687 *more* than a student with a 2 (i.e., a *C*). We used the traditional grading scale ( *A* = 4, *B* = 3, *C* = 2, *D* = 1, *F* = 0).
+that starting salary is expected to increase by &#36;7,687.48 for every one unit increase in GPA (or decrease by &#36;7,687.48 for every one unit decrease in GPA). For example, a student with a 3 on the GPA variable (i.e., a *B*) is predicted to start at a salary of &#36;7,687 *more* than a student with a 2 (i.e., a *C*). We used the traditional grading scale ( *A* = 4, *B* = 3, *C* = 2, *D* = 1, *F* = 0).
 
 The regression equation can be used to obtain predicted values for the dependent variable for specific values of the independent variable. For example, let’s see what the predicted starting salary is for a student with a college GPA of 3 (i.e., a *B* average):
 
-*Y* n = + 9,405.55 + + 7,687.48(3.00)  We inserted the GPA value of 3.00
+> *Y* n = + 9,405.55 + + 7,687.48(3.00)  We inserted the GPA value of 3.00
 
-*Y* n = + 9,405.55 + + 23,062.44 We multiplied $7,687.48 by 3.00
+> *Y* n = + 9,405.55 + + 23,062.44 We multiplied &#36;7,687.48 by 3.00
 
-*Y* n = + 32,467.99 We added $9,405.55 and $23,062.44
+> *Y* n = + 32,467.99 We added &#36;9,405.55 and &#36;23,062.44
 
-The expected starting salary is $32,467.99. As an exercise, you should use the equation and determine the predicted starting salary for someone with a *C* average (i.e., a GPA value of 2). Just insert a 2 into the equation and solve it. You will find that the predicted starting salary is $24,780.51. Notice that the difference between the starting salary for someone with a *C* and a *B* is equal to the value of the regression coefficient (i.e., $32,467.99 minus $24,780.51 is $7,687.48). That confirms our statement that the regression coefficient shows the change in the dependent variable, given a one unit change in the independent variable.
+The expected starting salary is &#36;32,467.99. As an exercise, you should use the equation and determine the predicted starting salary for someone with a *C* average (i.e., a GPA value of 2). Just insert a 2 into the equation and solve it. You will find that the predicted starting salary is &#36;24,780.51. Notice that the difference between the starting salary for someone with a *C* and a *B* is equal to the value of the regression coefficient (i.e., &#36;32,467.99 minus &#36;24,780.51 is &#36;7,687.48). That confirms our statement that the regression coefficient shows the change in the dependent variable, given a one unit change in the independent variable.
 
 Multiple regression is similar to simple regression except that it uses *two or* *more* independent or predictor variables. A multiple regression equation includes one regression coefficient for each independent variable. An important and highly useful difference between the simple regression and multiple regression is that the multiple regression coefficient shows the relationship between the dependent variable and the independent variable *controlling for the other independent variable(s)* *in the equation*. This is analogous to the idea discussed earlier with partial correlation, and, not surprisingly, the multiple regression coefficient is called the **partial** **regression coefficient**.
 
-In simple regression, the relationship examined via the regression coefficient is analogous to a Pearson correlation, which does not control for any confounding variables. In multiple regression, the relationship is analogous to partial correlation in which one or more variables are “partialled out” or “controlled for.” Therefore, multiple regression provides one way that you can control for one or more variables. The difference in the actual values of the correlation and regular (unstandardized) regression coefficients is that correlation coefficients are in standardized units that vary from - 1.00 to + 1.00, and regular regression coefficients are in natural units. For example, the partial correlation coefficient expressing the relationship between starting salary and GPA controlling for SAT scores is.413 (suggesting a moderately strong positive relationship), and the partial regression coefficient is $4,788.90 (which says that controlling for SAT scores, each unit change in GPA is predicted to lead to a $4,788.90 change in income).
+In simple regression, the relationship examined via the regression coefficient is analogous to a Pearson correlation, which does not control for any confounding variables. In multiple regression, the relationship is analogous to partial correlation in which one or more variables are “partialled out” or “controlled for.” Therefore, multiple regression provides one way that you can control for one or more variables. The difference in the actual values of the correlation and regular (unstandardized) regression coefficients is that correlation coefficients are in standardized units that vary from - 1.00 to + 1.00, and regular regression coefficients are in natural units. For example, the partial correlation coefficient expressing the relationship between starting salary and GPA controlling for SAT scores is.413 (suggesting a moderately strong positive relationship), and the partial regression coefficient is &#36;4,788.90 (which says that controlling for SAT scores, each unit change in GPA is predicted to lead to a &#36;4,788.90 change in income).
 
-Using the data from our hypothetical college student data set, we used SPSS to provide the following multiple regression equation that is based on the dependent variable of starting salary and the predictor variables of GPA and high school SAT: n *Y* where
+Using the data from our hypothetical college student data set, we used SPSS to provide the following multiple regression equation that is based on the dependent variable of starting salary and the predictor variables of GPA and high school SAT:
 
-*X* is grade point average, and 1 *X* is high school SAT. 2
+*Y* n where
 
-The first partial regression coefficient in the preceding regression equation is $4,788.90, which says that after controlling for SAT scores, starting salary increases by $4,788.90 for each one-unit increase in GPA. The second partial regression coefficient is
+*X* is grade point average, and 1
+
+*X* is high school SAT. 2
+
+The first partial regression coefficient in the preceding regression equation is &#36;4,788.90, which says that after controlling for SAT scores, starting salary increases by &#36;4,788.90 for each one-unit increase in GPA. The second partial regression coefficient is
 
 ![Diagram](images/diagram_p23_01.png)
 
@@ -1778,44 +1755,45 @@ The first partial regression coefficient in the preceding regression equation is
 
 *Diagram*
 
-$25.56, which says that after controlling for GPA, starting salary increases by $25.56 for each one-unit increase in SAT. According to this equation, it is important to do well on your SATs and GPA! 3
+> &#36;25.56, which says that after controlling for GPA, starting salary increases by &#36;25.56 for each one-unit increase in SAT. According to this equation, it is important to do well on your SATs and GPA!
 
-If you would like to obtain a predicted starting salary using our multiple regression equation, you insert the values for GPA and SAT and solve for *Y*-hat. Here is an example where we checked for the predicted starting salary for a B student who had a 1100 on her SAT:
+> If you would like to obtain a predicted starting salary using our multiple regression equation, you insert the values for GPA and SAT and solve for *Y*-hat. Here is an example where we checked for the predicted starting salary for a B student who had a 1100 on her SAT:
 
 We inserted a 3 for GPA and 1100 for SAT
 
 > We added the two positive numbers and subtracted the negative number
 
-The predicted starting salary is $30,047.11. You can put any other valid values into this regression equation for GPA and SAT and obtain the predicted starting salary.
+> The predicted starting salary is &#36;30,047.11. You can put any other valid values into this regression equation for GPA and SAT and obtain the predicted starting salary.
 
 ### Contingency Tables
 
-When you have a categorical dependent variable and a categorical independent variable, one basic technique is to construct a contingency table (also called cross-tabulation).  A  **contingency table** is a table displaying information in cells Table used to formed by the intersection of two or more categorical variables. In a two-dimension contingency table, which is what we explain here, there are only two variables; the rows represent the categories of one of the variables and the columns represent the categories of the other variable. Depending on your needs, various types of information can be placed into the cells of a contingency table, such as cell frequencies, cell percentages, row percentages, and column percentages. You can see a contingency table with cell frequencies in Table 15.5(a) and a contingency table with column percentages in the cells in Table 15.5(b). Remember, our data for this example (just like our other examples) are hypothetical; we constructed the data set to make the example instructive and interesting.
+When you have a categorical dependent variable and a categorical independent variable, one basic technique is to construct a contingency table (also called Table used to cross-tabulation).  A  **contingency table** is a table displaying information in cells formed by the intersection of two or more categorical variables. In a two-dimension contingency table, which is what we explain here, there are only two variables; the rows represent the categories of one of the variables and the columns represent the categories of the other variable. Depending on your needs, various types of information can be placed into the cells of a contingency table, such as cell frequencies, cell percentages, row percentages, and column percentages. You can see a contingency table with cell frequencies in Table 15.5(a) and a contingency table with column percentages in the cells in Table 15.5(b). Remember, our data for this example (just like our other examples) are hypothetical; we constructed the data set to make the example instructive and interesting.
 
-Look at the contingency Table 15.5(a). You can see that the column variable is gender (i.e., female or male). The row variable is personality type. People with typeA personality are more likely to be impatient, competitive, irritable, high achieving, engage in multitasking, and feel a sense of urgency. People with type-B personality are more likely to be cooperative, less competitive, more relaxed, more patient, more satisfied, and easygoing. The research question is whether there is a relationship between gender and personality types. The cells in Table 15.5(a) contain cell frequencies. Do you think that you see a relationship between gender and personality type based on your examination of Table 15.5(a)? That is, does gender seem to predict
+> Look at the contingency Table 15.5(a). You can see that the column variable is gender (i.e., female or male). The row variable is personality type. People with typeA personality are more likely to be impatient, competitive, irritable, high achieving, engage in multitasking, and feel a sense of urgency. People with type-B personality are more likely to be cooperative, less competitive, more relaxed, more patient, more satisfied, and easygoing. The research question is whether there is a relationship between gender and personality types. The cells in Table 15.5(a) contain cell frequencies. Do you think that you see a relationship between gender and personality type based on your examination of Table 15.5(a)? That is, does gender seem to predict
 
-3 If you want to determine which of the variables in a multiple regression are more strongly related to starting salary (controlling for the other variables in the equation), take the values for “part correlation” for each independent/predictor variable from the SPSS printout and square them; then just see which one is the largest, second largest,... and smallest. This index is called the *semi-partial correlation squared*. It tells you the amount of variance or variation in the DV that is uniquely explained by each IV. The variable that explains the most variance is the most important  variable, and the variable that explains the least variance is the least important variable (statistically speaking).
+> 3 If you want to determine which of the variables in a multiple regression are more strongly related to starting salary (controlling for the other variables in the equation), take the values for “part correlation” for each independent/predictor variable from the SPSS printout and square them; then just see which one is the largest, second largest,... and smallest. This index is called the *semi-partial correlation squared*. It tells you the amount of variance or variation in the DV that is uniquely explained by each IV. The variable that explains the most variance is the most important  variable, and the variable that explains the least variance is the least important variable (statistically speaking).
 
 <!-- Page 25 -->
-(a) Contingency Table Showing Cell Frequencies (hypothetical data) Gender Female Male Personality Type A 2,972 2,460 Type Type B 1,921 971 4,893 3,431 (b) Contingency Table Showing Column Percentages (based on the data in part (a)) Gender Female Male Personality Type A percentage is 2,972 divided by 4,893, which is.607, or in percentage form it is 60.7%. The number of females in the other cell is 1,921; therefore, this percentage is 39.3%. Notice that these two column percentages add up to 100%. In the table, we also calculated the column percentages for men.
+(a) Contingency Table Showing Cell Frequencies (hypothetical data)
+
+Female Personality Type A 2,972 Type Type B 1,921 4,893 (b) Contingency Table Showing Column Percentages (based on the data in part (a))
+
+Female Personality Type A Gender Male 2,460 971 3,431
+
+Gender Male percentage is 2,972 divided by 4,893, which is.607, or in percentage form it is 60.7%. The number of females in the other cell is 1,921; therefore, this percentage is 39.3%. Notice that these two column percentages add up to 100%. In the table, we also calculated the column percentages for men.
 
 Now look at Table 15.5(b), and try to determine if gender and personality type are related. When we converted the raw numbers to column percentages, we obtained group **rates**. The correct way to read this table is to compare across the columns. On reading the table this way, one can see that 60.7% of females were type A, but 71.7% of the men were type A. In other words, men had a greater rate of type-A personality than women. Now let’s look at type-B personality. The rates for type-B personality are 39.3% for females and 28.3% for men; therefore, women have a higher rate of type-B personality than men. That’s how these two variables are related with our hypothetical  data.
 
 **Table 15.5** *Personality Type by Gender Contingency Tables*
 
-<div class="framed-card">
-  <div class="framed-card-header">Personality Type by Gender Contingency Tables</div>
-  <ol class="framed-card-body">
-    <li>7%</li>
-    <li>7% Type Type B</li>
-    <li>3%</li>
-    <li>3% 100% 100% personality type? Do not look at Table 15.5(b) yet! Do you think that women tend to be type A more than men tend to be type A? Although it is important to report cell frequencies, it is very difficult to determine how the two variables are related based on cell frequencies alone. In Table 15.5(b), we have calculated what are called column percentages for females and males. To obtain a column percentage, divide the cell frequency by the total frequency for the column (and then move the decimal point so that you have a percentage). For example, there are 2,972 females in column one, and there are a total of 4,893 females. This column</li>
-  </ol>
-</div>
+60. 7%
+71. 7% Type Type B
+39. 3%
+28. 3% 100% 100% personality type? Do not look at Table 15.5(b) yet! Do you think that women tend to be type A more than men tend to be type A? Although it is important to report cell frequencies, it is very difficult to determine how the two variables are related based on cell frequencies alone. In Table 15.5(b), we have calculated what are called column percentages for females and males. To obtain a column percentage, divide the cell frequency by the total frequency for the column (and then move the decimal point so that you have a percentage). For example, there are 2,972 females in column one, and there are a total of 4,893 females. This column
 
 Generally speaking, we recommend that you make your predictor variable the column variable and make your dependent variable the row variable. Then calculate column percentages and compare the rates across the rows. That’s what we did in Table 15.5(b). In order to correctly read a contingency table, you need to remember these two simple rules:
 
-- If the percentages are calculated down the columns, then compare across the rows.
+> - If the percentages are calculated down the columns, then compare across the rows.
 
 - If the percentages are calculated across the rows, then compare down the columns.
 
@@ -1844,7 +1822,7 @@ The purpose of descriptive statistics is to describe and summarize the character
 <details id="flashcard-inferential-statistics">
 <summary>📇 <b>Inferential statistics</b> *(p. 2)*</summary>
 
-> **Definition:** The type of statistical analysis focused on making inferences about populations based on sample data
+> **Definition:** The type of statistical analysis focused on making inferences about populationons based on sample data
 
 </details>
 
@@ -2122,8 +2100,6 @@ The purpose of descriptive statistics is to describe and summarize the character
   This site includes lots of statistics-related learning materials, including “applets” that demonstrate statistics.
 
 <!-- Page 27 -->
-****
-
 ### Practice Test
 
 *The answers to these questions can be found in the Appendix.*

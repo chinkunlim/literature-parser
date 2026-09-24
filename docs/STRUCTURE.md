@@ -54,7 +54,7 @@ books-project/
 │   ├── needs_review/               # 🚨 [人機隔離區] 遇疑難公式或壞頁自動存於此，不卡死主程序
 │   └── state/                      # 💾 斷點續傳快照、TOC 預覽與 Dashboard 狀態
 │
-├── tests/                          # 🧪 [自動化測試體系] (171 個測試全部 PASS)
+├── tests/                          # 🧪 [自動化測試體系] (179 個測試全部 PASS)
 │   ├── __init__.py                 # 動態注入 sys.path，確保任何環境直跑 unittest/pytest
 │   ├── unit/                       # 單元測試 (純函數、正則、版面子模組，毫秒級無 I/O)
 │   └── integration/                # 整合測試 (管線端到端、硬體守衛聯動)
@@ -68,12 +68,15 @@ books-project/
 │   ├── utils/                      # 🛠️ 通用工具
 │   │   └── logger.py               # 結構化診斷日誌工具
 │   └── book_processor/             # ⚙️ 既有書籍與文獻處理核心引擎
-│       ├── pipelines/              # 管線層 (textbook_pipeline, literature_pipeline)
+│       ├── pipelines/              # 管線層 (textbook_pipeline, literature_pipeline 支援 IEEE 與子類型處理)
 │       ├── parsers/                # 解析層 (PDF, EPUB, LaTeX, 雙欄版面)
 │       ├── verification/           # 檢驗層 (OllamaVerifier, rules)
-│       └── core/                   # 核心調度 (orchestrator, splitter, inout)
+│       ├── utils/                  # 輔助模組 (obsidian_linker 雙鏈與索引生成)
+│       └── core/                   # 核心調度 (orchestrator, global_state 全域狀態, splitter)
 │
-└── dashboard/                      # 📊 [預留模組] 未來視覺化儀表板 (讀取 data/state/status.json)
+├── config/publishers/              # 🏛️ [出版商特徵設定] (apa, elsevier, wiley, springer, ieee)
+│
+└── dashboard/                      # 📊 [視覺化儀表板] 靜態零依賴 HTML 看板 (dashboard/index.html 由 run.py dashboard 生成)
 ```
 
 ---

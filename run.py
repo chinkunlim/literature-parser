@@ -1008,12 +1008,285 @@ def cmd_status(args):
     print("\n" + "=" * 65 + "\n")
 
 
+def cmd_dashboard(args):
+    """
+    Generates a modern, standalone static HTML dashboard (dashboard/index.html)
+    visualizing real-time conversion progress, and opens it in the default browser.
+    """
+    import json
+    import webbrowser
+    from book_processor.core.global_state import GlobalStateManager
+
+    gsm = GlobalStateManager()
+    data = gsm.get_all()
+    if not data.get("books"):
+        gsm.sync_from_output_dir()
+        data = gsm.get_all()
+
+    dashboard_dir = ROOT / "dashboard"
+    dashboard_dir.mkdir(parents=True, exist_ok=True)
+    html_path = dashboard_dir / "index.html"
+
+    books_data = data.get("books", {})
+    books_json = json.dumps(books_data, ensure_ascii=False, indent=2)
+    last_updated = data.get("last_updated", "N/A")
+
+    html_content = f"""<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📚 Book & Literature Processor — 處理進度儀表板</title>
+  <style>
+    :root {{
+      --bg: #0d1117;
+      --card-bg: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #7d8590;
+      --success: #238636;
+      --success-text: #3fb950;
+      --warning: #9e6a03;
+      --warning-text: #d29922;
+      --danger: #da3633;
+      --danger-text: #f85149;
+      --primary: #1f6feb;
+      --primary-text: #58a6ff;
+    }}
+    * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+    body {{
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 2rem 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }}
+    header {{
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }}
+    h1 {{ font-size: 1.6rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }}
+    .subtitle {{ color: var(--text-muted); font-size: 0.88rem; margin-top: 0.3rem; }}
+    .stats-summary {{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }}
+    .stat-card {{
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.2rem;
+    }}
+    .stat-card h3 {{ font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }}
+    .stat-card .value {{ font-size: 2rem; font-weight: 700; margin-top: 0.3rem; }}
+    .grid {{
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }}
+    .book-card {{
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.4rem;
+      transition: transform 0.15s, border-color 0.15s;
+    }}
+    .book-card:hover {{ border-color: #58a6ff88; }}
+    .card-header {{
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 0.8rem;
+    }}
+    .card-title {{ font-size: 1.1rem; font-weight: 600; line-height: 1.4; }}
+    .badge {{
+      display: inline-flex;
+      align-items: center;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }}
+    .badge-complete {{ background: #23863622; color: var(--success-text); border: 1px solid #23863655; }}
+    .badge-in_progress {{ background: #1f6feb22; color: var(--primary-text); border: 1px solid #1f6feb55; }}
+    .badge-has_failures {{ background: #da363322; color: var(--danger-text); border: 1px solid #da363355; }}
+    .badge-pending {{ background: #30363d55; color: var(--text-muted); border: 1px solid var(--border); }}
+    .type-tag {{
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: bold;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      background: #21262d;
+      color: #8b949e;
+      margin-right: 0.5rem;
+    }}
+    .progress-bar-bg {{
+      background: #21262d;
+      height: 10px;
+      border-radius: 5px;
+      overflow: hidden;
+      margin: 0.8rem 0;
+    }}
+    .progress-bar-fill {{
+      height: 100%;
+      border-radius: 5px;
+      transition: width 0.4s ease;
+    }}
+    .fill-complete {{ background: var(--success); }}
+    .fill-progress {{ background: var(--primary); }}
+    .fill-failures {{ background: var(--danger); }}
+    .card-footer {{
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }}
+    .meta-pills {{ display: flex; gap: 0.6rem; }}
+    .meta-pill {{ display: flex; align-items: center; gap: 0.3rem; }}
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>📚 書籍與學術文獻處理儀表板</h1>
+      <div class="subtitle">零雲端依賴 · 本地 AI 智能排版 · 即時進度快照 (最後更新：{last_updated})</div>
+    </div>
+  </header>
+
+  <div class="stats-summary" id="statsSummary"></div>
+
+  <div class="grid" id="booksGrid"></div>
+
+  <script>
+    const books = {books_json};
+    const entries = Object.entries(books);
+
+    // Compute Summary Stats
+    const totalDocs = entries.length;
+    let completedDocs = 0;
+    let totalChapters = 0;
+    let verifiedChapters = 0;
+
+    entries.forEach(([_, info]) => {{
+      if (info.status === 'COMPLETE') completedDocs++;
+      totalChapters += (info.total_chapters || 0);
+      verifiedChapters += (info.verified || 0);
+    }});
+
+    const overallPct = totalChapters > 0 ? Math.round((verifiedChapters / totalChapters) * 100) : 0;
+
+    document.getElementById('statsSummary').innerHTML = `
+      <div class="stat-card">
+        <h3>總處理文檔數</h3>
+        <div class="value">${{totalDocs}} <span style="font-size:1rem;color:var(--text-muted);">本/篇</span></div>
+      </div>
+      <div class="stat-card">
+        <h3>全數完工</h3>
+        <div class="value" style="color:var(--success-text);">${{completedDocs}} <span style="font-size:1rem;color:var(--text-muted);">本/篇</span></div>
+      </div>
+      <div class="stat-card">
+        <h3>章節總完成度</h3>
+        <div class="value" style="color:var(--primary-text);">${{overallPct}}%</div>
+      </div>
+      <div class="stat-card">
+        <h3>累計驗證章節</h3>
+        <div class="value">${{verifiedChapters}} <span style="font-size:1rem;color:var(--text-muted);">/ ${{totalChapters}}</span></div>
+      </div>
+    `;
+
+    const grid = document.getElementById('booksGrid');
+    if (!entries.length) {{
+      grid.innerHTML = '<div class="book-card" style="text-align:center;color:var(--text-muted);padding:3rem;">尚無轉檔紀錄。請使用 <code>python run.py process</code> 或 <code>python run.py batch</code> 啟動轉檔。</div>';
+    }} else {{
+      entries.forEach(([title, info]) => {{
+        const pct = info.progress_pct || 0;
+        const status = info.status || 'PENDING';
+        const docType = (info.doc_type || 'book').toUpperCase();
+
+        let badgeClass = 'badge-pending';
+        let badgeLabel = '⏳ 等待中';
+        let fillClass = 'fill-progress';
+
+        if (status === 'COMPLETE') {{
+          badgeClass = 'badge-complete';
+          badgeLabel = '✅ 已全數完成';
+          fillClass = 'fill-complete';
+        }} else if (status === 'HAS_FAILURES') {{
+          badgeClass = 'badge-has_failures';
+          badgeLabel = '❌ 需修復/重試';
+          fillClass = 'fill-failures';
+        }} else if (status === 'IN_PROGRESS') {{
+          badgeClass = 'badge-in_progress';
+          badgeLabel = '🔄 處理中';
+          fillClass = 'fill-progress';
+        }}
+
+        grid.innerHTML += `
+          <div class="book-card">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="type-tag">${{docType}}</span>
+                ${{title}}
+              </div>
+              <span class="badge ${{badgeClass}}">${{badgeLabel}}</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill ${{fillClass}}" style="width: ${{pct}}%;"></div>
+            </div>
+            <div class="card-footer">
+              <div class="meta-pills">
+                <span class="meta-pill">章節進度: <strong>${{info.verified || 0}} / ${{info.total_chapters || 0}}</strong> (${{pct}}%)</span>
+                ${{info.failed > 0 ? `<span class="meta-pill" style="color:var(--danger-text);">⚠️ 失敗: ${{info.failed}}</span>` : ''}}
+                ${{info.pending_review > 0 ? `<span class="meta-pill" style="color:var(--warning-text);">👁️ 待審查: ${{info.pending_review}}</span>` : ''}}
+              </div>
+              <div>更新時間: ${{info.last_updated || 'N/A'}}</div>
+            </div>
+          </div>
+        `;
+      }});
+    }}
+  </script>
+</body>
+</html>
+"""
+
+    html_path.write_text(html_content, encoding="utf-8")
+    print("\n" + "=" * 65)
+    print("📊 [DASHBOARD] 視覺化儀表板已成功生成！")
+    print(f"• 檔案路徑: {html_path}")
+    print("=" * 65 + "\n")
+
+    if not getattr(args, "no_open", False):
+        try:
+            webbrowser.open(f"file://{html_path.resolve()}")
+            print("🚀 已自動在預設瀏覽器中開啟儀表板。\n")
+        except Exception:
+            pass
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="python run.py",
         description="Book & Journal Processor Unified Command Center",
     )
     subparsers = parser.add_subparsers(dest="subcommand", required=True)
+
 
 
 
@@ -1087,8 +1360,14 @@ def main():
     p_stat.add_argument("--sync", action="store_true", help="強制重新掃描輸出目錄以同步全域狀態")
     p_stat.set_defaults(func=cmd_status)
 
+    # dashboard
+    p_dash = subparsers.add_parser("dashboard", help="生成靜態 HTML 視覺化儀表板並於瀏覽器中檢視進度")
+    p_dash.add_argument("--no-open", action="store_true", help="僅生成檔案，不自動開啟瀏覽器")
+    p_dash.set_defaults(func=cmd_dashboard)
+
     args = parser.parse_args()
     args.func(args)
+
 
 
 

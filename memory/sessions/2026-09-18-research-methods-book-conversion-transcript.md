@@ -1,4 +1,4 @@
-# 📜 對話紀錄全量封存 (Full Transcript): Research Methods 教科書轉檔與排版優化
+# 📜 對話紀錄全量封存 (Full Transcript): 我已經把output清理乾淨，運行這個專案的功能，把inbox/Research Methods, Design, and Analysis 13th ed.p
 
 - **會話 ID**: `74bb97d9-9bba-4680-900c-e5a79d616708`
 - **歸檔檔案**: `2026-09-18-research-methods-book-conversion-transcript.md`

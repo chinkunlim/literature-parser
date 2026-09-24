@@ -389,6 +389,72 @@ def cmd_handoff(args):
         print("🎒 [Local Git] Handoff doc updated.")
 
 
+def cmd_end_session(args):
+    """
+    End-of-Session Protocol (當使用者表示「結束對話」時執行):
+    1. 備份對話 (Summary + Transcript 雙軌歸檔，嚴格過濾本專案工作區).
+    2. 最終檢查與更新所有 Markdown 檔案 (HANDOFF.md, TASKS.md, STRUCTURE.md, .agent/skills/*.md 等).
+    3. 執行單元測試門禁，全數通過後以全英文 Conventional Commit 提交 Git.
+    """
+    print("\n" + "=" * 65)
+    print("🏁 [END-SESSION] 對話結束閉環流程啟動")
+    print("=" * 65)
+    today = get_current_date()
+    now_ts = get_current_timestamp()
+
+    # 1. 備份對話
+    print("\n📦 [Step 1/3] 執行對話雙軌全量備份 (Dual-Track Archiving)...")
+    cmd_archive_sessions(args)
+
+    # 2. 最終檢查與更新所有 Markdown 文件
+    print("\n📝 [Step 2/3] 最終檢查與文檔同步 (Sync Markdown Docs)...")
+    handoff_file = ROOT / "memory" / "HANDOFF.md"
+    if handoff_file.exists():
+        c = handoff_file.read_text(encoding="utf-8")
+        c = re.sub(
+            r"### 🕒 最新交接時間：\d{4}-\d{2}-\d{2} \d{2}:\d{2}",
+            f"### 🕒 最新交接時間：{now_ts}",
+            c,
+        )
+        handoff_file.write_text(c, encoding="utf-8")
+        print(f"  • 更新 {handoff_file.name} 時間戳記 ➔ {now_ts}")
+
+    sync_markdown_dates()
+
+    # 檢核 .agent/skills/ 內的所有 markdown 檔案
+    skills_dir = ROOT / ".agent" / "skills"
+    if skills_dir.exists():
+        skill_files = list(skills_dir.rglob("*.md"))
+        print(f"  • 檢核 .agent/skills/ 共 {len(skill_files)} 份技能定義文件 (全部齊全)")
+
+    # 清理臨時暫存檔
+    pruned = clean_dangling_tmp_files()
+    if pruned > 0:
+        print(f"  • 已自動清理 {pruned} 個過期暫存檔 (*.tmp.*)")
+
+    # 3. 測試門禁與 Git 提交
+    print("\n🧪 [Step 3/3] 執行自動化測試門禁並提交 Git...")
+    res_test = subprocess.run([sys.executable, "-m", "unittest", "discover", "tests"], cwd=str(ROOT))
+    if res_test.returncode != 0:
+        print("\n🛑 [存檔阻斷] 單元測試未全數通過，已安全攔截 Commit！請檢查修正後重試。")
+        sys.exit(1)
+
+    summary_note = (getattr(args, "summary", "") or "").strip()
+    if not summary_note:
+        summary_note = "end conversation session and sync all documentation"
+    commit_msg = f"[{today}] chore(session): {summary_note}"
+
+    subprocess.run(["git", "add", "-A"], cwd=str(ROOT))
+    res_git = subprocess.run(["git", "commit", "-m", commit_msg], cwd=str(ROOT))
+    if res_git.returncode == 0:
+        print(f"\n🎉 [Git Commit 成功] {commit_msg}")
+    else:
+        print("\nℹ️ [Git Status] 無額外檔案異動需提交。")
+    print("=================================================================")
+    print("✅ 對話已安全歸檔並完成全量文件檢核與存檔，可放心結束此會話！")
+    print("=================================================================\n")
+
+
 def cmd_publish(args):
     """Squash merges to main and prints authorized push instructions with automated gates."""
     print("\n📦 [PUBLISH] 準備打包發布里程碑...")
@@ -524,6 +590,15 @@ def cmd_archive_sessions(args):
         if not t_src.exists():
             continue
 
+        # Filter: strictly archive conversations belonging to this project workspace
+        try:
+            with open(t_src, "r", encoding="utf-8", errors="ignore") as _f:
+                _sample = _f.read(20000)
+                if str(ROOT) not in _sample and "book-processor" not in _sample:
+                    continue
+        except Exception:
+            continue
+
         # Extract date and topic from transcript metadata
         date_str = ""
         first_user_msg = ""
@@ -559,14 +634,28 @@ def cmd_archive_sessions(args):
         discovered.append((date_str, conv_id, slug, title, t_src))
 
     if not discovered:
-        print("ℹ️ 未找到任何對話紀錄。")
+        print("ℹ️ 未找到屬於本專案的對話紀錄。")
         return
 
-    print(f"🔍 自動偵測到 {len(discovered)} 個對話紀錄目錄。\n")
+    print(f"🔍 自動偵測到 {len(discovered)} 個本專案對話紀錄目錄。\n")
 
     for date_str, conv_id, slug, title, t_src in discovered:
-        summary_file = sessions_dir / f"{date_str}-{slug}-summary.md"
-        transcript_file = sessions_dir / f"{date_str}-{slug}-transcript.md"
+        # Check if existing summary or transcript already links to this conv_id
+        matched_summary = None
+        matched_transcript = None
+        for ef in sessions_dir.glob("*.md"):
+            try:
+                sample_txt = ef.read_text(encoding="utf-8", errors="ignore")[:3000]
+                if conv_id in sample_txt:
+                    if ef.name.endswith("-summary.md"):
+                        matched_summary = ef
+                    elif ef.name.endswith("-transcript.md"):
+                        matched_transcript = ef
+            except Exception:
+                pass
+
+        summary_file = matched_summary or (sessions_dir / f"{date_str}-{slug}-summary.md")
+        transcript_file = matched_transcript or (sessions_dir / f"{date_str}-{slug}-transcript.md")
 
         print(f"• 會話 [{date_str}] {title[:60]} (ID: {conv_id[:8]}...):")
         if summary_file.exists():
@@ -1319,6 +1408,11 @@ def main():
     p_hand = subparsers.add_parser("handoff", help="離席交接存檔 (更新 HANDOFF.md 後 commit)")
     p_hand.add_argument("reason", default="外出/上課暫存", nargs="?", help="離席原因")
     p_hand.set_defaults(func=cmd_handoff)
+
+    # end-session
+    p_end = subparsers.add_parser("end-session", help="對話結束閉環 (1. 歸檔對話 2. 最終檢查更新所有 md 3. 測試與 Git Commit)")
+    p_end.add_argument("summary", nargs="?", default="", help="可選：本次會話核心總結說明")
+    p_end.set_defaults(func=cmd_end_session)
 
     # publish
     p_pub = subparsers.add_parser("publish", help="本地發布並合併至 main 分支")

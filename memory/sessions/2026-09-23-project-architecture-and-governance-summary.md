@@ -1,5 +1,7 @@
 # 🗄️ 會話深度紀要：專案治理、企業級標準、雙層代碼規範與自動化體系建立
 
+- **對應完整對話紀錄**：[2026-09-23-project-architecture-and-governance-transcript.md](2026-09-23-project-architecture-and-governance-transcript.md)
+- **會話 ID**：`d934528e-eb4f-4097-8457-50cc94bfb932`
 - **會議/會話日期**：2026-09-23 至 2026-09-24
 - **參與角色**：使用者 (Developer) & Antigravity (AI Assistant)
 - **主題**：解決專案長期痛點、剔除歷史過渡冗餘、落實軟硬體守衛與自動觸發、建立雙層代碼規範與 30 大核心工程鐵律、一鍵開案 CLI 腳手架 (`run.py init-project`)

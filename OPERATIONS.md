@@ -40,10 +40,13 @@ uv run python run.py process data/input/literature/nature_paper.pdf
 uv run python run.py test-ollama-auto-trigger
 ```
 
-### ④ 日常本地存檔與離席交接 (Git Local-Only)
+### ④ 日常本地存檔、結束對話與離席交接 (Git Local-Only)
 ```bash
 # 一般進度存檔（自動更新文檔時間戳並 commit）
 uv run python run.py save "完成雙欄排版修正"
+
+# 結束對話（自動執行三部曲：1. 雙軌歸檔 2. 檢核所有 md 包含 .agent/skills/ 3. 測試與 commit）
+uv run python run.py end-session "完成對話任務與文檔同步"
 
 # 要去上課或外出中斷（自動更新 memory/HANDOFF.md 並 commit）
 uv run python run.py handoff "去上課暫存進度"
@@ -51,7 +54,7 @@ uv run python run.py handoff "去上課暫存進度"
 
 ### ⑤ 全自動對話雙軌封存 (Session Archiving)
 ```bash
-# 自動掃描當前與歷史會話，更新 memory/sessions/ 雙軌總結與紀錄
+# 自動掃描當前與歷史會話 (嚴格過濾本專案)，更新 memory/sessions/ 雙軌總結與紀錄
 uv run python run.py archive-sessions
 ```
 

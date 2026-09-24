@@ -183,7 +183,10 @@ my-new-project/
   - 任何 AI 進入專案執行 `run.py agent-init` 時，系統自動讀取 `HANDOFF.md` 最新快照並印在終端機。AI 自動從上次中斷處直接繼續工作，禁止發呆或反問使用者「我們要做什麼」。
 
 ### 3. 對話紀錄全量封存與高密度摘要自動化 (`memory/sessions/`)
-- **觸發節點**：僅在「**離席交接 (Handoff)**」與「**重大發布 (Publish)**」兩大邏輯斷點自動觸發，**嚴禁每回答一句話就碎裂存檔**。
+- **生命週期規範與觸發節點**：
+  - **對話進行中**：保留系統常態之文檔即時更新（如任務狀態打勾、目錄地圖修補等），**絕不在此時進行中途碎片式歸檔**。
+  - **結束對話時 (On End-Session)**：僅在使用者明確表示「**結束對話**」或執行 `run.py end-session`、以及「**重大發布 (Publish)**」時觸發。
+  - **工作區路徑強制過濾**：自動掃描時嚴格校驗是否包含當前專案工作區路徑，嚴禁混入全域其他專案之對話紀錄。
 - **雙軌成對產出規格**：
   1. `YYYY-MM-DD-<topic>-transcript.md`：
      - 自動掃描系統日誌，提取該工作階段的所有 `USER_INPUT`（指令本文）與 `PLANNER_RESPONSE`（工具調用軌跡與回應），保存最真實的原汁原味問答。
@@ -194,6 +197,10 @@ my-new-project/
        - `3. 程式碼與檔案具體變更`
        - `4. 踩坑修復日誌 (Issues Encountered & Fixes)`
        - `5. 目前狀態與後續接手方向`
+- **「結束對話」標準閉環三部曲 (End-Session Protocol)**：
+  1. **備份對話**：生成本次會話之 Summary + Transcript 雙軌紀錄。
+  2. **最終全面檢查與文檔同步**：全面檢查並同步更新所有相關 `.md` 文件（包含 `memory/HANDOFF.md`、`memory/TASKS.md`、`docs/STRUCTURE.md`、以及 `.agent/skills/` 內所有 `SKILL.md`）。
+  3. **測試與 Git 提交**：執行單元測試門禁（100% 通過），以全英文 Conventional Commit 提交。
 
 ### 4. 目錄結構地圖自動反向審計 (`docs/STRUCTURE.md`)
 - **漂移偵測時機 (Drift Detection)**：每次新增、刪除、重構任何模組或核心檔案時。

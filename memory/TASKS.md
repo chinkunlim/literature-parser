@@ -36,6 +36,7 @@
 - [x] [2026-09-24] 實現全域進度狀態中心化管理 (`GlobalStateManager` + `run.py status`)，原子化維護 `data/state/global_status.json` 並支援輸出目錄自動狀態重建
 - [x] [2026-09-24] 實現 `LiteraturePipeline` 學術文獻領域深度客製化（支援子類型識別、IEEE 作者簡介/浮水印清理、Index Terms 標籤重構與預印本警示標註）
 - [x] [2026-09-24] 實現靜態零依賴 HTML 視覺化儀表板 (`dashboard/index.html` + `run.py dashboard`)，支援即時卡片、章節完成度統計與全域進度快照
+- [x] [2026-09-24] 徹底清除根目錄 output/ 與 processed/ 歷史殘留，剔除 memory/sessions/ 內 34 個外部非本專案會話，確立本專案 6 個會話 12 個雙軌檔案標準，並建立「結束對話」閉環 SOP (`run.py end-session`)
 
 ---
 

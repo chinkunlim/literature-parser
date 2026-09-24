@@ -1,4 +1,6 @@
-# 📜 對話紀錄全量封存 (Full Transcript): 排版、表格與跨頁內容語義修復
+# 📜 對話紀錄全量封存 (Full Transcript): 第一本書（Research Methods, Design, and Analysis 13th ed）
+- 有兩段突然很大、bold
+- Table還是沒有很
 
 - **會話 ID**: `cb3aa69b-509b-4784-96e1-9d645c7ff32b`
 - **歸檔檔案**: `2026-09-20-typography-tables-and-formula-refinement-transcript.md`

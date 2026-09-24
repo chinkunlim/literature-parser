@@ -3,7 +3,7 @@
 > **日期**：2026-09-24  
 > **主題**：6 大功能增強落實、掃描解析器致命 Bug 修復與全量電子書/學術文獻重新輸出  
 > **會話 ID**：`d332c1ab-c227-41d3-92e1-ad8a49f727a3`  
-> **對應原始問答紀錄**：[`memory/sessions/2026-09-23-uv-run-python-runpy-agent-init-additional-metad-transcript.md`](file:///Users/limchinkun/Desktop/books/memory/sessions/2026-09-23-uv-run-python-runpy-agent-init-additional-metad-transcript.md)
+> **對應原始問答紀錄**：[`memory/sessions/2026-09-24-full-feature-enhancements-and-books-conversion-transcript.md`](file:///Users/limchinkun/Desktop/books/memory/sessions/2026-09-24-full-feature-enhancements-and-books-conversion-transcript.md)
 
 ---
 

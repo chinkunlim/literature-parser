@@ -19,8 +19,9 @@
 | **轉換學術文獻 / 論文** | `uv run python run.py process data/input/literature/<filename>` | 自動啟動雙欄排版、摘要與文獻解析 |
 | **驗證 Ollama 自動喚醒** | `uv run python run.py test-ollama-auto-trigger` | 驗證輸入與輸出守衛能否自動喚醒 Ollama |
 | **一般進度存檔** | `uv run python run.py save "<English_message>"` | 先更新文檔時間戳，再以英文 commit |
+| **結束對話 / 結案離席** | `uv run python run.py end-session "<English_summary>"` | **對話結束必跑**：1. 備份對話 (雙軌) 2. 檢核更新所有 .md (含 .agent/skills/) 3. 測試與英文 Commit |
 | **使用者說要去上課/中斷** | `uv run python run.py handoff "<reason_in_English>"` | 先更新 `memory/HANDOFF.md`，再英文 commit |
-| **封存所有會話紀錄** | `uv run python run.py archive-sessions` | 自動掃描 Brain 目錄，更新所有會話之雙軌紀錄與總結 |
+| **封存所有會話紀錄** | `uv run python run.py archive-sessions` | 自動掃描 Brain 目錄 (嚴格限定本專案)，更新雙軌紀錄與總結 |
 | **常駐智慧看門狗** | `uv run python run.py watchdog` | 監聽待處理目錄，一體化監測 RAM/SSD/電池安全 |
 | **發布與合併到 main** | `uv run python run.py publish "<English_release_notes>"` | 本地 Squash 合併，提示手動 push 指令 |
 
@@ -63,7 +64,10 @@
 - **原則**：只要 macOS 內建/原生功能的表現、耗電量或記憶體佔用更優秀，AI 必須主動向使用者提出該方案的優劣對比與整合建議。
 
 ### 6. 🗄️ 會話雙軌歸檔與全自動隔離協議 (Automated Session Archiving & Quarantine)
-- **自動歸檔時機**：每次使用者表示「要去上課/中斷」執行 `run.py handoff`，或「完成大功能」執行結案存檔時。
+- **自動歸檔時機**：**嚴格限定在「結束對話」或「重大發布」時執行**。
+  - 對話進行中：保持系統常態即時更新 Markdown 文檔，**不進行中途碎片式歸檔**。
+  - 當使用者說明「結束對話」或執行 `run.py end-session` / `publish` 時，才執行雙軌歸檔。
+- **嚴格專案隔離**：歸檔時強制校驗工作區路徑（`str(ROOT)` 或 `book-processor`），絕不掃描或收錄全域其他無關專案的會話。
 - **雙軌配對歸檔格式**：
   - `memory/sessions/YYYY-MM-DD-<topic>-summary.md`：**高密度總結**（先看這個，掌握決策與結果）。
   - `memory/sessions/YYYY-MM-DD-<topic>-transcript.md`：**完整對話紀錄**（有疑問時深挖原始問答）。
@@ -71,7 +75,7 @@
   - 任何 Ollama 處理失敗、超時、或信度評估 < 0.80 的瑕疵，**一律自動拋入 `data/needs_review/` 隔離存檔**，絕不中斷主批次管線。
 
 ### 7. ⚡ AI 全自動主動執行原則 (Agent Proactive Execution Protocol)
-- **嚴禁消極在對話框中輸出指令叫使用者去終端機跑**：凡是可以程式化、腳本化執行的操作（如環境檢查 `doctor`、開場簡報 `agent-init`、轉檔執行 `process`、文檔更新、Git 本地提交 `save`/`handoff`、對話歸檔 `archive-sessions`），**AI 必須直接調用終端工具主動執行**，向使用者展示執行輸出與診斷結果。
+- **嚴禁消極在對話框中輸出指令叫使用者去終端機跑**：凡是可以程式化、腳本化執行的操作（如環境檢查 `doctor`、開場簡報 `agent-init`、轉檔執行 `process`、文檔更新、Git 本地提交 `save`/`handoff`/`end-session`、對話歸檔 `archive-sessions`），**AI 必須直接調用終端工具主動執行**，向使用者展示執行輸出與診斷結果。
 
 ### 8. 🔄 治理標準持續自我迭代協議 (Self-Updating Standard Directive)
 - 每次使用者對專案提出任何新的規則、格式約束或流程改進時，**AI 必須無條件主動同步更新 `PROJECT_INIT_STANDARD.md` 與 `AGENTS.md`**，確保未來所有專案都能自動享有最新標準。
@@ -87,9 +91,13 @@
 1. **開場喚醒**：跑 `run.py agent-init` 讀檔簡報，不 commit、不備份。
 2. **架構異動**：即時更新 `docs/STRUCTURE.md`，隨功能一併 commit。
 3. **規則更新**：即時同步 `docs/CODING_RULES.md`、`AGENTS.md` 與 `PROJECT_INIT_STANDARD.md`，小步 commit。
-4. **功能完成**：在 `memory/TASKS.md` 勾選並標註日期，跑 `run.py save "<English_msg>"` commit。
-5. **離席暫停** ⭐：使用者說去上課/暫停時，更新 `memory/HANDOFF.md`，跑 `run.py handoff "<reason>"`，**立即執行 `run.py archive-sessions` 產出摘要與紀錄**。
-6. **里程碑發布** ⭐：更新 `CHANGELOG.md`，跑 `run.py publish "<notes>"`，**立即執行 `run.py archive-sessions` 進行全量雙軌封存**。
+4. **功能完成**：在 `memory/TASKS.md` 勾選並標註日期，跑 `run.py save "<English_msg>"` commit。對話中持續保留各項 md 檔案之常態維護。
+5. **結束對話 / 結案離席** ⭐：
+   - 當使用者說明「結束對話」時，AI 主動執行閉環 SOP (`run.py end-session "<English_summary>"` 或手動執行三部曲)：
+     1. **備份對話**：產出本次會話雙軌檔案 (`-summary.md` + `-transcript.md`)，嚴格限定本專案。
+     2. **最終全面檢查與文檔同步**：全面檢查並同步更新所有相關 `.md` 文件，包含 `memory/HANDOFF.md`、`memory/TASKS.md`、`docs/STRUCTURE.md`、以及 `.agent/skills/` 內所有 `SKILL.md`。
+     3. **測試與 Git 提交**：執行單元測試門禁（100% 通過），以全英文 Conventional Commit 提交本地存檔。
+6. **里程碑發布** ⭐：更新 `CHANGELOG.md`，跑 `run.py publish "<notes>"`，自動執行全量測試、雙軌封存與 Squash Merge。
 
 ### 11. ⚙️ 八大自動化機制與觸發防線 (The 8 Autonomous Triggers)
 1. **存檔測試門禁**：`run.py save` 自動秒級執行 `unittest`，測試未全數通過自動攔截 Commit。

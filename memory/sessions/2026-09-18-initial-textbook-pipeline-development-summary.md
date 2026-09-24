@@ -1,6 +1,7 @@
 # 🗄️ 會話深度總結：初期書籍解析管線、OCR 引擎與 LaTeX 規範化開發
 
 - **對應完整對話紀錄**：[2026-09-18-initial-textbook-pipeline-development-transcript.md](2026-09-18-initial-textbook-pipeline-development-transcript.md)
+- **會話 ID**：`e81a99f1-8fd6-4393-8186-db1c305c5170`
 - **會話日期區間**：2026-09-16 至 2026-09-18
 - **參與角色**：使用者 & AI Assistant
 - **核心主題**：建立企業級教科書 PDF/EPUB 結構化轉檔引擎、LaTeX 數學公式尺寸統一、章節切割與 Anki 卡片匯出

@@ -1,4 +1,6 @@
-# 📜 對話紀錄全量封存 (Full Transcript): 書籍轉檔管線初版開發與版面分析
+# 📜 對話紀錄全量封存 (Full Transcript): 這個文件夾有幾個pdf和epub的文件：
+- 我要提取所有檔案裡的文字和圖片，並另存起來
+- pdf要按照書本的格式切割，books/sample/ 內有切割的
 
 - **會話 ID**: `e81a99f1-8fd6-4393-8186-db1c305c5170`
 - **歸檔檔案**: `2026-09-18-initial-textbook-pipeline-development-transcript.md`

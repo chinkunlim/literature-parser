@@ -146,6 +146,10 @@ class JournalPipeline(BasePipeline):
         config["features"]["allow_blockquotes"] = True
         full_md = IMRADResolver.resolve_structure(full_md, config=config)
 
+        # Apply semantic restructuring for the perfect header (Author Block, TOC, Abstract)
+        from book_processor.parsers.journal.semantic_formatter import SemanticHeaderFormatter
+        full_md = SemanticHeaderFormatter.format_header(full_md)
+
         # Standardize hanging-indent references
         full_md = ReferenceParser.clean_document_references(full_md)
 

@@ -5,19 +5,17 @@
 
 ---
 
-### 🕒 最新交接時間：2026-09-25 03:45
+### 🕒 最新交接時間：2026-09-25 03:53
  
 #### 1. 剛剛完成了什麼？ (Session Accomplishments)
-- **核心套件名稱標準化**：
-  1. 將 `src/book_processor` 正式遷移重命名為 `src/doc_processor`，同步更新 `pyproject.toml`（`doc-processor`）、`run.py`、所有單元測試與技能文檔。
-  2. 徹底清除 `journal` 歷史遺留：刪除 `journal_pipeline.py`、`profiles/journal_*.json`，全面收斂為 `literature` 架構。
-- **文獻排版 5 大缺陷全數根除 (`2002-01194-001.md`)**：
-  1. 頁碼殘留（75）清除，並保留 `laboratory-based` 等複合詞連字號。
-  2. 欄位隔離基線聚合，消除雙欄跨欄造成的截斷與偽清單項（`- established`）。
-  3. 精確清除 Table 1, 2, 6 之 OCR 殘留碎片，所有 6 個 APA 規範表格 100% 錨定於正確語意段落。
-  4. 修復跨行 `Table\n2. With...` 導致之偽清單標記。
-  5. 轉義 `Collect $$$` 防範 KaTeX 語法崩潰，解碼 `&amp;` 為 `&`。
-- **測試驗證**：190 個單元測試全數通過（`Ran 190 tests in 5.457s — OK (skipped=6)`）。文獻 `2002-01194-001.pdf` 重新轉檔完成，Ollama 審查評定 Excellent（PASS）。
+- **文獻重新輸出與 Verified 黃金版本全方位比對**：
+  1. 對比 `2002-01194-001.md` 與 `2002-01194-001_Verified.md`：17 個大綱標題、6 個 HTML5 表格、2 個圖表 `<figure>` 達成 100% 精準吻合。
+  2. 徹底根除 Table 1~6 跨欄 OCR 碎片，並將 Discussion 與 Method 中因跨欄表格被中斷的句子完美縫合。
+  3. 在 `MarginParser` 增加 `gloss_placement == 'none'` 與 `is_literature` 守衛，根除學術文獻誤生教科書邊欄詞彙卡片（如 `**.547 .814 .679**`）的問題。
+  4. 75k 字元長度差異縮小至 16 字元（75,133 vs 75,149），正規化詞彙相似度達 95.44%。
+- **核心架構與測試**：
+  1. 套件遷移 `src/doc_processor`、根除 `journal`、190 項單元測試 100% 通過。
+  2. 轉檔管線通過 Ollama 雙重驗證評定為 Excellent (PASS)。
 
 #### 2. 目前專案狀態與代碼位置
 - 分支：`main`

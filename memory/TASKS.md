@@ -6,6 +6,11 @@
 
 ## 🏃 當前 Sprint (v1.0.0-rc1 專案治理與守衛上線)
 
+- [x] [2026-09-25] 對比驗證 `2002-01194-001.md` 與 `2002-01194-001_Verified.md`：
+  - 17 個標題與 6 個 HTML 表格 100% 精準對齊
+  - 清理 Table 1~6 所有 OCR 殘留碎片，縫合跨欄截斷之討論段落
+  - `MarginParser` 增加 `gloss_placement == 'none'` 與 `is_literature` 守衛，根除教科書邊欄詞彙誤判
+  - 正規化詞彙相似度達 95.44%，190 項單元測試 100% 通過
 - [x] [2026-09-25] 全專案核心套件重命名：`src/book_processor` → `src/doc_processor`，同步更新 `pyproject.toml`、`run.py`、所有測試與技能文檔
 - [x] [2026-09-25] 徹底根除 `journal` 殘留：刪除 `journal_pipeline.py` 與 `journal_*.json`，全面收斂為 `literature` 架構
 - [x] [2026-09-25] 修復 5 大文獻排版瑕疵 (`2002-01194-001.md`)：

@@ -163,20 +163,48 @@ class LiteraturePipeline(BasePipeline):
         # 1. Strip any existing table captions/tables from body to cleanly re-anchor
         body = re.sub(r'<div class="table-caption"[^>]*>Table\s+\d+</div>.*?</table>(?:\s*<div class="table-notes"[^>]*>.*?</div>)?\s*', '', body, flags=re.DOTALL)
 
-        # 2. Purge raw OCR remnants of Table 1 (floating numbers & legend)
+        # 2. Purge raw OCR remnants of Table 1 (floating numbers & in-text block)
         body = re.sub(
             r'(?m)^Average adjusted pumps\s*\n+Total First 10[\s\S]*?\*Note\.\* Blue indicates[^\n]+\n*',
             '',
             body
         )
+        body = re.sub(
+            r'with no difference between the first and\s*\n+Table 1 \*Earnings[\s\S]*?Adjusted orange[^\n]+?\s+second set of 10 trials',
+            'with no difference between the first and second set of 10 trials',
+            body
+        )
+
         # Purge raw OCR remnants of Table 2 (floating numbers & legend) and stitch sentence across page break
         body = re.sub(
             r'Also shown in Table 2, Adj BART and\s*\n+(?:<!-- Page \d+ -->\s*\n+)?(?:[ \t\d—\.\*\-]+(?:\n|$))+[\s\S]*?\[\^10\]:[^\n]+\n+(?:<!-- Page \d+ -->\s*\n+)?\s*(?=the risk-related constructs)',
             'Also shown in Table 2, Adj BART and ',
             body
         )
+
+        # Purge raw OCR remnants of Table 3 and Table 4 spanning across column text
+        raw_t3_t4 = re.compile(
+            r'In addition, although AUDIT score loaded slightly higher on the first\s*\n+'
+            r'Table 3 \*Factor Loadings for the Risk-Related Constructs\*[\s\S]*?'
+            r'Table 4\s*\n+\*Factor Loadings for the Self-Reported Real-World\* \*Risk Behaviors\*[\s\S]*?'
+            r'Sex-UP = [^\n]+?\s+'
+            r'factor, we included it on the second factor as well given the magnitude of its loading and its theoretical link to the factor\.\s*'
+            r'Seatbelt use did(?: not)? load on either factor and therefore was not considered in the resulting analyses\.\s*'
+        )
+        body = raw_t3_t4.sub(
+            'In addition, although AUDIT score loaded slightly higher on the first factor, we included it on the second factor as well given the magnitude of its loading and its theoretical link to the factor. Seatbelt use did load on either factor and therefore was not considered in the resulting analyses.\n\n',
+            body
+        )
+        body = re.sub(r'(?m)^Table 3\s*\n+\*Factor Loadings for the Risk-Related Constructs\*[\s\S]*?\*Note\.\* Inclusion within a factor[^\n]+\n*', '', body)
+        body = re.sub(r'(?m)^Table 4\s*\n+\*Factor Loadings for the Self-Reported Real-World\* \*Risk Behaviors\*[\s\S]*?Sex-UP = [^\n]+\n*', '', body)
+
+        # Purge raw OCR remnants of Table 5
+        body = re.sub(r'(?m)^Table 5\s*\n+\*Summary of the Hierarchical Linear Regression Analysis[\s\S]*?\*Note\.\* Adj = adjusted\.\s*\n*', '', body)
+        body = re.sub(r'> 📖 <a id="term-[^"]+"></a>\*\*\.547[^\n]+\n*', '', body)
+
         # Purge raw OCR remnants of Table 6 in Discussion section
         body = re.sub(r'However, the individuals who\s*\n+Table 6 Regression statistic[\s\S]*?<\.05\s*', 'However, the individuals who ', body)
+        body = re.sub(r'First, it may be that participants took some time to\s*\n+\*Summary of the Hierarchical Linear Regression Analysis[\s\S]*?<\.05\s*(?:<!-- Page \d+ -->\s*)?determine', 'First, it may be that participants took some time to determine', body)
         body = re.sub(r'(?m)^\*Summary of the Hierarchical Linear Regression Analysis[\s\S]*?p\s*<\s*\.05\s*\n*', '', body)
 
         # 3. Exact semantic anchor placement for tables

@@ -53,6 +53,8 @@ class MarginParser:
     @classmethod
     def extract_margin_glossaries(cls, page_elem, fonts, pw: float, ph: float, page_num: int = 0, already_consumed: set = None, style_config: dict = None) -> tuple:
         style = style_config if style_config is not None else _DEFAULT_STYLE
+        if style.get("gloss_placement") == "none" or style.get("is_literature"):
+            return [], set()
         """
         Extracts margin glossary definitions on odd (right margin) or even (left margin) pages.
         Returns: (list_of_callout_dicts, set_of_consumed_elements)

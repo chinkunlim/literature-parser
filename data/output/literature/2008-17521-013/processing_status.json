@@ -2,7 +2,7 @@
   "archetype": "journal",
   "doc_name": "2008-17521-013",
   "total_pages": 6,
-  "passed": true,
+  "passed": false,
   "accuracy_percent": 89.82,
   "images_extracted": 0,
   "publisher": "apa"

@@ -164,7 +164,7 @@ class JournalPipeline(BasePipeline):
 
         # Prepend Academic CSS
         academic_css = build_textbook_css({"is_journal_article": True})
-        if "/* Textbook typographic styling */" not in full_md:
+        if "/* Academic Journal Typographic Styling */" not in full_md:
             full_md = f"{academic_css}\n{full_md}"
 
         # Save primary document Markdown

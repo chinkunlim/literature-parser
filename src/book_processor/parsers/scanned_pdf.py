@@ -235,3 +235,7 @@ class ScannedPDFParser:
         # Normalise math notation to LaTeX
         return MathLaTeXConverter.process_text(md_result)
 
+    # Backward-compatible alias
+    process_scanned_page = parse_page_to_markdown
+
+

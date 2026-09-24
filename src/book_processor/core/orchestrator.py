@@ -321,8 +321,9 @@ class BookProcessorOrchestrator:
             for p in range(1, total_pages + 1):
                 p_imgs = [img for img in saved_images if img['page'] == p]
                 if is_scanned:
-                    p_md = ScannedPDFParser.process_scanned_page(str(ch_pdf), p, work_tmp)
+                    p_md = ScannedPDFParser.parse_page_to_markdown(str(ch_pdf), p, work_tmp)
                 else:
+
                     p_md = DigitalPDFParser.parse_page_to_markdown(str(ch_pdf), p, p_imgs)
                 if p_md:
                     md_parts.append(f"<!-- Page {p} -->\n{p_md}")

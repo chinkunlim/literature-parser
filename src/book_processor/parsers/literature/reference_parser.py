@@ -123,10 +123,10 @@ class ReferenceParser:
 
     @classmethod
     def format_references(cls, entries: List[str]) -> str:
-        """Formats citation entries into clean markdown with blank line separation."""
+        """Formats citation entries into clean markdown with a bulleted list."""
         if not entries:
             return ""
-        return "\n\n".join(entries)
+        return "\n".join(f"- {entry}" for entry in entries)
 
     @classmethod
     def clean_document_references(cls, full_md: str) -> str:

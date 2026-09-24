@@ -41,30 +41,7 @@ from book_processor.utils.text_utils import sanitize_filename, stitch_cross_page
 logger = logging.getLogger(__name__)
 
 # Standard academic styling injected into journal Markdown
-ACADEMIC_JOURNAL_CSS = """<style>
-/* Academic Journal Layout Stylesheet */
-body {
-  font-family: 'Times New Roman', Times, serif;
-  line-height: 1.5;
-  text-align: justify;
-}
-h1 {
-  text-align: center;
-  margin-top: 1.5em;
-  margin-bottom: 0.5em;
-}
-table {
-  width: 100%;
-  max-width: 100%;
-  border-collapse: collapse;
-  margin: 1.5em 0;
-  display: table !important;
-}
-table th, table td {
-  padding: 6px 10px;
-}
-</style>
-"""
+from book_processor.book_style import build_textbook_css
 
 
 class JournalPipeline(BasePipeline):
@@ -178,8 +155,9 @@ class JournalPipeline(BasePipeline):
         full_md = stitch_cross_page_continuity(full_md)
 
         # Prepend Academic CSS
-        if ACADEMIC_JOURNAL_CSS.strip() not in full_md:
-            full_md = f"{ACADEMIC_JOURNAL_CSS}\n{full_md}"
+        academic_css = build_textbook_css({"is_journal_article": True})
+        if "/* Academic Journal Typographic Styling */" not in full_md:
+            full_md = f"{academic_css}\n{full_md}"
 
         # Save primary document Markdown
         md_file = doc_out / f"{clean_name}.md"

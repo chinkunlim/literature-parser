@@ -12,7 +12,7 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from book_processor.pipelines.journal_pipeline import JournalPipeline, ACADEMIC_JOURNAL_CSS
+from book_processor.pipelines.journal_pipeline import JournalPipeline
 
 logger = logging.getLogger(__name__)
 
@@ -173,4 +173,4 @@ class LiteraturePipeline(JournalPipeline):
         return res
 
 
-__all__ = ["LiteraturePipeline", "JournalPipeline", "ACADEMIC_JOURNAL_CSS"]
+__all__ = ["LiteraturePipeline", "JournalPipeline"]

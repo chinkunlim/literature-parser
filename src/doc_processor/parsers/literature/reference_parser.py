@@ -22,6 +22,7 @@ class ReferenceParser:
         r'(?:^|(?<=[\.\?!]\s)|(?<=\.\*\s)|(?<=\.\*\*\s))('
         r'[A-Z][a-zA-Z\-\'\s]+?,\s+[A-Z]\.(?:[^\(\)]*?)\((?:18|19|20)\d{2}[a-z]?\)'
         r'|[A-Z][a-zA-Z\-\'\s]+?\([A-Z0-9\-\s]+\)\.\s*\((?:18|19|20)\d{2}[a-z]?\)'
+        r'|[A-Z][a-zA-Z\-\'\s,]+?\b(?:18|19|20)\d{2}[a-z]?;'
         r'|\[\d{1,4}\]\s+[A-Z]'
         r'|^\d{1,4}\.\s+[A-Z]'
         r')'
@@ -43,12 +44,12 @@ class ReferenceParser:
           (pre_refs_md, refs_header, refs_body, post_refs_md)
         """
         ref_header_pattern = re.compile(
-            r'^(#{1,3}\s*(?:References|REFERENCES|Bibliography|Literature Cited))\s*$',
-            re.M
+            r'^(#{1,3}\s*(?:References|REFERENCES|Bibliography|Literature Cited|LITERATURE CITED))\s*$',
+            re.M | re.I
         )
         match = ref_header_pattern.search(full_md)
         if not match:
-            match = re.search(r'^\s*(References|REFERENCES)\s*$', full_md, re.M)
+            match = re.search(r'^\s*(References|REFERENCES|Bibliography|Literature Cited|LITERATURE CITED)\s*$', full_md, re.M | re.I)
             if not match:
                 return full_md, "", "", ""
 

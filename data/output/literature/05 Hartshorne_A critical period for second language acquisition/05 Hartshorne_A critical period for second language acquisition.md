@@ -107,11 +107,11 @@
   DOI: <a href="https://doi.org/10.1016/j.cognition.2018.04.007">10.1016/j.cognition.2018.04.007</a>
 </div>
 
-# A critical period for second language acquisition: Evidence from
+# A critical period for second language acquisition: Evidence from 2/3 million English speakers
 
 <div class="author-block">
-  <div class="author-name">2/3 million English speakers</div>
-  <div class="author-affiliation">Joshua K. Hartshornea,b,*, Joshua B. Tenenbauma, and Steven Pinkerc</div>
+  <div class="author-name">Joshua K. Hartshornea,b,*, Joshua B. Tenenbauma, and Steven Pinkerc</div>
+  <div class="author-affiliation">aDepartment of Brain & Cognitive Sciences, Massachusetts Institute of Technology, Building 46,</div>
 
 </div>
 
@@ -121,8 +121,6 @@
 - [Abstract](#abstract)
 - [1. Introduction](#1-introduction)
   - [1.1. Learning ability vs. ultimate attainment](#11-learning-ability-vs-ultimate-attainment)
-- [1. How does learning ability change with age?](#1-how-does-learning-ability-change-with-age)
-- [2. How proficient can someone be if they began learning at a particular age?](#2-how-proficient-can-someone-be-if-they-began-learning-at-a-particular-age)
   - [1.2. The present study](#12-the-present-study)
 - [2. Method](#2-method)
   - [2.1. Overview](#21-overview)
@@ -138,8 +136,8 @@
   - [4.1. Potential concerns and complications](#41-potential-concerns-and-complications)
   - [4.2. Implications](#42-implications)
 - [Author Note & Acknowledgments](#author-note--acknowledgments)
+- [References](#references)
 - [160. DOI: 10.1016/j.system.2016.06.001](#160-doi-101016jsystem201606001)
-- [Author Note & Acknowledgments](#author-note--acknowledgments)
 
 </details>
 
@@ -174,9 +172,9 @@ However, neither the nature nor the causes of this “critical period” for sec
 
 As noted by Patkowski (1980), researchers interested in critical periods focus on two interrelated yet distinct questions:
 
-## 1. How does learning ability change with age?
+**1.** How does learning ability change with age?
 
-## 2. How proficient can someone be if they began learning at a particular age?
+**2.** How proficient can someone be if they began learning at a particular age?
 
 The questions are different because language acquisition is not instantaneous. For example, an older learner who (hypothetically) acquired language at a slower rate could, in theory, still attain perfect proficiency if he or she persisted at the learning long enough.
 
@@ -210,6 +208,15 @@ Moreover, an underlying ability curve can be ascertained only if the measure of 
 These basic mathematical facts raise a significant practical problem: Detecting an error that occurs as little as 0.75% of the time requires a lot of data: A preschooler has to produce 92 utterances to have a better than even chance of producing an over-regularization. Thus, to detect even “conspicuous” errors, such as childhood over-regularization, we need to test many subjects on many items.
 
 Below, we describe a study of syntax that attempts to meet these challenges using novel experimental and analytical techniques. To foreshadow, the age at which syntax-learning ability begins to decline is much later than usually suspected, and it takes both native and non-native speakers longer to reach their ultimate level of attainment than has been previously assumed. While both findings are unexpected, we show that the apparent inconsistencies with prior findings can be explained by the much higher precision afforded by our methods. Indeed, the findings below should not be surprising in retrospect. More importantly, these findings appear robust and emerge in a variety of different analyses.
+
+<figure>
+  <img src="images/034_009.jpg" alt="Fig.
+
+8. We conducted 2500 simulated experiments of monolingual and immersion learners with each of three sample sizes: $N = 69$ (equivalent to Johnson & Newport, 1989), $N = 275$" style="max-width: 650px; width: 100%;">
+  <figcaption>Fig.
+
+8. We conducted 2500 simulated experiments of monolingual and immersion learners with each of three sample sizes: $N = 69$ (equivalent to Johnson & Newport, 1989), $N = 275$</figcaption>
+</figure>
 
 ## 2. Method
 
@@ -282,9 +289,9 @@ We focus first on the difficult but theoretically important question of the unde
 
 Fig. 4 plots the level of performance against current age in separate curves for participants with different ranges of age of first exposure. It simultaneously reveals the effects of age of first exposure (the differences among the curves) and total years of exposure (the left-toright position along each curve). Immersion learners—who were less numerous than the other groups—were aggregated into three-year bins for age of exposure, except for the simultaneous bilinguals (age of exposure = 0), who constituted their own bin. Curves were smoothed with a five-year floating window (analyses on non-smoothed data are discussed in the next subsection), and each of the estimated performance curves (described below) was restricted to consecutive ages for which there were at least ten participants in the five-year window, leaving 244,840 monolinguals, 44,412 immersion learners, and 257,998 nonimmersion learners.
 
-In order to estimate how underlying learning ability changes with age, we used a novel computational model to disentangle current age, age of first exposure, and amount of experience. Specifically, we modeled syntax acquisition as a simple exponential learning process: *t*−*Erdt* $\int$ *t* *g*(*t*) = 1 − *e* *e*
+In order to estimate how underlying learning ability changes with age, we used a novel computational model to disentangle current age, age of first exposure, and amount of experience. Specifically, we modeled syntax acquisition as a simple exponential learning process:
 
-(1)
+$\int$ *t* *t*−*Erdt* *g*(*t*) = 1 − *e* *e* (1)
 
 Cognition. Author manuscript; available in PMC 2019 August 01.
 
@@ -293,7 +300,7 @@ Page 9 where g is grammatical proficiency, t is current age, t e is age of first
 
 The piecewise structure of this Exponential Learning with Sigmoidal Decay (ELSD) model, and the fact that sigmoid functions can accommodate both flat and steep declines, allows it to capture a very wide range of developmental trajectories, including all of those discussed in the literature. Learning rate may be initially high or low, begin declining at any point in the lifespan (or not at all), decline rapidly or gradually, decline continuously or discontinuously, etc. Examples of the many possibilities encompassed by the model include the different curves shown in Figs. 2 and S2, as well as the gray lines in Fig. 4E.
 
-The model was fitted simultaneously to the performance curves for monolinguals, immersion learners, and non-immersion learners (cf. Fig. 4A and B). Parameters were fit with Differential Evolution (Mullen, Aridia, Gil, Windover, & Cline, 2011) and compared using Monte Carlo split-half cross-validated $$R^{2}$$, which avoids over-fitting. The best-fitting model ($$R^{2}$$ = 0.89) involved a rate change beginning at 17.4 years (Fig. 4E). The fit was significantly better than the best fit for alternative models in which learning rate did not change ($$R^{2}$$ = 0.66) or changed according to a step function with no further decline in the learning rate after the initial drop ($$R^{2}$$ = 0.70). Details on these and related models can be found in the supplementary materials.
+The model was fitted simultaneously to the performance curves for monolinguals, immersion learners, and non-immersion learners (cf. Fig. 4A and B). Parameters were fit with Differential Evolution (Mullen, Aridia, Gil, Windover, & Cline, 2011) and compared using Monte Carlo split-half cross-validated $R^{2}$, which avoids over-fitting. The best-fitting model ($R^{2}$ = 0.89) involved a rate change beginning at 17.4 years (Fig. 4E). The fit was significantly better than the best fit for alternative models in which learning rate did not change ($R^{2}$ = 0.66) or changed according to a step function with no further decline in the learning rate after the initial drop ($R^{2}$ = 0.70). Details on these and related models can be found in the supplementary materials.
 
 ### 3.2. Interim discussion
 
@@ -505,61 +512,44 @@ Refer to Web version on PubMed Central for supplementary material.
 
 **Acknowledgments**
 
+We are indebted to David Barner, David Birdsong, Kenji Hakuta, Elissa Newport, Laura-Ann Petitto, and Michael Ullman for comments, to Tanya Ivonchyk and Brandon Benson for help with developing the quiz, and to the hundreds of thousands of volunteers who participated in the study. This research was supported by an NIH NRSA award to JKH (5F32HD072748) and the Center for Minds, Brains, & Machines (NSF STC CCF-1231216).
+
+---
+
 ## Author Note & Acknowledgments
 
-We are indebted to David Barner, David Birdsong, Kenji Hakuta, Elissa Newport, Laura-Ann Petitto, and Michael Ullman for comments, to Tanya Ivonchyk and Brandon Benson for help with developing the quiz, and to the hundreds of thousands of volunteers who participated in the study. This research was supported by an NIH NRSA award to JKH (5F32HD072748) and the Center for Minds, Brains, & Machines (NSF STC CCF-1231216). **References** Abrahamsson N. 2012; Age of onset and nativelike L2 ultimate attainment of morphosyntactic and phonetic intuition. Studies in Second Language Acquisition. 34(02):187-214. Abrahamsson N, Hyltenstam K. 2008; The robustness of aptitude effects in near-native second language acquisition. Studies in Second Language Acquisition. 30(4):481-509. 6This finding also has practical consequences for research. Many researchers have argued that if later learners can reach monolingual levels of performance, that would be evidence against critical periods (and conversely, the failure of later learners to match monolinguals would be evidence for critical periods) (e.g., Abrahamsson & Hyltenstam, 2009). This standard, in conjunction with our results, leads to the unlikely conclusion that the critical period for syntax closes prior to birth. For additional discussion, see Birdsong and Gertken (2013). Cognition . Author manuscript; available in PMC 2019 August 01.
+* Corresponding author at: Department of Psychology, Boston College, McGuinn Hall 527, Chestnut Hill, MA 02467, United States. Joshua.hartshorne@bc.edu (J.K. Hartshorne). **Contributions** JKH designed the study, collected the data, and performed the analyses. All three authors contributed to designing the analyses and to writing the paper.
 
-<!-- Page 23 -->
-Page 23
+---
 
-Abrahamsson N, Hyltenstam K. 2009; Age of onset and nativelikeness in a second language: Listener perception versus linguistic scrutiny. Language Learning. 59(2):249-306. Baayen RH, Davidson DJ, Bates DM. 2008; Mixed-effects modeling with crossed random effects for subjects and items. Journal of Memory and Language. 59:390-412. Berman, RA, editor. Language development across childhood and adolescence. Philadelphia, PA: John Benjamins Publishing Company; 2004. Berman, RA. Developing linguistic knowledge and language use across adolescence. In: Hoff, E, Shatz, M, editors. Blackwell handbook of langauge development. Malden, MA: Blackwell Publishing; 2007. 347-367. Bialystok E, Miller B. 1999; The problem of age in second-language acquisition: Influences from language, structure, and task. Bilingualism: Language and Cognition. 2(02):127-145. Birdsong D. 2006; Age and second language acquisition and processing: A selective overview. Language Learning. 56:9-49. Birdsong, D. The critical period hypothesis for second language acquisition: Tailoring the coat of many colors. In: Pawlak, M, Aronin, L, editors. Essential topics in applied linguistics and multilingualism. Studies in honor of David Singleton. Berlin and New York: Springer; 2014. 43-50. Birdsong, D. Critical periods. In: Aronoff, M, editor. Oxford bibliographies in linguistics. New York:
+## References
 
-Oxford University Press; 2017. Birdsong D, Gertken LM. 2013; In faint praise of folly: A critical review of native/ non-native speaker comparisons, with examples from native and bilingual processing of French complex syntax. Language, Interaction and Acquisition. 4(2):107-133. Birdsong D, Molis M. 2001; On the evidence for maturational constraints in second-language acquisition. Journal of Memory and Language. 44(2):235-249. Blakemore SJ, Mills KL. 2014; Is adolescence a sensitive period for sociocultural processing? Annual
-
-Review of Psychology. 65:9.1-9.21. Bruer, JT. The myth of the first three years. New York: Free Press; 1999. Chudek M, Cheung BY, Heine SJ. 2015; US immigrants' patterns of acculturation are sensitive to their age, language, and cultural contact but show no evidence of a sensitive window for acculturation. Journal of Cognition and Culture. 15:174-190. Clark HH. 1973; The language-as-fixed-effect fallacy: A critique of language statistics in psychological research. Journal of Verbal Learning and Verbal Behavior. 12(4):335-359. Coppieters R. 1987Competence differences between native and near-native speakers. Language.:544-
-
-573. Crain S, Thornton R. 2011; Syntax acquisition. WIREs Cognitive Science. 3(2):185-203. Crews F, He J, Hodge C. 2007; Adolescent cortical development: A critical period of vulnerability for addiction. Pharmacology, Biochemistry, and Behavior. 86:189-199. Curtiss, S. Learning as a cognitive system: Its independence and selective vulnerability. In: Otero, CP, editor. Noam Chomsky: Critical assessments. Vol.
-
-1. New York, NY: Routledge; 1994. 227-228. de Villiers JG. 2007; The interface of language and theory of mind. Lingua. 117:1858-1878. DOI:
-
-10.1016/j.lingua.2006.11.006 [PubMed: 17973025] DeKeyser RM. 2000; The robustness of critical period effects in second language acquisition. Studies in Second Language Acquisition. 22(04):499-533. DeKeyser RM, Alfi-Shabtay I, Ravid D. 2010; Cross-linguistic evidence for the nature of age effects in second language acquisition. Applied Psycholinguistics. 31(03):413-438. Efron, B, Tibshirani, R. An introduction to the bootstrap. Boca Raton, FL: Chapman & Hall/CRC;
-
-1993. Flege JE, Yeni-Komshian GH, Liu S. 1999; Age constraints on second-language acquisition. Journal of
-
-Memory and Language. 41(1):78-104. Friedman JH. 1991; Multivariate adaptive regression splines. The Annals of Statistics. 19(1):1-141. Fuhrmann D, Knoll LJ, Blakemore SJ. 2015; Adolescence as a sensitive period of brain development.
-
-Trends in Cognitive Sciences. 19(10):558-566. [PubMed: 26419496]
-
-Cognition. Author manuscript; available in PMC 2019 August 01.
-
-<!-- Page 24 -->
-Page 24
-
-Germine LT, Duchaine B, Nakayama K. 2011; Where cognitive development and aging meet: face learning ability peaks after age
-30. Cognition. 118(2):201-210. DOI: 10.1016/j.cognition. 2010.11.002 [PubMed: 21130422] Ghitza Y, Gelman A. 2014The Great Society, Reagan's Revolution, and generations of presidential voting. Granena G, Long MH. 2013; Age of onset, length of residence, language aptitude, and ultimate L2 attainment in three linguistic domains. Second Language Research. 29(3):311-343. Guion SG, Flege JE, Liu SH, Yeni-Komshian GH. 2000; Age of learning effects on the duration of sentences produced in a second language. Applied Psycholinguistics. 21(02):205-228. Hakuta K, Bialystok E, Wiley E. 2003; Critical evidence: A test of the critical-period hypothesis for second-language acquisition. Psychological Science. 14(1):31-38. [PubMed: 12564751] Halberda J, Ly R, Wilmer JB, Naiman DQ, Germine L. 2012; Number sense across the lifespan as revealed by a massive Internet-based sample. Proceedings of the National Academy of Sciences. 109(28):11116-11120. DOI: 10.1073/pnas.1200196109 Hartshorne JK, Germine LT. 2015; When does cognitive functioning peak? The asynchronous rise and fall of different cognitive abilities across the life span. Psychological Science. 26(4):433-443. [PubMed: 25770099] Haykin, S. Neural networks: A comprehensive guide.
-
-2. Upper Saddle River, NJ: Prentice Hall; 1999. Hernandez AE, Li P, MacWhinney B. 2005; The emergence of competing modules in bilingualism.
-
-Trends in Cognitive Sciences. 9(5):220-225. [PubMed: 15866148] Huang BH. 2015; A synthesis of empirical research on the linguistic outcomes of early foreign language instruction. International Journal of Multilingualism. 13(3):257-273. DOI: 10.1080/14790718.2015.1066792 Jaeger TF. 2008; Categorical data analysis: Away from ANOVAs (transformation or not) and towards logit mixed models. Journal of Memory and Language. 59(4):434-446. DOI: 10.1016/j.jml. 2007.11.007 [PubMed: 19884961] Jia G, Aaronson D, Wu Y. 2002; Long-term language attainment of bilingual immigrants: Predictive variables and language group differences. Applied Psycholinguistics. 23(04):599-621. Johnson JS, Newport EL. 1989; Critical period effects in second language learning: The influence of maturational state on the acquisition of English as a second language. Cognitive Psychology. 21(1):60-99. [PubMed: 2920538] Johnson JS, Newport EL. 1991; Critical period effects on universal properties of language: The status of subjacency in the acquisition of a second language. Cognition. 39(3):215-258. [PubMed: 1841034] Kidd E, Bavin EL. 2002; English-speaking children's comprehension of relative clauses: Evidence for general-cognitive and language-specific constraints on development. Journal of Psycholinguistic Research. 31(6):599-617. [PubMed: 12599916] Kidd E, Lum JAG. 2008; Sex differences in past tense overregularization. Developmental Science.
-
-11(6):882-889. [PubMed: 19046157] Klindt D, Devaine M, Daunizeau J. 2017; Does the way we read others' mind change over the lifespan?
-
-Insights from a massive Web poll of cognitive skills from childhood to late adulthood. Cortex. 86:205-215. [PubMed: 27726852] Krashen SD, Long MA, Scarcella RC. 1979Age, rate, and eventual attainment in second language acquisition. TESOL Quarterly.:573-582. Lenneberg, E. Biological foundations of language. New York: Wiley; 1967. Marcus GF, Pinker S, Ullman MT, Hollander M, Rosen TJ, Xu F. 1992; Overregularization in language acquisition. Monographs of the Society for Research in Child Development. 57(4):1-182. Mayberry RI. 1993; First-Language acquisition after childhood differs from second-language acquisition: The case of american sign language. Journal of Speech, Language, and Hearing Research. 36(6):1258-1270. Mayberry RI, Lock E. 2003; Age constraints on first versus second language acquisition: Evidence for linguistic plasticity and epigenesis. Brain and Language. 87(3):369-384. [PubMed: 14642540]
-
-Cognition. Author manuscript; available in PMC 2019 August 01.
-
-<!-- Page 25 -->
-Page 25
-
-Mayberry RI, Lock E, Kazmi H. 2002; Development: Linguistic ability and early language exposure.
-
-Nature. 417(6884):38. [PubMed: 11986658] McDonald JL. 2000; Grammaticality judgments in a second language: Influences of age of acquisition and native language. Applied Psycholinguistics. 21(03):395-423. Messenger K, Branigan HP, McLean JF, Sorace A. 2012; Is young children's passive syntax semantically constrained? Evidence from syntactic priming. Journal of Memory and Language. 66:568-587. Milborrow, S. Earth: Multivariate adaptive regression spline models. R package version 3.2-7. 2014. &lt; http://cran.r-project.org/web/packages/earth/index.html &gt; Mills KL, Lalonde F, Clasen LS, Giedd JN, Blakemore SJ. 2014; Developmental changes in the structure of the social brain in late childhood and adolescence. Social Cognitive Affective Neuroscience. 9(1):123-131. [PubMed: 23051898] Morgan-Short, K, Ullman, MT. The neurocognition of second language. In: Mackey, A, Gass, S, editors. Handbook of second language acquisition. Routledge; 2012. 1-18. Mullen K, Aridia D, Gil D, Windover D, Cline J. 2011; DEoptim: An R package for global optimiziation by differential evolution. Journal of Statistical Software. 40(6):1-26. Newport EL. 1988; Constraints on learning and their role in language acquisition: Studies of the acquisition of American Sign Language. Language Sciences. 10(1):147-172. Newport EL. 1990; Maturational constraints on language learning. Cognitive Science. 14(1):11-28. Nippold, MA. Later language development: School-age children, adolescents, and young adults. 3.
-
-Austin, TX: Pro-Ed; 2007. Patkowski MS. 1980; The sensitive period for the acquisition of syntax in a secondary language.
-
-Language Learning. 30(2):449-468. Pinker, S. The language instinct. New York: William Morrow; 1994. Pinker, S. Words and rules: The ingredients of language. New York, NY: HarperCollins; 1999. Pinto JGA, Hornby KR, Jones DG, Murphy KM. 2010; Developmental changes in GABAergic mechanisms in human visual cortex across the lifespan. Frontiers in Cellular Neuroscience. 4(16)doi: 10.3389/fncel.2010.00016 Pulvermüller F, Schumann JH. 1994; Neurobiological mechanisms of language acquisition. Language
-
-Learning. 44:681-734. DOI: 10.1111/j.1467-1770.1994.tb00635.x Qureshi MA. 2016; A meta-analysis: Age and second language grammar acquisition. System. 60:147-
+- Abrahamsson N. 2012; Age of onset and nativelike L2 ultimate attainment of morphosyntactic and phonetic intuition. Studies in Second Language Acquisition. 34(02):187-214. Abrahamsson N, Hyltenstam K. 2008; The robustness of aptitude effects in near-native second language acquisition. Studies in Second Language Acquisition. 30(4):481-509. 6This finding also has practical consequences for research. Many researchers have argued that if later learners can reach monolingual levels of performance, that would be evidence against critical periods (and conversely, the failure of later learners to match monolinguals would be evidence for critical periods) (e.g., Abrahamsson & Hyltenstam, 2009). This standard, in conjunction with our results, leads to the unlikely conclusion that the critical period for syntax closes prior to birth. For additional discussion, see Birdsong and Gertken (2013). Cognition . Author manuscript; available in PMC 2019 August 01.
+- Page 23
+- Abrahamsson N, Hyltenstam K. 2009; Age of onset and nativelikeness in a second language: Listener perception versus linguistic scrutiny. Language Learning. 59(2):249-306. Baayen RH, Davidson DJ, Bates DM. 2008; Mixed-effects modeling with crossed random effects for subjects and items. Journal of Memory and Language. 59:390-412. Berman, RA, editor. Language development across childhood and adolescence. Philadelphia, PA: John Benjamins Publishing Company; 2004. Berman, RA. Developing linguistic knowledge and language use across adolescence. In: Hoff, E, Shatz, M, editors. Blackwell handbook of langauge development. Malden, MA: Blackwell Publishing; 2007. 347-367. Bialystok E, Miller B. 1999; The problem of age in second-language acquisition: Influences from language, structure, and task. Bilingualism: Language and Cognition. 2(02):127-145. Birdsong D. 2006; Age and second language acquisition and processing: A selective overview. Language Learning. 56:9-49. Birdsong, D. The critical period hypothesis for second language acquisition: Tailoring the coat of many colors. In: Pawlak, M, Aronin, L, editors. Essential topics in applied linguistics and multilingualism. Studies in honor of David Singleton. Berlin and New York: Springer; 2014. 43-50. Birdsong, D. Critical periods. In: Aronoff, M, editor. Oxford bibliographies in linguistics. New York:
+- Oxford University Press; 2017. Birdsong D, Gertken LM. 2013; In faint praise of folly: A critical review of native/ non-native speaker comparisons, with examples from native and bilingual processing of French complex syntax. Language, Interaction and Acquisition. 4(2):107-133. Birdsong D, Molis M. 2001; On the evidence for maturational constraints in second-language acquisition. Journal of Memory and Language. 44(2):235-249. Blakemore SJ, Mills KL. 2014; Is adolescence a sensitive period for sociocultural processing? Annual
+- Review of Psychology. 65:9.1-9.21. Bruer, JT. The myth of the first three years. New York: Free Press; 1999. Chudek M, Cheung BY, Heine SJ. 2015; US immigrants' patterns of acculturation are sensitive to their age, language, and cultural contact but show no evidence of a sensitive window for acculturation. Journal of Cognition and Culture. 15:174-190. Clark HH. 1973; The language-as-fixed-effect fallacy: A critique of language statistics in psychological research. Journal of Verbal Learning and Verbal Behavior. 12(4):335-359. Coppieters R. 1987Competence differences between native and near-native speakers. Language.:544-
+- 573. Crain S, Thornton R. 2011; Syntax acquisition. WIREs Cognitive Science. 3(2):185-203. Crews F, He J, Hodge C. 2007; Adolescent cortical development: A critical period of vulnerability for addiction. Pharmacology, Biochemistry, and Behavior. 86:189-199. Curtiss, S. Learning as a cognitive system: Its independence and selective vulnerability. In: Otero, CP, editor. Noam Chomsky: Critical assessments. Vol.
+- 1. New York, NY: Routledge; 1994. 227-228. de Villiers JG. 2007; The interface of language and theory of mind. Lingua. 117:1858-1878. DOI:
+- 10.1016/j.lingua.2006.11.006 [PubMed: 17973025] DeKeyser RM. 2000; The robustness of critical period effects in second language acquisition. Studies in Second Language Acquisition. 22(04):499-533. DeKeyser RM, Alfi-Shabtay I, Ravid D. 2010; Cross-linguistic evidence for the nature of age effects in second language acquisition. Applied Psycholinguistics. 31(03):413-438. Efron, B, Tibshirani, R. An introduction to the bootstrap. Boca Raton, FL: Chapman & Hall/CRC;
+- 1993. Flege JE, Yeni-Komshian GH, Liu S. 1999; Age constraints on second-language acquisition. Journal of
+- Memory and Language. 41(1):78-104. Friedman JH. 1991; Multivariate adaptive regression splines. The Annals of Statistics. 19(1):1-141. Fuhrmann D, Knoll LJ, Blakemore SJ. 2015; Adolescence as a sensitive period of brain development.
+- Trends in Cognitive Sciences. 19(10):558-566. [PubMed: 26419496]
+- Cognition. Author manuscript; available in PMC 2019 August 01.
+- Page 24
+- Germine LT, Duchaine B, Nakayama K. 2011; Where cognitive development and aging meet: face learning ability peaks after age
+- 30. Cognition. 118(2):201-210. DOI: 10.1016/j.cognition. 2010.11.002 [PubMed: 21130422] Ghitza Y, Gelman A. 2014The Great Society, Reagan's Revolution, and generations of presidential voting. Granena G, Long MH. 2013; Age of onset, length of residence, language aptitude, and ultimate L2 attainment in three linguistic domains. Second Language Research. 29(3):311-343. Guion SG, Flege JE, Liu SH, Yeni-Komshian GH. 2000; Age of learning effects on the duration of sentences produced in a second language. Applied Psycholinguistics. 21(02):205-228. Hakuta K, Bialystok E, Wiley E. 2003; Critical evidence: A test of the critical-period hypothesis for second-language acquisition. Psychological Science. 14(1):31-38. [PubMed: 12564751] Halberda J, Ly R, Wilmer JB, Naiman DQ, Germine L. 2012; Number sense across the lifespan as revealed by a massive Internet-based sample. Proceedings of the National Academy of Sciences. 109(28):11116-11120. DOI: 10.1073/pnas.1200196109 Hartshorne JK, Germine LT. 2015; When does cognitive functioning peak? The asynchronous rise and fall of different cognitive abilities across the life span. Psychological Science. 26(4):433-443. [PubMed: 25770099] Haykin, S. Neural networks: A comprehensive guide.
+- 2. Upper Saddle River, NJ: Prentice Hall; 1999. Hernandez AE, Li P, MacWhinney B. 2005; The emergence of competing modules in bilingualism.
+- Trends in Cognitive Sciences. 9(5):220-225. [PubMed: 15866148] Huang BH. 2015; A synthesis of empirical research on the linguistic outcomes of early foreign language instruction. International Journal of Multilingualism. 13(3):257-273. DOI: 10.1080/14790718.2015.1066792 Jaeger TF. 2008; Categorical data analysis: Away from ANOVAs (transformation or not) and towards logit mixed models. Journal of Memory and Language. 59(4):434-446. DOI: 10.1016/j.jml. 2007.11.007 [PubMed: 19884961] Jia G, Aaronson D, Wu Y. 2002; Long-term language attainment of bilingual immigrants: Predictive variables and language group differences. Applied Psycholinguistics. 23(04):599-621. Johnson JS, Newport EL. 1989; Critical period effects in second language learning: The influence of maturational state on the acquisition of English as a second language. Cognitive Psychology. 21(1):60-99. [PubMed: 2920538] Johnson JS, Newport EL. 1991; Critical period effects on universal properties of language: The status of subjacency in the acquisition of a second language. Cognition. 39(3):215-258. [PubMed: 1841034] Kidd E, Bavin EL. 2002; English-speaking children's comprehension of relative clauses: Evidence for general-cognitive and language-specific constraints on development. Journal of Psycholinguistic Research. 31(6):599-617. [PubMed: 12599916] Kidd E, Lum JAG. 2008; Sex differences in past tense overregularization. Developmental Science.
+- 11(6):882-889. [PubMed: 19046157] Klindt D, Devaine M, Daunizeau J. 2017; Does the way we read others' mind change over the lifespan?
+- Insights from a massive Web poll of cognitive skills from childhood to late adulthood. Cortex. 86:205-215. [PubMed: 27726852] Krashen SD, Long MA, Scarcella RC. 1979Age, rate, and eventual attainment in second language acquisition. TESOL Quarterly.:573-582. Lenneberg, E. Biological foundations of language. New York: Wiley; 1967. Marcus GF, Pinker S, Ullman MT, Hollander M, Rosen TJ, Xu F. 1992; Overregularization in language acquisition. Monographs of the Society for Research in Child Development. 57(4):1-182. Mayberry RI. 1993; First-Language acquisition after childhood differs from second-language acquisition: The case of american sign language. Journal of Speech, Language, and Hearing Research. 36(6):1258-1270. Mayberry RI, Lock E. 2003; Age constraints on first versus second language acquisition: Evidence for linguistic plasticity and epigenesis. Brain and Language. 87(3):369-384. [PubMed: 14642540]
+- Cognition. Author manuscript; available in PMC 2019 August 01.
+- Page 25
+- Mayberry RI, Lock E, Kazmi H. 2002; Development: Linguistic ability and early language exposure.
+- Nature. 417(6884):38. [PubMed: 11986658] McDonald JL. 2000; Grammaticality judgments in a second language: Influences of age of acquisition and native language. Applied Psycholinguistics. 21(03):395-423. Messenger K, Branigan HP, McLean JF, Sorace A. 2012; Is young children's passive syntax semantically constrained? Evidence from syntactic priming. Journal of Memory and Language. 66:568-587. Milborrow, S. Earth: Multivariate adaptive regression spline models. R package version 3.2-7. 2014. &lt; http://cran.r-project.org/web/packages/earth/index.html &gt; Mills KL, Lalonde F, Clasen LS, Giedd JN, Blakemore SJ. 2014; Developmental changes in the structure of the social brain in late childhood and adolescence. Social Cognitive Affective Neuroscience. 9(1):123-131. [PubMed: 23051898] Morgan-Short, K, Ullman, MT. The neurocognition of second language. In: Mackey, A, Gass, S, editors. Handbook of second language acquisition. Routledge; 2012. 1-18. Mullen K, Aridia D, Gil D, Windover D, Cline J. 2011; DEoptim: An R package for global optimiziation by differential evolution. Journal of Statistical Software. 40(6):1-26. Newport EL. 1988; Constraints on learning and their role in language acquisition: Studies of the acquisition of American Sign Language. Language Sciences. 10(1):147-172. Newport EL. 1990; Maturational constraints on language learning. Cognitive Science. 14(1):11-28. Nippold, MA. Later language development: School-age children, adolescents, and young adults. 3.
+- Austin, TX: Pro-Ed; 2007. Patkowski MS. 1980; The sensitive period for the acquisition of syntax in a secondary language.
+- Language Learning. 30(2):449-468. Pinker, S. The language instinct. New York: William Morrow; 1994. Pinker, S. Words and rules: The ingredients of language. New York, NY: HarperCollins; 1999. Pinto JGA, Hornby KR, Jones DG, Murphy KM. 2010; Developmental changes in GABAergic mechanisms in human visual cortex across the lifespan. Frontiers in Cellular Neuroscience. 4(16)doi: 10.3389/fncel.2010.00016 Pulvermüller F, Schumann JH. 1994; Neurobiological mechanisms of language acquisition. Language
+- Learning. 44:681-734. DOI: 10.1111/j.1467-1770.1994.tb00635.x Qureshi MA. 2016; A meta-analysis: Age and second language grammar acquisition. System. 60:147-
 
 ## 160. DOI: 10.1016/j.system.2016.06.001
 
@@ -687,18 +677,3 @@ Page 34
 (larger than the largest prior lab-based study), and $N = 11$,371 (equivalent to the present study). Three analyses were considered. Left: Correlation between age of first exposure and ultimate attainment prior to 16 years old minus after 16 years old. Middle: First subgroup of subjects to be significantly worse than monolinguals in a t -test (note: the top graph uses the same age bins as Johnson & Newport, 1989). Right: age of first exposure at which performance begins to decline more rapidly, if any. Blue: estimates from Bialystok and Miller (1999), Birdsong and Molis (2001), DeKeyser (2000), DeKeyser et al. (2010), Flege et al. (1999), Johnson and Newport (1989), and Weber-Fox and Neville (1996). While many other papers addressed similar issues, these papers provide the closest analog to Johnson & Newport in that they used a broad-spectrum test of syntax, defined the onset of learning as the age at immigration, and (crucially) report comparable statistics. Red: estimates from current study. Full details available in Supplementary Materials. (For interpretation of the references to color in this figure legend, the reader is referred to the web version of this article.)
 
 Cognition. Author manuscript; available in PMC 2019 August 01.
-
----
-
-<figure>
-  <img src="images/034_009.jpg" alt="Fig.
-
-8. We conducted 2500 simulated experiments of monolingual and immersion learners with each of three sample sizes: $N = 69$ (equivalent to Johnson & Newport, 1989), $N = 275$" style="max-width: 650px; width: 100%;">
-  <figcaption>Fig.
-
-8. We conducted 2500 simulated experiments of monolingual and immersion learners with each of three sample sizes: $N = 69$ (equivalent to Johnson & Newport, 1989), $N = 275$</figcaption>
-</figure>
-
-## Author Note & Acknowledgments
-
-* Corresponding author at: Department of Psychology, Boston College, McGuinn Hall 527, Chestnut Hill, MA 02467, United States. Joshua.hartshorne@bc.edu (J.K. Hartshorne). **Contributions** JKH designed the study, collected the data, and performed the analyses. All three authors contributed to designing the analyses and to writing the paper.

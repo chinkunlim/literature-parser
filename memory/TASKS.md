@@ -6,6 +6,13 @@
 
 ## 🏃 當前 Sprint (v1.0.0-rc1 專案治理與守衛上線)
 
+- [x] [2026-09-25] 全量學術文獻排查與排版瑕疵修復 (Comprehensive 10-Document Literature Verification & Layout Fixes)：
+  - 修正標題提取與 NIH 多行標題自動縫合 (`LiteraturePipeline` & `LiteratureMetadataExtractor`)，徹底解決 `Universal_consciousness` 空標題與 `05 Hartshorne` 標題截斷缺陷
+  - 實裝劍橋大學出版社 (CUP) 首頁非對稱側欄隔離保護 (`has_p1_side_rail` & `p1_rail_split_x`)，解決 `11 Pliatsikas` 橫幅混淆與 Abstract 遭吞噬問題
+  - 支援 Annual Reviews `LITERATURE CITED` 主章節識別與前置黏連 `**References**` 自動切分，擴充無括號年份引用特徵，100% 成功提取 `08 Kroll` 與 `05 Hartshorne` 參考文獻清單
+  - 限制章節編號標題晉升 (`is_section_num`)，將 `3 Psychotherapy` 28 條建議項保持為有序清單，目錄精簡乾淨
+  - Author Note 標題去重防呆，避免重複生成多個 `## Author Note & Acknowledgments`
+  - 全量 10 篇學術文獻 100% 成功生成出版級 Markdown，全部通過品質驗證（PASS），197 項單元測試 100% 通過
 - [x] [2026-09-25] 修復學術文獻版面與排版瑕疵 (Universal Literature Layout Defect Fixes)：
   - 修復第一頁頁眉與標題保護 (`DigitalPDFParser._is_running_header`)，保留完整標題
   - 實施第一頁雙欄基線避難所 (`page_1_body_start_y`)，根除摘要欄位交錯碎裂

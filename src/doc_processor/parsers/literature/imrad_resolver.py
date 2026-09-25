@@ -34,7 +34,7 @@ class IMRADResolver:
         ("Discussion", [r'^(?:#+\s*)?(?:General\s+)?Discussion\b', r'^\*\*(?:General\s+)?Discussion\*\*']),
         ("Conclusions", [r'^(?:#+\s*)?Conclusions?\b', r'^\*\*Conclusions?\*\*']),
         ("Acknowledgments", [r'^(?:#+\s*)?Acknowledgements?\b', r'^\*\*Acknowledgements?\*\*']),
-        ("References", [r'^(?:#+\s*)?(?:References|REFERENCES|Bibliography)\b', r'^\*\*(?:References|REFERENCES)\*\*']),
+        ("References", [r'^(?:#+\s*)?(?:References|REFERENCES|Bibliography|Literature\s+Cited|LITERATURE\s+CITED)\b', r'^\*\*(?:References|REFERENCES|Literature\s+Cited|LITERATURE\s+CITED)\*\*']),
     ]
 
     # Standard secondary subsections -> Level 3 headings (###)
@@ -73,7 +73,11 @@ class IMRADResolver:
 
         shared_sections = config.get("shared_sections", [])
 
-        # Pre-pass: Promote inline/run-in Level 4 APA subheadings
+        # Pre-pass 0: Unglue inline **References** or **Literature Cited** preceded by punctuation
+        p_glue_ref = re.compile(r'([\.?!]["”\']?\s+)(?:\*\*|#{1,3}\s*)?(References|REFERENCES|Literature\s+Cited|LITERATURE\s+CITED)(?:\*\*)?:?\s+([A-Z])')
+        full_md = p_glue_ref.sub(r'\1\n\n## References\n\n\3', full_md)
+
+        # Pre-pass 1: Promote inline/run-in Level 4 APA subheadings
         for sub_name in [
             "Measure of intelligence (IQ)",
             "Measures of risk-related constructs and discriminant validity",
@@ -107,7 +111,7 @@ class IMRADResolver:
                 continue
 
             # Check if entering References
-            if re.match(r'^(?:#{1,3}\s*)?(?:References|REFERENCES)\b', trimmed, re.I):
+            if re.match(r'^(?:#{1,3}\s*)?(?:References|REFERENCES|Bibliography|Literature\s+Cited|LITERATURE\s+CITED)\b', trimmed, re.I):
                 in_references = True
                 last_emergent = ""
                 new_lines.append(f"## References")
@@ -381,6 +385,7 @@ class IMRADResolver:
                 an_block += "\n\n" + "\n".join(date_lines)
 
         # 4. Insert before ## References
+        md = re.sub(r'(?m)^##\s+Author\s+Note\s+&\s+Acknowledgments\s*\n*', '', md)
         m_ref = re.search(r'\n(##\s+References\b)', md)
         if m_ref:
             md = md[:m_ref.start()] + "\n\n---\n\n" + an_block + "\n\n---\n\n" + md[m_ref.start():].lstrip()

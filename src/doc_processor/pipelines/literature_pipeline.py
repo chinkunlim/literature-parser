@@ -352,7 +352,7 @@ class LiteraturePipeline(BasePipeline):
 
         # 1. Promote top-level title to H1 (#)
         if not re.search(r'^\s*#\s+[^\n]+', full_md):
-            m_first_h = re.search(r'###\s+([^\n]+)(?:\n+###\s+([^\n]+))?', full_md)
+            m_first_h = re.search(r'#{1,3}\s+([^\n]+)(?:\n+#{1,3}\s+([^\n]+))?', full_md)
             if m_first_h:
                 t1 = m_first_h.group(1).strip()
                 t2 = m_first_h.group(2).strip() if m_first_h.group(2) else ""

@@ -108,12 +108,10 @@
   DOI: <a href="https://doi.org/10.1037/a0025406">10.1037/a0025406</a>
 </div>
 
-# Reshaping the Mind: The Benefits of Bilingualism
+# Reshaping the Mind: The Benefits of Bilingualism Ellen Bialystok
 
 <div class="author-block">
-  <div class="author-name">Ellen Bialystok</div>
-  <div class="author-affiliation">York University</div>
-
+  <div class="author-name">York University</div>
 </div>
 
 <details open>
@@ -138,12 +136,6 @@
 > The main empirical finding for the effect of bilingualism on cognition is in the evidence for enhanced executive control in bilingual speakers (review in Bialystok, Craik, Green, & Gollan, 2009). These effects have been found at all stages across the life span beginning in infancy (Kovács & Mehler, 2009) and toddler-hood (Poulin-Dubois, Blaye, Coutya, & Bialystok, 2011), continuing through young (Carlson & Meltzoff, 2008) and middle
 >
 >
-
----
-
-## Author Note & Acknowledgments
-
-© 2011 Canadian Psychological Association Correspondence concerning this article should be addressed to Ellen Bialystok, Department of Psychology, York University, 4700 Keele Street, Toronto, Ontario M3P 1J3, Canada. ellenb@yorku.ca. Ellen Bialystok, Department of Psychology, York University.
 
 ---
 
@@ -175,6 +167,12 @@
 - 4. Mean RT (and standard error) on congruent and incongruent trials in flanker task by monolinguals, bilinguals, and bimodal speech-sign bilinguals, adapted from Emmorey et al." style="max-width: 650px; width: 100%;">
 - <figcaption><strong>Figure 4.</strong> Mean RT (and standard error) on congruent and incongruent trials in flanker task by monolinguals, bilinguals, and bimodal speech-sign bilinguals, adapted from Emmorey et al.</figcaption>
 - </figure>
+
+## Author Note & Acknowledgments
+
+© 2011 Canadian Psychological Association Correspondence concerning this article should be addressed to Ellen Bialystok, Department of Psychology, York University, 4700 Keele Street, Toronto, Ontario M3P 1J3, Canada. ellenb@yorku.ca. Ellen Bialystok, Department of Psychology, York University.
+
+---
 
 ## References
 

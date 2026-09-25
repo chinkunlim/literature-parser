@@ -115,11 +115,17 @@ class LiteratureMetadataExtractor:
                             break
                     if nih_idx != -1 and nih_idx + 2 < len(pdf_lines):
                         title_candidate = pdf_lines[nih_idx + 2].strip()
+                        author_offset = 3
+                        if nih_idx + 3 < len(pdf_lines):
+                            next_l = pdf_lines[nih_idx + 3].strip()
+                            if not any(k in next_l.lower() for k in ("department", "university", "abstract", "author")) and not re.search(r'\b(?:and|,)\b', next_l) and not re.match(r'^[A-Z][a-z]+(\s+[A-Z]\.)+\s+[A-Z]', next_l):
+                                title_candidate = f"{title_candidate} {next_l}".strip()
+                                author_offset = 4
                         if not meta["title"] and len(title_candidate) > 5 and not title_candidate.lower().startswith("abstract"):
                             meta["title"] = title_candidate
-                        if nih_idx + 3 < len(pdf_lines):
-                            author_cand = pdf_lines[nih_idx + 3].strip()
-                            affil_cand = pdf_lines[nih_idx + 4].strip() if nih_idx + 4 < len(pdf_lines) else ""
+                        if nih_idx + author_offset < len(pdf_lines):
+                            author_cand = pdf_lines[nih_idx + author_offset].strip()
+                            affil_cand = pdf_lines[nih_idx + author_offset + 1].strip() if nih_idx + author_offset + 1 < len(pdf_lines) else ""
                             if author_cand and not author_cand.lower().startswith("abstract") and not meta["authors"]:
                                 meta["authors"].append({
                                     "name": author_cand,
@@ -354,7 +360,7 @@ TEXT TO EXTRACT FROM:
             pieces.append('<div class="article-meta">\n' + "\n".join(meta_lines) + "\n</div>\n")
 
         # 2. Title (# Title)
-        use_title = meta.get("title") or title
+        use_title = title if (title and len(title) > len(meta.get("title", ""))) else (meta.get("title") or title)
         pieces.append(f"# {use_title}\n")
 
         # 3. Author Block (unified card)
@@ -392,10 +398,12 @@ TEXT TO EXTRACT FROM:
 
         # Extract title from H1 if present
         title = meta.get("title", "")
-        if not title:
-            h1_m = re.search(r'^\s*#\s+([^\n]+)', full_md, re.M)
-            if h1_m:
-                title = h1_m.group(1).strip()
+        h1_m = re.search(r'^\s*#\s+([^\n]+)', full_md, re.M)
+        if h1_m:
+            h1_title = h1_m.group(1).strip()
+            if not title or len(h1_title) > len(title):
+                title = h1_title
+                meta["title"] = title
 
         # Extract authors from existing author-block if already present
         if not meta.get("authors"):

@@ -139,9 +139,9 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
 
         # In top 12%, check explicit journal headers regardless of font size (e.g. 18pt AIP Advances logo)
         if top < ph * 0.12:
-            if re.search(r'\b(?:ARTICLE IN PRESS|RESEARCH ARTICLE|AIP Advances|ARTICLE|Bilingualism: Language and Cognition|Journal of [A-Za-z]+|EXPERIMENTAL AND CLINICAL PSYCHOPHARMACOLOGY|Psychotherapy)\b', clean, re.I):
+            if re.search(r'\b(?:ARTICLE IN PRESS|RESEARCH ARTICLE|AIP Advances|ARTICLE|Bilingualism(?:: Language and(?: Cognition)?)?|Journal of [A-Za-z]+|EXPERIMENTAL AND CLINICAL PSYCHOPHARMACOLOGY|Psychotherapy)\b', clean, re.I):
                 return True
-            if re.search(r'\b(?:Cite as:|cambridge\.org/bil|pubs\.aip\.org|Downloaded from https?://)\b', clean, re.I):
+            if re.search(r'\b(?:Cite as:|cambridge\.org(?:/[a-z]+)?|pubs\.aip\.org|Downloaded from https?://)\b', clean, re.I):
                 return True
             if re.search(r'\b(?:NIH-PA Author Manuscript|HHS Public Access|Author [Mm]anuscript|available in PMC)\b', clean, re.I):
                 return True
@@ -492,15 +492,27 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
         p1_body_y = _STYLE.get("geometry", {}).get("content_start", {}).get("page_1_body_start_y") or (ph * 0.45)
         raw_lines.sort(key=lambda x: x[0])
         clusters = []
+
+        # Check for side rail on Page 1 (e.g. Cambridge UP / IEEE sidebar)
+        has_p1_side_rail = False
+        p1_rail_split_x = pw * 0.48
+        if page_num == 1:
+            left_rail_items = [it for it in raw_lines if it[1] < pw * 0.33 and (it[1] + it[2]) < pw * 0.35 and it[0] < p1_body_y]
+            right_rail_items = [it for it in raw_lines if it[1] >= pw * 0.33 and it[0] < p1_body_y]
+            if len(left_rail_items) >= 4 and len(right_rail_items) >= 4:
+                has_p1_side_rail = True
+                p1_rail_split_x = pw * 0.33
+
         for item in raw_lines:
             matched_c = None
             item_top = item[0]
-            # Page 1 Sanctuary: On page 1 above the body content start (title, author, abstract), enforce single column!
+            # Page 1 Sanctuary: On page 1 above the body content start (title, author, abstract), enforce single column unless side rail!
             is_p1_header_area = (page_num == 1) and (item_top < p1_body_y)
-            treat_as_single_col = is_single_col_doc or is_p1_header_area
+            treat_as_single_col = is_single_col_doc or (is_p1_header_area and not has_p1_side_rail)
 
-            item_is_left = item[1] < pw * 0.48 and item[2] < pw * 0.48
-            item_is_right = item[1] >= pw * 0.48
+            split_x = p1_rail_split_x if (page_num == 1 and has_p1_side_rail and item_top < p1_body_y) else (pw * 0.48)
+            item_is_left = item[1] < split_x and (item[1] + item[2]) < split_x
+            item_is_right = item[1] >= split_x
             for c in clusters:
                 c_top = sum(x[0] for x in c) / len(c)
                 # Normal vertical threshold: 6.5pt; allow up to 10.5pt for math subscripts/punctuation (e.g. colons/dots)
@@ -508,8 +520,8 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 if abs(c_top - item[0]) <= max_v:
                     # In multi-column layouts, don't mix left-column and right-column items into the same baseline cluster
                     if not treat_as_single_col:
-                        c_has_left = any(x[1] < pw * 0.48 and x[2] < pw * 0.48 for x in c)
-                        c_has_right = any(x[1] >= pw * 0.48 for x in c)
+                        c_has_left = any(x[1] < split_x and (x[1] + x[2]) < split_x for x in c)
+                        c_has_right = any(x[1] >= split_x for x in c)
                         if item_is_left and c_has_right:
                             continue
                         if item_is_right and c_has_left:
@@ -529,14 +541,15 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             for item in c_sorted:
                 top_val, left_val, width_val, size_val, txt_val = item
                 item_is_p1_header = (page_num == 1) and (top_val < p1_body_y)
-                treat_as_single_col = is_single_col_doc or item_is_p1_header
+                treat_as_single_col = is_single_col_doc or (item_is_p1_header and not has_p1_side_rail)
+                split_x = p1_rail_split_x if (page_num == 1 and has_p1_side_rail and top_val < p1_body_y) else (pw * 0.48)
                 if not cur_line:
                     cur_line = [top_val, left_val, width_val, size_val, txt_val]
                 else:
                     prev_top, prev_left, prev_width, prev_size, prev_txt = cur_line
                     prev_right = prev_left + prev_width
                     gap = left_val - prev_right
-                    is_diff_col = not treat_as_single_col and (gap > 20) and ((prev_left < pw * 0.48 and left_val >= pw * 0.48) or (gap > 60 and left_val < prev_left))
+                    is_diff_col = not treat_as_single_col and (gap > 20) and ((prev_left < split_x and left_val >= split_x) or (gap > 60 and left_val < prev_left))
                     if is_diff_col:
                         merged_same_y.append(tuple(cur_line))
                         cur_line = [top_val, left_val, width_val, size_val, txt_val]
@@ -563,7 +576,12 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
         for item in lines:
             top, left, width, size, text = item[0], item[1], item[2], item[3], item[4]
             right = left + width
-            if left < gutter_left and right > gutter_right and width > pw * 0.48:
+            if page_num == 1 and has_p1_side_rail and top < p1_body_y:
+                if left < p1_rail_split_x:
+                    cls_type = 'left'
+                else:
+                    cls_type = 'right'
+            elif left < gutter_left and right > gutter_right and width > pw * 0.48:
                 cls_type = 'span'
             elif left < pw * 0.48:
                 cls_type = 'left'
@@ -664,9 +682,10 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 continue
 
             # Check if major section heading (size >= 28 or journal academic section heading)
+            is_section_num = bool(re.match(r'^\d+\.\s+[A-Z]', clean_t)) and len(clean_t) < 50 and not re.search(r'\b(?:recommend|encouraged|practitioners|researchers|suggest|finally)\b', clean_t, re.I) and not re.search(r'[.?!]$', clean_t)
             is_journal_head = is_journal and (
                 clean_t in ('Abstract', 'Method', 'Methods', 'Results', 'Discussion', 'References', 'Conclusion', 'Conclusions') or
-                bool(re.match(r'^\d+\.\s+[A-Z]', clean_t))
+                is_section_num
             )
             is_journal_subhead = is_journal and (
                 bool(re.match(r'^\d+\.\d+\.?\s+[A-Z]', clean_t)) or

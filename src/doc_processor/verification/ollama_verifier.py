@@ -17,6 +17,7 @@ from doc_processor.config import (
     OLLAMA_GENERATE_TIMEOUT,
 )
 from doc_processor.utils.system import is_ollama_running, ensure_ollama_running
+from src.guards.prompts import PromptRegistry
 
 logger = logging.getLogger(__name__)
 
@@ -110,25 +111,11 @@ class OllamaVerifier:
         else:
             sample_excerpt = raw_excerpt
 
-        prompt = (
-            f"You are an expert academic editor and publication auditor. Review the following extracted paper/textbook section "
-            f"titled '{chapter_title}'. Specifically audit the following 4 critical dimensions:\n"
-            f"1. Heading Authenticity: Are all headings genuine author section titles (NO AI-hallucinated summary subheadings)?\n"
-            f"2. LaTeX & Symbols: Are all LaTeX formulas ($...$ or $$...$$) syntactically valid with NO unescaped currency ($3) or broken delimiters?\n"
-            f"3. Table Note Separation: Are table notes (<div class=\"table-notes\">) clearly separated from subsequent body prose paragraphs?\n"
-            f"4. Text Continuity & Prose Flow: Does prose flow naturally across pages without broken sentences or OCR glitches?\n\n"
-            f"Text Sample:\n```markdown\n{sample_excerpt}\n```\n\n"
-            f"Briefly respond with:\n"
-            f"1. Heading Authenticity Feedback\n"
-            f"2. Formula & Symbol Feedback\n"
-            f"3. Table & Note Separation Feedback\n"
-            f"4. Quality Rating (Excellent / Good / Needs Attention)\n"
-            f"5. Verdict: [PASS] or [REVISE]"
-        )
-
+        system_prompt, prompt = PromptRegistry.get_semantic_auditor(chapter_title, sample_excerpt)
 
         payload = {
             "model": self.semantic_model,
+            "system": system_prompt,
             "prompt": prompt,
             "stream": False,
             "keep_alive": "30m",
@@ -186,23 +173,15 @@ class OllamaVerifier:
             for i, iss in enumerate(candidate_issues[:10], 1):
                 pre_issues_str += f"- [{getattr(iss, 'severity', 'WARN')}] {getattr(iss, 'category', 'GEN')}: {getattr(iss, 'message', str(iss))} (Snippet: {getattr(iss, 'snippet', '')[:40]})\n"
 
-        prompt = (
-            f"You are an expert academic journal editor and layout auditor reviewing document '{doc_name}'.\n"
-            f"Review the following academic text excerpt and verify any format defects, OCR breaks, or structural errors.\n\n"
-            f"{pre_issues_str}\n"
-            f"Document Excerpt:\n```markdown\n{sample_excerpt}\n```\n\n"
-            f"Provide a structured audit report. For any defects found, list them with:\n"
-            f"- [ERROR/WARNING/INFO] [Category: TITLE/ABSTRACT/HEADING/TABLE/FIGURE/LATEX/REFERENCES/NOISE]\n"
-            f"- Snippet: <exact flawed text>\n"
-            f"- Problem: <why this is defective>\n"
-            f"- Fix: <suggested correction>\n\n"
-            f"Conclude with:\n"
-            f"Editorial Summary:\n<2-3 sentences evaluation>\n"
-            f"Verdict: [PASS] or [NEEDS REVISION]"
+        system_prompt, prompt = PromptRegistry.get_structured_format_audit(
+            doc_name=doc_name,
+            sample_excerpt=sample_excerpt,
+            candidate_issues_str=pre_issues_str,
         )
 
         payload = {
             "model": self.semantic_model,
+            "system": system_prompt,
             "prompt": prompt,
             "stream": False,
             "keep_alive": "30m",

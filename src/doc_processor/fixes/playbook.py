@@ -262,116 +262,42 @@ class FixPlaybook:
         return count
 
 
+from doc_processor.utils.shared_text import (
+    clean_orphan_page_numbers_text,
+    escape_currency_katex_text,
+    separate_glued_references_text,
+    normalize_corrupted_stats_text,
+    strip_manuscript_watermarks_text,
+    normalize_unparenthesized_ref_years_text,
+)
+
 # =============================================================================
 # Built-in Specialised Repair Handlers
 # =============================================================================
 
 def _handle_clean_orphan_page_numbers(text: str) -> Tuple[str, int]:
-    """Strips solitary lines that contain only 1-4 digit page numbers."""
-    lines = text.splitlines()
-    clean_lines = []
-    count = 0
-    for line in lines:
-        s = line.strip()
-        if re.match(r'^\d{1,4}$', s) and not s.startswith("0"):
-            count += 1
-            continue
-        clean_lines.append(line)
-    return "\n".join(clean_lines), count
+    return clean_orphan_page_numbers_text(text)
 
 
 def _handle_escape_currency_katex(text: str) -> Tuple[str, int]:
-    """Escapes $ currency signs (e.g. $25 -> \\$25) to prevent KaTeX math delimiter collision."""
-    new_text, count = re.subn(r'(?<!\\)\$(?=(\d+(?:,\d{3})*(?:\.\d+)?\b))', r'\\$', text)
-    return new_text, count
+    return escape_currency_katex_text(text)
 
 
 def _handle_elsevier_glued_references(text: str) -> Tuple[str, int]:
-    """Splits inline **References** glued to the end of acknowledgment or disclosure sentences."""
-    def _repl(m):
-        return f"{m.group(1)}\n\n## References\n\n{m.group(2)}"
-    new_text, count = re.subn(r'([\.?!]\s+)\*\*References\*\*\s+([A-Z])', _repl, text)
-    return new_text, count
+    return separate_glued_references_text(text)
 
 
 def _handle_normalize_corrupted_stats(text: str) -> Tuple[str, int]:
-    """Repairs Elsevier OCR corrupted statistical formulas like t ð 24 Þ -> $t(24)$."""
-    count = 0
-    new_text = text
-
-    # 1. t ð 24 Þ = 2: 06 -> $t(24) = 2.06$
-    def _r1(m):
-        nonlocal count
-        count += 1
-        t_var = m.group(1).replace("*", "").strip()
-        df = m.group(2).strip()
-        val = m.group(3).replace(" ", "").replace(":", ".")
-        return f"${t_var}({df}) = {val}$"
-    new_text = re.sub(r'(\*?[tTF]\*?)\s*ð\s*(\d+)\s*Þ\s*=\s*(\d+[:\.]\s*\d+)', _r1, new_text)
-
-    # 2. p o 0: 01 -> $p < 0.01$
-    def _r2(m):
-        nonlocal count
-        count += 1
-        raw_val = m.group(1).replace(" ", "")
-        val = f"0.{raw_val}" if not raw_val.startswith("0.") else raw_val
-        return f"$p < {val}$"
-    new_text = re.sub(r'\*?[pP]\*?\s*o\s*0?[:\.]\s*(\d+)', _r2, new_text)
-
-    # 3. M = 4: 46 -> $M = 4.46$
-    def _r3(m):
-        nonlocal count
-        count += 1
-        m_var = m.group(1).replace("*", "").strip()
-        val = m.group(2).replace(" ", "").replace(":", ".")
-        return f"${m_var} = {val}$"
-    new_text = re.sub(r'(\*?[mM]\*?)\s*=\s*(\d+[:\.]\s*\d+)', _r3, new_text)
-
-    # 4. s. d. =2.02 -> $SD = 2.02$
-    def _r4(m):
-        nonlocal count
-        count += 1
-        val = m.group(1).strip()
-        return f"$SD = {val}$"
-    new_text = re.sub(r'(?:\*?s\.\s*d\.\*?)\s*=\s*(\d+(?:\.\d+)?)', _r4, new_text)
-
-    return new_text, count
+    return normalize_corrupted_stats_text(text)
 
 
 def _handle_strip_nih_watermarks(text: str) -> Tuple[str, int]:
-    """Strips NIH Public Access / Author Manuscript / Article In Press watermarks masquerading as headings."""
-    pattern = r'(?m)^#+\s*(?:NIH\s+Public\s+Access|Author\s+Manuscript|HHS\s+Public\s+Access|ARTICLE\s+IN\s+PRESS|RESEARCH\s+ARTICLE)\s*\n+'
-    new_text, count = re.subn(pattern, '', text, flags=re.I)
-    return new_text, count
+    return strip_manuscript_watermarks_text(text)
 
 
 def _handle_unparenthesized_ref_years(text: str) -> Tuple[str, int]:
-    """Formats references with unparenthesized author years ending in semicolons (e.g. Author N. 2012;)."""
-    # Normalize 'Author A. 2018; Title...' into '- Author A. (2018). Title...'
-    count = 0
-    lines = text.splitlines()
-    new_lines = []
-    in_refs = False
+    return normalize_unparenthesized_ref_years_text(text)
 
-    for line in lines:
-        if re.match(r'^##\s+(?:References|Literature Cited|Bibliography)', line, re.I):
-            in_refs = True
-            new_lines.append(line)
-            continue
-        elif in_refs and line.startswith("## "):
-            in_refs = False
-
-        if in_refs:
-            # Check for un-bulleted unparenthesized citation
-            m = re.match(r'^([A-Z][a-zA-Z\s\.,\-]+?)\s+(\d{4});\s+(.*)', line)
-            if m:
-                count += 1
-                authors, year, rest = m.groups()
-                new_lines.append(f"- {authors.strip()} ({year}). {rest.strip()}")
-                continue
-        new_lines.append(line)
-
-    return "\n".join(new_lines), count
 
 
 def _handle_demote_recommendation_headings(text: str) -> Tuple[str, int]:

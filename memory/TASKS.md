@@ -6,6 +6,12 @@
 
 ## 🏃 當前 Sprint (v1.0.0-rc1 專案治理與守衛上線)
 
+- [x] [2026-09-25] 全專案代碼深度解耦、模組重構與 PromptRegistry 統一架構實裝：
+  - 統一 Ollama Prompt 提示詞中樞 (`src/guards/prompts.py`)：建立強型別 `PromptRegistry` 類別，統一收攏 LaTeX 修復、Manifest 驗證、語義格式稽核、修復配方合成、自我修復重試、雙欄展開與引用解析，並與專案最新修復規則（KaTeX `\$`、正則 `\g<1>`、APA 表格附註、雙欄閱讀流）緊密對齊。
+  - 重構 1,820 行單一龐大 `run.py`：拆分出 `src/cli/` 專屬領域子模組（`cli_audit.py`, `cli_fix.py`, `cli_git.py`, `cli_process.py`, `cli_project.py`, `common.py`），使 `run.py` 精簡至 200 行極簡 CLI 派發器。
+  - 提取跨模組共用純函數文字與正則工具 (`src/doc_processor/utils/shared_text.py`)：統一孤立頁碼、KaTeX 貨幣轉義、OCR 統計符號、稿件水印、黏連引用等純函數清洗轉換。
+  - 解耦 1,206 行 `layout_detector.py`：抽取 `VectorFigureParser`（向量圖與符號圖式抽取）與 `EndOfChapterParser`（章末練習題、詞彙索引與延伸閱讀解析器），檔案行數降至 662 行，大幅提升內聚力與可維護性。
+  - 全套 229/229 單元測試 100% 通過；全量 10 篇文獻全維度稽核 100% 通過（96%~100% 分數）。
 - [x] [2026-09-25] 全專案程式碼最優化、智能動態硬體守衛與 Ollama 代碼修復合成器 (`OllamaRecipeSynthesizer`) 實裝：
   - 徹底釋放 Ollama 潛能：修復 macOS `vm_stat` 僅計算 free pages 未涵蓋 inactive/purgeable pages 之缺陷，並實裝智能電源感知動態閾值（AC 插電下 RAM 門檻放寬至 $\ge$ 2.0GB，非 critical memory pressure 放行），解決先前 3.12GB 可用 RAM 導致的靜默攔截。
   - 實作 Ollama 程式修復合成器 (`src/doc_processor/fixes/synthesizer.py`)：當遭遇未處理排版瑕疵時，允許由 Ollama 自動撰寫獨立 Python 修復函數、正則轉換與單元測試。

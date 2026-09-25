@@ -5,26 +5,36 @@
 
 ---
 
-### 🕒 最新交接時間：2026-09-25 12:05
+### 🕒 最新交接時間：2026-09-25 12:20
  
 #### 1. 剛剛完成了什麼？ (Session Accomplishments)
-- **全專案程式最優化、智能動態硬體守衛與 Ollama 代碼修復合成器 (`OllamaRecipeSynthesizer`) 實裝**：
-  1. **釋放 Ollama 潛能與硬體動態閾值**：
-     - 修復 macOS `vm_stat` 解析僅包含 free pages 忽視 5.7GB inactive/purgeable 記憶體之問題，準確辨識系統有 >6.3GB 可用記憶體。
-     - 實施電源與記憶體壓力感知動態閾值（AC 插電下 RAM 門檻放寬至 $\ge$ 2.0GB，非 critical memory pressure 放行），解決先前 3.12GB 可用 RAM 導致的靜默攔截。
-  2. **Ollama 程式修復合成器 (`src/doc_processor/fixes/synthesizer.py`)**：
-     - 允許 Ollama (`qwen2.5-coder:7b`) 針對未知或特定排版瑕疵自動編寫純函數 Python 修復函數、正則轉換與單元測試。
-     - 實裝 AST 靜態安全校驗器 (`RecipeSafetyValidator`) 與沙盒執行器，嚴格阻斷危險呼叫，並提供自動自我修正重試循環（Auto-Refinement Loop）。
-  3. **暫存隔離手冊區與完整 CLI 審核工作流**：
-     - 建立 `src/doc_processor/fixes/staged/` 與 `src/doc_processor/fixes/promoted/` 雙層架構。
-     - 提供 CLI 工具：`run.py fix review`（檢視暫存）、`run.py fix test <id>`（沙盒試跑）、`run.py fix promote <id>`（升級正式）、`run.py fix reject <id>`（駁回刪除）、`run.py fix synthesize <file> '<issue>'`（自動合成修復程式）。
-  4. **全套測試與文獻稽核 100% 通過**：
-     - 新增 `tests/test_v41_ollama_synthesizer.py`，全套 229/229 單元測試 100% 通過。
-     - 全量 10 篇學術文獻稽核全數合格。
+- **全專案代碼深度解耦、模組重構與 PromptRegistry 統一架構實裝**：
+  1. **統一 Ollama 提示詞中樞 (`src/guards/prompts.py`)**：
+     - 實作強型別 `PromptRegistry` 類別，統一收攏 LaTeX 公式修復、Manifest 結構校驗、語義排版格式稽核、修復配方合成、自我修復重試、雙欄展開與引用解析提示詞。
+     - 與專案最新修復規則（KaTeX `\$` 貨幣轉義、Python 正則 `\g<1>` 反向引用、APA 表格附註 `<tfoot><tr class="table-notes">`、雙欄閱讀流）緊密對齊。
+  2. **模組化重構龐大命令中心 (`run.py` ➔ `src/cli/*`)**：
+     - 建立 `src/cli/` 專用領域子套件：
+       - `common.py`: 根目錄錨定、過期暫存清理、文檔時間戳同步。
+       - `cli_audit.py`: 文獻排版格式全維度稽核與 AI 複核。
+       - `cli_fix.py`: 修復手冊清單、套用、沙盒測試與 Ollama 合成。
+       - `cli_git.py`: agent-init, save, handoff, end-session, publish, archive-sessions。
+       - `cli_process.py`: process, batch 單檔與批次轉檔管線派發。
+       - `cli_project.py`: doctor, watchdog, init-project, obsidian-link, status, dashboard, test-ollama-auto-trigger。
+     - `run.py` 精簡至 200 行極簡 CLI 派發器。
+  3. **提取跨模組共用純函數文字與正則工具 (`src/doc_processor/utils/shared_text.py`)**：
+     - 統一集中孤立頁碼、KaTeX 貨幣轉義、OCR 統計符號修復、稿件水印過濾、黏連引用等純函數清洗轉換。
+     - `FixPlaybook` 與 `FormatAuditor` 同步繼承引用，消除代碼重複。
+  4. **解耦 1,206 行版面特徵解析巨石 (`layout_detector.py` ➔ 662 行)**：
+     - 抽取 `VectorFigureParser`（向量圖表與研究符號圖式抽取）至 `src/doc_processor/parsers/layout/vector_figure_parser.py`。
+     - 抽取 `EndOfChapterParser`（章末練習題、詞彙索引與延伸閱讀解析器）至 `src/doc_processor/parsers/layout/eoc_parser.py`。
+     - `LayoutDetector` 各方法直接委派，保持 100% 向後相容。
+  5. **全套測試與文獻稽核 100% 通過**：
+     - 全套 229/229 單元測試 100% 通過（5.06 秒）。
+     - 全量 10 篇學術文獻全維度稽核 100% 通過（96%~100% 分數）。
 
 #### 2. 目前專案狀態與代碼位置
 - 分支：`main`
-- 狀態：所有模組、功能、文檔 100% 同步，代碼庫極致整潔，已完整通過全量測試。
+- 狀態：所有模組、功能、文檔 100% 同步，代碼庫極致整潔，無任何 God class / God file，已完整通過全量測試。
 
 #### 3. 下一個 AI 回來接手時的第 1 步指令 (Next Steps)
 ```bash
@@ -38,4 +48,3 @@ uv run python run.py doctor
 uv run python run.py status
 ```
 接手者請直接向使用者簡報目前狀態，並依使用者下一步指令進行處理！
-

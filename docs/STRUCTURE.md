@@ -19,7 +19,7 @@ books-project/
 ├── AGENTS.md                       # 🤖 [跨Agent憲法] 意圖指令路由表、十大核心鐵律、六大黃金同步矩陣
 ├── CHANGELOG.md                    # 📜 [版本日誌] 紀錄歷史與里程碑變更 (語意化版號 + 具體日期)
 ├── PROJECT_INIT_STANDARD.md        # 🌟 [通用標準] 24大核心鐵律、雙層規範、開案一鍵初始化檢查清單
-├── run.py                          # 🛠️ [總指揮中心] agent-init, doctor, process, save, handoff, publish, watchdog, end-session
+├── run.py                          # 🛠️ [總指揮中心] 極簡 CLI 派發器 (<200行)，所有指令派發至 src/cli/*
 │
 ├── .agent/skills/                  # 🧠 [技能分層架構]
 │   ├── document-processor/         # 👑 [總調度技能] 環境健檢、文檔特徵感知、子技能派發、雙軌審計
@@ -60,10 +60,17 @@ books-project/
 │                                   # (含 test_v39_format_auditor.py, test_v40_fix_playbook_and_invariants.py, test_v41_ollama_synthesizer.py)
 │
 ├── src/                            # 💻 [業務核心原始碼] (Clean Architecture)
+│   ├── cli/                        # 🎛️ [CLI 領域模組] 拆分自原 1,820 行 run.py
+│   │   ├── common.py               # 根路徑錨定、過期暫存清理、文檔時間戳同步
+│   │   ├── cli_audit.py            # audit: 排版格式全維度稽核與 AI 複核
+│   │   ├── cli_fix.py              # fix: 修復手冊清單、套用、沙盒測試與 Ollama 合成
+│   │   ├── cli_git.py              # agent-init, save, handoff, end-session, publish, archive-sessions
+│   │   ├── cli_process.py          # process, batch: 單檔與批次轉檔管線派發
+│   │   └── cli_project.py          # doctor, watchdog, init-project, obsidian-link, status, dashboard
 │   ├── guards/                     # 🛡️ 守衛防線
 │   │   ├── hardware.py             # RAM/電池/SSD/MPS 檢測防線 (支援動態電源感知與 macOS memory pressure)
 │   │   ├── ollama_guard.py         # Ollama 連線探活、自動喚醒與優雅降級
-│   │   ├── prompts.py              # 📝 集中預設的固定提示詞 (LaTeX 修復、Manifest 校驗、論文雙欄)
+│   │   ├── prompts.py              # 📝 [PromptRegistry] 統一集中強型別固定提示詞庫 (LaTeX, APA表格, 雙欄, 引用)
 │   │   └── validator.py            # 輸入 JSON 比對與輸出異常自動喚醒 Ollama (信度 < 0.80 自動隔離)
 │   ├── utils/                      # 🛠️ 通用工具
 │   │   └── logger.py               # 結構化診斷日誌工具
@@ -75,6 +82,13 @@ books-project/
 │       │   ├── textbook_pipeline.py    # 長篇書籍章節切分管線
 │       │   └── literature_pipeline.py  # 🎯 學術文獻主管線 (雙欄帶狀流動、APA 表格對齊、IMRAD 標題)
 │       ├── parsers/                # 解析層 (PDF, EPUB, LaTeX, 雙欄版面)
+│       │   ├── layout/             # 📐 版面特徵子解析器
+│       │   │   ├── vector_figure_parser.py # 向量圖表與符號圖式抽取
+│       │   │   ├── eoc_parser.py           # 章末練習題、詞彙索引與延伸閱讀解析器
+│       │   │   ├── table_parser.py         # 表格識別與對齊
+│       │   │   ├── margin_parser.py        # 邊欄註解與詞彙框
+│       │   │   ├── callout_parser.py       # 提示框與圖表說明
+│       │   │   └── list_parser.py          # 列表、縮排代碼與註腳
 │       │   └── literature/         # 🎯 學術文獻解析子模組 (metadata_extractor, imrad_resolver, figure_formatter, reference_parser)
 │       ├── verification/           # 檢驗層 (format_auditor 全維度格式稽核器, OllamaVerifier, rules, OllamaHealer)
 │       ├── fixes/                  # 🔧 專案修復手冊
@@ -82,8 +96,9 @@ books-project/
 │       │   ├── synthesizer.py      # 🤖 Ollama 自動代碼修復合成器 (AST 靜態沙盒與自我修復循環)
 │       │   ├── staged/             # 🧪 待審核 AI 自動生成修復配方隔離區 (Pending Review)
 │       │   └── promoted/           # 🚀 已核准並轉正之正式修復配方庫
-│       ├── utils/                  # 輔助模組 (obsidian_linker 雙鏈與索引生成)
+│       ├── utils/                  # 輔助模組 (shared_text 共用文字/正則轉換, obsidian_linker 雙鏈與索引生成)
 │       └── core/                   # 核心調度 (orchestrator, global_state, invariants 零容忍防呆門禁, splitter)
+
 │
 ├── config/                         # ⚙️ [層級式配置系統]
 │   ├── archetypes/                 # L1 文件類型特徵設定

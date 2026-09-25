@@ -24,6 +24,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from src.guards.hardware import check_hardware_safety
 from src.guards.ollama_guard import OllamaGuard
+from src.guards.prompts import PromptRegistry
 from src.utils.logger import get_diagnostic_logger
 
 logger = get_diagnostic_logger("RecipeSynthesizer")
@@ -135,31 +136,6 @@ class OllamaRecipeSynthesizer:
     and isolates to the staged playbook directory.
     """
 
-    SYSTEM_PROMPT = (
-        "You are an expert Python compiler and document formatting engineer.\n"
-        "Your task is to write a single, self-contained Python module that fixes a specific text/formatting defect.\n"
-        "STRICT CONSTRAINTS:\n"
-        "1. Output ONLY valid Python code inside a ```python ... ``` block. No conversational intro or outro.\n"
-        "2. Only import from: re, typing, unicodedata, string.\n"
-        "3. You MUST define:\n"
-        "   RECIPE_METADATA = {\n"
-        "       'recipe_id': 'concise_snake_case_id',\n"
-        "       'name': 'Short Human Title',\n"
-        "       'description': 'What problem this fixes',\n"
-        "       'symptoms': ['regex_pattern_1', 'regex_pattern_2'],\n"
-        "       'category': 'format' # or 'references', 'latex', 'noise', 'tables'\n"
-        "   }\n"
-        "4. You MUST define:\n"
-        "   def repair(text: str) -> Tuple[str, int]:\n"
-        "       # returns (repaired_text, number_of_fixes_applied)\n"
-        "5. You MUST define:\n"
-        "   TEST_CASES = [\n"
-        "       ('input_text_with_bug', 'expected_fixed_output'),\n"
-        "   ]\n"
-        "6. In Python re.sub(), ALWAYS use r'\\g<1>' or r'\\1' for capture group backreferences, NEVER '$1'.\n"
-        "7. The code must be pure functional, deterministic, and safe (no os, sys, subprocess, eval, or file I/O).\n"
-    )
-
     def __init__(self, ollama_guard: Optional[OllamaGuard] = None):
         self.guard = ollama_guard or OllamaGuard(target_model="qwen2.5-coder:7b")
 
@@ -191,14 +167,12 @@ class OllamaRecipeSynthesizer:
                 error=f"Hardware constraints active: {reasons}",
             )
 
-        # 2. Craft initial prompt
-        id_instruction = f"Preferred recipe_id: '{recipe_id_hint}'\n" if recipe_id_hint else ""
-        current_prompt = (
-            f"Archetype: {archetype}\n"
-            f"{id_instruction}"
-            f"Problem Description:\n{problem_description}\n\n"
-            f"Defective Text Excerpt:\n```\n{sample_excerpt[:1500]}\n```\n\n"
-            f"Generate the complete Python recipe module adhering strictly to all system constraints."
+        # 2. Craft initial prompt via centralized PromptRegistry
+        system_prompt, current_prompt = PromptRegistry.get_recipe_synthesizer(
+            problem_description=problem_description,
+            sample_excerpt=sample_excerpt,
+            recipe_id_hint=recipe_id_hint,
+            archetype=archetype,
         )
 
         last_error = ""
@@ -210,7 +184,7 @@ class OllamaRecipeSynthesizer:
             logger.info(f"RecipeSynthesizer: Querying Ollama (attempt {attempt}/{max_retries + 1})...")
             gen_res = self.guard.safe_generate(
                 prompt=current_prompt,
-                system_prompt=self.SYSTEM_PROMPT,
+                system_prompt=system_prompt,
                 timeout=60.0
             )
 
@@ -240,10 +214,7 @@ class OllamaRecipeSynthesizer:
                     how_to_fix="Refining prompt to fix AST violation",
                 )
                 last_error = f"AST security check rejected code: {ast_err}"
-                current_prompt = (
-                    f"Your previously generated Python code violated AST constraints:\n{ast_err}\n\n"
-                    f"Please fix the code strictly adhering to all constraints and re-generate."
-                )
+                current_prompt = PromptRegistry.get_recipe_refinement_prompt(ast_err, is_ast_error=True)
                 continue
 
             # Sandbox Test Execution
@@ -257,11 +228,7 @@ class OllamaRecipeSynthesizer:
                     how_to_fix="Refining prompt with test failure details",
                 )
                 last_error = f"Sandbox test failed: {err_detail}"
-                current_prompt = (
-                    f"Your previously generated Python code failed its self-contained unit tests:\n{err_detail}\n\n"
-                    f"Remember: In Python re.sub(), use r'\\g<1>' or r'\\1' for group substitution, NEVER '$1'.\n"
-                    f"Please fix the implementation of `repair` or `TEST_CASES` and return the complete corrected module."
-                )
+                current_prompt = PromptRegistry.get_recipe_refinement_prompt(err_detail, is_ast_error=False)
                 continue
 
             # Success! Stage recipe to disk

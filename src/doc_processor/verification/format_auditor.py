@@ -52,6 +52,7 @@ class AuditReport:
     issues: List[AuditIssue] = field(default_factory=list)
     repaired_count: int = 0
     ollama_review: Optional[str] = None
+    recipe_recommendations: List[Dict[str, str]] = field(default_factory=list)
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -65,11 +66,12 @@ class AuditReport:
             "score_percent": self.score_percent,
             "repaired_count": self.repaired_count,
             "ollama_review": self.ollama_review,
+            "recipe_recommendations": self.recipe_recommendations,
             "issues": [asdict(i) for i in self.issues],
         }
 
     def to_markdown(self) -> str:
-        status_badge = "✅ **PASSED**" if self.passed else "⚠️ **NEEDS ATTENTION**"
+        status_badge = "✅ **PASSED**" if self.passed else "🛑 **FAILED (防呆門禁攔截)**"
         lines = [
             f"# 📋 文獻排版與格式稽核報告 (Format Audit Report)",
             f"",
@@ -100,6 +102,20 @@ class AuditReport:
                 if len(fix) > 40:
                     fix = fix[:37] + "..."
                 lines.append(f"| {sev_icon} | `{iss.category}` | {iss.line_num or '-'} | {msg} | `{snip}` | {fix} |")
+            lines.append("")
+
+        if self.recipe_recommendations:
+            lines.extend([
+                f"---",
+                f"",
+                f"## 💡 建議套用之專屬修復配方 (Recommended Fix Recipes)",
+                f"",
+                f"| 配方 ID | 配方名稱 | 說明 | 執行指令 |",
+                f"| :--- | :--- | :--- | :--- |",
+            ])
+            for rec in self.recipe_recommendations:
+                cmd_code = f"`{rec.get('command', '')}`"
+                lines.append(f"| `{rec['recipe_id']}` | **{rec['name']}** | {rec['description']} | {cmd_code} |")
             lines.append("")
 
         if self.ollama_review:
@@ -139,29 +155,56 @@ class FormatAuditor:
 
         lines = md_content.splitlines()
 
-        # 1. Title Inspection
+        # 1. Zero-Tolerance Hard Invariant Gate (防呆門禁: 避免有錯還報對)
+        from doc_processor.core.invariants import QualityInvariantGuard
+        inv_res = QualityInvariantGuard.verify_hard_invariants(md_content, is_literature=self.is_literature, file_path=file_path)
+        if not inv_res['valid']:
+            for viol in inv_res['violations']:
+                issues.append(AuditIssue(
+                    severity="ERROR",
+                    category="INVARIANT",
+                    line_num=None,
+                    snippet="",
+                    message=f"🚨 [防呆門禁違規] {viol}",
+                    suggested_fix="此項為零容忍核心不變量，違背則一律判定 FAIL",
+                    confidence=1.0,
+                ))
+
+        # 2. Title Inspection
         self._check_title(md_content, lines, issues)
 
-        # 2. Abstract Inspection
+        # 3. Abstract Inspection
         self._check_abstract(md_content, lines, issues)
 
-        # 3. Heading & TOC Structure
+        # 4. Heading & TOC Structure
         self._check_headings(md_content, lines, issues)
 
-        # 4. Tables & Figures Placement & Notes
+        # 5. Tables & Figures Placement & Notes
         self._check_tables_and_figures(md_content, lines, issues)
 
-        # 5. LaTeX Math & Statistical Formulas
+        # 6. LaTeX Math & Statistical Formulas
         self._check_latex_and_stats(md_content, lines, issues)
 
-        # 6. References Section
+        # 7. References Section
         self._check_references(md_content, lines, issues)
 
-        # 7. Page Numbers & Running Headers Noise
+        # 8. Page Numbers & Running Headers Noise
         self._check_noise_and_page_numbers(md_content, lines, issues)
 
-        # 8. Text Continuity
+        # 9. Text Continuity
         self._check_continuity(md_content, lines, issues)
+
+        # 10. Check FixPlaybook for matching symptom recipes
+        from doc_processor.fixes.playbook import FixPlaybook
+        matched_recipes = FixPlaybook.match_symptoms(md_content, archetype="literature" if self.is_literature else "book")
+        recipe_recs = []
+        for r, ev in matched_recipes:
+            recipe_recs.append({
+                "recipe_id": r.recipe_id,
+                "name": r.name,
+                "description": r.description,
+                "command": f"uv run python run.py fix apply {r.recipe_id} {file_path or '<target>'}"
+            })
 
         # Compute summary scores
         error_count = sum(1 for i in issues if i.severity == "ERROR")
@@ -171,7 +214,8 @@ class FormatAuditor:
         # Score calculation: base 100, -15 per error, -3 per warning, -1 per info
         penalty = (error_count * 15) + (warning_count * 3) + (info_count * 1)
         score = max(0.0, min(100.0, 100.0 - penalty))
-        passed = (error_count == 0) and (score >= 80.0)
+        # Zero Tolerance Rule: MUST have 0 errors, score >= 80, AND 0 hard invariant violations!
+        passed = (error_count == 0) and (score >= 80.0) and inv_res['valid']
 
         ollama_review = None
         if ollama_verifier and getattr(ollama_verifier, "is_available", False):
@@ -193,6 +237,7 @@ class FormatAuditor:
             score_percent=score,
             issues=issues,
             ollama_review=ollama_review,
+            recipe_recommendations=recipe_recs,
         )
 
     def audit_file(self, file_path: Path, ollama_verifier: Optional[Any] = None) -> AuditReport:
@@ -555,5 +600,13 @@ class FormatAuditor:
                 continue
             clean_lines.append(line)
         new_text = "\n".join(clean_lines)
+
+        # 4. Apply all matched recipes from FixPlaybook
+        from doc_processor.fixes.playbook import FixPlaybook
+        matched_recipes = FixPlaybook.match_symptoms(new_text, archetype="literature" if self.is_literature else "all")
+        for recipe, _ in matched_recipes:
+            new_text, r_cnt, ok = FixPlaybook.apply_recipe(recipe.recipe_id, new_text)
+            if ok and r_cnt > 0:
+                repairs += r_cnt
 
         return new_text, repairs

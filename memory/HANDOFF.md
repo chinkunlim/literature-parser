@@ -5,21 +5,20 @@
 
 ---
 
-### 🕒 最新交接時間：2026-09-25 08:48
+### 🕒 最新交接時間：2026-09-25 08:55
  
 #### 1. 剛剛完成了什麼？ (Session Accomplishments)
-- **實裝專屬排版與格式稽核器 (`FormatAuditor`) 與 Ollama 結構化核對整合**：
-  1. **專門格式稽核器 (`src/doc_processor/verification/format_auditor.py`)**：
-     - 將除錯排查機制正式納入專案核心架構，涵蓋標題完整性、摘要提取、IMRAD 標題密度、圖表語義定位與註釋隔離、LaTeX/統計符號、參考文獻格式、孤立頁碼/頁眉過濾等 8 大排版維度。
-     - 支援產生詳細 Markdown 報表 (`audit_report.md`)、JSON 結構化數據 (`audit_report.json`) 與終端診斷表格。
-  2. **增強 Ollama 結構化核驗 (`OllamaVerifier.audit_structured_format_defects`)**：
-     - 規則預檢結合本地大模型深度語義複核，輸出包含問題等級、類別、摘錄片段、問題描述與修正建議的結構化清單。
-  3. **雙軌整合與獨立 CLI 指令 (`run.py audit`)**：
-     - `LiteraturePipeline` 管線末端自動執行稽核並產出 `audit_report.md`。
-     - 新增獨立 CLI 指令 `uv run python run.py audit [target] [--all] [--ollama] [--fix]`，支援一鍵全量稽核與高置信度瑕疵自動修補（`--fix`）。
-  4. **全量文獻稽核與單元測試 100% 通過**：
-     - 新增 `tests/test_v39_format_auditor.py`，全套 206/206 單元測試 100% 通過。
-     - `data/output/literature/` 下 10 篇學術文獻全量稽核全數獲得 `[PASS]` 綠燈評級。
+- **實裝專屬修復手冊庫 (`FixPlaybook`) 與零容忍防呆門禁 (`QualityInvariantGuard` 避免有錯還報對)**：
+  1. **專門修復手冊知識庫 (`src/doc_processor/fixes/playbook.py`)**：
+     - 將無法直接通用的特定修復邏輯收錄為 8 大專用修復配方（CUP 側欄清理、Elsevier 粘連參考文獻拆分、無括號年份引用條目重構、建議清單降級、孤立頁碼清理、KaTeX 貨幣轉義、OCR 統計符號修復、NIH 水印過濾）。
+     - 提供獨立 CLI 工具：`uv run python run.py fix list`（檢視清單）、`uv run python run.py fix apply <id> <file>`（手動指定修復）、`uv run python run.py fix info <id>`（檢視配方詳情）。
+     - 於 `run.py audit` 中實裝「配方智能推薦」與 `--fix` 自動症狀匹配修復，形成自動化閉環。
+  2. **零容忍防呆門禁 (`QualityInvariantGuard.verify_hard_invariants`)**：
+     - 定義 7 大核心不變量（標題非空、摘要存在、參考文獻獨立、LaTeX 公式閉合、無 OCR 表格洩漏、無孤立頁碼、非空白檔案）。
+     - 違背任一項強制判定 FAIL 並標紅，管線嚴格禁止輸出「100% verified」，自動隔離至 `data/needs_review/`，徹底杜絕「有錯還報對」。
+  3. **全套測試與文獻稽核 100% 通過**：
+     - 新增 `tests/test_v40_fix_playbook_and_invariants.py`，全套 219/219 單元測試 100% 通過。
+     - 全量 10 篇學術文獻稽核全數合格，並能智能推薦匹配之手冊修復指令。
 
 #### 2. 目前專案狀態與代碼位置
 - 分支：`main`

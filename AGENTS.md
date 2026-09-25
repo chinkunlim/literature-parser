@@ -18,6 +18,7 @@
 | **轉換書籍** | `uv run python run.py process data/input/books/<filename>` | 自動啟動書籍章節切分與文意縫合 |
 | **轉換學術文獻 / 論文** | `uv run python run.py process data/input/literature/<filename>` | 自動啟動雙欄排版、摘要與文獻解析 |
 | **文獻排版格式深度稽核** | `uv run python run.py audit <path> [--ollama] [--fix]` | 全維度排版格式檢查，支援 Ollama 語義複核與自動修復 |
+| **專案修復手冊工具** | `uv run python run.py fix [list\|apply <id> <file>]` | 查詢並按需執行專屬排版修復配方庫 |
 | **驗證 Ollama 自動喚醒** | `uv run python run.py test-ollama-auto-trigger` | 驗證輸入與輸出守衛能否自動喚醒 Ollama |
 | **一般進度存檔** | `uv run python run.py save "<English_message>"` | 先更新文檔時間戳，再以英文 commit |
 | **結束對話 / 結案離席** | `uv run python run.py end-session "<English_summary>"` | **對話結束必跑**：1. 備份對話 (雙軌) 2. 檢核更新所有 .md (含 .agent/skills/) 3. 測試與英文 Commit |

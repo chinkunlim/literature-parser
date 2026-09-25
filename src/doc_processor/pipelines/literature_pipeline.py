@@ -493,6 +493,23 @@ class LiteraturePipeline(BasePipeline):
             print(f"\n[✓ LITERATURE COMPLETE] 100% verified! Output saved in: {doc_out}\n")
             if "inbox" in str(p_path):
                 self.archive_source(str(p_path))
+        else:
+            print(f"\n🛑 [LITERATURE AUDIT FAILED / NEEDS REVIEW] 核心排版檢驗未通過！")
+            for iss in audit_rep.issues:
+                if iss.severity == "ERROR":
+                    print(f"   ❌ [{iss.category}] {iss.message}")
+            try:
+                from src.guards.validator import ValidatorGuard
+                v_guard = ValidatorGuard()
+                err_details = "\n".join([f"- {i.message}" for i in audit_rep.issues if i.severity == "ERROR"])
+                v_guard.quarantine_issue(
+                    category="Literature Format Invariant Violation",
+                    raw_content=f"Document: {clean_name}\nScore: {audit_rep.score_percent}%\nErrors: {audit_rep.error_count}",
+                    details=err_details or "Quality invariants or accuracy verifier failed.",
+                    context=str(doc_out),
+                )
+            except Exception as _q_err:
+                logger.debug("Quarantine execution skipped: %s", _q_err)
 
         return {
             "passed": v_res.get("passed", False) and audit_rep.passed,
@@ -500,6 +517,7 @@ class LiteraturePipeline(BasePipeline):
             "markdown_file": str(md_file),
             "literature_subtype": subtype,
             "verification": v_res,
+            "format_audit": audit_rep.to_dict(),
         }
 
 

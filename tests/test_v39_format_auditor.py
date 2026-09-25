@@ -146,19 +146,20 @@ class TestFormatAuditor(unittest.TestCase):
 
     def test_report_markdown_generation(self):
         perfect_md = (
-            "# Understanding Structural Plasticity\n\n"
+            "# Understanding Structural Plasticity in the Bilingual Brain\n\n"
             "## Abstract\n"
-            "This study investigates structural neuroplasticity in bilinguals.\n\n"
+            "This study investigates structural neuroplasticity in bilinguals across the lifespan, "
+            "providing empirical support for dynamic neurological adaptation.\n\n"
             "## Introduction\n"
-            "Bilingualism introduces unique cognitive demands.\n\n"
+            "Bilingualism introduces unique cognitive demands that shape both cortical volume and white matter tracts over prolonged periods of active language management.\n\n"
             "## Methods\n"
-            "MRI scans were collected.\n\n"
+            "High-resolution MRI scans were collected and processed using automated voxel-based morphometry protocols across all participant cohorts.\n\n"
             "## Results\n"
-            "Significant grey matter volume increases were observed, $p < .05$.\n\n"
+            "Significant grey matter volume increases were observed in basal ganglia and cerebellum, $p < .05$.\n\n"
             "## Discussion\n"
-            "Findings support the Dynamic Restructuring Model.\n\n"
+            "Findings strongly support the Dynamic Restructuring Model of neuroplasticity in bilingual populations.\n\n"
             "## References\n"
-            "- Bialystok E (2007). Bilingualism in development.\n"
+            "- Bialystok E (2007). Bilingualism in development: Language, literacy, and cognition. Cambridge University Press.\n"
         )
         rep = self.auditor.audit_text(perfect_md, doc_name="TestDoc", file_path="/path/TestDoc.md")
         self.assertTrue(rep.passed)

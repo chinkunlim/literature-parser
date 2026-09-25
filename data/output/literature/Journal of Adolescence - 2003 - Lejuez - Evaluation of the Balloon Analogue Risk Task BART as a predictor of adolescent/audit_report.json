@@ -9,5 +9,13 @@
   "score_percent": 100.0,
   "repaired_count": 0,
   "ollama_review": null,
+  "recipe_recommendations": [
+    {
+      "recipe_id": "normalize_corrupted_stats",
+      "name": "Elsevier OCR \u7834\u640d\u7d71\u8a08\u516c\u5f0f\u4fee\u5fa9",
+      "description": "\u4fee\u5fa9 PDF OCR \u904e\u7a0b\u4e2d\u62ec\u865f\u88ab\u640d\u6bc0\u4e4b\u7d71\u8a08\u516c\u5f0f\uff08\u5982 't \u00f0 24 \u00de' \u8f49\u70ba '$t(24)$'\u3001'p o 0: 01' \u8f49\u70ba '$p < 0.01$'\uff09\u3002",
+      "command": "uv run python run.py fix apply normalize_corrupted_stats /Users/limchinkun/Desktop/books/data/output/literature/Journal of Adolescence - 2003 - Lejuez - Evaluation of the Balloon Analogue Risk Task BART as a predictor of adolescent/Journal of Adolescence - 2003 - Lejuez - Evaluation of the Balloon Analogue Risk Task BART as a predictor of adolescent.md"
+    }
+  ],
   "issues": []
 }

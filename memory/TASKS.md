@@ -6,6 +6,12 @@
 
 ## 🏃 當前 Sprint (v1.0.0-rc1 專案治理與守衛上線)
 
+- [x] [2026-09-25] 實裝專屬修復手冊庫 (`FixPlaybook`) 與零容忍防呆門禁 (`QualityInvariantGuard` 避免有錯還報對)：
+  - 建立專屬修復手冊庫 (`src/doc_processor/fixes/playbook.py`)，內建 8 大專用修復配方（CUP 側欄清理、Elsevier 粘連參考文獻拆分、無括號年份引用條目重構、建議清單降級、孤立頁碼清理、KaTeX 貨幣轉義、OCR 統計符號修復、NIH 水印過濾）
+  - 新增完整 CLI 工具 `uv run python run.py fix [list|apply <id> <file>|info <id>]`，支援隨時按需調用特定修復程式
+  - 在 `run.py audit` 中實裝「配方智能推薦」與 `--fix` 自動症狀匹配修復，形成閉環
+  - 建立 7 大「絕對不變量防呆門禁」（標題非空、摘要存在、參考文獻獨立、LaTeX 閉合、無 OCR 表格洩漏、無孤立頁碼、非空白檔案）；任何一項違背一律強制判定 FAIL，嚴格杜絕「有錯還報對」
+  - 新增 `tests/test_v40_fix_playbook_and_invariants.py`，全套 219 項單元測試 100% 通過
 - [x] [2026-09-25] 實裝專屬排版與格式稽核器 (`FormatAuditor`) 與 Ollama 結構化核對整合：
   - 新增 `src/doc_processor/verification/format_auditor.py`，全維度覆蓋標題完整性、摘要提取、IMRAD 架構與目錄密度、圖表語義定位與註釋隔離、LaTeX/統計符號、參考文獻格式、頁碼/頁眉過濾等 8 大維度
   - 增強 `OllamaVerifier.audit_structured_format_defects`，支援以規則掃描候選為基礎進行 AI 深度語義核驗與結構化診斷清單輸出

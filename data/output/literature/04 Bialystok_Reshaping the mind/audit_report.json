@@ -9,6 +9,7 @@
   "score_percent": 99.0,
   "repaired_count": 0,
   "ollama_review": null,
+  "recipe_recommendations": [],
   "issues": [
     {
       "severity": "INFO",

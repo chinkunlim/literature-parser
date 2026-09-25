@@ -1472,6 +1472,10 @@ def cmd_audit(args):
             first_line = report.ollama_review.strip().splitlines()[0] if report.ollama_review.strip() else ""
             print(f"    🤖 [Ollama 診斷摘要]: {first_line[:100]}")
 
+        if report.recipe_recommendations:
+            for rec in report.recipe_recommendations[:2]:
+                print(f"    💡 [手冊修復建議]: {rec['command']}")
+
     print("\n" + "=" * 65)
     if all_passed:
         print(f"🎉 稽核大獲全勝！全數 {len(md_files)} 篇文獻排版格式均達到黃金標準！")
@@ -1484,12 +1488,97 @@ def cmd_audit(args):
         sys.exit(1)
 
 
+def cmd_fix(args):
+    """
+    Fix Playbook Command Center.
+    Enables viewing and executing specialized document repair recipes.
+    """
+    from doc_processor.fixes.playbook import FixPlaybook
+    from doc_processor.verification.format_auditor import FormatAuditor
+
+    action = getattr(args, "fix_action", None) or "list"
+
+    if action == "list":
+        recipes = FixPlaybook.list_recipes()
+        print("\n" + "=" * 70)
+        print("📖 [FIX PLAYBOOK] 專屬修復手冊配方庫清單")
+        print("=" * 70)
+        print(f"{'配方 ID (recipe_id)':34s} {'類別':10s} {'配方名稱'}")
+        print("-" * 70)
+        for r in recipes:
+            print(f"{r.recipe_id:34s} {r.category:10s} {r.name}")
+            print(f"  ↳ 說明: {r.description}")
+            print(f"  ↳ 症狀: {', '.join(r.symptoms[:2])}")
+        print("=" * 70)
+        print("💡 執行指令範例: uv run python run.py fix apply <recipe_id> <target_file>\n")
+        return
+
+    elif action == "apply":
+        recipe_id = getattr(args, "recipe_id", None)
+        target = Path(args.target) if getattr(args, "target", None) else None
+        if not recipe_id or not target:
+            print("🛑 錯誤：請提供配方 ID 與目標檔案路徑。")
+            print("  範例: uv run python run.py fix apply clean_orphan_page_numbers data/output/literature/paper/paper.md")
+            sys.exit(1)
+
+        print(f"\n🔧 [FIX PLAYBOOK] 正在執行配方 '{recipe_id}' ➔ 目標: {target.name}...")
+        recipe = FixPlaybook.get_recipe(recipe_id)
+        if not recipe:
+            print(f"🛑 錯誤：找不到配方 '{recipe_id}'。請執行 'python run.py fix list' 查看可用配方。")
+            sys.exit(1)
+
+        count, success, msg = FixPlaybook.apply_recipe_to_file(recipe_id, target, backup=True)
+        if success:
+            print(f"✅ {msg}")
+            # Re-audit
+            auditor = FormatAuditor(is_literature=True)
+            report = auditor.audit_file(target)
+            status_badge = "✅ [PASS]" if report.passed else "🛑 [FAILED]"
+            print(f"📊 修復後最新品質得分: {report.score_percent:.1f}% ({status_badge}) | 錯誤: {report.error_count}, 警告: {report.warning_count}\n")
+        else:
+            print(f"🛑 修復失敗: {msg}\n")
+            sys.exit(1)
+
+    elif action == "info":
+        recipe_id = getattr(args, "recipe_id", None)
+        recipe = FixPlaybook.get_recipe(recipe_id)
+        if not recipe:
+            print(f"🛑 錯誤：找不到配方 '{recipe_id}'。")
+            sys.exit(1)
+        print("\n" + "=" * 65)
+        print(f"📖 配方詳情: {recipe.name} ({recipe.recipe_id})")
+        print("=" * 65)
+        print(f"• 類別 (Category)   : {recipe.category}")
+        print(f"• 領域 (Archetype)  : {recipe.archetype}")
+        print(f"• 功能說明          : {recipe.description}")
+        print(f"• 觸發症狀正則      : {', '.join(recipe.symptoms)}")
+        print(f"• 執行指令範例      : uv run python run.py fix apply {recipe.recipe_id} <target_file>")
+        print("=" * 65 + "\n")
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="python run.py",
         description="Book & Journal Processor Unified Command Center",
     )
     subparsers = parser.add_subparsers(dest="subcommand", required=True)
+
+    # fix
+    p_fix = subparsers.add_parser("fix", help="專案修復手冊工具 (list / apply / info)")
+    p_fix_sub = p_fix.add_subparsers(dest="fix_action", required=False)
+
+    p_fix_list = p_fix_sub.add_parser("list", help="列出所有可用的修復配方與症狀")
+    p_fix_list.set_defaults(func=cmd_fix)
+
+    p_fix_apply = p_fix_sub.add_parser("apply", help="對目標檔案套用特定修復配方")
+    p_fix_apply.add_argument("recipe_id", help="配方唯一識別碼 (例如 clean_orphan_page_numbers)")
+    p_fix_apply.add_argument("target", help="目標 Markdown 檔案路徑")
+    p_fix_apply.set_defaults(func=cmd_fix)
+
+    p_fix_info = p_fix_sub.add_parser("info", help="查看特定修復配方詳細資訊")
+    p_fix_info.add_argument("recipe_id", help="配方唯一識別碼")
+    p_fix_info.set_defaults(func=cmd_fix)
+    p_fix.set_defaults(func=cmd_fix)
 
     # audit
     p_audit = subparsers.add_parser("audit", help="執行文獻排版格式詳細稽核 (支援 --ollama 與 --fix)")

@@ -113,6 +113,84 @@ class QualityInvariantGuard:
             'issues': issues
         }
 
+    @staticmethod
+    def verify_hard_invariants(md_text: str, is_literature: bool = True, file_path: str = "") -> dict:
+        """
+        Zero-Tolerance Hard Invariant Gate (防呆門禁: 避免有錯還報對).
+        Validates core non-negotiable structural and typographic invariants:
+        1. Non-empty content (>= 500 bytes)
+        2. Valid H1 title (not empty, not truncated, not a watermark)
+        3. Abstract presence (for literature)
+        4. References section presence (for literature)
+        5. LaTeX delimiter parity and currency safety
+        6. Absence of raw OCR floating number arrays
+        7. Absence of orphan single-line page numbers
+
+        If ANY invariant is violated, 'valid' is strictly False.
+        """
+        violations = []
+        clean = md_text.strip()
+
+        # 1. Non-empty check
+        if len(clean) < 500:
+            violations.append(f"INV_NON_EMPTY: File content is suspiciously small ({len(clean)} chars < 500 chars).")
+
+        # 2. Title check
+        m_title = re.search(r'(?m)^#\s+([^\n]+)', md_text)
+        if not m_title or not m_title.group(1).strip():
+            violations.append("INV_TITLE: Missing or empty document title (# Title).")
+        else:
+            t = m_title.group(1).strip()
+            watermarks = ["NIH Public Access", "Author Manuscript", "ARTICLE IN PRESS", "RESEARCH ARTICLE"]
+            if any(t.lower() == wm.lower() for wm in watermarks):
+                violations.append(f"INV_TITLE: Document title was corrupted by publisher watermark ('{t}').")
+
+        # 3. Abstract check (literature only)
+        if is_literature:
+            has_abs = bool(re.search(r'(?m)^##\s+Abstract\b', md_text, re.I)) or bool(re.search(r'(?m)^>\s+\*\*Abstract\*\*', md_text, re.I)) or bool(re.search(r'(?m)^>\s+.*?[A-Za-z]{30,}', md_text))
+            if not has_abs:
+                violations.append("INV_ABSTRACT: Academic literature is missing Abstract section (## Abstract or > blockquote).")
+
+        # 4. References check (literature only, for papers > 150 lines)
+        if is_literature and len(md_text.splitlines()) > 150:
+            has_refs = bool(re.search(r'(?m)^##\s+(?:References|Literature Cited|Bibliography)\b', md_text, re.I))
+            if not has_refs:
+                violations.append("INV_REFERENCES: Academic literature is missing References section (## References).")
+
+        # 5. LaTeX and currency delimiter parity
+        math_check = MathLaTeXConverter.check_equation_balance(md_text)
+        if not math_check['balanced']:
+            violations.extend([f"INV_LATEX_BALANCED: {iss}" for iss in math_check['issues']])
+
+        # 6. Absence of raw OCR tables leaking into body
+        raw_ocr_leak = re.search(r'(?m)^Table\s+\d+\s*\n+(?:[ \t\d\.\-\—\*]+\n+){3,}', md_text)
+        if raw_ocr_leak:
+            violations.append("INV_NO_OCR_TABLE_LEAK: Unparsed raw OCR numerical matrix leaking into body text.")
+
+        # 7. Absence of orphan page numbers
+        lines = md_text.splitlines()
+        orphan_pns = []
+        for idx, line in enumerate(lines, 1):
+            s = line.strip()
+            if re.match(r'^\d{1,4}$', s) and not s.startswith("0") and len(s) <= 4:
+                orphan_pns.append((idx, s))
+        if orphan_pns:
+            violations.append(f"INV_NO_ORPHAN_PAGE_NUMS: Found {len(orphan_pns)} orphan page number line(s) (e.g. line {orphan_pns[0][0]}: '{orphan_pns[0][1]}').")
+
+        return {
+            'valid': len(violations) == 0,
+            'violations': violations,
+            'violation_count': len(violations),
+        }
+
+    @staticmethod
+    def assert_hard_invariants(md_text: str, is_literature: bool = True, file_path: str = "") -> None:
+        """Raises InvariantViolationError if any hard invariant is violated."""
+        res = QualityInvariantGuard.verify_hard_invariants(md_text, is_literature=is_literature, file_path=file_path)
+        if not res['valid']:
+            viol_str = "; ".join(res['violations'])
+            raise InvariantViolationError(f"Hard Invariant Gate Violation: {viol_str}")
+
 
 class CircuitBreaker:
     """

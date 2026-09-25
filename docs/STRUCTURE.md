@@ -54,10 +54,10 @@ books-project/
 │   ├── needs_review/               # 🚨 [人機隔離區] 遇疑難公式或壞頁自動存於此，不卡死主程序
 │   └── state/                      # 💾 斷點續傳快照、TOC 預覽與 Dashboard 狀態
 │
-├── tests/                          # 🧪 [自動化測試體系] (206 個測試全部 PASS)
+├── tests/                          # 🧪 [自動化測試體系] (219 個測試全部 PASS)
 │   ├── __init__.py                 # 動態注入 sys.path，確保任何環境直跑 unittest/pytest
-│   └── test_*.py                   # 25 個測試檔案，平坦結構於 tests/ 頂層
-│                                   # (含 test_v38_universal_literature_profiling.py, test_v39_format_auditor.py)
+│   └── test_*.py                   # 26 個測試檔案，平坦結構於 tests/ 頂層
+│                                   # (含 test_v39_format_auditor.py, test_v40_fix_playbook_and_invariants.py)
 │
 ├── src/                            # 💻 [業務核心原始碼] (Clean Architecture)
 │   ├── guards/                     # 🛡️ 守衛防線
@@ -77,8 +77,9 @@ books-project/
 │       ├── parsers/                # 解析層 (PDF, EPUB, LaTeX, 雙欄版面)
 │       │   └── literature/         # 🎯 學術文獻解析子模組 (metadata_extractor, imrad_resolver, figure_formatter, reference_parser)
 │       ├── verification/           # 檢驗層 (format_auditor 全維度格式稽核器, OllamaVerifier, rules, OllamaHealer)
+│       ├── fixes/                  # 🔧 專案修復手冊 (playbook.py 8 大專用排版修復配方庫)
 │       ├── utils/                  # 輔助模組 (obsidian_linker 雙鏈與索引生成)
-│       └── core/                   # 核心調度 (orchestrator, global_state 全域狀態, splitter)
+│       └── core/                   # 核心調度 (orchestrator, global_state, invariants 零容忍防呆門禁, splitter)
 │
 ├── config/                         # ⚙️ [層級式配置系統]
 │   ├── archetypes/                 # L1 文件類型特徵設定

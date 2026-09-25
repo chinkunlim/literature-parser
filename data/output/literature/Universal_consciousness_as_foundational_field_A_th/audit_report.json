@@ -9,6 +9,14 @@
   "score_percent": 99.0,
   "repaired_count": 0,
   "ollama_review": null,
+  "recipe_recommendations": [
+    {
+      "recipe_id": "demote_recommendation_headings",
+      "name": "\u6307\u5f15\u9577\u53e5\u5efa\u8b70\u689d\u76ee\u964d\u7d1a\u70ba\u6709\u5e8f\u6e05\u55ae",
+      "description": "\u5c07\u81e8\u5e8a\u5be6\u52d9\u6307\u5f15\u4e2d\u4ee5 '1. Clinicians are encouraged...' \u7b49\u9577\u53e5\u5efa\u8b70\u8aa4\u5347\u4e4b\u4e8c\u7d1a\u6a19\u984c\u964d\u7d1a\u70ba\u6b63\u5e38\u6e05\u55ae\uff0c\u9632\u6b62\u76ee\u9304\u81a8\u8139\u3002",
+      "command": "uv run python run.py fix apply demote_recommendation_headings /Users/limchinkun/Desktop/books/data/output/literature/Universal_consciousness_as_foundational_field_A_th/Universal_consciousness_as_foundational_field_A_th.md"
+    }
+  ],
   "issues": [
     {
       "severity": "INFO",

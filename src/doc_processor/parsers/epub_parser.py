@@ -8,13 +8,13 @@ Converts EPUB XHTML content into structured Markdown with rich formatting
 import os
 import re
 import zipfile
-from pathlib import Path
 from html.parser import HTMLParser
-from doc_processor.utils.text_utils import sanitize_filename
-from doc_processor.parsers.math_latex import MathLaTeXConverter
-from doc_processor.parsers.layout_detector import LayoutDetector
-from doc_processor.style_loader import load_style
+from pathlib import Path
 
+from doc_processor.parsers.layout_detector import LayoutDetector
+from doc_processor.parsers.math_latex import MathLaTeXConverter
+from doc_processor.style_loader import load_style
+from doc_processor.utils.text_utils import sanitize_filename
 
 
 class HTMLToMarkdownParser(HTMLParser):
@@ -144,7 +144,7 @@ class EPUBProcessor:
                 os.makedirs(ch_dir, exist_ok=True)
 
                 raw_html = z.read(ch_path).decode('utf-8', errors='ignore')
-                img_srcs = re.findall(r'<img\s+[^>]*src=[\"\']([^\"\']+)[\"\']', raw_html, re.I)
+                img_srcs = re.findall(r'<img\s+[^>]*src=[\"\']([^\"\']+)[\"\']', raw_html, re.IGNORECASE)
                 image_map = {}
 
                 for src in img_srcs:

@@ -153,7 +153,7 @@ class CheckpointManager:
             f"- **Total Chapters**: {total}",
             f"- **Verified & Complete**: {verified} / {total} ({percent:.1f}%)",
             f"- **Last Session Updated**: {self.data['last_updated']}",
-            f"- **Resume Command**: `python3 doc_processor.py resume --file \"<path_to_book>\"`\n",
+            "- **Resume Command**: `python3 doc_processor.py resume --file \"<path_to_book>\"`\n",
             "| Chapter | Page Range | Split PDF | Markdown | Images | Verification | Status |",
             "| :--- | :--- | :---: | :---: | :---: | :---: | :--- |",
         ]

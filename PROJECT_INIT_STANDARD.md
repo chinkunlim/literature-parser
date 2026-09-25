@@ -39,6 +39,12 @@
 28. **秒級純函數單元測試標準 (Sub-Second Unit Test Baseline)**：核心單元測試必須純函數化、無 I/O，全量單元測試執行時間嚴格控制在 1 秒以內，讓 Pre-Save Test Gate 零等待感。
 29. **本地優先與完全離線主權 (Local-First & Offline Sovereignty)**：核心業務功能必須具備完全離線運行的能力，依賴外部雲端或大模型的模組必須具備本地 Mock 或純語法優雅降級。
 30. **一鍵開案自動化腳手架 (`run.py init-project`)**：將開案指南腳本化，提供 `run.py init-project <dir>` 一鍵在 3 秒內自動建立符合本標準的所有資料夾、Git 安全鎖、軟硬體守衛、雙層代碼規範與 run 指揮腳本。
+31. **模組化職責與程式碼行數熔斷規範 (God-File Circuit Breaker & Modularity Ceiling)**：單一檔案建議 $\le 500$ 行，硬性上限 800 行；CLI 入口與命令調度層嚴格限制 $\le 200$ 行。禁止巨型上帝類別，複合職責必須依業務邊界拆分為專責子解析器（如向量幾何圖形解析、章末習題提取）。
+32. **跨模組共用函式純粹化原則 (Shared Pure Utilities Extraction)**：跨模組重複使用之文字清洗、正則轉換、公式處理邏輯，嚴禁複製貼上，必須抽離至純函數工具模組（如 `shared_text.py`）。
+33. **PromptRegistry 集中管理與單一真理來源 (PromptRegistry Single Source of Truth)**：嚴禁在各業務模組內硬編碼 prompt 字串，所有提示詞一律集中在 `src/guards/prompts.py` 中強型別管理，並嚴格連結專案修正規格（如 KaTeX `\$` 貨幣轉義、Python 正則 `\g<1>` 反向引用、APA 表格附註、雙欄閱讀流）。
+34. **文檔分層規範：【完整詳細版】vs【精簡摘要版】 (Document Granularity Standard)**：`docs/STRUCTURE.md` 明確註記為 `【完整詳細版】`，包含全量目錄樹與檔案功能清單；`README.md` / `OPERATIONS.md` 標註為 `【精簡摘要版】`，保持精簡高層概覽並雙向連結。
+35. **修復配方庫與漸進式 AST 沙盒合成 (FixPlaybook & Staged AST Sandbox)**：排版與解析修復規則結構化沉澱於專屬修復庫 (`FixPlaybook`)，AI 自動合成之修復程式必須經由 AST 靜態語法檢查與沙盒回歸測試才可入庫。
+36. **零容忍物理硬不變量防線 (Zero-Tolerance Physical Invariant Gate)**：以實體指標（字數、表格標籤配對、Markdown 標題層級連續性、LaTeX 括號閉合）防呆，杜絕「有錯還報對」之假陽性。
 
 ---
 

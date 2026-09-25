@@ -17,6 +17,7 @@ the shared knowledge repository for cross-document reuse.
 import logging
 import re
 from typing import Any, Dict, List, Optional
+
 from doc_processor.config_manager import ConfigManager
 
 logger = logging.getLogger(__name__)
@@ -84,7 +85,7 @@ class IMRADResolver:
             "Risk behaviors",
             "The BART",
         ]:
-            pat = re.compile(r'([\.?!]["”\']?\s+|\n)\*(' + re.escape(sub_name) + r')\.?\*\s*', re.I)
+            pat = re.compile(r'([\.?!]["”\']?\s+|\n)\*(' + re.escape(sub_name) + r')\.?\*\s*', re.IGNORECASE)
             full_md = pat.sub(r'\1\n\n#### \2\n\n', full_md)
 
         lines = full_md.split('\n')
@@ -111,10 +112,10 @@ class IMRADResolver:
                 continue
 
             # Check if entering References
-            if re.match(r'^(?:#{1,3}\s*)?(?:References|REFERENCES|Bibliography|Literature\s+Cited|LITERATURE\s+CITED)\b', trimmed, re.I):
+            if re.match(r'^(?:#{1,3}\s*)?(?:References|REFERENCES|Bibliography|Literature\s+Cited|LITERATURE\s+CITED)\b', trimmed, re.IGNORECASE):
                 in_references = True
                 last_emergent = ""
-                new_lines.append(f"## References")
+                new_lines.append("## References")
                 i += 1
                 continue
 
@@ -138,7 +139,7 @@ class IMRADResolver:
                     continue
 
             # Filter out Table lines from becoming markdown headers
-            if re.match(r'^(?:#{1,4}\s*)?Table\s+\d+\b', trimmed, re.I):
+            if re.match(r'^(?:#{1,4}\s*)?Table\s+\d+\b', trimmed, re.IGNORECASE):
                 # Don't make Table X into a markdown header; keep as plain text or let table parser format it
                 clean_table_line = re.sub(r'^#{1,4}\s*', '', trimmed)
                 new_lines.append(clean_table_line)
@@ -149,7 +150,7 @@ class IMRADResolver:
             promoted_primary = False
             for sec_name, patterns in cls.PRIMARY_SECTIONS:
                 for pat in patterns:
-                    if re.match(pat, trimmed, re.I) and len(trimmed) < 40:
+                    if re.match(pat, trimmed, re.IGNORECASE) and len(trimmed) < 40:
                         if not re.search(r'[\.\;\:\,]', trimmed) or trimmed.endswith(':'):
                             new_lines.append(f"## {sec_name}")
                             promoted_primary = True
@@ -166,7 +167,7 @@ class IMRADResolver:
             promoted_secondary = False
             for sub_name, patterns in cls.SECONDARY_SUBSECTIONS:
                 for pat in patterns:
-                    if re.match(pat, trimmed, re.I) and len(trimmed) < 120:
+                    if re.match(pat, trimmed, re.IGNORECASE) and len(trimmed) < 120:
                         new_lines.append(f"### {sub_name}")
                         promoted_secondary = True
                         last_emergent = ""
@@ -182,7 +183,7 @@ class IMRADResolver:
             promoted_tertiary = False
             for sub_name, patterns in cls.TERTIARY_SUBSECTIONS:
                 for pat in patterns:
-                    if re.match(pat, trimmed, re.I) and len(trimmed) < 100:
+                    if re.match(pat, trimmed, re.IGNORECASE) and len(trimmed) < 100:
                         new_lines.append(f"#### {sub_name}")
                         promoted_tertiary = True
                         last_emergent = ""
@@ -281,11 +282,11 @@ class IMRADResolver:
         ]
         found_blocks = []
         for pat in aux_pats:
-            for m in re.finditer(pat, post_ref, re.S | re.I):
+            for m in re.finditer(pat, post_ref, re.DOTALL | re.IGNORECASE):
                 blk = m.group(0).strip()
                 if blk:
                     found_blocks.append(blk)
-            post_ref = re.sub(pat, '', post_ref, flags=re.S | re.I).strip()
+            post_ref = re.sub(pat, '', post_ref, flags=re.DOTALL | re.IGNORECASE).strip()
 
         if found_blocks:
             aux_content = "\n\n".join(found_blocks)
@@ -303,7 +304,7 @@ class IMRADResolver:
         aux_parts = []
 
         # 0. Check for raw un-promoted Acknowledgements section
-        p_raw_ack = re.compile(r'(?m)^(?:\*\*)?Acknowledgements?(?:\*\*)?\s*\n+(The authors thank\b.*?)(?=\n#{1,3}\s+|\n---\n|\Z)', re.DOTALL | re.I)
+        p_raw_ack = re.compile(r'(?m)^(?:\*\*)?Acknowledgements?(?:\*\*)?\s*\n+(The authors thank\b.*?)(?=\n#{1,3}\s+|\n---\n|\Z)', re.DOTALL | re.IGNORECASE)
         m_raw_ack = p_raw_ack.search(md)
         if m_raw_ack:
             aux_parts.append(m_raw_ack.group(1).strip())
@@ -314,12 +315,12 @@ class IMRADResolver:
             r'(#+\s*(?:Author\s+Note(?:\s*&\s*Acknowledgments)?|Acknowledgments?|Acknowledgements?)\b[^\n]*\n+'
             r'.*?'
             r'(?:(?:E-mail|Email|Correspondence)[^\n]+|\.edu|\.org|\.gov|[^\n]+(?=\n\n)|\Z))',
-            re.DOTALL | re.I
+            re.DOTALL | re.IGNORECASE
         )
         m_hdr = p_an_hdr.search(md)
         if m_hdr:
             an_text = m_hdr.group(1).strip()
-            clean_an = re.sub(r'^#+\s*(?:Author\s+Note(?:\s*&\s*Acknowledgments)?|Acknowledgments?|Acknowledgements?)\s*\n*', '', an_text, flags=re.I).strip()
+            clean_an = re.sub(r'^#+\s*(?:Author\s+Note(?:\s*&\s*Acknowledgments)?|Acknowledgments?|Acknowledgements?)\s*\n*', '', an_text, flags=re.IGNORECASE).strip()
             if clean_an:
                 aux_parts.append(clean_an)
             md = md[:m_hdr.start()].rstrip() + "\n\n" + md[m_hdr.end():].lstrip()
@@ -329,14 +330,14 @@ class IMRADResolver:
             r'([A-Z][a-zA-Z\.\s]+,\s+(?:Department|Center|Division|School|Faculty|Institute)\s+(?:of|for).*?'
             r'Correspondence\s+concerning\s+this\s+article[^\n]*'
             r'(?:E-mail|Email):\s*[\w\.\-]+@[A-Za-z0-9\.\-]+(?:\.edu|\.org|\.com|\.gov)?\.?)',
-            re.DOTALL | re.I
+            re.DOTALL | re.IGNORECASE
         )
         m_inline = p_an_inline.search(md)
         if m_inline:
             raw_inline = m_inline.group(1).strip()
             parts = []
-            m_ack = re.search(r'\b(We thank\b.*?)(?=\bCorrespondence\b|\Z)', raw_inline, re.DOTALL | re.I)
-            m_corr = re.search(r'\b(Correspondence concerning\b.*)', raw_inline, re.DOTALL | re.I)
+            m_ack = re.search(r'\b(We thank\b.*?)(?=\bCorrespondence\b|\Z)', raw_inline, re.DOTALL | re.IGNORECASE)
+            m_corr = re.search(r'\b(Correspondence concerning\b.*)', raw_inline, re.DOTALL | re.IGNORECASE)
             
             p1_end = m_ack.start() if m_ack else (m_corr.start() if m_corr else len(raw_inline))
             para1 = raw_inline[:p1_end].strip()
@@ -364,7 +365,7 @@ class IMRADResolver:
             r'(\*?Received\s+[A-Za-z]+\s+\d{1,2},\s*\d{4}\*?\s*'
             r'(?:(?:\n+|\s+)\*?Revision\s+received\s+[A-Za-z]+\s+\d{1,2},\s*\d{4}\*?)?\s*'
             r'(?:(?:\n+|\s+)\*?Accepted\s+[A-Za-z]+\s+\d{1,2},\s*\d{4}\*?[^\n]*))',
-            re.I
+            re.IGNORECASE
         )
         m_dates = p_dates.search(md)
         if m_dates:
@@ -372,13 +373,13 @@ class IMRADResolver:
             md = md[:m_dates.start()].rstrip() + "\n" + md[m_dates.end():].lstrip()
             clean_dates = re.sub(r'[\u4e00-\u9fff\uff00-\uffef\u25a0-\u25ff\s]+$', '', raw_dates).strip()
             date_lines = []
-            m_rec = re.search(r'Received\s+[A-Za-z]+\s+\d{1,2},\s*\d{4}', clean_dates, re.I)
+            m_rec = re.search(r'Received\s+[A-Za-z]+\s+\d{1,2},\s*\d{4}', clean_dates, re.IGNORECASE)
             if m_rec:
                 date_lines.append(f"*{m_rec.group(0)}*  ")
-            m_rev = re.search(r'Revision\s+received\s+[A-Za-z]+\s+\d{1,2},\s*\d{4}', clean_dates, re.I)
+            m_rev = re.search(r'Revision\s+received\s+[A-Za-z]+\s+\d{1,2},\s*\d{4}', clean_dates, re.IGNORECASE)
             if m_rev:
                 date_lines.append(f"*{m_rev.group(0)}*  ")
-            m_acc = re.search(r'Accepted\s+[A-Za-z]+\s+\d{1,2},\s*\d{4}', clean_dates, re.I)
+            m_acc = re.search(r'Accepted\s+[A-Za-z]+\s+\d{1,2},\s*\d{4}', clean_dates, re.IGNORECASE)
             if m_acc:
                 date_lines.append(f"*{m_acc.group(0)}*")
             if date_lines:
@@ -410,7 +411,7 @@ class IMRADResolver:
 
         post_abs = md[m_abs.end():].lstrip()
         # Find next major section
-        m_next = re.search(r'^##\s+(?:Method|Results|Discussion)\b', post_abs, re.M)
+        m_next = re.search(r'^##\s+(?:Method|Results|Discussion)\b', post_abs, re.MULTILINE)
         if m_next and m_next.start() > 100:
             # Insert ## Introduction
             intro_pos = m_abs.end()
@@ -423,12 +424,12 @@ class IMRADResolver:
         """Ensures table notes stay attached to tables."""
         publisher_cfg = (config or {}).get("publisher_config", {})
         note_pats_raw = publisher_cfg.get("table_note_patterns", [])
-        _TABLE_NOTE_PATS = [re.compile(p, re.I) for p in note_pats_raw] + [
-            re.compile(r'^Note\.\s+', re.I),
-            re.compile(r'^\*Note\.\s+', re.I),
-            re.compile(r'^BART indicates\b', re.I),
-            re.compile(r'^Adapted from\b', re.I),
-            re.compile(r'^\*{1,3}p\s*[<>]', re.I),
+        _TABLE_NOTE_PATS = [re.compile(p, re.IGNORECASE) for p in note_pats_raw] + [
+            re.compile(r'^Note\.\s+', re.IGNORECASE),
+            re.compile(r'^\*Note\.\s+', re.IGNORECASE),
+            re.compile(r'^BART indicates\b', re.IGNORECASE),
+            re.compile(r'^Adapted from\b', re.IGNORECASE),
+            re.compile(r'^\*{1,3}p\s*[<>]', re.IGNORECASE),
             re.compile(r'^[a-z]\s+[A-Z]'),
             re.compile(r'^(?:CI|SD|SE|df|n|N|M)\s*='),
         ]

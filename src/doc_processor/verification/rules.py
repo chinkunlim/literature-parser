@@ -4,6 +4,7 @@ Validation Rules for Content Accuracy
 """
 
 import re
+
 from doc_processor.config import FOOTER_NOISE_PATTERNS
 
 
@@ -68,12 +69,12 @@ def check_noise_strings(content: str) -> list:
     for line in content.splitlines():
         line_clean = line.strip()
         # Skip legitimate bibliographic / abstract records (e.g. PsycINFO Database Record, APA article meta)
-        if re.search(r'\b(?:psycinfo|database record|journal abstract|american psychological association)\b', line_clean, re.I):
+        if re.search(r'\b(?:psycinfo|database record|journal abstract|american psychological association)\b', line_clean, re.IGNORECASE):
             continue
         # Running header/footer artifacts appear on short standalone lines (<140 chars)
         if line_clean and len(line_clean) < 140:
             for pat in FOOTER_NOISE_PATTERNS:
-                matches = re.findall(pat, line_clean, re.I)
+                matches = re.findall(pat, line_clean, re.IGNORECASE)
                 if matches:
                     found.extend(matches)
     return found

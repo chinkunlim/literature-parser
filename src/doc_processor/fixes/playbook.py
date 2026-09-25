@@ -14,9 +14,9 @@ Provides:
 import json
 import logging
 import re
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Callable
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -74,7 +74,7 @@ class FixPlaybook:
                 continue
             matched_evidence = []
             for symptom_pat in recipe.symptoms:
-                if re.search(symptom_pat, text, re.I):
+                if re.search(symptom_pat, text, re.IGNORECASE):
                     matched_evidence.append(symptom_pat)
             if matched_evidence:
                 matches.append((recipe, matched_evidence))
@@ -265,10 +265,10 @@ class FixPlaybook:
 from doc_processor.utils.shared_text import (
     clean_orphan_page_numbers_text,
     escape_currency_katex_text,
-    separate_glued_references_text,
     normalize_corrupted_stats_text,
-    strip_manuscript_watermarks_text,
     normalize_unparenthesized_ref_years_text,
+    separate_glued_references_text,
+    strip_manuscript_watermarks_text,
 )
 
 # =============================================================================

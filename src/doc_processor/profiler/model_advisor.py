@@ -13,7 +13,7 @@ import json
 import logging
 import subprocess
 import urllib.request
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 logger = logging.getLogger(__name__)
 

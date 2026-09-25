@@ -5,9 +5,8 @@ Extracts structured tables from page XML coordinates or aligns in-paragraph tabu
 with fallback support for local Ollama table reconstruction.
 """
 
-import re
 import logging
-from typing import List, Tuple, Set, Dict, Any, Optional
+import re
 
 from doc_processor.style_loader import load_style
 
@@ -34,7 +33,7 @@ class TableParser:
                 continue
 
             # Skip existing code blocks, quotes, image links, or existing markdown tables
-            if s.startswith(('>', '!', '```', '|')) or re.search(r'\|\s*:?-+:?\s*\|', s) or any(l.startswith('|') for l in lines) or (s.startswith('#') and not re.match(r'^#+\s*Table\b', s, re.I)):
+            if s.startswith(('>', '!', '```', '|')) or re.search(r'\|\s*:?-+:?\s*\|', s) or any(l.startswith('|') for l in lines) or (s.startswith('#') and not re.match(r'^#+\s*Table\b', s, re.IGNORECASE)):
                 formatted.append(p)
                 continue
 
@@ -70,7 +69,7 @@ class TableParser:
                     continue
 
             # 2. Check if this is a Table X.X with bullet-point list items
-            m_table_title = re.match(r'^(?:###|\*\*)?\s*Table\s+(\d+[\.\d]*)\s*(?:\*\*)?\s*:?\s*(.*)', lines[0], re.I)
+            m_table_title = re.match(r'^(?:###|\*\*)?\s*Table\s+(\d+[\.\d]*)\s*(?:\*\*)?\s*:?\s*(.*)', lines[0], re.IGNORECASE)
             if m_table_title and len(lines) >= 3:
                 bullet_rows = []
                 for line in lines[1:]:
@@ -248,7 +247,7 @@ class TableParser:
                     if d_top - curr_row_top > 35.0:
                         break
                     # Footnotes must start after table header/content rows
-                    is_fn_start = (d_top > first_top + 40) and bool(re.match(r'^(?:\*+|Note\b|\.?\s*BART indicates\b)', d_txt, re.I))
+                    is_fn_start = (d_top > first_top + 40) and bool(re.match(r'^(?:\*+|Note\b|\.?\s*BART indicates\b)', d_txt, re.IGNORECASE))
                     if is_fn_start and fn_start_top is None:
                         fn_start_top = d_top
 
@@ -263,7 +262,7 @@ class TableParser:
                     float(d.attrib.get('top', 0)) for d in grid_data
                     if get_col_idx(float(d.attrib.get('left', 0))) == 0
                     and (fn_start_top is None or float(d.attrib.get('top', 0)) < fn_start_top)
-                    and not re.match(r'^(?:\*+|Note\b|\.?\s*BART indicates\b)', ''.join(d.itertext()).strip(), re.I)
+                    and not re.match(r'^(?:\*+|Note\b|\.?\s*BART indicates\b)', ''.join(d.itertext()).strip(), re.IGNORECASE)
                 ))
                 if not header_titles:
                     header_titles = [''.join(c.itertext()).strip() for c in header_cells]
@@ -281,7 +280,7 @@ class TableParser:
                         d_txt = ''.join(d.itertext()).strip()
                         if fn_start_top is not None and d_top >= fn_start_top:
                             continue
-                        if re.match(r'^(?:\*|Note\b)', d_txt, re.I):
+                        if re.match(r'^(?:\*|Note\b)', d_txt, re.IGNORECASE):
                             if d not in grid_consumed:
                                 fn_texts.append(d_txt)
                                 grid_consumed.append(d)
@@ -309,7 +308,7 @@ class TableParser:
                 raw_note = ' '.join(clean_fn).lstrip('*').strip() if clean_fn else ""
                 note_str = re.sub(r'^\.?\s*', '', raw_note)
                 if note_str.lower().startswith('note'):
-                    note_str = re.sub(r'^note\s*\.?\s*', 'Note. ', note_str, flags=re.I)
+                    note_str = re.sub(r'^note\s*\.?\s*', 'Note. ', note_str, flags=re.IGNORECASE)
 
                 table_lines = []
                 use_html_table = style.get("table_html_semantic", True)
@@ -365,7 +364,7 @@ class TableParser:
                 continue
 
             # Check if this is a Criterion-based table (e.g. Table 2.2: Criterion 1, Criterion 2, Criterion 3)
-            crit_elems = [t for t in row_candidates if re.match(r'^Criterion\s+\d+:', ''.join(t.itertext()).strip(), re.I)]
+            crit_elems = [t for t in row_candidates if re.match(r'^Criterion\s+\d+:', ''.join(t.itertext()).strip(), re.IGNORECASE)]
             if len(crit_elems) >= 2:
                 crit_rows = []
                 grid_consumed = list(table_consumed)
@@ -403,9 +402,9 @@ class TableParser:
             # Check if this is Archetype 2: Comparison Card Table (e.g. Strengths and Weaknesses)
             banner_nodes = [
                 t for t in row_candidates
-                if re.match(r'^(?:Strengths|Weaknesses|Advantages|Disadvantages)\s+of\b', ''.join(t.itertext()).strip(), re.I)
+                if re.match(r'^(?:Strengths|Weaknesses|Advantages|Disadvantages)\s+of\b', ''.join(t.itertext()).strip(), re.IGNORECASE)
             ]
-            if len(banner_nodes) >= 1 or re.search(r'\b(?:Strengths\s+and\s+Weaknesses|Advantages\s+and\s+Disadvantages)\b', clean_title, re.I):
+            if len(banner_nodes) >= 1 or re.search(r'\b(?:Strengths\s+and\s+Weaknesses|Advantages\s+and\s+Disadvantages)\b', clean_title, re.IGNORECASE):
                 row_candidates.sort(key=lambda x: (float(x.attrib.get('top', 0)), float(x.attrib.get('left', 0))))
                 banner_sections = []
                 current_banner_title = ""
@@ -416,7 +415,7 @@ class TableParser:
                     txt = ''.join(t.itertext()).strip()
                     if not txt:
                         continue
-                    m_b = re.match(r'^(?:Strengths|Weaknesses|Advantages|Disadvantages)\s+of\b.*', txt, re.I)
+                    m_b = re.match(r'^(?:Strengths|Weaknesses|Advantages|Disadvantages)\s+of\b.*', txt, re.IGNORECASE)
                     if m_b:
                         if current_banner_title or current_banner_items:
                             banner_sections.append((current_banner_title, current_banner_items))

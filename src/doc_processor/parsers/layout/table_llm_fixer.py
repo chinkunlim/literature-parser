@@ -7,8 +7,8 @@ to reconstruct publication-grade Markdown tables with zero cloud token cost.
 
 import json
 import logging
-import urllib.request
 import urllib.error
+import urllib.request
 from typing import Optional
 
 from doc_processor.config import (

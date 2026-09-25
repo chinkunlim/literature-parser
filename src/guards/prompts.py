@@ -12,8 +12,7 @@ Enforces project-wide invariant rules:
 - Two-column band-flow reading order preservation
 """
 
-from typing import Any, Dict, List, Optional, Tuple
-
+from typing import Optional, Tuple
 
 # ==============================================================================
 # Legacy Constants (Maintained for 100% Backward Compatibility)

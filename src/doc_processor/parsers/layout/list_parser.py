@@ -4,9 +4,8 @@ List, Code Block & Footnote Parser
 Handles ordered/unordered list detection, indented code blocks, and page bottom footnotes.
 """
 
-import re
 import logging
-from typing import List, Tuple
+import re
 
 logger = logging.getLogger(__name__)
 

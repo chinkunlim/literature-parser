@@ -17,31 +17,35 @@ conference papers, preprints, and dissertations). First-class citizen architectu
 
 import json
 import logging
-import os
 import re
 import tempfile
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
-from doc_processor.pipelines.base_pipeline import BasePipeline
-from doc_processor.config_manager import ConfigManager
-from doc_processor.core.invariants import QualityInvariantGuard
-from doc_processor.core.image_manager import ImageManager
-from doc_processor.core.analyzer import PDFAnalyzer
-from doc_processor.core.learner import GlobalLearner
-from doc_processor.parsers.digital_pdf import DigitalPDFParser
 import doc_processor.parsers.digital_pdf as _digital_pdf_mod
-from doc_processor.parsers.scanned_pdf import ScannedPDFParser
-from doc_processor.parsers.layout_detector import set_style as _ld_set_style, load_style
-from doc_processor.parsers.literature.imrad_resolver import IMRADResolver
-from doc_processor.parsers.literature.reference_parser import ReferenceParser
-from doc_processor.parsers.literature.metadata_extractor import LiteratureMetadataExtractor
-from doc_processor.parsers.literature.figure_formatter import FigureFormatter
-from doc_processor.verification.verifier import AccuracyVerifier
-from doc_processor.verification.ollama_healer import OllamaHealer
-from doc_processor.verification.format_auditor import FormatAuditor
-from doc_processor.utils.text_utils import sanitize_filename, stitch_cross_page_continuity
+from doc_processor.config_manager import ConfigManager
+from doc_processor.core.analyzer import PDFAnalyzer
+from doc_processor.core.image_manager import ImageManager
+from doc_processor.core.invariants import QualityInvariantGuard
+from doc_processor.core.learner import GlobalLearner
 from doc_processor.literature_style import build_literature_css
+from doc_processor.parsers.digital_pdf import DigitalPDFParser
+from doc_processor.parsers.layout_detector import set_style as _ld_set_style
+from doc_processor.parsers.literature.figure_formatter import FigureFormatter
+from doc_processor.parsers.literature.imrad_resolver import IMRADResolver
+from doc_processor.parsers.literature.metadata_extractor import (
+    LiteratureMetadataExtractor,
+)
+from doc_processor.parsers.literature.reference_parser import ReferenceParser
+from doc_processor.parsers.scanned_pdf import ScannedPDFParser
+from doc_processor.pipelines.base_pipeline import BasePipeline
+from doc_processor.utils.text_utils import (
+    sanitize_filename,
+    stitch_cross_page_continuity,
+)
+from doc_processor.verification.format_auditor import FormatAuditor
+from doc_processor.verification.ollama_healer import OllamaHealer
+from doc_processor.verification.verifier import AccuracyVerifier
 
 logger = logging.getLogger(__name__)
 
@@ -67,17 +71,17 @@ class LiteraturePipeline(BasePipeline):
         head_sample = md_head[:3000]
 
         # Preprint signals
-        if re.search(r'\barXiv:\s*\d{4}\.\d+', head_sample, re.I) or re.search(r'\b(?:bioRxiv|medRxiv)\b', head_sample, re.I):
+        if re.search(r'\barXiv:\s*\d{4}\.\d+', head_sample, re.IGNORECASE) or re.search(r'\b(?:bioRxiv|medRxiv)\b', head_sample, re.IGNORECASE):
             return cls.SUBTYPE_PREPRINT
-        if re.search(r'\b(?:Submitted to|Under review at|Preprint)\b', head_sample, re.I):
+        if re.search(r'\b(?:Submitted to|Under review at|Preprint)\b', head_sample, re.IGNORECASE):
             return cls.SUBTYPE_PREPRINT
 
         # IEEE textual signal
-        if re.search(r'IEEE\s+(?:Transactions|Journal|Access|Conferences?)\b', head_sample, re.I):
+        if re.search(r'IEEE\s+(?:Transactions|Journal|Access|Conferences?)\b', head_sample, re.IGNORECASE):
             return cls.SUBTYPE_IEEE
 
         # Dissertation signals
-        if total_pages > 45 and re.search(r'^\s*#+\s*(?:Chapter|CHAPTER)\s+[0-9IVXLCDM]+', md_head, re.M):
+        if total_pages > 45 and re.search(r'^\s*#+\s*(?:Chapter|CHAPTER)\s+[0-9IVXLCDM]+', md_head, re.MULTILINE):
             return cls.SUBTYPE_DISSERTATION
 
         return cls.SUBTYPE_JOURNAL
@@ -92,26 +96,26 @@ class LiteraturePipeline(BasePipeline):
             r'#+\s*(?:Author\s+Biograph(?:y|ies)|About the Authors?|Biographies)\b.*?(?=\n#+\s+[^\n]+|\Z)',
             '',
             md,
-            flags=re.S | re.I
+            flags=re.DOTALL | re.IGNORECASE
         )
         cleaned = re.sub(
             r'Authorized licensed use limited to:.*?Restrictions apply\.',
             '',
             cleaned,
-            flags=re.S
+            flags=re.DOTALL
         )
         cleaned = re.sub(
             r'(?:Digital Object Identifier|DOI):\s*10\.1109/[A-Za-z0-9\.\-]+',
             '',
             cleaned,
-            flags=re.I
+            flags=re.IGNORECASE
         )
         return cleaned.strip()
 
     @classmethod
     def format_index_terms(cls, md: str) -> str:
         """Transforms IEEE/ACM Index Terms into an Obsidian-friendly tag block."""
-        match = re.search(r'(?:#+\s*)?Index Terms[—–\-:]\s*(.+?)(?=\n\n|\n#+|\Z)', md, re.I | re.S)
+        match = re.search(r'(?:#+\s*)?Index Terms[—–\-:]\s*(.+?)(?=\n\n|\n#+|\Z)', md, re.IGNORECASE | re.DOTALL)
         if not match:
             return md
 
@@ -349,7 +353,7 @@ class LiteraturePipeline(BasePipeline):
         # Stage 4: Structure Resolution & Typography
         # ---------------------------------------------------------------------
         # Strip manuscript watermark headings that shouldn't become document title
-        full_md = re.sub(r'(?m)^#+\s*(?:NIH\s+Public\s+Access|Author\s+Manuscript|HHS\s+Public\s+Access|ARTICLE\s+IN\s+PRESS|RESEARCH\s+ARTICLE)\s*\n+', '', full_md, flags=re.I)
+        full_md = re.sub(r'(?m)^#+\s*(?:NIH\s+Public\s+Access|Author\s+Manuscript|HHS\s+Public\s+Access|ARTICLE\s+IN\s+PRESS|RESEARCH\s+ARTICLE)\s*\n+', '', full_md, flags=re.IGNORECASE)
 
         # 1. Promote top-level title to H1 (#)
         if not re.search(r'^\s*#\s+[^\n]+', full_md):
@@ -437,7 +441,7 @@ class LiteraturePipeline(BasePipeline):
         except Exception as _gl_err:
             logger.debug("GlobalLearner pre-application skipped: %s", _gl_err)
 
-        print(f"  [*] Running automatic accuracy verification...")
+        print("  [*] Running automatic accuracy verification...")
         verifier = AccuracyVerifier(use_ollama=self.use_ollama, ollama_model=self.ollama_model)
         v_res = verifier.verify_chapter(str(doc_out), expected_pages=total_pages)
 
@@ -451,11 +455,11 @@ class LiteraturePipeline(BasePipeline):
                     full_md = healed_md
                     with open(md_file, 'w', encoding='utf-8') as f:
                         f.write(full_md + '\n')
-                    print(f"  [*] Re-running verification following Ollama healing...")
+                    print("  [*] Re-running verification following Ollama healing...")
                     v_res = verifier.verify_chapter(str(doc_out), expected_pages=total_pages)
 
         # Run dedicated format and typography audit
-        print(f"  [*] Running dedicated format and typography audit...")
+        print("  [*] Running dedicated format and typography audit...")
         format_auditor = FormatAuditor(is_literature=True)
         audit_rep = format_auditor.audit_file(md_file, ollama_verifier=verifier.ollama if self.use_ollama else None)
         audit_rep_path = doc_out / "audit_report.md"
@@ -494,7 +498,7 @@ class LiteraturePipeline(BasePipeline):
             if "inbox" in str(p_path):
                 self.archive_source(str(p_path))
         else:
-            print(f"\n🛑 [LITERATURE AUDIT FAILED / NEEDS REVIEW] 核心排版檢驗未通過！")
+            print("\n🛑 [LITERATURE AUDIT FAILED / NEEDS REVIEW] 核心排版檢驗未通過！")
             for iss in audit_rep.issues:
                 if iss.severity == "ERROR":
                     print(f"   ❌ [{iss.category}] {iss.message}")
@@ -522,4 +526,4 @@ class LiteraturePipeline(BasePipeline):
 
 
 JournalPipeline = LiteraturePipeline
-__all__ = ["LiteraturePipeline", "JournalPipeline"]
+__all__ = ["JournalPipeline", "LiteraturePipeline"]

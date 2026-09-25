@@ -12,7 +12,7 @@ import os
 import re
 import subprocess
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
@@ -67,7 +67,7 @@ class VisualAuditor:
             "page": 1,
             "feature": "concept_map_and_lo",
             "image": str(p1_img.name) if p1_img.exists() else None,
-            "lo_format_valid": bool(re.search(r'^- 🎯 \*\*\d+\.\d+\*\*', md_text, re.M)),
+            "lo_format_valid": bool(re.search(r'^- 🎯 \*\*\d+\.\d+\*\*', md_text, re.MULTILINE)),
             "mermaid_valid": "```mermaid" in md_text if "appendix" not in ch_pdf.stem.lower() else ("```mermaid" not in md_text)
         }
         results["audited_pages"].append(p1_status)
@@ -112,7 +112,6 @@ class VisualAuditor:
 
 
 if __name__ == "__main__":
-    import sys
     b_dir = Path("./data/output/books/Research Methods, Design, and Analysis 13th ed")
     ch_pdf = b_dir / "chapters/Ch02 Research Approaches and Methods of Data Collection/Ch02 Research Approaches and Methods of Data Collection.pdf"
     ch_md = b_dir / "chapters/Ch02 Research Approaches and Methods of Data Collection/Ch02 Research Approaches and Methods of Data Collection.md"

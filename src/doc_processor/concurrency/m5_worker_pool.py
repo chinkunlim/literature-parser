@@ -9,15 +9,13 @@ Tailors parallel document and chapter execution to Apple Silicon (M-Series):
   to prevent macOS disk swapping and SSD degradation.
 """
 
-import os
-import re
-import sys
-import time
 import logging
+import os
 import platform
+import re
 import subprocess
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import Callable, Iterable, List, Tuple, Any, Optional
+from typing import Any, Callable, List, Optional
 
 logger = logging.getLogger(__name__)
 

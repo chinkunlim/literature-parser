@@ -37,7 +37,7 @@ class VectorFigureParser:
         for t in page_elem.findall('text'):
             txt = ''.join(t.itertext()).strip()
             if re.match(r'^(?:Figure|Fig\.)\s+\d+[\.\d]*(?:\s*[:\.\-–—]|\s+[A-Z]|$)', txt):
-                if re.match(r'^(?:Figure|Fig\.)\s+\d+[\.\d]*\s+(?:shows|illustrates|depicts|reveals|demonstrates|is|was|can)\b', txt, re.I):
+                if re.match(r'^(?:Figure|Fig\.)\s+\d+[\.\d]*\s+(?:shows|illustrates|depicts|reveals|demonstrates|is|was|can)\b', txt, re.IGNORECASE):
                     continue
                 fig_elems.append(t)
 
@@ -55,7 +55,7 @@ class VectorFigureParser:
 
         for cap_t in fig_elems:
             cap_txt = ''.join(cap_t.itertext()).strip()
-            m = re.match(r'^(?:Figure|Fig\.)\s+(\d+[\.\d]*)', cap_txt, re.I)
+            m = re.match(r'^(?:Figure|Fig\.)\s+(\d+[\.\d]*)', cap_txt, re.IGNORECASE)
             if not m:
                 continue
             fig_num = m.group(1)

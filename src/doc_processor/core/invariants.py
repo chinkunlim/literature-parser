@@ -5,16 +5,15 @@ Enforces strict pre-condition and post-condition invariants at every pipeline st
 to prevent corrupted outputs from compounding and cascading downstream.
 """
 
-import os
 import re
 import subprocess
 from pathlib import Path
+
 from doc_processor.parsers.math_latex import MathLaTeXConverter
 
 
 class InvariantViolationError(Exception):
     """Raised when a strict quality invariant is violated."""
-    pass
 
 
 class QualityInvariantGuard:
@@ -147,13 +146,13 @@ class QualityInvariantGuard:
 
         # 3. Abstract check (literature only)
         if is_literature:
-            has_abs = bool(re.search(r'(?m)^##\s+Abstract\b', md_text, re.I)) or bool(re.search(r'(?m)^>\s+\*\*Abstract\*\*', md_text, re.I)) or bool(re.search(r'(?m)^>\s+.*?[A-Za-z]{30,}', md_text))
+            has_abs = bool(re.search(r'(?m)^##\s+Abstract\b', md_text, re.IGNORECASE)) or bool(re.search(r'(?m)^>\s+\*\*Abstract\*\*', md_text, re.IGNORECASE)) or bool(re.search(r'(?m)^>\s+.*?[A-Za-z]{30,}', md_text))
             if not has_abs:
                 violations.append("INV_ABSTRACT: Academic literature is missing Abstract section (## Abstract or > blockquote).")
 
         # 4. References check (literature only, for papers > 150 lines)
         if is_literature and len(md_text.splitlines()) > 150:
-            has_refs = bool(re.search(r'(?m)^##\s+(?:References|Literature Cited|Bibliography)\b', md_text, re.I))
+            has_refs = bool(re.search(r'(?m)^##\s+(?:References|Literature Cited|Bibliography)\b', md_text, re.IGNORECASE))
             if not has_refs:
                 violations.append("INV_REFERENCES: Academic literature is missing References section (## References).")
 

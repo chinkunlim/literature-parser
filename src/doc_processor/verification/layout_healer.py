@@ -7,13 +7,10 @@ flattened mindmaps, collapsed tables, and leaked diagram text fragments),
 and automatically repairs them in a closed-loop fashion before disk persistence.
 """
 
+import logging
 import os
 import re
-import logging
-import subprocess
-import xml.etree.ElementTree as ET
 from pathlib import Path
-from doc_processor.parsers.layout_detector import LayoutDetector
 
 logger = logging.getLogger(__name__)
 

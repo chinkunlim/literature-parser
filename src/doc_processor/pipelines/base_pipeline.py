@@ -4,12 +4,12 @@ Abstract Base Pipeline
 Defines the standard lifecycle interface for all document archetype pipelines.
 """
 
-from abc import ABC, abstractmethod
 import logging
-import os
 import shutil
+from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict
+
 from doc_processor.config_manager import ConfigManager
 
 logger = logging.getLogger(__name__)
@@ -38,7 +38,6 @@ class BasePipeline(ABC):
         Executes the end-to-end conversion pipeline for the specific archetype.
         Returns a dictionary containing processing results and status.
         """
-        pass
 
     def archive_source(self, source_path: str):
         """Moves fully processed and verified source file to processed/ directory."""

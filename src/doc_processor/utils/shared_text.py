@@ -12,7 +12,7 @@ Shared between:
 """
 
 import re
-from typing import List, Tuple
+from typing import Tuple
 
 # ==============================================================================
 # 1. COMPILED REGEX PATTERNS
@@ -133,7 +133,7 @@ def normalize_unparenthesized_ref_years_text(text: str) -> Tuple[str, int]:
     in_refs = False
 
     for line in lines:
-        if re.match(r'^##\s+(?:References|Literature Cited|Bibliography)', line, re.I):
+        if re.match(r'^##\s+(?:References|Literature Cited|Bibliography)', line, re.IGNORECASE):
             in_refs = True
             new_lines.append(line)
             continue

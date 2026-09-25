@@ -38,8 +38,10 @@ description: Specialized sub-skill for converting academic literature (journal a
    - `Note.`、`BART indicates`、`*p <` 等 APA 表格附注自動與上方 Markdown 表格綁定，防止跨頁漂移。
 8. **OCR 統計符號修復 (OCR Stat Heal)**：
    - 修正 APA/Elsevier OCR 常見亂碼：`p o 0 01` → `$p < 0.01$`、`r = 0$ 82` → `$r = 0.82$`、`r 2003` → `© 2003`。
-9. **自癒與隔離機制**：
+9. **自癒、手冊修復與隔離機制**：
    - LaTeX 數學公式（如統計統計值 $F(1, 24) = 4.32, p < .05$）標準化修復。
+   - 整合 `QualityInvariantGuard` 7 大物理硬不變量防線（標題非空、摘要存在、參考文獻獨立、LaTeX 閉合、無 OCR 表格洩漏、無孤立頁碼、非空白檔案）。
+   - 支援 `FormatAuditor` 全維度格式稽核與 `FixPlaybook` 自動推薦修復（`run.py audit --fix`）。
    - 遇異常或信度 < 0.80，自動隔離至 `data/needs_review/`。
 
 ---
@@ -59,14 +61,19 @@ orchestrator.py (detect_archetype='literature')
         │     ├── 行內 APA Level 4 標題促進 (####)
         │     ├── 第一頁作者註抽離並重組至 References 前
         │     ├── _bond_table_notes()
-        │     └── _fix_ocr_stats()
-        ├── LiteratureMetadataExtractor.format_header() (Page 1 確定性快速萃取 + JSON mode 備援)
+        │     └── _fix_ocr_stats() (調用 shared_text.py 純函數)
+        ├── LiteratureMetadataExtractor.format_header() (Page 1 確定性快速萃取 + PromptRegistry.metadata_extraction_prompt 備援)
         ├── LiteraturePipeline.sync_verified_tables() (高精確度 APA 數據表格同步還原)
         ├── ReferenceParser.clean_document_references()
         ├── literature_style.build_literature_css() (獨立專屬學術樣式注入)
-        └── LiteraturePipeline 子類型後處理 (IEEE/preprint 擴充)
+        ├── QualityInvariantGuard.check_and_raise() (物理硬不變量防線)
+        └── FormatAuditor.audit_document() (輸出 audit_report.md/json)
 ```
 
+- 提示詞中樞：`src/guards/prompts.py` (`PromptRegistry`)
+- 格式稽核器：`src/doc_processor/verification/format_auditor.py`
+- 修復手冊庫：`src/doc_processor/fixes/playbook.py` & `synthesizer.py`
+- 純文字共用：`src/doc_processor/utils/shared_text.py`
 - 樣式模組：`src/doc_processor/literature_style.py` (與 `book_style.py` 徹底解耦)
 - 解析子模組：`src/doc_processor/parsers/literature/` (完全整併，已徹底移除 legacy `parsers/journal/`)
 - 設定模組：`src/doc_processor/profiles/literature_*.json`

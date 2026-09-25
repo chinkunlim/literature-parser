@@ -7,9 +7,14 @@ Extracts table of contents from PDF bookmarks or scans page text structures.
 import logging
 import re
 import subprocess
-from pathlib import Path
 import xml.etree.ElementTree as ET
-from doc_processor.utils.text_utils import sanitize_filename, format_chapter_title, format_appendix_title
+from pathlib import Path
+
+from doc_processor.utils.text_utils import (
+    format_appendix_title,
+    format_chapter_title,
+    sanitize_filename,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -84,7 +89,7 @@ class PDFAnalyzer:
         flattened = []
         for page, title, sub, depth in top_items:
             t_clean = title.strip()
-            if re.search(r'^(Part|Section|Unit)\b', t_clean, re.I) and sub is not None:
+            if re.search(r'^(Part|Section|Unit)\b', t_clean, re.IGNORECASE) and sub is not None:
                 sub_items = cls.parse_node(sub, depth=depth + 1)
                 first = True
                 for sp, st, ssub, sd in sub_items:
@@ -93,7 +98,7 @@ class PDFAnalyzer:
                     else:
                         flattened.append((sp, st, ssub))
                     first = False
-            elif re.search(r'^APPENDICES\b', t_clean, re.I) and sub is not None:
+            elif re.search(r'^APPENDICES\b', t_clean, re.IGNORECASE) and sub is not None:
                 sub_items = cls.parse_node(sub, depth=depth + 1)
                 for sp, st, ssub, sd in sub_items:
                     flattened.append((sp, format_appendix_title(st), ssub))
@@ -134,7 +139,7 @@ class PDFAnalyzer:
             all_targets.append((p, f"{prefix}{name}"))
 
         for p, title in body_items:
-            m = re.search(r'^(?:Chapter\s+)?(\d+)[\.\s:\-]+(.*)', title, re.I)
+            m = re.search(r'^(?:Chapter\s+)?(\d+)[\.\s:\-]+(.*)', title, re.IGNORECASE)
             if m:
                 all_targets.append((p, format_chapter_title(title)))
             elif title.lower().startswith('appendix'):
@@ -204,8 +209,8 @@ class PDFAnalyzer:
         toc_titles = {}
         for p_idx in range(min(20, len(pages))):
             p_text = pages[p_idx]
-            if re.search(r'\b(contents|table of contents)\b', p_text[:200], re.I):
-                matches = re.findall(r'Chapter\s+(\d+)\s*\n([^\n]+)', p_text, re.I)
+            if re.search(r'\b(contents|table of contents)\b', p_text[:200], re.IGNORECASE):
+                matches = re.findall(r'Chapter\s+(\d+)\s*\n([^\n]+)', p_text, re.IGNORECASE)
                 for c_num, c_t in matches:
                     c_num = int(c_num)
                     if c_num not in toc_titles:
@@ -230,16 +235,16 @@ class PDFAnalyzer:
                     found_publish = True
 
             if not found_content and idx <= 15:
-                if re.search(r'^(contents|brief contents)\b', lines[0], re.I):
+                if re.search(r'^(contents|brief contents)\b', lines[0], re.IGNORECASE):
                     sections.append((idx, '00-2 Content'))
                     found_content = True
 
             if not found_preface and idx <= 25:
-                if re.search(r'^preface\b', lines[0], re.I):
+                if re.search(r'^preface\b', lines[0], re.IGNORECASE):
                     sections.append((idx, '00-3 Preface'))
                     found_preface = True
 
-            m_ch = re.match(r'^Chapter\s+(\d+)', lines[0], re.I)
+            m_ch = re.match(r'^Chapter\s+(\d+)', lines[0], re.IGNORECASE)
             if m_ch:
                 ch_num = int(m_ch.group(1))
                 if ch_num not in seen_chapters:
@@ -252,10 +257,10 @@ class PDFAnalyzer:
                     sections.append((idx, name))
 
             if idx > total_pages * 0.8:
-                if re.match(r'^references\b', lines[0], re.I):
+                if re.match(r'^references\b', lines[0], re.IGNORECASE):
                     if not any(s[1] == 'References' for s in sections):
                         sections.append((idx, 'References'))
-                elif re.match(r'^index\b', lines[0], re.I):
+                elif re.match(r'^index\b', lines[0], re.IGNORECASE):
                     if not any(s[1] == 'Index' for s in sections):
                         sections.append((idx, 'Index'))
 

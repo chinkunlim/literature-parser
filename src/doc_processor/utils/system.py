@@ -5,8 +5,9 @@ System Environment & Dependency Diagnostics
 
 import shutil
 import subprocess
-import urllib.request
 import urllib.error
+import urllib.request
+
 from doc_processor.config import OLLAMA_API_BASE
 
 

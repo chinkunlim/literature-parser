@@ -5,11 +5,10 @@ Adds inter-chapter navigation footers and a book-level index.md
 for Obsidian Graph View and inter-note cross-referencing.
 """
 
-import os
-import re
 import datetime
+import re
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 
 def sanitize_obsidian_slug(name: str) -> str:

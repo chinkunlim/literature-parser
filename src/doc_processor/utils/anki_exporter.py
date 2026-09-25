@@ -8,7 +8,7 @@ into Anki or spaced-repetition mobile apps.
 
 import re
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 
 class AnkiExporter:
@@ -28,7 +28,7 @@ class AnkiExporter:
 
         tag = re.sub(r'[^a-zA-Z0-9_]+', '_', chapter_name).strip('_') if chapter_name else "Textbook_Key_Terms"
 
-        lines = ["#separator:tab", "#html:true", f"#tags column:3"]
+        lines = ["#separator:tab", "#html:true", "#tags column:3"]
         count = 0
         for t in terms:
             term_name = t.get('term', '').strip()

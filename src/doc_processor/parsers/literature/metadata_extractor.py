@@ -20,9 +20,9 @@ Architecture:
 import json
 import logging
 import re
-import urllib.request
 import urllib.error
-from typing import Any, Dict, List, Optional
+import urllib.request
+from typing import Any, Dict, Optional
 
 from doc_processor.verification.ollama_verifier import OllamaVerifier
 
@@ -99,7 +99,7 @@ class LiteratureMetadataExtractor:
         m_nih = re.search(
             r'Published in final edited form as:\s*\n+([^\n\.]+?)\.\s*(\d{4}[^\n;]*);\s*([\d\(\)\:\s–\-]+)\.\s*(?:doi:\s*([^\s\n]+))?',
             pdf_text_joined or raw_text,
-            re.I
+            re.IGNORECASE
         )
         if m_nih:
             meta["journal"] = m_nih.group(1).strip()
@@ -138,7 +138,7 @@ class LiteratureMetadataExtractor:
         m_cite = re.search(
             r'Cite (?:this article|as):\s*([^\n\(\);]+?)\s*(\d+[\d\s,–\-\(\)]+)\.?\s*(?:;?\s*(?:https?://doi\.org/|doi:\s*)(10\.\d{4,9}/[^\s"\'<>]+))?',
             pdf_text_joined or raw_text,
-            re.I
+            re.IGNORECASE
         )
         if m_cite:
             if not meta["journal"]:
@@ -159,8 +159,8 @@ class LiteratureMetadataExtractor:
         if pdf_lines:
             clean_pdf_lines = [
                 l for l in pdf_lines
-                if not re.search(r'^(?:NIH Public Access|Author Manuscript|HHS Public Access|ARTICLE IN PRESS|RESEARCH ARTICLE)\b', l, re.I)
-                and not re.search(r'Author manuscript; available in PMC', l, re.I)
+                if not re.search(r'^(?:NIH Public Access|Author Manuscript|HHS Public Access|ARTICLE IN PRESS|RESEARCH ARTICLE)\b', l, re.IGNORECASE)
+                and not re.search(r'Author manuscript; available in PMC', l, re.IGNORECASE)
             ]
             if clean_pdf_lines and not meta["journal"]:
                 meta["journal"] = clean_pdf_lines[0]
@@ -182,7 +182,7 @@ class LiteratureMetadataExtractor:
 
         # 1. DOI fallback
         if not meta["doi"]:
-            doi_m = re.search(r'(?:DOI:\s*|https?://doi\.org/|10\.\d{4,9}/[^\s"\'<>]+)', raw_text, re.I)
+            doi_m = re.search(r'(?:DOI:\s*|https?://doi\.org/|10\.\d{4,9}/[^\s"\'<>]+)', raw_text, re.IGNORECASE)
             if doi_m:
                 doi_val = doi_m.group(0).strip()
                 if not doi_val.startswith("10."):
@@ -193,7 +193,7 @@ class LiteratureMetadataExtractor:
 
         # 2. Journal Name & Volume/Year/Pages fallback
         if not meta["volume_info"]:
-            vol_m = re.search(r'(\d{4}),\s*Vol\.\s*(\d+),\s*No\.\s*(\d+),\s*([\d\s\-–]+)', raw_text, re.I)
+            vol_m = re.search(r'(\d{4}),\s*Vol\.\s*(\d+),\s*No\.\s*(\d+),\s*([\d\s\-–]+)', raw_text, re.IGNORECASE)
             if vol_m:
                 year, vol, no, pgs = vol_m.groups()
                 pgs_clean = re.sub(r'\s*-\s*', '–', pgs.strip())
@@ -210,13 +210,13 @@ class LiteratureMetadataExtractor:
 
         # 3. Copyright fallback
         if not meta["copyright"]:
-            cpy_m = re.search(r'((?:Copyright|©)\s+\d{4}\s+(?:by\s+)?[^\n]+)', raw_text, re.I)
+            cpy_m = re.search(r'((?:Copyright|©)\s+\d{4}\s+(?:by\s+)?[^\n]+)', raw_text, re.IGNORECASE)
             if cpy_m:
                 meta["copyright"] = cpy_m.group(1).strip()
 
         # 4. Title fallback (# ...)
         if not meta["title"]:
-            title_m = re.search(r'^\s*#\s+([^\n]+)', raw_text, re.M)
+            title_m = re.search(r'^\s*#\s+([^\n]+)', raw_text, re.MULTILINE)
             if title_m:
                 meta["title"] = title_m.group(1).strip()
 
@@ -224,7 +224,7 @@ class LiteratureMetadataExtractor:
         if not meta["authors"]:
             p_an = re.search(
                 r'([A-Z][a-zA-Z\.\s]+,\s+(?:Department|Center|Division|School|Faculty|Institute)\s+(?:of|for).*?(?:E-mail|Email):\s*[\w\.\-]+@[A-Za-z0-9\.\-]+)',
-                raw_text, re.DOTALL | re.I
+                raw_text, re.DOTALL | re.IGNORECASE
             )
             an_text = p_an.group(1) if p_an else ("\n".join(pdf_lines) if pdf_lines else "")
             if an_text and any(k in an_text for k in ("Department of", "Center for", "Institute of", "School of")):
@@ -232,10 +232,10 @@ class LiteratureMetadataExtractor:
                     chunk = chunk.strip().rstrip(".")
                     if not chunk:
                         continue
-                    parts = re.split(r",\s*(?=(?:Department\s+(?:of|for)|Center\s+(?:of|for)|Division\s+(?:of|for)|School\s+(?:of|for)|Faculty\s+(?:of|for)|Institute\s+(?:of|for)))", chunk, maxsplit=1, flags=re.I)
+                    parts = re.split(r",\s*(?=(?:Department\s+(?:of|for)|Center\s+(?:of|for)|Division\s+(?:of|for)|School\s+(?:of|for)|Faculty\s+(?:of|for)|Institute\s+(?:of|for)))", chunk, maxsplit=1, flags=re.IGNORECASE)
                     if len(parts) == 2:
                         name = parts[0].strip()
-                        name = re.sub(r'^(?:Acknowledgments?|Author\s+Note[s]?)\s*', '', name, flags=re.I).strip()
+                        name = re.sub(r'^(?:Acknowledgments?|Author\s+Note[s]?)\s*', '', name, flags=re.IGNORECASE).strip()
                         if '\n' in name:
                             name = name.splitlines()[-1].strip()
                         raw_affil = parts[1].strip()
@@ -244,14 +244,14 @@ class LiteratureMetadataExtractor:
                         meta["authors"].append({"name": name, "affiliation": inst})
 
         # 6. Abstract
-        abs_m = re.search(r'(?:##\s*Abstract|(?:\n|^)Abstract\b)\s*[:\n]\s*(.+?)(?=\n#+|\n<!-- Page|\n(?:[I|1]\.?\s+)?INTRODUCTION\b|\n(?:\*?Key\s*words|\*?Keywords):|\Z)', raw_text, re.I | re.S)
+        abs_m = re.search(r'(?:##\s*Abstract|(?:\n|^)Abstract\b)\s*[:\n]\s*(.+?)(?=\n#+|\n<!-- Page|\n(?:[I|1]\.?\s+)?INTRODUCTION\b|\n(?:\*?Key\s*words|\*?Keywords):|\Z)', raw_text, re.IGNORECASE | re.DOTALL)
         if abs_m:
             raw_abs = abs_m.group(1).strip()
-            raw_abs = re.sub(r'^>\s*', '', raw_abs, flags=re.M)
-            raw_abs = re.sub(r'\n*(?:©|\(c\))\s*\d{4}.*?(?:Creative Commons|doi:|\Z)', '', raw_abs, flags=re.I | re.DOTALL).strip()
+            raw_abs = re.sub(r'^>\s*', '', raw_abs, flags=re.MULTILINE)
+            raw_abs = re.sub(r'\n*(?:©|\(c\))\s*\d{4}.*?(?:Creative Commons|doi:|\Z)', '', raw_abs, flags=re.IGNORECASE | re.DOTALL).strip()
             meta["abstract"] = raw_abs
         else:
-            m_kw = re.search(r'(?m)^\*?(?:Keywords|Key\s*words):?\*?\s*', raw_text, re.I)
+            m_kw = re.search(r'(?m)^\*?(?:Keywords|Key\s*words):?\*?\s*', raw_text, re.IGNORECASE)
             if m_kw:
                 pre_kw = raw_text[:m_kw.start()].strip()
                 paras = [p.strip() for p in pre_kw.split('\n\n') if p.strip()]
@@ -398,7 +398,7 @@ TEXT TO EXTRACT FROM:
 
         # Extract title from H1 if present
         title = meta.get("title", "")
-        h1_m = re.search(r'^\s*#\s+([^\n]+)', full_md, re.M)
+        h1_m = re.search(r'^\s*#\s+([^\n]+)', full_md, re.MULTILINE)
         if h1_m:
             h1_title = h1_m.group(1).strip()
             if not title or len(h1_title) > len(title):
@@ -428,7 +428,7 @@ TEXT TO EXTRACT FROM:
         m_abs_hdr = re.search(r'##\s*Abstract\b', full_md)
         if m_abs_hdr:
             sub = full_md[m_abs_hdr.end():]
-            m_end = re.search(r'\n---\n|\n(?=##\s+)|\n(?=(?:[I|1]\.?\s+)?INTRODUCTION\b)|\n(?=(?:Key\s*words|Keywords):)', sub, re.I)
+            m_end = re.search(r'\n---\n|\n(?=##\s+)|\n(?=(?:[I|1]\.?\s+)?INTRODUCTION\b)|\n(?=(?:Key\s*words|Keywords):)', sub, re.IGNORECASE)
             if m_end:
                 cutoff = m_abs_hdr.end() + m_end.end()
                 body_text = full_md[cutoff:].strip()
@@ -443,7 +443,7 @@ TEXT TO EXTRACT FROM:
             if m_intro and m_intro.start() > 100:
                 body_text = full_md[m_intro.start():].strip()
             else:
-                m_kw = re.search(r'(?m)^\*?(?:Key\s*words|Keywords):?\*?[^\n]*\n+', full_md, re.I)
+                m_kw = re.search(r'(?m)^\*?(?:Key\s*words|Keywords):?\*?[^\n]*\n+', full_md, re.IGNORECASE)
                 if m_kw:
                     body_text = full_md[m_kw.end():].strip()
                 elif abstract_text:

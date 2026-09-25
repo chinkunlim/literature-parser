@@ -5,10 +5,10 @@ Extracts margin terms, vocabulary glossaries, and sidebars, outputting
 structured markdown callouts, anchors, and Anki recall cards.
 """
 
-import re
 import logging
+import re
 import xml.etree.ElementTree as ET
-from typing import Tuple, Set, List, Dict, Any
+
 from doc_processor.style_loader import load_style
 
 logger = logging.getLogger(__name__)
@@ -67,7 +67,7 @@ class MarginParser:
         eoc_top = ph
         for t in text_elements:
             txt = ''.join(t.itertext()).strip()
-            if re.match(r'^(?:Key Terms and Concepts|Related Internet Sites|Practice Test|Challenge Exercises)\b', txt, re.I):
+            if re.match(r'^(?:Key Terms and Concepts|Related Internet Sites|Practice Test|Challenge Exercises)\b', txt, re.IGNORECASE):
                 eoc_top = min(eoc_top, float(t.attrib.get('top', ph)))
 
         margin_elems = []
@@ -81,7 +81,7 @@ class MarginParser:
                 continue
             if top < ph * 0.05 or top > ph * 0.95 or top >= eoc_top - 10:
                 continue
-            if re.match(r'^(?:https?://|www\.)', txt, re.I):
+            if re.match(r'^(?:https?://|www\.)', txt, re.IGNORECASE):
                 continue
             # Skip section numbers (e.g. '2.1', '1.1')
             if re.match(r'^\d+(\.\d+)*\b', txt):
@@ -107,7 +107,7 @@ class MarginParser:
                 if 'heltcom' in fam or 'helveticaltcom' in fam or 'ltcom' in fam:
                     continue
                 # Skip figure/table captions in margins
-                if re.match(r'^(?:Figure|Fig\.|Table|Exhibit|Photo)\b', txt, re.I):
+                if re.match(r'^(?:Figure|Fig\.|Table|Exhibit|Photo)\b', txt, re.IGNORECASE):
                     continue
 
                 raw_xml = ET.tostring(t, encoding='utf-8', method='xml').decode('utf-8')

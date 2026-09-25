@@ -20,15 +20,18 @@ description: Specialized sub-skill for converting academic textbooks (PDF/EPUB) 
 1. **目錄解析與快速切分 (Rapid Chapter Splitting)**：
    - 解析 PDF 內嵌目錄 (TOC) 或基於正則定位 `Chapter 1`, `Chapter 2` 等標題。
    - 使用輕量 PDF 切分器秒級產出獨立章節 PDF，避免單一龐大文件造成記憶體溢出。
-2. **跨頁斷句與文意縫合 (Cross-Page Stitching)**：
+2. **跨頁斷句與文意縫合 (Cross-Page Stitching & Shared Text)**：
    - 頁尾連字號 (`-`) 與跨頁斷句自動平滑對接。
+   - 調用 `src/doc_processor/utils/shared_text.py` 進行孤立頁碼清理與 KaTeX 貨幣符號轉義。
    - 避免跨頁頁碼、頁首/頁尾雜訊破壞段落連貫性。
-3. **版面特色區塊抽取**：
+3. **版面特色區塊與圖表解耦抽取**：
    - 學習目標 (`Learning Objectives`)、案例對話框 (`Dialogue Block`)、教學表格。
-   - 複雜表格自動啟用 HTML 原生相容標籤，保留斑馬紋與儲存格合併。
+   - 委派 `VectorFigureParser` (`src/doc_processor/parsers/layout/vector_figure_parser.py`) 專責抽取向量幾何圖形與流程圖。
+   - 委派 `EndOfChapterParser` (`src/doc_processor/parsers/layout/eoc_parser.py`) 專責抽取章末習題、複習問題與延伸閱讀。
+   - 複雜表格調用 `PromptRegistry.table_reconstruction_prompt` 進行 HTML 原生相容標籤還原。
 4. **主動回憶卡片與名詞解釋 (Active Recall & Anki)**：
    - 每章末尾提取黑體專有名詞定義，匯整為獨立的 Key Terms 區塊。
    - 自動生成可直接匯入 Anki 的 `<Chapter>_flashcards.tsv`。
-5. **雙軌驗證與信度隔離**：
-   - 檢驗詞彙覆蓋率、LaTeX 定界符平衡。
+5. **雙軌驗證、物理硬不變量與信度隔離**：
+   - 檢驗詞彙覆蓋率、LaTeX 定界符平衡與物理硬不變量 (`QualityInvariantGuard`)。
    - 遇見複雜瑕疵若信度 $< 0.80$，自動隔離至 `data/needs_review/`。

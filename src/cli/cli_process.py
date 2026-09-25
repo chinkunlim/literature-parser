@@ -78,7 +78,7 @@ def _run_process_pipeline(filepath: Path, doc_type: Optional[str] = None, ignore
         print(f"\n✅ 處理完成！結果已儲存至 {output_base}")
         return True
     else:
-        print(f"\n⚠️ 處理過程中遇到警告或錯誤，請檢視 logs/process.log 或 data/needs_review/")
+        print("\n⚠️ 處理過程中遇到警告或錯誤，請檢視 logs/process.log 或 data/needs_review/")
         return False
 
 

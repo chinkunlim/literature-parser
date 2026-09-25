@@ -15,9 +15,9 @@ import json
 import sys
 from pathlib import Path
 
-from src.cli.common import ROOT
 from doc_processor.verification.format_auditor import FormatAuditor
 from doc_processor.verification.ollama_verifier import OllamaVerifier
+from src.cli.common import ROOT
 
 
 def cmd_audit(args):
@@ -68,7 +68,7 @@ def cmd_audit(args):
                     md_files.extend(sub_cands)
 
     if not md_files:
-        print(f"🛑 找不到可供稽核的 Markdown 檔案。")
+        print("🛑 找不到可供稽核的 Markdown 檔案。")
         sys.exit(1)
 
     print(f"🔍 掃描目標: 共有 {len(md_files)} 篇文獻待稽核\n")
@@ -125,7 +125,7 @@ def cmd_audit(args):
         print(f"🎉 稽核大獲全勝！全數 {len(md_files)} 篇文獻排版格式均達到黃金標準！")
     else:
         print(f"⚠️ 稽核完畢，累計發現 {total_errors} 個重大錯誤與 {total_warnings} 個警告。")
-        print(f"💡 詳細報告已寫入各文獻目錄之 audit_report.md。")
+        print("💡 詳細報告已寫入各文獻目錄之 audit_report.md。")
     print("=" * 65 + "\n")
 
     if not all_passed and not getattr(args, "no_exit_error", False):

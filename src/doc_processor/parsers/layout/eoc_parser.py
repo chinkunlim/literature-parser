@@ -57,7 +57,7 @@ class EndOfChapterParser:
             txt = ''.join(t.itertext()).strip()
             top = float(t.attrib.get('top', 0))
             for pat in eoc_patterns:
-                if re.match(pat, txt, re.I):
+                if re.match(pat, txt, re.IGNORECASE):
                     eoc_headings.append({'elem': t, 'top': top, 'text': txt, 'pattern': pat})
                     break
 
@@ -66,7 +66,7 @@ class EndOfChapterParser:
             if page_num >= 5:
                 has_chap_header = any(float(fonts.get(t.attrib.get('font', ''), {}).get('size', 12)) >= 25 for t in text_elements if float(t.attrib.get('top', 0)) < ph * 0.3)
                 txt_all = " ".join("".join(t.itertext()).strip() for t in text_elements)
-                has_exercise_mentions = bool(re.search(r'\b(?:challenge exercise|review question|practice test)\b', txt_all, re.I))
+                has_exercise_mentions = bool(re.search(r'\b(?:challenge exercise|review question|practice test)\b', txt_all, re.IGNORECASE))
                 has_table_or_fig = bool(re.search(r'\b(?:Table|Figure|Fig\.)\s+\d+', txt_all))
                 num_items = [t for t in text_elements if re.match(r'^(?:\*\*)?(?:\d+|[a-e])[\.\)]', ''.join(t.itertext()).strip())]
                 if not has_chap_header and has_exercise_mentions and not has_table_or_fig and len(num_items) >= 4:
@@ -112,14 +112,14 @@ class EndOfChapterParser:
             consumed.update(section_elems)
 
             # Key Terms and Concepts
-            if re.match(r'^Key Terms and Concepts\b', h_text, re.I):
+            if re.match(r'^Key Terms and Concepts\b', h_text, re.IGNORECASE):
                 sec_md = cls._extract_key_terms_section(h_elem, section_elems, pw, ph, style=style)
                 if sec_md:
                     sections.append({'top': h_top, 'markdown': sec_md})
                 continue
 
             # Related Internet Sites
-            if re.match(r'^Related Internet Sites\b', h_text, re.I):
+            if re.match(r'^Related Internet Sites\b', h_text, re.IGNORECASE):
                 sec_md = cls._extract_internet_sites_section(section_elems)
                 if sec_md:
                     sections.append({'top': h_top, 'markdown': f"### {h_text}\n\n{sec_md}"})
@@ -213,7 +213,7 @@ class EndOfChapterParser:
             txt = ''.join(t.itertext()).strip()
             if not txt:
                 continue
-            is_url = bool(re.match(r'^https?://|^www\.', txt, re.I))
+            is_url = bool(re.match(r'^https?://|^www\.', txt, re.IGNORECASE))
             if is_url:
                 if curr_url:
                     desc = ' '.join(curr_desc).strip()
@@ -283,12 +283,7 @@ class EndOfChapterParser:
                         pending = []
                     if output and output[-1] != '':
                         output.append('')
-                elif re.match(r'^[a-e][\.\)]\s+\S', line):
-                    if pending:
-                        output.append(' '.join(pending))
-                        pending = []
-                    output.append(line)
-                elif line.startswith('**') or line.startswith('*') or line.startswith('#'):
+                elif re.match(r'^[a-e][\.\)]\s+\S', line) or line.startswith('**') or line.startswith('*') or line.startswith('#'):
                     if pending:
                         output.append(' '.join(pending))
                         pending = []

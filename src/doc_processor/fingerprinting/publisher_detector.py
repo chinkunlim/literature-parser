@@ -6,8 +6,7 @@ metadata, DOI strings, copyright declarations, and running header text.
 """
 
 import re
-from typing import Optional, Dict, Any
-
+from typing import Optional
 
 # Common academic DOI prefixes and their corresponding publishers
 DOI_PREFIX_MAP = {

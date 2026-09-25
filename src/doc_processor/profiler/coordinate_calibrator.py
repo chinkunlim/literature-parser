@@ -11,7 +11,7 @@ import logging
 import subprocess
 import xml.etree.ElementTree as ET
 from pathlib import Path
-from typing import Dict, Any, Tuple, Optional
+from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
@@ -131,7 +131,10 @@ class CoordinateCalibrator:
         if "publisher" not in profile or not profile["publisher"]:
             try:
                 import re
-                from doc_processor.fingerprinting.publisher_detector import PublisherDetector
+
+                from doc_processor.fingerprinting.publisher_detector import (
+                    PublisherDetector,
+                )
                 p1_xml = cls.extract_page_xml(str(sample_pdf), 1)
                 p1_text = re.sub(r'<[^>]+>', ' ', p1_xml) if p1_xml else ""
                 detected_pub = PublisherDetector.detect_from_text(p1_text)
@@ -251,7 +254,9 @@ class CoordinateCalibrator:
 
         # Detect publisher
         try:
-            from doc_processor.fingerprinting.publisher_detector import PublisherDetector
+            from doc_processor.fingerprinting.publisher_detector import (
+                PublisherDetector,
+            )
             p1_xml = cls.extract_page_xml(str(sample_pdf), 1)
             p1_text = re.sub(r'<[^>]+>', ' ', p1_xml) if p1_xml else ""
             pub = PublisherDetector.detect_from_text(p1_text)

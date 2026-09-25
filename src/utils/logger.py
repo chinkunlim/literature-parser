@@ -5,10 +5,9 @@ Mandates structured logging containing (Where, Why, How to Fix)
 to ensure transparent, actionable error reporting without generic silent failures.
 """
 
-import sys
 import logging
+import sys
 from pathlib import Path
-from datetime import datetime
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 LOG_DIR = PROJECT_ROOT / "logs"

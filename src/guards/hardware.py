@@ -8,11 +8,10 @@ Performs real-time system capability checks before invoking heavy models or batc
 - Apple Silicon Metal Performance Shaders (MPS) availability
 """
 
-import sys
-import shutil
 import platform
+import shutil
 import subprocess
-from pathlib import Path
+
 from src.utils.logger import get_diagnostic_logger
 
 logger = get_diagnostic_logger("HardwareGuard")

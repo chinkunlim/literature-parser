@@ -6,19 +6,17 @@ Implements the two mandatory Ollama triggers:
 2. Output Guard: Intercepts broken LaTeX / syntax errors, auto-repairs via Ollama, or quarantines to data/needs_review/.
 """
 
-import os
-import re
 import json
-import shutil
 from pathlib import Path
-from src.utils.logger import get_diagnostic_logger
+
 from src.guards.ollama_guard import OllamaGuard
 from src.guards.prompts import (
-    SYSTEM_LATEX_HEALER,
     PROMPT_LATEX_HEALER_TEMPLATE,
-    SYSTEM_MANIFEST_VALIDATOR,
     PROMPT_MANIFEST_VALIDATOR_TEMPLATE,
+    SYSTEM_LATEX_HEALER,
+    SYSTEM_MANIFEST_VALIDATOR,
 )
+from src.utils.logger import get_diagnostic_logger
 
 logger = get_diagnostic_logger("Validator")
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent

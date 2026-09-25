@@ -111,6 +111,27 @@
 7. **過期暫存自動清理**：`doctor`、`save`、`publish` 自動清理上次異常中斷殘留的 `*.tmp.*` 暫存檔。
 8. **依賴環境自動同步**：`pyproject.toml` 異動或缺套件時自動執行 `uv sync` 對齊環境。
 
+### 12. 📦 模組化職責與程式碼行數熔斷規範 (God-File Circuit Breaker & Modularity Ceiling)
+- **檔案長度上限**：單一程式碼檔案行數建議 $\le 500$ 行，**硬性上限 800 行**；CLI 入口與命令調度層嚴格限制 $\le 200$ 行。
+- **杜絕上帝類別 (God Class)**：當單一模組負擔超過一種清晰職責（例如版面偵測兼負向量幾何圖形解析與章末習題提取），**嚴禁持續堆疊程式碼**，必須依業務邊界拆分為專責子模組（如 `vector_figure_parser.py`, `eoc_parser.py`）。
+- **函式與嵌套限制**：單一函式嚴格 $\le 50$ 行，邏輯分支嵌套深度 $\le 3$，衛語句（Guard Clauses）提前返回。
+
+### 13. 🔤 跨模組共用函式純粹化原則 (Shared Pure Utilities Extraction)
+- **零代碼重複 (DRY)**：跨管線或跨模組重複使用之文字清洗、正則轉換、公式處理邏輯，嚴禁複製貼上。
+- **純函數隔離**：所有無狀態文字處理必須收攏於 `src/doc_processor/utils/shared_text.py`，保持零 I/O、高可測試性與確定性。
+
+### 14. 🎯 PromptRegistry 單一真理來源 (PromptRegistry Single Source of Truth)
+- **嚴禁硬編碼提示詞**：所有模組嚴禁在業務程式碼中行內拼接提示詞字串。
+- **強型別集中中樞**：所有與 Ollama 互動之 Prompt 必須定義於 `src/guards/prompts.py` 中的 `PromptRegistry` 類別，具備強型別入參與方法簽名，並嚴格連結專案修正規範（如 KaTeX `\$` 貨幣轉義、Python 正則 `\g<1>` 反向引用、APA 表格附註、雙欄閱讀流）。
+
+### 15. 📖 文檔分層規範：【完整詳細版】vs【精簡摘要版】 (Document Granularity Standard)
+- **單一真理架構地圖**：`docs/STRUCTURE.md` 明確註記為 `【完整詳細版】`，必須詳列所有資料夾、檔案、具體職責、公開類別與架構設計，且隨檔案增刪即時同步。
+- **高層次導讀手冊**：`README.md` 與 `OPERATIONS.md` 明確註記為 `【精簡摘要版】`，維持 30 秒上手的高密度摘要，並提供指向詳細版的雙向跳轉連結。
+
+### 16. 🛡️ 零容忍物理硬不變量與漸進式 AST 沙盒 (Invariants & Safe AST Sandbox)
+- **物理硬不變量防線**：以物理指標（標題存在、摘要完整、參考文獻獨立、LaTeX 括號閉合、無表格洩漏、無孤立頁碼）進行防呆驗證，杜絕「有錯還報對」之假陽性。
+- **安全沙盒合成**：AI 自主合成之修復程式必須經由 AST 靜態語法檢查與純函數隔離測試，暫存於 `fixes/staged/`，經審查驗證後始可晉升正式手冊 (`fixes/promoted/`)。
+
 ---
 
 ## 三、 臨時實驗室規範 (Scratchpad Policy)

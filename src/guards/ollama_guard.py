@@ -6,13 +6,13 @@ the daemon if offline, and provides graceful degradation when hardware or servic
 """
 
 import json
-import time
-import urllib.request
-import urllib.error
 import subprocess
-from pathlib import Path
-from src.utils.logger import get_diagnostic_logger
+import time
+import urllib.error
+import urllib.request
+
 from src.guards.hardware import check_hardware_safety
+from src.utils.logger import get_diagnostic_logger
 
 logger = get_diagnostic_logger("OllamaGuard")
 

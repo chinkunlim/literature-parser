@@ -132,7 +132,7 @@ class MathLaTeXConverter:
             pearson_pattern,
             lambda m: r'$$\displaystyle r = \dfrac{\text{sum of cross products of } z \text{ scores}}{n} = \dfrac{\sum(Z_X Z_Y)}{n}$$' + '\n\n',
             text,
-            flags=re.I
+            flags=re.IGNORECASE
         )
 
         # 2. Heal isolated single-variable subscript splits:
@@ -202,31 +202,31 @@ class MathLaTeXConverter:
         text = re.sub(
             r'(?:\*z\*|z)\s+score\s*=\s*(?:raw\s+score\s+mean|raw\s+score\s*-\s*mean)\s+standard\s+deviation\s*=\s*\*?X\*?\s*\*?X\*?\s*\*?SD\*?',
             lambda m: r'$$\displaystyle \text{z score} = \dfrac{\text{raw score} - \text{mean}}{\text{standard deviation}} = \dfrac{X - \bar{X}}{SD}$$',
-            text, flags=re.I
+            text, flags=re.IGNORECASE
         )
         # z-score calculation step
         text = re.sub(
             r'(?:\*z\*|z)\s+score\s*=\s*(?:raw\s+score\s+mean|raw\s+score\s*-\s*mean)\s+standard\s+deviation\s*=\s*(\d+)\s+(\d+)\s+([\d\.]+)\s*=\s*(\d+)\s+([\d\.]+)\s*=\s*([-\d\.]+)',
             lambda m: r'$$\displaystyle \text{z score} = \dfrac{' + m.group(1) + ' - ' + m.group(2) + '}{' + m.group(3) + r'} = \dfrac{' + m.group(4) + '}{' + m.group(5) + '} = ' + m.group(6) + '$$',
-            text, flags=re.I
+            text, flags=re.IGNORECASE
         )
         # Cohen's d formula
         text = re.sub(
             r'(?:\*d\*|d)\s*=\s*mean\s+difference\s+standard\s+deviation\s*=\s*\*?M\*?\s*1\s*\*?M\*?\s*2\s*\*?SD\*?',
             lambda m: r'$$\displaystyle d = \dfrac{\text{mean difference}}{\text{standard deviation}} = \dfrac{M_1 - M_2}{SD}$$',
-            text, flags=re.I
+            text, flags=re.IGNORECASE
         )
         # Mean formula
         text = re.sub(
             r'Mean\s*=\s*(?:a|\$\\sum\$|\\sum)\s*\*?X\*?\s*\*?n\*?\s*=\s*1\s*\+\s*2\s*\+\s*3\s*3\s*=\s*6\s*3\s*=\s*2',
             lambda m: r'$$\displaystyle \text{Mean} = \dfrac{\sum X}{n} = \dfrac{1 + 2 + 3}{3} = \dfrac{6}{3} = 2$$',
-            text, flags=re.I
+            text, flags=re.IGNORECASE
         )
         # Pearson r formula
         text = re.sub(
             r'(?:\*r\*|r)\s*=\s*sum of the cross products of the (?:\*z\*|z) scores number of cases\s*=\s*(?:a|\$\\sum\$|\\sum)\s*\(\s*\*?Z\*?\s*\*?X\*?\s*\*?Z\*?\s*\*?Y\*?\s*\)\s*\*?n\*?',
             lambda m: r'$$\displaystyle r = \dfrac{\text{sum of cross products of } z \text{ scores}}{n} = \dfrac{\sum(Z_X Z_Y)}{n}$$',
-            text, flags=re.I
+            text, flags=re.IGNORECASE
         )
         return text
 

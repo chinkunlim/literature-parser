@@ -15,12 +15,11 @@ Safety Architecture:
 
 import ast
 import json
-import logging
 import re
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 from src.guards.hardware import check_hardware_safety
 from src.guards.ollama_guard import OllamaGuard
@@ -35,12 +34,10 @@ PROMOTED_DIR = Path(__file__).resolve().parent / "promoted"
 
 class RecipeSafetyError(Exception):
     """Raised when synthesized code violates AST security constraints."""
-    pass
 
 
 class RecipeExecutionError(Exception):
     """Raised when synthesized code fails its self-contained test cases."""
-    pass
 
 
 @dataclass
@@ -198,8 +195,8 @@ class OllamaRecipeSynthesizer:
             if not code:
                 last_error = "Could not extract valid Python code block from Ollama output."
                 current_prompt = (
-                    f"Error: Your output did not contain a valid Python code block inside ```python ... ```.\n"
-                    f"Please provide the complete module inside ```python ... ```."
+                    "Error: Your output did not contain a valid Python code block inside ```python ... ```.\n"
+                    "Please provide the complete module inside ```python ... ```."
                 )
                 continue
 
@@ -272,8 +269,8 @@ class OllamaRecipeSynthesizer:
         """
         # Prepare safe execution environment
         import re as safe_re
-        import unicodedata as safe_unicodedata
         import string as safe_string
+        import unicodedata as safe_unicodedata
 
         def safe_import(name, globals=None, locals=None, fromlist=(), level=0):
             root_pkg = name.split(".")[0]

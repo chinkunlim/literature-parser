@@ -14,12 +14,12 @@ from doc_processor.parsers.layout.table_parser import TableParser
 from doc_processor.parsers.layout.vector_figure_parser import VectorFigureParser
 
 __all__ = [
-    "TableParser",
-    "TableLLMFixer",
-    "ConceptMapParser",
-    "MarginParser",
     "CalloutParser",
-    "ListParser",
-    "VectorFigureParser",
+    "ConceptMapParser",
     "EndOfChapterParser",
+    "ListParser",
+    "MarginParser",
+    "TableLLMFixer",
+    "TableParser",
+    "VectorFigureParser",
 ]

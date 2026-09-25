@@ -6,17 +6,17 @@ Renders pages at 300 DPI, splits multi-column reading order, strips running head
 and converts mathematical equations to LaTeX.
 """
 
-import os
-import re
 import csv
 import io
+import os
+import re
 import shutil
 import subprocess
-from pathlib import Path
+
 from doc_processor.config import DEFAULT_DPI, FOOTER_NOISE_PATTERNS
-from doc_processor.utils.text_utils import clean_punctuation_spacing
-from doc_processor.parsers.math_latex import MathLaTeXConverter
 from doc_processor.parsers.layout_detector import LayoutDetector
+from doc_processor.parsers.math_latex import MathLaTeXConverter
+from doc_processor.utils.text_utils import clean_punctuation_spacing
 
 
 class ScannedPDFParser:
@@ -46,13 +46,13 @@ class ScannedPDFParser:
         if len(line_words) > 6:
             return False
         clean = line_text.strip()
-        if re.match(r'^(?:[ivxlcdm]+|\d+)\s*$', clean, re.I):
+        if re.match(r'^(?:[ivxlcdm]+|\d+)\s*$', clean, re.IGNORECASE):
             return True
-        if re.match(r'^(?:Chapter|Part|Section|Contents)\b', clean, re.I):
+        if re.match(r'^(?:Chapter|Part|Section|Contents)\b', clean, re.IGNORECASE):
             return True
         if clean.isupper() and len(clean) < 40:
             return True
-        if re.search(r'(?:CHAPTER|PART|\d{1,3}\s+[A-Z]|COREY|GROUPS|PROCESS)', line_text, re.I):
+        if re.search(r'(?:CHAPTER|PART|\d{1,3}\s+[A-Z]|COREY|GROUPS|PROCESS)', line_text, re.IGNORECASE):
             return True
         return False
 
@@ -62,11 +62,11 @@ class ScannedPDFParser:
             return False
         clean = line_text.strip()
         for pat in FOOTER_NOISE_PATTERNS:
-            if re.search(pat, clean, re.I):
+            if re.search(pat, clean, re.IGNORECASE):
                 return True
-        if re.match(r'^(?:[ivxlcdm]+|\d+)\s*$', clean, re.I):
+        if re.match(r'^(?:[ivxlcdm]+|\d+)\s*$', clean, re.IGNORECASE):
             return True
-        if re.search(r'(?:[ivxlcdm]+|\d+)\s*/|/\s*(?:[ivxlcdm]+|\d+|contents|index)\b', clean, re.I):
+        if re.search(r'(?:[ivxlcdm]+|\d+)\s*/|/\s*(?:[ivxlcdm]+|\d+|contents|index)\b', clean, re.IGNORECASE):
             return True
         if clean.isupper() and len(clean) < 40 and any(k in clean.lower() for k in ('about the authors', 'contents', 'index')):
             return True
@@ -166,7 +166,7 @@ class ScannedPDFParser:
             paras = []
             curr_p = []
             for text, h in records:
-                if re.match(r'^(?:CHAPTER|Chapter)\s+\d+', text, re.I):
+                if re.match(r'^(?:CHAPTER|Chapter)\s+\d+', text, re.IGNORECASE):
                     if curr_p:
                         paras.append(' '.join(curr_p))
                         curr_p = []

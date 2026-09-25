@@ -3,14 +3,18 @@ Verification Module: Multi-Metric Rules, Automated Suite & Local Ollama AI
 ==========================================================================
 """
 
-from doc_processor.verification.rules import is_valid_dictionary_word, check_noise_strings, check_heading_ratio
-from doc_processor.verification.verifier import AccuracyVerifier
 from doc_processor.verification.ollama_verifier import OllamaVerifier
+from doc_processor.verification.rules import (
+    check_heading_ratio,
+    check_noise_strings,
+    is_valid_dictionary_word,
+)
+from doc_processor.verification.verifier import AccuracyVerifier
 
 __all__ = [
-    "is_valid_dictionary_word",
-    "check_noise_strings",
-    "check_heading_ratio",
     "AccuracyVerifier",
-    "OllamaVerifier"
+    "OllamaVerifier",
+    "check_heading_ratio",
+    "check_noise_strings",
+    "is_valid_dictionary_word"
 ]

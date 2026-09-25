@@ -15,37 +15,37 @@ class APAStatsNormalizer:
     # 1. F-tests: F(1, 84) = 14.52, p < .001
     F_PATTERN = re.compile(
         r'\bF\s*\(\s*(\d+)\s*,\s*(\d+)\s*\)\s*=\s*([\d\.]+)(?:,\s*p\s*([<>=])\s*([\.\d]+))?',
-        re.I
+        re.IGNORECASE
     )
 
     # 2. t-tests: t(84) = 2.45, p < .05 or t(1, 38) = 0.85
     T_PATTERN = re.compile(
         r'\bt\s*\(\s*(\d+)(?:\s*,\s*(\d+))?\s*\)\s*([<>=])\s*([+\-]?\s*[-\d\.]+)(?:,\s*p\s*([<>=])\s*([\.\d]+))?',
-        re.I
+        re.IGNORECASE
     )
 
     # 3. Correlations: r = .45, r(84) = .45, r = +.77, p < .01, r = + .77
     R_PATTERN = re.compile(
         r'\br(?:\s*\(\s*(\d+)\s*\))?\s*=\s*([+\-]?\s*[\.\d]+)(?:,\s*p\s*([<>=])\s*([\.\d]+))?',
-        re.I
+        re.IGNORECASE
     )
 
     # 4. Chi-square: χ²(2, N = 86) = 5.4, p < .05 or chi-square(2) = 5.4
     CHI_PATTERN = re.compile(
         r'(?:χ²|chi-square|chi\^2)\s*\(\s*(\d+)(?:,\s*N\s*=\s*(\d+))?\s*\)\s*=\s*([\d\.]+)(?:,\s*p\s*([<>=])\s*([\.\d]+))?',
-        re.I
+        re.IGNORECASE
     )
 
     # 5. Delta R-square / R-square change: ΔR² = .08, ΔR^2 = .08
     DELTA_R2_PATTERN = re.compile(
         r'(?:ΔR²|ΔR\^2|Delta\s*R\^2|Delta\s*R²)\s*=\s*([-\d\.]+)',
-        re.I
+        re.IGNORECASE
     )
 
     # 6. Beta coefficients: β = .32, beta = .32
     BETA_PATTERN = re.compile(
         r'(?:β|beta)\s*=\s*([-\d\.]+)',
-        re.I
+        re.IGNORECASE
     )
 
     # 7. Sample size: N = 86, n = 43
@@ -56,11 +56,11 @@ class APAStatsNormalizer:
     # 8. Standalone p-values: p < .05, p = .001, ps > .05
     P_STANDALONE = re.compile(
         r'\bp\s*([<>=])\s*([\.\d]+)\b',
-        re.I
+        re.IGNORECASE
     )
     PS_PLURAL = re.compile(
         r'\bps\s*([<>=])\s*([\.\d]+)\b',
-        re.I
+        re.IGNORECASE
     )
 
     # 9. Mean and Standard Deviation: M = 12.4, SD = 3.2

@@ -11,9 +11,11 @@ import re
 import shutil
 import subprocess
 import tempfile
-from pathlib import Path
 
-from doc_processor.config import COVERAGE_THRESHOLD, FULL_PAGE_MIN_PX, MIN_IMAGE_SIZE_BYTES
+from doc_processor.config import (
+    FULL_PAGE_MIN_PX,
+    MIN_IMAGE_SIZE_BYTES,
+)
 
 logger = logging.getLogger(__name__)
 

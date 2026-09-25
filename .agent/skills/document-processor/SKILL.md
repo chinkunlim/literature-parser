@@ -14,9 +14,11 @@ description: Master orchestrator skill for converting textbooks and academic lit
 ```text
 ┌───────────────────────────────────────────────────────────┐
 │        document-processor (總調度技能 / Master Skill)        │
-│  • 前置軟硬體健檢 (Doctor Audit: RAM >= 4GB / SSD >= 10GB) │
+│  • 前置軟硬體健檢 (Doctor Audit: RAM >= 2GB(AC)/4GB(Bat)   │
 │  • 慣例路由與文檔分類 (Routing: Textbook vs Literature)   │
-│  • 本地 Ollama 喚醒與確定性 Prompt 注入                   │
+│  • PromptRegistry 提示詞單一真理來源 (src/guards/prompts)  │
+│  • 零容忍物理硬不變量防線 (QualityInvariantGuard)         │
+│  • 全維度排版格式稽核與修復手冊 (FormatAuditor & FixPlaybook)│
 │  • 瑕疵與低信度 (< 0.80) 自動隔離至 data/needs_review/     │
 └─────────────────────────────┬─────────────────────────────┘
                               │
@@ -27,8 +29,9 @@ description: Master orchestrator skill for converting textbooks and academic lit
 │    (長篇教科書子技能)     │   │     (學術文獻子技能)      │
 │  • 章節極速拆分 (TOC)     │   │  • 單篇原子性處理 (No TOC) │
 │  • 跨頁斷句縫合 (Stitch)  │   │  • 雙欄帶狀流動 (Band Flow)│
-│  • 專有名詞與 Anki 卡片   │   │  • 摘要與作者機構結構化   │
-│  • 學習目標與案例對話     │   │  • APA/IEEE 參考文獻解析   │
+│  • 向量圖與章末習題解耦   │   │  • 摘要與作者機構結構化   │
+│  • 專有名詞與 Anki 卡片   │   │  • APA/IEEE 參考文獻解析   │
+│  • 學習目標與案例對話     │   │  • 圖表語義定位與表格附註 │
 └───────────────────────────┘   └───────────────────────────┘
 ```
 
@@ -36,11 +39,19 @@ description: Master orchestrator skill for converting textbooks and academic lit
 
 ## 🚀 執行規範 (Execution Protocol)
 
-AI Agent 接到任何轉檔指示時，**嚴禁口頭指示使用者手動執行**，必須主動調用終端執行：
+AI Agent 接到任何轉檔與稽核指示時，**嚴禁口頭指示使用者手動執行**，必須主動調用終端執行：
 ```bash
 # 處理書籍 (自動調派 textbook-processor)
-python run.py process data/input/books/<filename>
+uv run python run.py process data/input/books/<filename>
 
 # 處理學術文獻 (自動調派 literature-processor)
-python run.py process data/input/literature/<filename>
+uv run python run.py process data/input/literature/<filename>
+
+# 全維度排版格式深度稽核 (支援 --ollama 與 --fix)
+uv run python run.py audit data/output/literature/<doc_name> [--ollama] [--fix]
+
+# 專案修復手冊工具 (查看、套用與沙盒測試)
+uv run python run.py fix list
+uv run python run.py fix apply <recipe_id> <target_file>
 ```
+

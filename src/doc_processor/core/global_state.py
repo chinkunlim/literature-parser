@@ -8,12 +8,12 @@ Updated atomically whenever CheckpointManager saves a chapter state.
 Supports bootstrapping from existing data/output/ directories.
 """
 
-import os
-import json
 import datetime
+import json
+import os
 import tempfile
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 
 _STATE_FILE_NAME = "global_status.json"
 
@@ -129,7 +129,7 @@ class GlobalStateManager:
                     book_data = json.load(f)
                 title = book_data.get("book_title") or book_data.get("doc_name") or status_json.parent.name
                 doc_type = "literature" if ("literature" in str(status_json) or book_data.get("archetype") == "journal") else "book"
-                if "chapters" in book_data and book_data["chapters"]:
+                if book_data.get("chapters"):
                     chapters = book_data["chapters"]
                 else:
                     passed = book_data.get("passed", False)

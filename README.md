@@ -119,7 +119,11 @@ flowchart TD
 
 ---
 
-## 🏗 Architecture & Directory Structure
+## 🏗 Architecture & Directory Structure (【精簡摘要版】 / Overview)
+
+> 💡 **目錄版本說明**：
+> - **【精簡摘要版】（本節）**：提供專案骨幹與主要資料夾之高階摘要，供快速瀏覽。
+> - **【完整詳細版】**：請直接參閱 [docs/STRUCTURE.md](docs/STRUCTURE.md)，收錄全專案每一個檔案的功能職責、依賴關係與架構備註。
 
 The project conforms to modern Python package standards (PEP 517/518, `pyproject.toml`) with decoupled, single-responsibility modules:
 

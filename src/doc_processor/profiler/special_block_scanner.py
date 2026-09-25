@@ -27,7 +27,7 @@ import subprocess
 import xml.etree.ElementTree as ET
 from collections import Counter
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -156,7 +156,7 @@ class SpecialBlockScanner:
                 # Detect callouts
                 for t_top, t_left, t_w, t_size, t_txt in texts:
                     for pat in _CALLOUT_SEED_PATTERNS:
-                        if re.match(pat, t_txt, re.I):
+                        if re.match(pat, t_txt, re.IGNORECASE):
                             kw = re.split(r"\s{2,}|\t", t_txt)[0].strip()
                             callout_counter[kw] += 1
 
@@ -262,7 +262,7 @@ class SpecialBlockScanner:
         for _, _, w, size, txt in texts:
             clean = txt.strip()
             for seed in _EOC_HEADING_SEEDS:
-                if re.match(rf"^{re.escape(seed)}$", clean, re.I):
+                if re.match(rf"^{re.escape(seed)}$", clean, re.IGNORECASE):
                     found.append(seed)
         return found
 
@@ -283,9 +283,7 @@ class SpecialBlockScanner:
         for t_top, t_left, t_w, t_size, t_txt in texts:
             rel_left  = t_left / pw
             rel_width = t_w / pw
-            if is_even and rel_left < 0.30 and rel_width < 0.28 and len(t_txt) > 3:
-                margin_texts.append(t_txt)
-            elif (not is_even) and rel_left > 0.68 and rel_width < 0.28 and len(t_txt) > 3:
+            if is_even and rel_left < 0.30 and rel_width < 0.28 and len(t_txt) > 3 or (not is_even) and rel_left > 0.68 and rel_width < 0.28 and len(t_txt) > 3:
                 margin_texts.append(t_txt)
         return len(margin_texts) >= 3
 

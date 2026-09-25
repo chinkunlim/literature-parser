@@ -5,9 +5,8 @@ Detects pedagogical sidebar boxes, exhibits, callout alerts (> [!NOTE]),
 and caption formatting.
 """
 
-import re
 import logging
-from typing import List, Tuple, Set, Dict, Any
+import re
 
 logger = logging.getLogger(__name__)
 
@@ -29,11 +28,11 @@ class CalloutParser:
         formatted = []
         for p in paragraphs:
             s = p.strip()
-            is_callout = any(re.search(pat, s, re.I) for pat in cls.CALLOUT_PATTERNS)
+            is_callout = any(re.search(pat, s, re.IGNORECASE) for pat in cls.CALLOUT_PATTERNS)
             if is_callout:
                 lines = s.splitlines()
                 quoted_lines = [f"> {line}" for line in lines]
-                formatted.append(f"> [!NOTE]\n" + '\n'.join(quoted_lines))
+                formatted.append("> [!NOTE]\n" + '\n'.join(quoted_lines))
             else:
                 formatted.append(p)
         return formatted
@@ -44,7 +43,7 @@ class CalloutParser:
         Formats 'Figure X.X: ...', 'Fig. X.X: ...', and 'Table X.X: ...' captions
         with italic markdown styling so they are visually distinguished from body prose.
         """
-        caption_pat = re.compile(r'^(?:Figure|Fig\.|Table|Exhibit|Illustration)\s+\d+[\.\d]*(?:\s*[:\-–—]\s*|\s*\.\s+)(.*)', re.I)
+        caption_pat = re.compile(r'^(?:Figure|Fig\.|Table|Exhibit|Illustration)\s+\d+[\.\d]*(?:\s*[:\-–—]\s*|\s*\.\s+)(.*)', re.IGNORECASE)
         formatted = []
         for p in paragraphs:
             s = p.strip()

@@ -9,16 +9,21 @@ import logging
 import re
 import subprocess
 import xml.etree.ElementTree as ET
-from pathlib import Path
-from doc_processor.parsers.layout_detector import LayoutDetector
-from doc_processor.parsers.math_latex import MathLaTeXConverter
-from doc_processor.parsers.math.apa_stats_normalizer import APAStatsNormalizer
-from doc_processor.style_loader import load_style
+
 from doc_processor.fingerprinting.document_classifier import DocumentClassifier
+from doc_processor.parsers.layout_detector import LayoutDetector
+from doc_processor.parsers.math.apa_stats_normalizer import APAStatsNormalizer
+from doc_processor.parsers.math_latex import MathLaTeXConverter
+from doc_processor.style_loader import load_style
 from doc_processor.utils.text_utils import (
-    clean_punctuation_spacing, repair_hyphens, clean_page_text_artifacts,
-    detect_plain_text_headings, reflow_wrapped_lines, repair_drop_caps,
-    format_dialogue_lines, clean_typography_artifacts
+    clean_page_text_artifacts,
+    clean_punctuation_spacing,
+    clean_typography_artifacts,
+    detect_plain_text_headings,
+    format_dialogue_lines,
+    reflow_wrapped_lines,
+    repair_drop_caps,
+    repair_hyphens,
 )
 
 logger = logging.getLogger(__name__)
@@ -90,7 +95,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             r'^(?:Table|Figure|Exhibit|Appendix|Photo|Step|Study\s*Questions?|Criterion|'
             r'Ask\s*yourself|Leader|Client|Counselor|Speaker|Tip|Note|Important|Caution|'
             r'Example|Box|Section|Chapter|\d+)',
-            re.I
+            re.IGNORECASE
         )
 
         for m in re.finditer(r'\*\*([A-Z][a-zA-Z][^*]{1,40}?)\*\*', markdown_text):
@@ -139,17 +144,17 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
 
         # In top 12%, check explicit journal headers regardless of font size (e.g. 18pt AIP Advances logo)
         if top < ph * 0.12:
-            if re.search(r'\b(?:ARTICLE IN PRESS|RESEARCH ARTICLE|AIP Advances|ARTICLE|Bilingualism(?:: Language and(?: Cognition)?)?|Journal of [A-Za-z]+|EXPERIMENTAL AND CLINICAL PSYCHOPHARMACOLOGY|Psychotherapy)\b', clean, re.I):
+            if re.search(r'\b(?:ARTICLE IN PRESS|RESEARCH ARTICLE|AIP Advances|ARTICLE|Bilingualism(?:: Language and(?: Cognition)?)?|Journal of [A-Za-z]+|EXPERIMENTAL AND CLINICAL PSYCHOPHARMACOLOGY|Psychotherapy)\b', clean, re.IGNORECASE):
                 return True
-            if re.search(r'\b(?:Cite as:|cambridge\.org(?:/[a-z]+)?|pubs\.aip\.org|Downloaded from https?://)\b', clean, re.I):
+            if re.search(r'\b(?:Cite as:|cambridge\.org(?:/[a-z]+)?|pubs\.aip\.org|Downloaded from https?://)\b', clean, re.IGNORECASE):
                 return True
-            if re.search(r'\b(?:NIH-PA Author Manuscript|HHS Public Access|Author [Mm]anuscript|available in PMC)\b', clean, re.I):
+            if re.search(r'\b(?:NIH-PA Author Manuscript|HHS Public Access|Author [Mm]anuscript|available in PMC)\b', clean, re.IGNORECASE):
                 return True
             # Running headers containing authors or paper title only appear on page 2 onwards!
             if page_num > 1:
-                if re.search(r'\b(?:et al\.\s*/|WHITE,\s*LEJUEZ,\s*AND\s*DE\s*WIT|HARTSHORNE ET AL|BIALYSTOK|KROLL ET AL|PLIATSIKAS ET AL)\b', clean, re.I):
+                if re.search(r'\b(?:et al\.\s*/|WHITE,\s*LEJUEZ,\s*AND\s*DE\s*WIT|HARTSHORNE ET AL|BIALYSTOK|KROLL ET AL|PLIATSIKAS ET AL)\b', clean, re.IGNORECASE):
                     return True
-                if re.search(r'\bTEST-RETEST CHARACTERISTICS\b', clean, re.I):
+                if re.search(r'\bTEST-RETEST CHARACTERISTICS\b', clean, re.IGNORECASE):
                     return True
 
         if font_size >= 18.0:
@@ -169,12 +174,12 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
         clean = txt.strip()
         cut_ratio = max(footer_ratio, 0.08)
         if top > ph * (1.0 - cut_ratio):
-            return bool(re.match(r'^\d+$', clean) or 'copyright' in clean.lower() or re.match(r'^\d{1,4}\s*-\s*\d{1,4}$', clean) or re.search(r'\b(?:pubs\.aip\.org|Downloaded from|doi\.org|\b\d{6}-\d+\b)\b', clean, re.I))
+            return bool(re.match(r'^\d+$', clean) or 'copyright' in clean.lower() or re.match(r'^\d{1,4}\s*-\s*\d{1,4}$', clean) or re.search(r'\b(?:pubs\.aip\.org|Downloaded from|doi\.org|\b\d{6}-\d+\b)\b', clean, re.IGNORECASE))
         # Also drop standalone page numbers or article IDs in bottom 10%
         if top > ph * 0.90:
             if re.match(r'^\d{1,4}$', clean) or re.search(r'^\d+,\s*\d+-\d+$', clean):
                 return True
-            if re.search(r'\b(?:pubs\.aip\.org|Downloaded from|doi\.org|\b\d{6}-\d+\b)\b', clean, re.I):
+            if re.search(r'\b(?:pubs\.aip\.org|Downloaded from|doi\.org|\b\d{6}-\d+\b)\b', clean, re.IGNORECASE):
                 return True
         return False
 
@@ -373,8 +378,8 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             if page_images:
                 for t in page_elem.findall('text'):
                     txt = ''.join(t.itertext()).strip()
-                    m = re.match(r'^(?:Figure|Fig\.)\s+(\d+[\.\d]*)(?:\s*[:\.\-–—]|\s+[A-Z]|$)', txt, re.I)
-                    if m and not re.match(r'^(?:Figure|Fig\.)\s+\d+[\.\d]*\s+(?:shows|illustrates|depicts|reveals|demonstrates|is|was|can)\b', txt, re.I):
+                    m = re.match(r'^(?:Figure|Fig\.)\s+(\d+[\.\d]*)(?:\s*[:\.\-–—]|\s+[A-Z]|$)', txt, re.IGNORECASE)
+                    if m and not re.match(r'^(?:Figure|Fig\.)\s+\d+[\.\d]*\s+(?:shows|illustrates|depicts|reveals|demonstrates|is|was|can)\b', txt, re.IGNORECASE):
                         f_top = float(t.attrib.get('top', 0))
                         f_left = float(t.attrib.get('left', 0))
                         cap_lines = [txt]
@@ -439,7 +444,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 continue
             if re.search(r'\b(?:8GTDCN|1RGTCVKQ|5JGKUCIQQF|UCNGURGTUQP|UGNNUOCP|CUUKUVUYKVJ|1DUGTXCVKQPU|6JGQT|TGGCTEJ|&CVCFTKXGP)\b', txt_raw):
                 continue
-            if re.search(r'This document is copyrighted|intended solely for the personal use|text and data mining|AI training|allied publishers|disseminated broadly|All rights, including for text|American Psychological Association|American Psychological|reserved\.?', txt_raw, re.I):
+            if re.search(r'This document is copyrighted|intended solely for the personal use|text and data mining|AI training|allied publishers|disseminated broadly|All rights, including for text|American Psychological Association|American Psychological|reserved\.?', txt_raw, re.IGNORECASE):
                 continue
 
             # Convert inner XML tags <b> and <i> to Markdown
@@ -556,8 +561,8 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                     else:
                         is_arrow = False
                         if 18 <= gap <= 60:
-                            if re.search(r'\b(?:arrows?|relationship as follows|meaning causes|causes?|as in [A-Z])\b', prev_txt, re.I) or \
-                               re.search(r'^(?:lung cancer|tissue damage|[B-Z]\b|[B-Z]\))', txt_val, re.I):
+                            if re.search(r'\b(?:arrows?|relationship as follows|meaning causes|causes?|as in [A-Z])\b', prev_txt, re.IGNORECASE) or \
+                               re.search(r'^(?:lung cancer|tissue damage|[B-Z]\b|[B-Z]\))', txt_val, re.IGNORECASE):
                                 is_arrow = True
                         separator = r" $\rightarrow$ " if is_arrow else " "
                         new_width = (left_val + width_val) - prev_left
@@ -682,7 +687,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 continue
 
             # Check if major section heading (size >= 28 or journal academic section heading)
-            is_section_num = bool(re.match(r'^\d+\.\s+[A-Z]', clean_t)) and len(clean_t) < 50 and not re.search(r'\b(?:recommend|encouraged|practitioners|researchers|suggest|finally)\b', clean_t, re.I) and not re.search(r'[.?!]$', clean_t)
+            is_section_num = bool(re.match(r'^\d+\.\s+[A-Z]', clean_t)) and len(clean_t) < 50 and not re.search(r'\b(?:recommend|encouraged|practitioners|researchers|suggest|finally)\b', clean_t, re.IGNORECASE) and not re.search(r'[.?!]$', clean_t)
             is_journal_head = is_journal and (
                 clean_t in ('Abstract', 'Method', 'Methods', 'Results', 'Discussion', 'References', 'Conclusion', 'Conclusions') or
                 is_section_num
@@ -693,7 +698,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             )
             is_h2 = (size >= 28.0 and len(clean_t) < 100) or is_journal_head
             # Check if subsection heading (20 <= size < 28) or Chapter N in Appendix or journal subhead
-            is_h3 = ((20.0 <= size < 28.0 and len(clean_t) < 80) or bool(re.match(r'^(?:\*\*)?Chapter\s+\d+(?:\*\*)?$', text.strip(), re.I))) or is_journal_subhead
+            is_h3 = ((20.0 <= size < 28.0 and len(clean_t) < 80) or bool(re.match(r'^(?:\*\*)?Chapter\s+\d+(?:\*\*)?$', text.strip(), re.IGNORECASE))) or is_journal_subhead
             # Check if objective heading (1.1 Compare ...) - only for textbooks
             is_obj = not is_journal and bool(re.match(r'^(?:\*\*)?\d+\.\d+(?:\*\*)?(?:\s+|$)', text.strip()))
 
@@ -706,7 +711,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                     continue
 
             # Study Question(s) detection
-            m_sq = re.match(r'^(?:\*\*)?(Study Questions?)\s+(\d+[\.\d]*)\s*(?:\*\*)?\s*(.*)', clean_t, re.I)
+            m_sq = re.match(r'^(?:\*\*)?(Study Questions?)\s+(\d+[\.\d]*)\s*(?:\*\*)?\s*(.*)', clean_t, re.IGNORECASE)
             if m_sq:
                 flush_p()
                 sq_label = m_sq.group(1).title()
@@ -759,7 +764,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 continue
 
             # Table detection
-            m_table = re.match(r'^(?:\*\*)?Table\s+(\d+[\.\d]*)\s*(?:\*\*)?\s*:?\s*(.*)', clean_t, re.I)
+            m_table = re.match(r'^(?:\*\*)?Table\s+(\d+[\.\d]*)\s*(?:\*\*)?\s*:?\s*(.*)', clean_t, re.IGNORECASE)
             if m_table:
                 t_num = m_table.group(1)
                 t_title = m_table.group(2).strip()
@@ -769,7 +774,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 starts_lowercase = bool(t_title and t_title[0].islower())
                 is_prose_table = is_mid_sentence or starts_lowercase or re.match(
                     r'^(?:shows|reveals|illustrates|demonstrates|depicts|provides|lists|is|was|presents|summarizes|gives|indicates|identifies|describes|contains|displays|outlines|compares|reports|because|that|which|when|if|as)\b',
-                    t_title, re.I
+                    t_title, re.IGNORECASE
                 )
                 if not is_prose_table:
                     flush_p()
@@ -847,7 +852,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                     if g['term'] in placed_glossaries:
                         continue
                     t = g['term']
-                    bold_pat = re.compile(r'\*\*' + re.escape(t) + r'\*\*', re.I)
+                    bold_pat = re.compile(r'\*\*' + re.escape(t) + r'\*\*', re.IGNORECASE)
                     if bold_pat.search(b):
                         matched.append(g['callout'])
                         placed_glossaries.add(t)
@@ -867,7 +872,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                     if g['term'] in placed_glossaries:
                         continue
                     t = g['term']
-                    word_pat = re.compile(r'\b' + re.escape(t) + r'\b', re.I)
+                    word_pat = re.compile(r'\b' + re.escape(t) + r'\b', re.IGNORECASE)
                     if word_pat.search(b):
                         matched2.append(g['callout'])
                         placed_glossaries.add(t)
@@ -890,7 +895,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 for tbl in page_tables:
                     if tbl['top'] in placed_tables:
                         continue
-                    m_tbl = re.search(r'\bTable\s+(\d+[\.\d]*)', tbl['markdown'], re.I)
+                    m_tbl = re.search(r'\bTable\s+(\d+[\.\d]*)', tbl['markdown'], re.IGNORECASE)
                     if m_tbl:
                         t_ref = f"Table {m_tbl.group(1)}"
                         if t_ref in b and not b.startswith('#'):
@@ -917,7 +922,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 for ex in page_exhibits:
                     if ex['top'] in placed_exhibits:
                         continue
-                    m_ex = re.search(r'\bExhibit\s+(\d+[\.\d]*)', ex['markdown'], re.I)
+                    m_ex = re.search(r'\bExhibit\s+(\d+[\.\d]*)', ex['markdown'], re.IGNORECASE)
                     if m_ex:
                         ex_ref = f"Exhibit {m_ex.group(1)}"
                         if ex_ref in b and not b.startswith('#'):
@@ -941,7 +946,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
         sq_idx = 0
         while sq_idx < len(final_blocks):
             b = final_blocks[sq_idx]
-            m_sq = re.match(r'^###\s*(Study Questions?\s+[\d\.]+)\s*$', b, re.I)
+            m_sq = re.match(r'^###\s*(Study Questions?\s+[\d\.]+)\s*$', b, re.IGNORECASE)
             if m_sq:
                 sq_title = m_sq.group(1).title()
                 sq_idx += 1
@@ -970,7 +975,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
         # Group Table headings with their immediately subsequent bullet items for table formatting
         # Match both ### Table heading style and **Table X** bold-label style
         tbl_heading_pat = re.compile(
-            r'^(?:###\s*Table\s+\d+|\*\*Table\s+[\d\.]+\*\*)', re.I
+            r'^(?:###\s*Table\s+\d+|\*\*Table\s+[\d\.]+\*\*)', re.IGNORECASE
         )
         merged_for_tables = []
         i = 0
@@ -1015,7 +1020,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             if img_obj.get('caption') and img_obj['caption'] != 'Illustration':
                 return img_obj['caption']
             for blk in final_blocks:
-                m_fig = re.search(r'^(?:\*|_)?\s*(Figure\s+[\d\.]+.*?)(?:\*|_)?$', blk, re.I | re.M)
+                m_fig = re.search(r'^(?:\*|_)?\s*(Figure\s+[\d\.]+.*?)(?:\*|_)?$', blk, re.IGNORECASE | re.MULTILINE)
                 if m_fig:
                     return m_fig.group(1).strip('*_ ')
             return 'Illustration'
@@ -1028,7 +1033,9 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             img_caption = resolve_caption(img)
             fname = img.get('filename', f"{img.get('page', page_num):03d}_img.{img.get('ext', 'png')}")
             if is_lit_or_jrnl:
-                from doc_processor.parsers.literature.figure_formatter import FigureFormatter
+                from doc_processor.parsers.literature.figure_formatter import (
+                    FigureFormatter,
+                )
                 placed_img_blocks.append(FigureFormatter.render_figure_html(f"images/{fname}", img_caption))
             else:
                 placed_img_blocks.append(f"![{img_caption}](images/{fname})\n\n*{img_caption}*")
@@ -1040,7 +1047,9 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             img_caption = resolve_caption(img)
             fname = img.get('filename', f"{img.get('page', page_num):03d}_img.{img.get('ext', 'png')}")
             if is_lit_or_jrnl:
-                from doc_processor.parsers.literature.figure_formatter import FigureFormatter
+                from doc_processor.parsers.literature.figure_formatter import (
+                    FigureFormatter,
+                )
                 placed_img_blocks.append(FigureFormatter.render_figure_html(f"images/{fname}", img_caption))
             else:
                 placed_img_blocks.append(f"![{img_caption}](images/{fname})\n\n*{img_caption}*")

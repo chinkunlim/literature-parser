@@ -377,7 +377,9 @@ class AdaptiveLearner:
             page_cuts = cont_check.get("page_break_cuts", 0)
             if md_file.exists() and (abrupt > 0 or page_cuts > 0):
                 try:
-                    from doc_processor.utils.text_utils import stitch_cross_page_continuity
+                    from doc_processor.utils.text_utils import (
+                        stitch_cross_page_continuity,
+                    )
                     cur_text = md_file.read_text(encoding="utf-8")
                     stitched = stitch_cross_page_continuity(cur_text)
                     if stitched != cur_text:

@@ -12,18 +12,17 @@ Default directory constants in ``config.py`` now correctly point to ``data/input
 
 import logging
 import os
-import sys
-import time
 import shutil
+import time
 from pathlib import Path
+
 from doc_processor.config import (
     DEFAULT_INBOX_DIR,
-    DEFAULT_PROCESSED_DIR,
     DEFAULT_OUTPUT_DIR,
-    MIN_DISK_FREE_GB,
-    MAX_CPU_LOAD_PERCENT,
+    DEFAULT_PROCESSED_DIR,
     DEFAULT_WATCHDOG_INTERVAL_SECS,
-    MAX_ALERT_LOG_BYTES,
+    MAX_CPU_LOAD_PERCENT,
+    MIN_DISK_FREE_GB,
 )
 
 logger = logging.getLogger(__name__)
@@ -222,7 +221,7 @@ class WatchdogService:
         print(f"  • Inbox Path: {self.inbox_dir}")
         print(f"  • Processed Archive: {self.processed_dir}")
         print(f"  • Status Dashboard: {self.status_file}")
-        print(f"  • Press Ctrl+C to halt monitor safely.\n")
+        print("  • Press Ctrl+C to halt monitor safely.\n")
 
         # Initial seed
         initial = self.scan_inbox()

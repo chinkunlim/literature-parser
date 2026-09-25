@@ -6,7 +6,7 @@ multi-chapter textbook, lecture slides, or a standalone technical report.
 """
 
 import re
-from typing import Dict, Any
+from typing import Any, Dict
 
 
 class DocumentClassifier:
@@ -83,7 +83,6 @@ class DocumentClassifier:
         p_lower = p_str.lower()
 
         # Robust check if file exists on disk
-        import os
         from pathlib import Path
         p = Path(pdf_path)
         if p.exists() and p.is_file() and p.suffix.lower() == '.pdf':

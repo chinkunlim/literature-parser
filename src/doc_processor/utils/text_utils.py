@@ -5,6 +5,7 @@ Text Processing Utilities
 
 import re
 from typing import Optional
+
 from doc_processor.config import MAX_FILENAME_LEN
 
 
@@ -88,8 +89,8 @@ def clean_decorative_noise(text: str) -> str:
         return ""
 
     # Dingbats in Book 2 (Group Counseling)
-    text = re.sub(r'(?m)^[ \t]*m?@\s*EXAMPLES?\s*$', '### Examples', text, flags=re.I)
-    text = re.sub(r'(?m)^[ \t]*m?@\s*ACTIVITIES\s*$', '### Activities', text, flags=re.I)
+    text = re.sub(r'(?m)^[ \t]*m?@\s*EXAMPLES?\s*$', '### Examples', text, flags=re.IGNORECASE)
+    text = re.sub(r'(?m)^[ \t]*m?@\s*ACTIVITIES\s*$', '### Activities', text, flags=re.IGNORECASE)
     text = re.sub(r'(?m)^[ \t]*m?@\s*([A-Z\s]{3,30})$', r'### \1', text)
     text = re.sub(r'(?m)^[ \t]*m?@\s*', '- ', text)
 
@@ -98,7 +99,7 @@ def clean_decorative_noise(text: str) -> str:
         r'(?m)^[ \t]*(?:\(?Continued\)?|Table\s+\d+(?:\.\d+)?\s+Continued|Figure\s+\d+(?:\.\d+)?\s+Continued)\s*$',
         '',
         text,
-        flags=re.I
+        flags=re.IGNORECASE
     )
 
     # Isolated decorative Roman numerals (e.g. solitary 'I', 'II', 'IV' on a line surrounded by empty lines)
@@ -156,10 +157,10 @@ def detect_plain_text_headings(raw_text: str) -> str:
             continue
 
         # Handle dingbat headings directly
-        if re.match(r'^m?@\s*EXAMPLES?\s*$', stripped, re.I):
+        if re.match(r'^m?@\s*EXAMPLES?\s*$', stripped, re.IGNORECASE):
             new_lines.append('### Examples')
             continue
-        if re.match(r'^[A-Z]?\s*ACTIVITIES\s*$', stripped, re.I):
+        if re.match(r'^[A-Z]?\s*ACTIVITIES\s*$', stripped, re.IGNORECASE):
             new_lines.append('### Activities')
             continue
 
@@ -169,7 +170,7 @@ def detect_plain_text_headings(raw_text: str) -> str:
         # Filter out common non-heading patterns
         if (
             3 <= len(stripped) <= 65
-            and not re.match(r'^(?:CHAPTER|PART|\d+|http|www|page|\[|\(|-|\*|•|=»|=)', stripped, re.I)
+            and not re.match(r'^(?:CHAPTER|PART|\d+|http|www|page|\[|\(|-|\*|•|=»|=)', stripped, re.IGNORECASE)
             and (not stripped.endswith(('.', ',', ';', ':')) or stripped.endswith('?'))
             and stripped.split()[-1].lower() not in trailing_prepositions
             and re.match(r'^[A-Z]', stripped)
@@ -449,7 +450,7 @@ def clean_page_text_artifacts(raw: str, page_num: Optional[int] = None) -> str:
     filtered = []
     for l in lines:
         stripped = l.strip()
-        if re.search(r'Copyright\s+\d{4}', stripped, re.I) or 'May not be copied' in stripped or 'WCN 02-200' in stripped:
+        if re.search(r'Copyright\s+\d{4}', stripped, re.IGNORECASE) or 'May not be copied' in stripped or 'WCN 02-200' in stripped:
             continue
         filtered.append(l)
 
@@ -457,19 +458,7 @@ def clean_page_text_artifacts(raw: str, page_num: Optional[int] = None) -> str:
     top_to_remove = set()
     for idx in non_empty_indices[:4]:
         line = filtered[idx].strip()
-        if re.fullmatch(r'\d+', line):
-            top_to_remove.add(idx)
-        elif re.fullmatch(r'(?:CHAPTER|PART)\s*(?:\d+|[A-Z]+)?', line, re.I):
-            top_to_remove.add(idx)
-        elif re.fullmatch(r'\d+\s+(?:CHAPTER|PART)\s*(?:\d+|[A-Z]+)?', line, re.I):
-            top_to_remove.add(idx)
-        elif re.fullmatch(r'(?:CHAPTER|PART)\s*(?:\d+|[A-Z]+)?\s+\d+', line, re.I):
-            top_to_remove.add(idx)
-        elif re.fullmatch(r'[A-Z\s,:\'\-]{3,50}\s+\d+', line) or re.fullmatch(r'\d+\s+[A-Z\s,:\'\-]{3,50}', line):
-            top_to_remove.add(idx)
-        elif line.isupper() and len(line) < 40 and not line.endswith(('.', ':', ';')):
-            top_to_remove.add(idx)
-        elif re.match(r'^[\'\"]?\s*CHAP\.?\s*ER', line, re.I):
+        if re.fullmatch(r'\d+', line) or re.fullmatch(r'(?:CHAPTER|PART)\s*(?:\d+|[A-Z]+)?', line, re.IGNORECASE) or re.fullmatch(r'\d+\s+(?:CHAPTER|PART)\s*(?:\d+|[A-Z]+)?', line, re.IGNORECASE) or re.fullmatch(r'(?:CHAPTER|PART)\s*(?:\d+|[A-Z]+)?\s+\d+', line, re.IGNORECASE) or re.fullmatch(r'[A-Z\s,:\'\-]{3,50}\s+\d+', line) or re.fullmatch(r'\d+\s+[A-Z\s,:\'\-]{3,50}', line) or line.isupper() and len(line) < 40 and not line.endswith(('.', ':', ';')) or re.match(r'^[\'\"]?\s*CHAP\.?\s*ER', line, re.IGNORECASE):
             top_to_remove.add(idx)
         else:
             break
@@ -477,13 +466,7 @@ def clean_page_text_artifacts(raw: str, page_num: Optional[int] = None) -> str:
     bottom_to_remove = set()
     for idx in reversed(non_empty_indices[-4:]):
         line = filtered[idx].strip()
-        if re.fullmatch(r'\d+', line):
-            bottom_to_remove.add(idx)
-        elif re.fullmatch(r'\d+\s*/\s*[A-Z\s:]+', line) or re.fullmatch(r'[A-Z\s:]+\s*/\s*\d+', line):
-            bottom_to_remove.add(idx)
-        elif re.search(r'(?:CHAPTER|PART)\s+.*?\s*/\s*\d+', line, re.I) or re.search(r'\d+\s*/\s*(?:CHAPTER|PART)', line, re.I):
-            bottom_to_remove.add(idx)
-        elif re.fullmatch(r'(?:CHAPTER|PART)\s*(?:\d+|[A-Z]+)?', line, re.I):
+        if re.fullmatch(r'\d+', line) or re.fullmatch(r'\d+\s*/\s*[A-Z\s:]+', line) or re.fullmatch(r'[A-Z\s:]+\s*/\s*\d+', line) or re.search(r'(?:CHAPTER|PART)\s+.*?\s*/\s*\d+', line, re.IGNORECASE) or re.search(r'\d+\s*/\s*(?:CHAPTER|PART)', line, re.IGNORECASE) or re.fullmatch(r'(?:CHAPTER|PART)\s*(?:\d+|[A-Z]+)?', line, re.IGNORECASE):
             bottom_to_remove.add(idx)
         else:
             break
@@ -498,7 +481,7 @@ def format_chapter_title(title: str) -> str:
     """Standardizes chapter titles into 'Ch01 Title' format."""
     if not title:
         return "untitled"
-    m = re.search(r'^(?:Chapter\s+)?(\d+)[\.\s:\-]+(.*)', title, re.I)
+    m = re.search(r'^(?:Chapter\s+)?(\d+)[\.\s:\-]+(.*)', title, re.IGNORECASE)
     if m:
         ch_num = int(m.group(1))
         rest = sanitize_filename(m.group(2).strip())
@@ -513,7 +496,7 @@ def format_appendix_title(title: str) -> str:
     clean = title.strip()
     if clean.lower() == 'appendix':
         return "Appendix"
-    m = re.search(r'^Appendix\s+([A-Z])[\.\s:\-]+(.*)', clean, re.I)
+    m = re.search(r'^Appendix\s+([A-Z])[\.\s:\-]+(.*)', clean, re.IGNORECASE)
     if not m:
         m = re.search(r'^([A-Z])[\.\s:\-]+(.*)', clean)
     if m:
@@ -524,7 +507,7 @@ def format_appendix_title(title: str) -> str:
         elif rest and rest.lower() != 'untitled':
             return f"Appendix {letter} {rest}".strip()
         return f"Appendix {letter}"
-    cleaned_rest = re.sub(r'^Appendix\s*', '', clean, flags=re.I).strip()
+    cleaned_rest = re.sub(r'^Appendix\s*', '', clean, flags=re.IGNORECASE).strip()
     if not cleaned_rest:
         return "Appendix"
     return f"Appendix {sanitize_filename(cleaned_rest)}".strip()

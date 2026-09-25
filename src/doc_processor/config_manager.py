@@ -17,7 +17,7 @@ import os
 import re
 import subprocess
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -171,7 +171,7 @@ class ConfigManager:
             )
             data = proc.stdout
             if b'<outline>' in data:
-                if re.search(rb'chapter\s+\d+|part\s+[ivx\d]+', data, re.I):
+                if re.search(rb'chapter\s+\d+|part\s+[ivx\d]+', data, re.IGNORECASE):
                     return "textbook"
         except Exception:
             pass
@@ -192,11 +192,9 @@ class ConfigManager:
             r'\bcorrespondence\s+concerning\b',
             r'\breferences\b',
         ]
-        match_count = sum(1 for pat in academic_signals if re.search(pat, sample_text, re.I))
+        match_count = sum(1 for pat in academic_signals if re.search(pat, sample_text, re.IGNORECASE))
 
-        if total_pages <= 35 and match_count >= 2:
-            return "literature"
-        elif total_pages <= 20:
+        if total_pages <= 35 and match_count >= 2 or total_pages <= 20:
             return "literature"
 
         return "textbook" if total_pages > 40 else "literature"
@@ -212,15 +210,15 @@ class ConfigManager:
             return None
 
         # 1. DOI Prefixes
-        if re.search(r'10\.1037[/\w\.\-]', text) or re.search(r'american\s+psychological\s+association', text, re.I):
+        if re.search(r'10\.1037[/\w\.\-]', text) or re.search(r'american\s+psychological\s+association', text, re.IGNORECASE):
             return "apa"
-        if re.search(r'10\.1016[/\w\.\-]', text) or re.search(r'elsevier\s+science|sciencedirect', text, re.I):
+        if re.search(r'10\.1016[/\w\.\-]', text) or re.search(r'elsevier\s+science|sciencedirect', text, re.IGNORECASE):
             return "elsevier"
-        if re.search(r'10\.(?:1002|1111)[/\w\.\-]', text) or re.search(r'john\s+wiley|blackwell', text, re.I):
+        if re.search(r'10\.(?:1002|1111)[/\w\.\-]', text) or re.search(r'john\s+wiley|blackwell', text, re.IGNORECASE):
             return "wiley"
-        if re.search(r'10\.1007[/\w\.\-]', text) or re.search(r'springer\b', text, re.I):
+        if re.search(r'10\.1007[/\w\.\-]', text) or re.search(r'springer\b', text, re.IGNORECASE):
             return "springer"
-        if re.search(r'10\.1109[/\w\.\-]', text) or re.search(r'ieee\b', text, re.I):
+        if re.search(r'10\.1109[/\w\.\-]', text) or re.search(r'ieee\b', text, re.IGNORECASE):
             return "ieee"
 
         return None

@@ -8,16 +8,15 @@ High-confidence proposals (>= AUTO_ACCEPT_CONFIDENCE_THRESHOLD) are
 automatically applied without requiring human review.
 """
 
+import json
 import logging
 import os
 import re
-import json
 import tempfile
 from pathlib import Path
 
 from doc_processor.config import AUTO_ACCEPT_CONFIDENCE_THRESHOLD
 from doc_processor.core.learner import GlobalLearner
-
 
 logger = logging.getLogger(__name__)
 
@@ -308,7 +307,7 @@ class ReviewManager:
 
             if accept_all:
                 decisions[rev_id] = "y"
-                print(f"  -> \033[32mACCEPTED\033[0m\n")
+                print("  -> \033[32mACCEPTED\033[0m\n")
             else:
                 prompt = "  Action: [y] Accept  [n] Reject  [a] Accept All  [q] Quit: "
                 try:
@@ -320,16 +319,16 @@ class ReviewManager:
                 if choice == "a":
                     accept_all = True
                     decisions[rev_id] = "y"
-                    print(f"  -> \033[32mACCEPTED\033[0m\n")
+                    print("  -> \033[32mACCEPTED\033[0m\n")
                 elif choice == "q":
                     print("[!] Exiting review session.")
                     break
                 elif choice in ("y", "yes"):
                     decisions[rev_id] = "y"
-                    print(f"  -> \033[32mACCEPTED\033[0m\n")
+                    print("  -> \033[32mACCEPTED\033[0m\n")
                 else:
                     decisions[rev_id] = "n"
-                    print(f"  -> \033[33mREJECTED (Original preserved)\033[0m\n")
+                    print("  -> \033[33mREJECTED (Original preserved)\033[0m\n")
 
         cls.apply_review_decisions(chapter_dir, accept_all=accept_all, decisions=decisions)
         print(f"[✓] Review decisions saved to: {md_path.name}\n")

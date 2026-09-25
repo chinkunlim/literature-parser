@@ -7,9 +7,8 @@ Extracts specific page ranges into self-contained chapter PDF files.
 import logging
 import os
 import re
-import tempfile
 import subprocess
-from pathlib import Path
+import tempfile
 
 logger = logging.getLogger(__name__)
 

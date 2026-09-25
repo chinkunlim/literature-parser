@@ -9,9 +9,9 @@ Humanities, Social Sciences, and Medicine:
 - Multi-Column Layout Segmentation
 """
 
-import re
 import logging
-import xml.etree.ElementTree as ET
+import re
+
 from doc_processor.style_loader import load_style
 
 logger = logging.getLogger(__name__)
@@ -19,14 +19,12 @@ logger = logging.getLogger(__name__)
 # Module-level style — can be replaced per-book by calling set_style()
 _STYLE = load_style()
 
-from doc_processor.parsers.layout.table_parser import TableParser
-from doc_processor.parsers.layout.concept_map_parser import ConceptMapParser
-from doc_processor.parsers.layout.margin_parser import MarginParser
 from doc_processor.parsers.layout.callout_parser import CalloutParser
-from doc_processor.parsers.layout.list_parser import ListParser
-from doc_processor.parsers.layout.table_llm_fixer import TableLLMFixer
-from doc_processor.parsers.layout.vector_figure_parser import VectorFigureParser
+from doc_processor.parsers.layout.concept_map_parser import ConceptMapParser
 from doc_processor.parsers.layout.eoc_parser import EndOfChapterParser
+from doc_processor.parsers.layout.margin_parser import MarginParser
+from doc_processor.parsers.layout.table_parser import TableParser
+from doc_processor.parsers.layout.vector_figure_parser import VectorFigureParser
 
 
 def set_style(style: dict) -> None:
@@ -88,8 +86,8 @@ class LayoutDetector:
         publisher_cfg = (_STYLE or {}).get("_publisher_config", {})
         _raw_author_pats = publisher_cfg.get("author_note_patterns", [])
         _raw_footer_pats = publisher_cfg.get("footer_noise_patterns", [])
-        author_note_pats = [re.compile(p, re.I) for p in _raw_author_pats]
-        footer_noise_pats = [re.compile(p, re.I) for p in _raw_footer_pats]
+        author_note_pats = [re.compile(p, re.IGNORECASE) for p in _raw_author_pats]
+        footer_noise_pats = [re.compile(p, re.IGNORECASE) for p in _raw_footer_pats]
 
         # Generic fallback patterns (always active for journal articles)
         _GENERIC_AUTHOR_NOTE = re.compile(
@@ -98,12 +96,12 @@ class LayoutDetector:
             r'^\*\s*Corresponding author\b|^Correspondence to:\b|^E-mail address:|^Fax:|^Tel\.?:|'
             r'^[A-Z][a-zA-Z\s\.,]+,\s+(Department of|Center for|School of|Institute of)\b|'
             r'^Requests for reprints\b|^Address correspondence\b',
-            re.I | re.M
+            re.IGNORECASE | re.MULTILINE
         )
         _GENERIC_FOOTER_NOISE = re.compile(
             r'^(Published by Elsevier|ScienceDirect|www\.elsevier\.com|www\.sciencedirect\.com|'
             r'Copyright \(C\) \d{4}|\(C\) \d{4} Elsevier|All rights reserved)\b',
-            re.I
+            re.IGNORECASE
         )
 
         def _matches_any(pats, text, fallback=None):
@@ -242,7 +240,7 @@ class LayoutDetector:
         with italic markdown styling so they are visually distinguished from body prose.
         Requires an explicit delimiter (':', '-', '—', or newline) to avoid capturing body prose.
         """
-        caption_pat = re.compile(r'^(?:Figure|Fig\.|Table|Exhibit|Illustration)\s+\d+[\.\d]*(?:\s*[:\-–—]\s*|\s*\.\s+)(.*)', re.I)
+        caption_pat = re.compile(r'^(?:Figure|Fig\.|Table|Exhibit|Illustration)\s+\d+[\.\d]*(?:\s*[:\-–—]\s*|\s*\.\s+)(.*)', re.IGNORECASE)
         formatted = []
         for p in paragraphs:
             s = p.strip()
@@ -292,7 +290,7 @@ class LayoutDetector:
         lo_elem = None
         for t in text_elements:
             txt = ''.join(t.itertext()).strip()
-            if re.search(r'Learning Objectives', txt, re.I):
+            if re.search(r'Learning Objectives', txt, re.IGNORECASE):
                 lo_elem = t
                 break
 
@@ -398,7 +396,7 @@ class LayoutDetector:
         exhibit_headers = []
         for t in sorted_texts:
             txt = ''.join(t.itertext()).strip()
-            m = re.match(r'^(?:EXHIBIT|Exhibit)\s+(\d+[\.\d]*)', txt, re.I)
+            m = re.match(r'^(?:EXHIBIT|Exhibit)\s+(\d+[\.\d]*)', txt, re.IGNORECASE)
             if m:
                 fid = t.attrib.get('font', '')
                 sz = float(fonts.get(fid, {}).get('size', 12))
@@ -446,10 +444,7 @@ class LayoutDetector:
                     txt = ''.join(t.itertext()).strip()
                     if not txt:
                         continue
-                    if abs(top - h_top) <= 12 and left > h_left:
-                        title_parts.append(txt)
-                        ex_consumed.append(t)
-                    elif 0 < top - h_top <= 25 and sz >= 20 and left < pw * 0.6:
+                    if abs(top - h_top) <= 12 and left > h_left or 0 < top - h_top <= 25 and sz >= 20 and left < pw * 0.6:
                         title_parts.append(txt)
                         ex_consumed.append(t)
             full_title = re.sub(r'[\s\u00a0]+', ' ', ' '.join(title_parts)).strip()

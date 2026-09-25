@@ -11,12 +11,10 @@ Saves per-book configuration to:
 
 import json
 import logging
-import os
-import re
-import urllib.request
 import urllib.error
+import urllib.request
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 

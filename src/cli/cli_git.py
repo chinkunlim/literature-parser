@@ -11,7 +11,6 @@ Handles local Git checkpoints, handoff protocols, agent onboarding, and dual-tra
 """
 
 import json
-import os
 import re
 import subprocess
 import sys

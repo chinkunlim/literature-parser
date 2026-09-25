@@ -6,7 +6,6 @@ and reconstructs them into clean Mermaid diagrams and outlines.
 """
 
 import logging
-from typing import Tuple, Set
 
 logger = logging.getLogger(__name__)
 

@@ -9,14 +9,17 @@ Subcommands:
   verify   - Runs standalone multi-metric content accuracy verification.
 """
 
-import sys
 import argparse
+import sys
 from pathlib import Path
+
 from doc_processor import __version__
+from doc_processor.config import (
+    DEFAULT_OUTPUT_DIR,
+)
 from doc_processor.core.orchestrator import BookProcessorOrchestrator
-from doc_processor.verification.verifier import AccuracyVerifier
 from doc_processor.utils.system import check_dependencies
-from doc_processor.config import DEFAULT_OLLAMA_HEALER_MODEL, DEFAULT_OLLAMA_SEMANTIC_MODEL, DEFAULT_OUTPUT_DIR, DEFAULT_INBOX_DIR
+from doc_processor.verification.verifier import AccuracyVerifier
 
 
 def main():

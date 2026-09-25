@@ -8,19 +8,17 @@ using local Ollama LLMs with 100% closed-loop in-place healing and re-verificati
 import json
 import logging
 import re
-import urllib.request
 import urllib.error
-from pathlib import Path
+import urllib.request
 from typing import Any, Dict, List, Optional, Tuple
 
 from doc_processor.config import (
-    OLLAMA_API_BASE,
     DEFAULT_OLLAMA_HEALER_MODEL,
+    OLLAMA_API_BASE,
     OLLAMA_GENERATE_TIMEOUT,
 )
-from doc_processor.utils.system import is_ollama_running, ensure_ollama_running
-from doc_processor.verification.ollama_verifier import OllamaVerifier
 from doc_processor.core.learner import GlobalLearner
+from doc_processor.verification.ollama_verifier import OllamaVerifier
 
 logger = logging.getLogger(__name__)
 

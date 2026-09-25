@@ -14,7 +14,6 @@ project scaffolding, Obsidian knowledge linking, and status dashboard:
 
 import datetime
 import json
-import os
 import shutil
 import subprocess
 import sys
@@ -22,8 +21,8 @@ import time
 import webbrowser
 from pathlib import Path
 
-from src.cli.common import ROOT, clean_dangling_tmp_files, get_current_date
 from src.cli.cli_process import cmd_process
+from src.cli.common import ROOT, clean_dangling_tmp_files, get_current_date
 from src.guards.hardware import check_hardware_safety
 from src.guards.ollama_guard import OllamaGuard
 from src.guards.validator import ValidatorGuard
@@ -54,11 +53,11 @@ def cmd_doctor(args):
     service = guard.ensure_service_ready(auto_wake=True)
     print("\n[Ollama 本地大模型診斷]")
     if service["alive"]:
-        print(f"• 服務狀態 (Port 11434): ✅ [ONLINE] 在線運行中")
+        print("• 服務狀態 (Port 11434): ✅ [ONLINE] 在線運行中")
         print(f"• 已安裝模型清單       : {', '.join(service['models']) if service['models'] else '(無已下載模型)'}")
         print(f"• 推薦啟用模型         : 🤖 {service['selected_model'] or '無 (請執行 ollama pull qwen2.5:7b)'}")
     else:
-        print(f"• 服務狀態 (Port 11434): ⚠️ [OFFLINE] 離線 (將自動啟用純語法規則降級模式)")
+        print("• 服務狀態 (Port 11434): ⚠️ [OFFLINE] 離線 (將自動啟用純語法規則降級模式)")
 
     # 3. Core Binary Dependencies (poppler + tesseract)
     print("\n[核心工具鏈診斷]")
@@ -85,7 +84,7 @@ def cmd_doctor(args):
     if pruned > 0:
         print(f"\n• 暫存檔案自動清理     : 🧹 [CLEAN] 已自動清理 {pruned} 個過期暫存檔 (*.tmp.*)")
     else:
-        print(f"\n• 暫存檔案自動清理     : ✅ [PASS] 磁碟環境無殘留暫存檔")
+        print("\n• 暫存檔案自動清理     : ✅ [PASS] 磁碟環境無殘留暫存檔")
 
     print("=" * 65)
     if hw["safe_for_heavy_llm"] and service["alive"] and service["selected_model"] and all_deps_ok:
@@ -229,11 +228,11 @@ def cmd_init_project(args):
     today = get_current_date()
 
     print("\n" + "=" * 65)
-    print(f"🌟 [PROJECT-INIT] 正在為新專案初始化企業級標準架構")
+    print("🌟 [PROJECT-INIT] 正在為新專案初始化企業級標準架構")
     print("=" * 65)
     print(f"• 目標目錄: {target_dir}")
     print(f"• 套件名稱: {pkg_name}")
-    print(f"• 標準規範: 30 大核心工程鐵律 + 雙層 CODING_RULES + 6 大同步矩陣")
+    print("• 標準規範: 30 大核心工程鐵律 + 雙層 CODING_RULES + 6 大同步矩陣")
     print("=" * 65 + "\n")
 
     # 1. Directories
@@ -397,7 +396,7 @@ sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "src" / "{pkg_name}"))
 """, encoding="utf-8")
 
-    (target_dir / "tests" / "unit" / f"test_{pkg_name}_baseline.py").write_text(f"""import unittest
+    (target_dir / "tests" / "unit" / f"test_{pkg_name}_baseline.py").write_text("""import unittest
 import sys
 from pathlib import Path
 
@@ -426,7 +425,7 @@ if __name__ == "__main__":
 
     print("🎉 新專案已成功在 3 秒內完成企業級標準初始化！")
     print(f"👉 請切換至新目錄：cd {target_dir}")
-    print(f"👉 第一步執行：python run.py doctor\n")
+    print("👉 第一步執行：python run.py doctor\n")
 
 
 def cmd_obsidian_link(args):
@@ -434,7 +433,10 @@ def cmd_obsidian_link(args):
     Scans a processed book output directory, generates index.md with Obsidian
     wikilinks, and injects inter-chapter previous/next navigation footers.
     """
-    from doc_processor.utils.obsidian_linker import generate_book_index, inject_chapter_navigation
+    from doc_processor.utils.obsidian_linker import (
+        generate_book_index,
+        inject_chapter_navigation,
+    )
 
     book_dir = Path(args.book_dir).resolve()
     if not book_dir.is_dir():

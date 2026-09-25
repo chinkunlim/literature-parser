@@ -11,19 +11,15 @@ Dedicated, modular processing pipeline for multi-chapter textbooks:
   - Multi-Core Parallel Processing for Apple Silicon
 """
 
-import json
 import logging
-import os
-import shutil
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict
 
-from doc_processor.pipelines.base_pipeline import BasePipeline
-from doc_processor.config_manager import ConfigManager
-from doc_processor.core.invariants import QualityInvariantGuard
 from doc_processor.core.analyzer import PDFAnalyzer
-from doc_processor.core.splitter import PDFSplitter
 from doc_processor.core.checkpoint import CheckpointManager
+from doc_processor.core.invariants import QualityInvariantGuard
+from doc_processor.core.splitter import PDFSplitter
+from doc_processor.pipelines.base_pipeline import BasePipeline
 from doc_processor.utils.text_utils import sanitize_filename
 
 logger = logging.getLogger(__name__)

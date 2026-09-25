@@ -7,16 +7,17 @@ semantic consistency checking and mathematical LaTeX refinement with ZERO token 
 
 import json
 import logging
-import urllib.request
 import urllib.error
+import urllib.request
+
 from doc_processor.config import (
-    OLLAMA_API_BASE,
-    DEFAULT_OLLAMA_SEMANTIC_MODEL,
     DEFAULT_OLLAMA_HEALER_MODEL,
+    DEFAULT_OLLAMA_SEMANTIC_MODEL,
     DEFAULT_OLLAMA_VISION_MODEL,
+    OLLAMA_API_BASE,
     OLLAMA_GENERATE_TIMEOUT,
 )
-from doc_processor.utils.system import is_ollama_running, ensure_ollama_running
+from doc_processor.utils.system import ensure_ollama_running, is_ollama_running
 from src.guards.prompts import PromptRegistry
 
 logger = logging.getLogger(__name__)
@@ -261,7 +262,6 @@ class OllamaVerifier:
         both the original text and the proposed AI correction for human inspection.
         Returns: (annotated_markdown, applied_proposals)
         """
-        import re
         applied = []
         for prop in proposals:
             orig = prop.get("original", "").strip()

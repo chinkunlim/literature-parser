@@ -5,45 +5,49 @@ Coordinates PDF splitting, image extraction, layout analysis, LaTeX conversion,
 automated accuracy verification, and checkpoint manifest updates.
 """
 
+import json
 import logging
 import os
 import re
-import sys
-import signal
 import shutil
-import tempfile
+import signal
 import subprocess
+import tempfile
 from pathlib import Path
 
-from doc_processor.utils.text_utils import sanitize_filename, stitch_cross_page_continuity
-from doc_processor.core.checkpoint import CheckpointManager
-from doc_processor.core.splitter import PDFSplitter
-from doc_processor.core.image_manager import ImageManager
-from doc_processor.profiler.special_block_scanner import SpecialBlockScanner
-from doc_processor.profiler.coordinate_calibrator import CoordinateCalibrator
+from doc_processor.book_style import build_textbook_css
+from doc_processor.concurrency import M5WorkerPool
 from doc_processor.config import (
-    DEFAULT_INBOX_DIR, DEFAULT_PROCESSED_DIR, DEFAULT_OUTPUT_DIR,
-    DEFAULT_OLLAMA_HEALER_MODEL, CIRCUIT_BREAKER_MAX_FAILURES,
+    CIRCUIT_BREAKER_MAX_FAILURES,
+    DEFAULT_INBOX_DIR,
+    DEFAULT_OLLAMA_HEALER_MODEL,
+    DEFAULT_OUTPUT_DIR,
+    DEFAULT_PROCESSED_DIR,
 )
-
-from doc_processor.parsers.scanned_pdf import ScannedPDFParser
+from doc_processor.core.checkpoint import CheckpointManager
+from doc_processor.core.image_manager import ImageManager
+from doc_processor.core.invariants import CircuitBreaker, QualityInvariantGuard
+from doc_processor.core.learner import AdaptiveLearner, GlobalLearner
+from doc_processor.core.splitter import PDFSplitter
+from doc_processor.fingerprinting.document_classifier import DocumentClassifier
+from doc_processor.parsers import digital_pdf as _digital_pdf_mod
 from doc_processor.parsers.digital_pdf import DigitalPDFParser
 from doc_processor.parsers.epub_parser import EPUBProcessor
-from doc_processor.verification.verifier import AccuracyVerifier
-from doc_processor.core.invariants import QualityInvariantGuard, CircuitBreaker
-from doc_processor.core.learner import AdaptiveLearner, GlobalLearner
+from doc_processor.parsers.layout_detector import generate_markdown_toc
+from doc_processor.parsers.layout_detector import set_style as _ld_set_style
+from doc_processor.parsers.scanned_pdf import ScannedPDFParser
+from doc_processor.profiler.coordinate_calibrator import CoordinateCalibrator
+from doc_processor.profiler.special_block_scanner import SpecialBlockScanner
+from doc_processor.style_loader import load_style
+from doc_processor.utils.anki_exporter import AnkiExporter
+from doc_processor.utils.text_utils import (
+    sanitize_filename,
+    stitch_cross_page_continuity,
+)
+from doc_processor.verification.layout_healer import LayoutAutoHealer
 from doc_processor.verification.ollama_verifier import OllamaVerifier
 from doc_processor.verification.review_manager import ReviewManager
-from doc_processor.verification.layout_healer import LayoutAutoHealer
-from doc_processor.style_loader import load_style
-from doc_processor.book_style import build_textbook_css
-from doc_processor.parsers.layout_detector import set_style as _ld_set_style, generate_markdown_toc
-from doc_processor.parsers import digital_pdf as _digital_pdf_mod
-import json
-from doc_processor.utils.anki_exporter import AnkiExporter
-from doc_processor.concurrency import M5WorkerPool
-from doc_processor.fingerprinting.document_classifier import DocumentClassifier
-
+from doc_processor.verification.verifier import AccuracyVerifier
 
 logger = logging.getLogger(__name__)
 
@@ -339,7 +343,7 @@ class BookProcessorOrchestrator:
                     combined_title = f"{t1} {t2}".strip()
                     full_md = full_md[:m_first_h.start()] + f"# {combined_title}" + full_md[m_first_h.end():]
         elif _style.get("prepend_chapter_title_if_missing", True):
-            if not re.search(r'^\s*#+\s*(?:PART|CHAPTER|\d+|Introduction)', full_md, re.I) and not re.search(r'^\s*<!--.*?-->\s*#+\s*', full_md, re.I):
+            if not re.search(r'^\s*#+\s*(?:PART|CHAPTER|\d+|Introduction)', full_md, re.IGNORECASE) and not re.search(r'^\s*<!--.*?-->\s*#+\s*', full_md, re.IGNORECASE):
                 full_md = f"# {ch_name}\n\n{full_md}"
 
         # Insert clickable Table of Contents if configured
@@ -404,7 +408,7 @@ class BookProcessorOrchestrator:
                             # Inline bold term: guide to self-generate
                             loc = f"on p. {pg}" if pg else "in the chapter"
                             fc_lines.append(f"> *This term appears in bold {loc}.*")
-                            fc_lines.append(f"> *Write your own definition from context, then re-read that passage to check.*")
+                            fc_lines.append("> *Write your own definition from context, then re-read that passage to check.*")
 
                         fc_lines.append("")
                         fc_lines.append("</details>")
@@ -476,7 +480,7 @@ class BookProcessorOrchestrator:
 
 
         # 3. Automatic Verification
-        print(f"  [*] Running automatic accuracy verification...")
+        print("  [*] Running automatic accuracy verification...")
         verifier = AccuracyVerifier(use_ollama=self.use_ollama, ollama_model=self.ollama_model)
         v_res = verifier.verify_chapter(str(ch_dir), expected_pages=total_pages)
 
@@ -598,8 +602,8 @@ class BookProcessorOrchestrator:
 
                 # Circuit breaker guard
                 if self.circuit_breaker.is_tripped():
-                    print(f"\n[🚨 CIRCUIT BREAKER TRIPPED] Multiple consecutive chapters failed verification!")
-                    print(f"  Pipeline automatically paused to protect downstream output. Inspect errors before resuming.\n")
+                    print("\n[🚨 CIRCUIT BREAKER TRIPPED] Multiple consecutive chapters failed verification!")
+                    print("  Pipeline automatically paused to protect downstream output. Inspect errors before resuming.\n")
                     break
 
                 name = sec['name']
@@ -633,7 +637,10 @@ class BookProcessorOrchestrator:
         # Generate Obsidian index.md and inter-chapter navigation footers
         try:
 
-            from doc_processor.utils.obsidian_linker import generate_book_index, inject_chapter_navigation
+            from doc_processor.utils.obsidian_linker import (
+                generate_book_index,
+                inject_chapter_navigation,
+            )
             ch_list = [
                 {
                     "name": s["name"],

@@ -171,7 +171,7 @@ def cmd_fix(args):
             print("🛑 錯誤：請提供欲解決之問題描述。")
             sys.exit(1)
 
-        print(f"\n🤖 [OLLAMA SYNTHESIZER] 正在分析文檔瑕疵並由 Ollama 自動撰寫修復程式...")
+        print("\n🤖 [OLLAMA SYNTHESIZER] 正在分析文檔瑕疵並由 Ollama 自動撰寫修復程式...")
         print(f"  • 目標檔案: {target.name}")
         print(f"  • 問題描述: {issue}")
 
@@ -184,14 +184,14 @@ def cmd_fix(args):
         )
 
         if res.success:
-            print(f"\n🎉 [修復程式生成成功！]")
+            print("\n🎉 [修復程式生成成功！]")
             print(f"  • 配方 ID  : {res.recipe_id}")
             print(f"  • 配方名稱: {res.recipe_name}")
             print(f"  • 暫存檔案: {res.file_path}")
             print(f"  • 沙盒測試: {res.test_results.get('test_cases_run', 0)} 例 100% 通過")
             print(f"  • 調用模型: {res.model_used}")
-            print(f"\n💡 下一步工作流:")
-            print(f"  1. 檢視暫存清單: uv run python run.py fix review")
+            print("\n💡 下一步工作流:")
+            print("  1. 檢視暫存清單: uv run python run.py fix review")
             print(f"  2. 試跑測試用例: uv run python run.py fix test {res.recipe_id}")
             print(f"  3. 批准升級正式: uv run python run.py fix promote {res.recipe_id}")
             print(f"  4. 駁回並刪除  : uv run python run.py fix reject {res.recipe_id}\n")

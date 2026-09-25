@@ -10,11 +10,12 @@ Usage:
     style = load_style(book_output_dir="/path/to/output/My Book")
 """
 
-import json
 import importlib.util
+import json
 import logging
 from copy import deepcopy
 from pathlib import Path
+
 from doc_processor.book_style import STYLE as _DEFAULT_STYLE
 
 logger = logging.getLogger(__name__)

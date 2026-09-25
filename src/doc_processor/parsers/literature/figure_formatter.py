@@ -58,7 +58,7 @@ class FigureFormatter:
         alt = re.sub(r'\s*\n\s*', ' ', (alt_text or caption)).strip()
 
         # Extract Figure number prefix if present: "Figure 1." -> "<strong>Figure 1.</strong>"
-        fig_prefix_m = re.match(r'^(Figure\s+\d+(?:\.\d+)*[a-zA-Z]?)\.?\s*[:\.]?\s*(.*)', caption_clean, re.I)
+        fig_prefix_m = re.match(r'^(Figure\s+\d+(?:\.\d+)*[a-zA-Z]?)\.?\s*[:\.]?\s*(.*)', caption_clean, re.IGNORECASE)
         if fig_prefix_m:
             num_part = fig_prefix_m.group(1).strip()
             rest_part = fig_prefix_m.group(2).strip()
@@ -104,9 +104,9 @@ class FigureFormatter:
             start, end = m.start(), m.end()
 
             # Extract Figure number (e.g. '1', '2', '1.1')
-            num_m = re.search(r'<strong>Figure\s+(\d+(?:\.\d+)*[a-zA-Z]?)[\.:]?', fig_html, re.I)
+            num_m = re.search(r'<strong>Figure\s+(\d+(?:\.\d+)*[a-zA-Z]?)[\.:]?', fig_html, re.IGNORECASE)
             if not num_m:
-                num_m = re.search(r'Figure\s+(\d+(?:\.\d+)*[a-zA-Z]?)', fig_html, re.I)
+                num_m = re.search(r'Figure\s+(\d+(?:\.\d+)*[a-zA-Z]?)', fig_html, re.IGNORECASE)
             fig_id = num_m.group(1) if num_m else ''
 
             pre = text[:start]
@@ -206,7 +206,7 @@ class FigureFormatter:
         # Re-position Tables after the paragraph containing their first in-text mention
         p_tbl = re.compile(
             r'((?:(?:\*\*Table\s+\d+[\.\d]*\*\*|<p\s+class="table-caption">Table\s+\d+[\.\d]*</p>|Table\s+\d+[\.\d]*[^\n]*)\s*\n+)?<table\b[^>]*>.*?</table>(?:\s*\n+<p\s+class="table-notes">.*?</p>)?)',
-            re.DOTALL | re.I
+            re.DOTALL | re.IGNORECASE
         )
         tbl_matches = list(p_tbl.finditer(text))
         if tbl_matches:
@@ -214,7 +214,7 @@ class FigureFormatter:
             for m in reversed(tbl_matches):
                 start, end = m.span()
                 tbl_html = m.group(1).strip()
-                num_m = re.search(r'Table\s+(\d+(?:\.\d+)*)', tbl_html, re.I)
+                num_m = re.search(r'Table\s+(\d+(?:\.\d+)*)', tbl_html, re.IGNORECASE)
                 tbl_id = num_m.group(1) if num_m else ''
 
                 pre = text[:start].rstrip()

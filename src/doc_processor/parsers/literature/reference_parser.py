@@ -29,12 +29,12 @@ class ReferenceParser:
     )
 
     TRAILING_PATTERNS = [
-        re.compile(r'^(Received\s+\w+\s+\d{1,2},\s+\d{4}.*)$', re.M | re.I),
-        re.compile(r'^(Received\s+\d{1,2}\s+\w+\s+\d{4}.*)$', re.M | re.I),
-        re.compile(r'^(Revision received\s+.*)$', re.M | re.I),
-        re.compile(r'^(Accepted\s+.*)$', re.M | re.I),
-        re.compile(r'^(Author Note\b.*)$', re.M | re.I),
-        re.compile(r'^(Appendix\b.*)$', re.M | re.I),
+        re.compile(r'^(Received\s+\w+\s+\d{1,2},\s+\d{4}.*)$', re.MULTILINE | re.IGNORECASE),
+        re.compile(r'^(Received\s+\d{1,2}\s+\w+\s+\d{4}.*)$', re.MULTILINE | re.IGNORECASE),
+        re.compile(r'^(Revision received\s+.*)$', re.MULTILINE | re.IGNORECASE),
+        re.compile(r'^(Accepted\s+.*)$', re.MULTILINE | re.IGNORECASE),
+        re.compile(r'^(Author Note\b.*)$', re.MULTILINE | re.IGNORECASE),
+        re.compile(r'^(Appendix\b.*)$', re.MULTILINE | re.IGNORECASE),
     ]
 
     @classmethod
@@ -45,11 +45,11 @@ class ReferenceParser:
         """
         ref_header_pattern = re.compile(
             r'^(#{1,3}\s*(?:References|REFERENCES|Bibliography|Literature Cited|LITERATURE CITED))\s*$',
-            re.M | re.I
+            re.MULTILINE | re.IGNORECASE
         )
         match = ref_header_pattern.search(full_md)
         if not match:
-            match = re.search(r'^\s*(References|REFERENCES|Bibliography|Literature Cited|LITERATURE CITED)\s*$', full_md, re.M | re.I)
+            match = re.search(r'^\s*(References|REFERENCES|Bibliography|Literature Cited|LITERATURE CITED)\s*$', full_md, re.MULTILINE | re.IGNORECASE)
             if not match:
                 return full_md, "", "", ""
 

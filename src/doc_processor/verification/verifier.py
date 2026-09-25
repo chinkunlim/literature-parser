@@ -11,17 +11,26 @@ import re
 import shutil
 import subprocess
 from pathlib import Path
+
 from doc_processor.config import DEFAULT_DICT_PATH
-from doc_processor.verification.rules import (
-    is_valid_dictionary_word, check_noise_strings, check_heading_ratio,
-    check_content_continuity, check_sentence_completeness,
-    check_numeric_coordinate_noise, check_shattered_math,
-    check_infix_math_in_words, check_heading_prose_intrusion,
-    check_table_banner_integrity, check_heading_density,
-    check_excessive_hard_wraps, check_latex_and_symbol_integrity,
-    check_table_column_integrity, check_unescaped_special_chars,
-)
 from doc_processor.verification.ollama_verifier import OllamaVerifier
+from doc_processor.verification.rules import (
+    check_content_continuity,
+    check_excessive_hard_wraps,
+    check_heading_density,
+    check_heading_prose_intrusion,
+    check_heading_ratio,
+    check_infix_math_in_words,
+    check_latex_and_symbol_integrity,
+    check_noise_strings,
+    check_numeric_coordinate_noise,
+    check_sentence_completeness,
+    check_shattered_math,
+    check_table_banner_integrity,
+    check_table_column_integrity,
+    check_unescaped_special_chars,
+    is_valid_dictionary_word,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -355,8 +364,8 @@ class AccuracyVerifier:
 
 
 def main() -> None:
-    import sys
     import argparse
+    import sys
     parser = argparse.ArgumentParser(description="Verify content accuracy and quality of extracted textbook chapters.")
     parser.add_argument('--chapter-dir', '-c', help="Path to chapter output directory")
     parser.add_argument('--book-dir', '-b', help="Path to book output directory (containing chapters/)")

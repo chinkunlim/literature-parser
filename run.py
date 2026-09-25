@@ -68,7 +68,10 @@ def cmd_doctor(args):
     # 1. Hardware Check
     hw = check_hardware_safety(ignore_battery=getattr(args, "ignore_battery", False))
     m = hw["metrics"]
-    print(f"• 記憶體狀態 (RAM)  : {m['ram_available_gb']} GB 可用 (門檻: ≥ 4.0 GB) -> {'✅ [PASS]' if m['ram_available_gb'] >= 4.0 else '⚠️ [WARN: 低於門檻]'}")
+    effective_min_ram = m.get('effective_min_ram_gb', 2.0 if not m.get('is_battery', False) else 4.0)
+    ram_status = '✅ [PASS]' if m['ram_available_gb'] >= effective_min_ram else '⚠️ [WARN: 低於門檻]'
+    mode_str = "AC 電源模式" if not m.get("is_battery", False) else "電池模式"
+    print(f"• 記憶體狀態 (RAM)  : {m['ram_available_gb']} GB 可用 (動態門檻: ≥ {effective_min_ram:.1f} GB, {mode_str}) -> {ram_status}")
     print(f"• 硬碟剩餘空間 (SSD): {m['disk_free_gb']} GB 剩餘 (門檻: ≥ 10.0 GB) -> {'✅ [PASS]' if m['disk_free_gb'] >= 10.0 else '🛑 [FAIL: 空間不足]'}")
     print(f"• 電源供應狀態      : {m['power_status']} -> {'✅ [PASS]' if not m['is_battery'] or m['battery_percent'] >= 40 else '⚠️ [WARN: 電池電量偏低]'}")
     print(f"• Apple MPS 晶片加速: {'✅ [PASS: 支援硬體加速]' if m['mps_acceleration'] else 'ℹ️ [INFO: CPU 模式]'}")
@@ -1555,6 +1558,120 @@ def cmd_fix(args):
         print(f"• 執行指令範例      : uv run python run.py fix apply {recipe.recipe_id} <target_file>")
         print("=" * 65 + "\n")
 
+    elif action == "review":
+        staged = FixPlaybook.list_staged_recipes()
+        print("\n" + "=" * 70)
+        print("🧪 [FIX PLAYBOOK - STAGED] 待審核 AI 自動生成修復配方")
+        print("=" * 70)
+        if not staged:
+            print("目前沒有任何待審核的修復配方（暫存區為空）。")
+            print("若要由 Ollama 自動生成新配方，請執行: uv run python run.py fix synthesize <file> '<issue>'")
+        else:
+            print(f"{'配方 ID (recipe_id)':34s} {'生成時間':20s} {'配方名稱'}")
+            print("-" * 70)
+            for item in staged:
+                meta = item.get("metadata", {})
+                r_id = item.get("recipe_id", "unknown")
+                created = item.get("created_at", "")
+                name = meta.get("name", r_id)
+                print(f"{r_id:34s} {created:20s} {name}")
+                print(f"  ↳ 描述: {meta.get('description', '')}")
+                print(f"  ↳ 症狀: {', '.join(meta.get('symptoms', [])[:2])}")
+                print(f"  ↳ 單元測試通過數: {meta.get('test_cases_run', 0)} 例")
+            print("-" * 70)
+            print("💡 審核工作流指令:")
+            print("  • 測試試跑: uv run python run.py fix test <recipe_id>")
+            print("  • 批准整合: uv run python run.py fix promote <recipe_id>")
+            print("  • 駁回刪除: uv run python run.py fix reject <recipe_id>")
+        print("=" * 70 + "\n")
+
+    elif action == "test":
+        recipe_id = getattr(args, "recipe_id", None)
+        if not recipe_id:
+            print("🛑 錯誤：請提供待審核配方 ID。")
+            sys.exit(1)
+        print(f"\n🧪 [FIX PLAYBOOK] 正在沙盒中測試待審核配方 '{recipe_id}'...")
+        res = FixPlaybook.test_staged_recipe(recipe_id)
+        if res["success"]:
+            details = res.get("details", {})
+            print(f"✅ 沙盒測試通過！共執行 {details.get('test_cases_run', 0)} 個測試案例。")
+            for c in details.get("cases", []):
+                print(f"  • Case #{c['case']}: 套用 {c['fixes']} 處修復 (耗時 {c['elapsed_ms']} ms)")
+            print(f"\n💡 若確認無誤，可執行: uv run python run.py fix promote {recipe_id}\n")
+        else:
+            print(f"🛑 測試失敗: {res.get('error') or res.get('details', {}).get('error')}\n")
+            sys.exit(1)
+
+    elif action == "promote":
+        recipe_id = getattr(args, "recipe_id", None)
+        if not recipe_id:
+            print("🛑 錯誤：請提供待審核配方 ID。")
+            sys.exit(1)
+        print(f"\n🚀 [FIX PLAYBOOK] 正在批准並升級配方 '{recipe_id}' 至正式手冊...")
+        ok, msg = FixPlaybook.promote_staged_recipe(recipe_id)
+        if ok:
+            print(f"✅ {msg}")
+            print(f"🎉 配方已正式加入全域修復庫，可直接使用: uv run python run.py fix apply {recipe_id} <target_file>\n")
+        else:
+            print(f"🛑 升級失敗: {msg}\n")
+            sys.exit(1)
+
+    elif action == "reject":
+        recipe_id = getattr(args, "recipe_id", None)
+        if not recipe_id:
+            print("🛑 錯誤：請提供待審核配方 ID。")
+            sys.exit(1)
+        print(f"\n🗑️ [FIX PLAYBOOK] 正在駁回並刪除暫存配方 '{recipe_id}'...")
+        ok, msg = FixPlaybook.reject_staged_recipe(recipe_id)
+        if ok:
+            print(f"✅ {msg}\n")
+        else:
+            print(f"🛑 刪除失敗: {msg}\n")
+            sys.exit(1)
+
+    elif action == "synthesize":
+        from doc_processor.fixes.synthesizer import OllamaRecipeSynthesizer
+        target = Path(args.target) if getattr(args, "target", None) else None
+        issue = getattr(args, "issue", "")
+        id_hint = getattr(args, "id_hint", None)
+
+        if not target or not target.exists():
+            print(f"🛑 錯誤：找不到指定之目標檔案 '{target}'。")
+            sys.exit(1)
+        if not issue:
+            print("🛑 錯誤：請提供欲解決之問題描述。")
+            sys.exit(1)
+
+        print(f"\n🤖 [OLLAMA SYNTHESIZER] 正在分析文檔瑕疵並由 Ollama 自動撰寫修復程式...")
+        print(f"  • 目標檔案: {target.name}")
+        print(f"  • 問題描述: {issue}")
+
+        excerpt = target.read_text(encoding="utf-8", errors="ignore")[:2500]
+        synth = OllamaRecipeSynthesizer()
+        res = synth.synthesize_recipe(
+            problem_description=issue,
+            sample_excerpt=excerpt,
+            recipe_id_hint=id_hint,
+        )
+
+        if res.success:
+            print(f"\n🎉 [修復程式生成成功！]")
+            print(f"  • 配方 ID  : {res.recipe_id}")
+            print(f"  • 配方名稱: {res.recipe_name}")
+            print(f"  • 暫存檔案: {res.file_path}")
+            print(f"  • 沙盒測試: {res.test_results.get('test_cases_run', 0)} 例 100% 通過")
+            print(f"  • 調用模型: {res.model_used}")
+            print(f"\n💡 下一步工作流:")
+            print(f"  1. 檢視暫存清單: uv run python run.py fix review")
+            print(f"  2. 試跑測試用例: uv run python run.py fix test {res.recipe_id}")
+            print(f"  3. 批准升級正式: uv run python run.py fix promote {res.recipe_id}")
+            print(f"  4. 駁回並刪除  : uv run python run.py fix reject {res.recipe_id}\n")
+        else:
+            print(f"\n🛑 [生成失敗]: {res.error}")
+            if res.code:
+                print(f"產生的代碼片段:\n```python\n{res.code[:500]}\n```")
+            sys.exit(1)
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -1578,6 +1695,28 @@ def main():
     p_fix_info = p_fix_sub.add_parser("info", help="查看特定修復配方詳細資訊")
     p_fix_info.add_argument("recipe_id", help="配方唯一識別碼")
     p_fix_info.set_defaults(func=cmd_fix)
+
+    p_fix_review = p_fix_sub.add_parser("review", help="檢閱所有待審核的 Ollama 生成修復配方")
+    p_fix_review.set_defaults(func=cmd_fix)
+
+    p_fix_test = p_fix_sub.add_parser("test", help="執行待審核配方的單元測試與沙盒試跑")
+    p_fix_test.add_argument("recipe_id", help="待審核配方 ID")
+    p_fix_test.set_defaults(func=cmd_fix)
+
+    p_fix_promote = p_fix_sub.add_parser("promote", help="批准並將待審核配方升級整合進正式 Playbook")
+    p_fix_promote.add_argument("recipe_id", help="待審核配方 ID")
+    p_fix_promote.set_defaults(func=cmd_fix)
+
+    p_fix_reject = p_fix_sub.add_parser("reject", help="駁回並刪除待審核配方")
+    p_fix_reject.add_argument("recipe_id", help="待審核配方 ID")
+    p_fix_reject.set_defaults(func=cmd_fix)
+
+    p_fix_synth = p_fix_sub.add_parser("synthesize", help="調用 Ollama 針對特定瑕疵自動撰寫 Python 修復程式並隔離暫存")
+    p_fix_synth.add_argument("target", help="目標瑕疵檔案路徑")
+    p_fix_synth.add_argument("issue", help="問題描述 (例如 '去除特定殘留字串')")
+    p_fix_synth.add_argument("--id-hint", default=None, help="可選：建議的配方 ID")
+    p_fix_synth.set_defaults(func=cmd_fix)
+
     p_fix.set_defaults(func=cmd_fix)
 
     # audit

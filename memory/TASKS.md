@@ -6,6 +6,12 @@
 
 ## 🏃 當前 Sprint (v1.0.0-rc1 專案治理與守衛上線)
 
+- [x] [2026-09-25] 全專案程式碼最優化、智能動態硬體守衛與 Ollama 代碼修復合成器 (`OllamaRecipeSynthesizer`) 實裝：
+  - 徹底釋放 Ollama 潛能：修復 macOS `vm_stat` 僅計算 free pages 未涵蓋 inactive/purgeable pages 之缺陷，並實裝智能電源感知動態閾值（AC 插電下 RAM 門檻放寬至 $\ge$ 2.0GB，非 critical memory pressure 放行），解決先前 3.12GB 可用 RAM 導致的靜默攔截。
+  - 實作 Ollama 程式修復合成器 (`src/doc_processor/fixes/synthesizer.py`)：當遭遇未處理排版瑕疵時，允許由 Ollama 自動撰寫獨立 Python 修復函數、正則轉換與單元測試。
+  - 實作 AST 安全靜態沙盒 (`RecipeSafetyValidator`) 與執行隔離沙盒，自動檢驗純函數特性，阻斷危險呼叫，並具備自我修復重試循環（Auto-Refinement Retry Loop）。
+  - 建立暫存隔離手冊區 (`src/doc_processor/fixes/staged/`) 與正式手冊庫 (`src/doc_processor/fixes/promoted/`)，配備完整 CLI 審核工作流：`uv run python run.py fix [review|test|promote|reject|synthesize]`。
+  - 新增 `tests/test_v41_ollama_synthesizer.py`，全套 229/229 單元測試 100% 通過；全量 10 篇文獻全數 PASS。
 - [x] [2026-09-25] 實裝專屬修復手冊庫 (`FixPlaybook`) 與零容忍防呆門禁 (`QualityInvariantGuard` 避免有錯還報對)：
   - 建立專屬修復手冊庫 (`src/doc_processor/fixes/playbook.py`)，內建 8 大專用修復配方（CUP 側欄清理、Elsevier 粘連參考文獻拆分、無括號年份引用條目重構、建議清單降級、孤立頁碼清理、KaTeX 貨幣轉義、OCR 統計符號修復、NIH 水印過濾）
   - 新增完整 CLI 工具 `uv run python run.py fix [list|apply <id> <file>|info <id>]`，支援隨時按需調用特定修復程式

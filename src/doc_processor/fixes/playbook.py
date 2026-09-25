@@ -16,7 +16,7 @@ import logging
 import re
 from dataclasses import dataclass, field, asdict
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Callable
+from typing import Any, Dict, List, Optional, Tuple, Callable
 
 logger = logging.getLogger(__name__)
 
@@ -36,6 +36,9 @@ class FixRecipe:
 
 class FixPlaybook:
     """Registry and execution engine for specialized document repair recipes."""
+
+    STAGED_DIR: Path = Path(__file__).resolve().parent / "staged"
+    PROMOTED_DIR: Path = Path(__file__).resolve().parent / "promoted"
 
     _recipes: Dict[str, Tuple[FixRecipe, Callable[[str], Tuple[str, int]]]] = {}
 
@@ -122,6 +125,141 @@ class FixPlaybook:
                 return 0, True, f"Recipe '{recipe_id}' executed cleanly, but no symptoms were present."
         except Exception as e:
             return 0, False, f"I/O Error: {e}"
+
+    @classmethod
+    def list_staged_recipes(cls) -> List[Dict[str, Any]]:
+        """Returns all currently staged recipes waiting for review."""
+        staged_dir = cls.STAGED_DIR
+        if not staged_dir.exists():
+            return []
+        results = []
+        for json_file in sorted(staged_dir.glob("*.json")):
+            try:
+                data = json.loads(json_file.read_text(encoding="utf-8"))
+                py_file = staged_dir / f"{data['recipe_id']}.py"
+                data["has_py"] = py_file.exists()
+                results.append(data)
+            except Exception as e:
+                logger.warning("Error reading staged metadata %s: %s", json_file, e)
+        return results
+
+    @classmethod
+    def get_staged_recipe_code(cls, recipe_id: str) -> Optional[str]:
+        """Reads the source code of a staged recipe."""
+        staged_dir = cls.STAGED_DIR
+        py_file = staged_dir / f"{recipe_id}.py"
+        if py_file.exists():
+            return py_file.read_text(encoding="utf-8")
+        return None
+
+    @classmethod
+    def test_staged_recipe(cls, recipe_id: str) -> Dict[str, Any]:
+        """Runs the self-contained test cases of a staged recipe."""
+        code = cls.get_staged_recipe_code(recipe_id)
+        if not code:
+            return {"success": False, "error": f"Staged recipe '{recipe_id}' not found."}
+        from doc_processor.fixes.synthesizer import OllamaRecipeSynthesizer
+        synth = OllamaRecipeSynthesizer()
+        passed, info = synth._execute_sandbox_tests(code)
+        return {"success": passed, "details": info}
+
+    @classmethod
+    def promote_staged_recipe(cls, recipe_id: str) -> Tuple[bool, str]:
+        """
+        Promotes a staged recipe into the official promoted/ directory and registers it.
+        """
+        staged_dir = cls.STAGED_DIR
+        promoted_dir = cls.PROMOTED_DIR
+        promoted_dir.mkdir(parents=True, exist_ok=True)
+
+        py_file = staged_dir / f"{recipe_id}.py"
+        json_file = staged_dir / f"{recipe_id}.json"
+
+        if not py_file.exists():
+            return False, f"Staged recipe script '{recipe_id}.py' not found."
+
+        # Verify test cases pass before promoting
+        test_res = cls.test_staged_recipe(recipe_id)
+        if not test_res["success"]:
+            err_detail = test_res.get("details", {}).get("error", "Unknown test failure")
+            return False, f"Cannot promote recipe '{recipe_id}': sandbox tests failed ({err_detail})."
+
+        target_py = promoted_dir / f"{recipe_id}.py"
+        target_json = promoted_dir / f"{recipe_id}.json"
+
+        target_py.write_text(py_file.read_text(encoding="utf-8"), encoding="utf-8")
+        if json_file.exists():
+            data = json.loads(json_file.read_text(encoding="utf-8"))
+            data["status"] = "promoted"
+            target_json.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+            json_file.unlink()
+        py_file.unlink()
+
+        # Register immediately into playbook
+        cls._load_and_register_module(target_py)
+        return True, f"Successfully promoted '{recipe_id}' to active playbook."
+
+    @classmethod
+    def reject_staged_recipe(cls, recipe_id: str) -> Tuple[bool, str]:
+        """Rejects and deletes a staged recipe."""
+        staged_dir = cls.STAGED_DIR
+        py_file = staged_dir / f"{recipe_id}.py"
+        json_file = staged_dir / f"{recipe_id}.json"
+
+        deleted = False
+        if py_file.exists():
+            py_file.unlink()
+            deleted = True
+        if json_file.exists():
+            json_file.unlink()
+            deleted = True
+
+        if deleted:
+            return True, f"Rejected and removed staged recipe '{recipe_id}'."
+        return False, f"Staged recipe '{recipe_id}' not found."
+
+    @classmethod
+    def _load_and_register_module(cls, py_path: Path) -> bool:
+        """Dynamically loads a promoted recipe module and registers it into FixPlaybook."""
+        try:
+            import importlib.util
+            spec = importlib.util.spec_from_file_location(py_path.stem, str(py_path))
+            if not spec or not spec.loader:
+                return False
+            mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mod)
+
+            meta = getattr(mod, "RECIPE_METADATA", None)
+            repair_fn = getattr(mod, "repair", None)
+
+            if isinstance(meta, dict) and callable(repair_fn):
+                recipe = FixRecipe(
+                    recipe_id=meta.get("recipe_id", py_path.stem),
+                    name=meta.get("name", py_path.stem),
+                    description=meta.get("description", ""),
+                    symptoms=meta.get("symptoms", []),
+                    archetype=meta.get("archetype", "literature"),
+                    category=meta.get("category", "format"),
+                )
+                cls.register(recipe, repair_fn)
+                return True
+        except Exception as e:
+            logger.error("Failed to load promoted recipe '%s': %s", py_path.name, e)
+        return False
+
+    @classmethod
+    def load_all_promoted_recipes(cls) -> int:
+        """Loads and registers all approved recipes from promoted/ directory."""
+        promoted_dir = Path(__file__).resolve().parent / "promoted"
+        if not promoted_dir.exists():
+            return 0
+        count = 0
+        for py_file in promoted_dir.glob("*.py"):
+            if py_file.name.startswith("__"):
+                continue
+            if cls._load_and_register_module(py_file):
+                count += 1
+        return count
 
 
 # =============================================================================
@@ -370,3 +508,6 @@ FixPlaybook.register(
     ),
     _handle_cup_sidebar_cleaning
 )
+
+# Automatically register any user-promoted custom recipes
+FixPlaybook.load_all_promoted_recipes()

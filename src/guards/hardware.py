@@ -17,7 +17,9 @@ from src.utils.logger import get_diagnostic_logger
 
 logger = get_diagnostic_logger("HardwareGuard")
 
-MIN_RAM_GB = 4.0
+MIN_RAM_GB_BATTERY = 4.0
+MIN_RAM_GB_AC = 2.0
+MIN_RAM_GB = MIN_RAM_GB_BATTERY  # legacy fallback
 MIN_DISK_GB = 10.0
 MIN_BATTERY_PERCENT = 40
 
@@ -36,6 +38,8 @@ def get_available_ram_gb() -> float:
             page_size = 4096
             free_pages = 0
             speculative_pages = 0
+            inactive_pages = 0
+            purgeable_pages = 0
             for line in out.splitlines():
                 if "page size of" in line:
                     parts = line.split()
@@ -47,7 +51,12 @@ def get_available_ram_gb() -> float:
                     free_pages = int(line.split(":")[1].strip().rstrip("."))
                 elif "Pages speculative:" in line:
                     speculative_pages = int(line.split(":")[1].strip().rstrip("."))
-            return ((free_pages + speculative_pages) * page_size) / (1024 ** 3)
+                elif "Pages inactive:" in line:
+                    inactive_pages = int(line.split(":")[1].strip().rstrip("."))
+                elif "Pages purgeable:" in line:
+                    purgeable_pages = int(line.split(":")[1].strip().rstrip("."))
+            total_available_pages = free_pages + speculative_pages + inactive_pages + purgeable_pages
+            return (total_available_pages * page_size) / (1024 ** 3)
         except Exception:
             return 8.0  # safe assumption if cannot detect
     return 8.0
@@ -95,9 +104,25 @@ def is_mps_available() -> bool:
         return False
 
 
+def get_macos_memory_pressure_level() -> int:
+    """
+    Returns macOS memory pressure level:
+    1 = Normal, 2 = Warning, 4 = Critical.
+    Returns 1 if non-Darwin or if detection fails.
+    """
+    if platform.system() == "Darwin":
+        try:
+            out = subprocess.check_output(["sysctl", "-n", "kern.memorystatus_vm_pressure_level"], text=True).strip()
+            if out.isdigit():
+                return int(out)
+        except Exception:
+            pass
+    return 1
+
+
 def check_hardware_safety(ignore_battery: bool = False) -> dict:
     """
-    Comprehensive pre-flight evaluation.
+    Comprehensive pre-flight evaluation with dynamic power-aware RAM thresholds.
     Returns:
         dict: {'safe_for_heavy_llm': bool, 'safe_for_batch_ocr': bool, 'metrics': dict, 'reasons': list}
     """
@@ -105,15 +130,27 @@ def check_hardware_safety(ignore_battery: bool = False) -> dict:
     disk_gb = get_disk_free_gb()
     batt = get_battery_status()
     mps = is_mps_available()
+    pressure_level = get_macos_memory_pressure_level()
 
     reasons = []
     safe_for_heavy_llm = True
     safe_for_batch_ocr = True
 
+    # Dynamic RAM threshold based on power state and memory pressure
+    is_ac = not batt["is_battery"]
+    # In AC mode, allow down to 2.0 GB as long as memory pressure is not critical (< 4)
+    effective_min_ram = MIN_RAM_GB_AC if (is_ac and pressure_level < 4) else MIN_RAM_GB_BATTERY
+
     # 1. RAM check
-    if ram_gb < MIN_RAM_GB:
+    if ram_gb < effective_min_ram:
         safe_for_heavy_llm = False
-        reasons.append(f"Available RAM ({ram_gb:.2f} GB) is lower than safe threshold ({MIN_RAM_GB} GB).")
+        reasons.append(
+            f"Available RAM ({ram_gb:.2f} GB) is lower than dynamic threshold "
+            f"({effective_min_ram:.1f} GB, Mode: {'AC Power' if is_ac else 'Battery'})."
+        )
+    elif pressure_level >= 4:
+        safe_for_heavy_llm = False
+        reasons.append(f"macOS memory pressure level is critical ({pressure_level}).")
 
     # 2. Disk check
     if disk_gb < MIN_DISK_GB:
@@ -131,6 +168,8 @@ def check_hardware_safety(ignore_battery: bool = False) -> dict:
         "safe_for_batch_ocr": safe_for_batch_ocr,
         "metrics": {
             "ram_available_gb": round(ram_gb, 2),
+            "effective_min_ram_gb": effective_min_ram,
+            "memory_pressure_level": pressure_level,
             "disk_free_gb": round(disk_gb, 1),
             "power_status": batt["description"],
             "is_battery": batt["is_battery"],

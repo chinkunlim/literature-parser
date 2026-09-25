@@ -54,14 +54,14 @@ books-project/
 │   ├── needs_review/               # 🚨 [人機隔離區] 遇疑難公式或壞頁自動存於此，不卡死主程序
 │   └── state/                      # 💾 斷點續傳快照、TOC 預覽與 Dashboard 狀態
 │
-├── tests/                          # 🧪 [自動化測試體系] (219 個測試全部 PASS)
+├── tests/                          # 🧪 [自動化測試體系] (229 個測試全部 PASS)
 │   ├── __init__.py                 # 動態注入 sys.path，確保任何環境直跑 unittest/pytest
-│   └── test_*.py                   # 26 個測試檔案，平坦結構於 tests/ 頂層
-│                                   # (含 test_v39_format_auditor.py, test_v40_fix_playbook_and_invariants.py)
+│   └── test_*.py                   # 27 個測試檔案，平坦結構於 tests/ 頂層
+│                                   # (含 test_v39_format_auditor.py, test_v40_fix_playbook_and_invariants.py, test_v41_ollama_synthesizer.py)
 │
 ├── src/                            # 💻 [業務核心原始碼] (Clean Architecture)
 │   ├── guards/                     # 🛡️ 守衛防線
-│   │   ├── hardware.py             # RAM/電池/SSD/MPS 檢測防線
+│   │   ├── hardware.py             # RAM/電池/SSD/MPS 檢測防線 (支援動態電源感知與 macOS memory pressure)
 │   │   ├── ollama_guard.py         # Ollama 連線探活、自動喚醒與優雅降級
 │   │   ├── prompts.py              # 📝 集中預設的固定提示詞 (LaTeX 修復、Manifest 校驗、論文雙欄)
 │   │   └── validator.py            # 輸入 JSON 比對與輸出異常自動喚醒 Ollama (信度 < 0.80 自動隔離)
@@ -77,7 +77,11 @@ books-project/
 │       ├── parsers/                # 解析層 (PDF, EPUB, LaTeX, 雙欄版面)
 │       │   └── literature/         # 🎯 學術文獻解析子模組 (metadata_extractor, imrad_resolver, figure_formatter, reference_parser)
 │       ├── verification/           # 檢驗層 (format_auditor 全維度格式稽核器, OllamaVerifier, rules, OllamaHealer)
-│       ├── fixes/                  # 🔧 專案修復手冊 (playbook.py 8 大專用排版修復配方庫)
+│       ├── fixes/                  # 🔧 專案修復手冊
+│       │   ├── playbook.py         # 8 大專用排版修復配方庫與審核調度引擎
+│       │   ├── synthesizer.py      # 🤖 Ollama 自動代碼修復合成器 (AST 靜態沙盒與自我修復循環)
+│       │   ├── staged/             # 🧪 待審核 AI 自動生成修復配方隔離區 (Pending Review)
+│       │   └── promoted/           # 🚀 已核准並轉正之正式修復配方庫
 │       ├── utils/                  # 輔助模組 (obsidian_linker 雙鏈與索引生成)
 │       └── core/                   # 核心調度 (orchestrator, global_state, invariants 零容忍防呆門禁, splitter)
 │

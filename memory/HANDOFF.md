@@ -5,20 +5,22 @@
 
 ---
 
-### 🕒 最新交接時間：2026-09-25 08:55
+### 🕒 最新交接時間：2026-09-25 12:05
  
 #### 1. 剛剛完成了什麼？ (Session Accomplishments)
-- **實裝專屬修復手冊庫 (`FixPlaybook`) 與零容忍防呆門禁 (`QualityInvariantGuard` 避免有錯還報對)**：
-  1. **專門修復手冊知識庫 (`src/doc_processor/fixes/playbook.py`)**：
-     - 將無法直接通用的特定修復邏輯收錄為 8 大專用修復配方（CUP 側欄清理、Elsevier 粘連參考文獻拆分、無括號年份引用條目重構、建議清單降級、孤立頁碼清理、KaTeX 貨幣轉義、OCR 統計符號修復、NIH 水印過濾）。
-     - 提供獨立 CLI 工具：`uv run python run.py fix list`（檢視清單）、`uv run python run.py fix apply <id> <file>`（手動指定修復）、`uv run python run.py fix info <id>`（檢視配方詳情）。
-     - 於 `run.py audit` 中實裝「配方智能推薦」與 `--fix` 自動症狀匹配修復，形成自動化閉環。
-  2. **零容忍防呆門禁 (`QualityInvariantGuard.verify_hard_invariants`)**：
-     - 定義 7 大核心不變量（標題非空、摘要存在、參考文獻獨立、LaTeX 公式閉合、無 OCR 表格洩漏、無孤立頁碼、非空白檔案）。
-     - 違背任一項強制判定 FAIL 並標紅，管線嚴格禁止輸出「100% verified」，自動隔離至 `data/needs_review/`，徹底杜絕「有錯還報對」。
-  3. **全套測試與文獻稽核 100% 通過**：
-     - 新增 `tests/test_v40_fix_playbook_and_invariants.py`，全套 219/219 單元測試 100% 通過。
-     - 全量 10 篇學術文獻稽核全數合格，並能智能推薦匹配之手冊修復指令。
+- **全專案程式最優化、智能動態硬體守衛與 Ollama 代碼修復合成器 (`OllamaRecipeSynthesizer`) 實裝**：
+  1. **釋放 Ollama 潛能與硬體動態閾值**：
+     - 修復 macOS `vm_stat` 解析僅包含 free pages 忽視 5.7GB inactive/purgeable 記憶體之問題，準確辨識系統有 >6.3GB 可用記憶體。
+     - 實施電源與記憶體壓力感知動態閾值（AC 插電下 RAM 門檻放寬至 $\ge$ 2.0GB，非 critical memory pressure 放行），解決先前 3.12GB 可用 RAM 導致的靜默攔截。
+  2. **Ollama 程式修復合成器 (`src/doc_processor/fixes/synthesizer.py`)**：
+     - 允許 Ollama (`qwen2.5-coder:7b`) 針對未知或特定排版瑕疵自動編寫純函數 Python 修復函數、正則轉換與單元測試。
+     - 實裝 AST 靜態安全校驗器 (`RecipeSafetyValidator`) 與沙盒執行器，嚴格阻斷危險呼叫，並提供自動自我修正重試循環（Auto-Refinement Loop）。
+  3. **暫存隔離手冊區與完整 CLI 審核工作流**：
+     - 建立 `src/doc_processor/fixes/staged/` 與 `src/doc_processor/fixes/promoted/` 雙層架構。
+     - 提供 CLI 工具：`run.py fix review`（檢視暫存）、`run.py fix test <id>`（沙盒試跑）、`run.py fix promote <id>`（升級正式）、`run.py fix reject <id>`（駁回刪除）、`run.py fix synthesize <file> '<issue>'`（自動合成修復程式）。
+  4. **全套測試與文獻稽核 100% 通過**：
+     - 新增 `tests/test_v41_ollama_synthesizer.py`，全套 229/229 單元測試 100% 通過。
+     - 全量 10 篇學術文獻稽核全數合格。
 
 #### 2. 目前專案狀態與代碼位置
 - 分支：`main`

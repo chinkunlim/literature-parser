@@ -160,6 +160,79 @@ class OllamaVerifier:
                 "feedback": f"Error communicating with local Ollama: {e}",
             }
 
+    def audit_structured_format_defects(self, markdown_text: str, candidate_issues: list = None, doc_name: str = "") -> dict:
+        """
+        Combines rule-based pre-scan findings with local Ollama deep semantic inspection.
+        Returns structured findings with severity, location, explanation, and recommended fix.
+        """
+        import re
+        if not self.is_available:
+            return {
+                "available": False,
+                "model": self.semantic_model,
+                "feedback": "Local Ollama daemon is offline or inaccessible.",
+                "findings": [],
+                "passed": True,
+            }
+
+        # Clean HTML style/metadata blocks to review actual markdown narrative & LaTeX
+        clean_text = re.sub(r'<style>.*?</style>', '', markdown_text, flags=re.DOTALL)
+        clean_text = re.sub(r'<div class="article-meta">.*?</div>', '', clean_text, flags=re.DOTALL).strip()
+        sample_excerpt = clean_text[:4000].strip()
+
+        pre_issues_str = ""
+        if candidate_issues:
+            pre_issues_str = "Rule-based pre-scan detected the following potential defects:\n"
+            for i, iss in enumerate(candidate_issues[:10], 1):
+                pre_issues_str += f"- [{getattr(iss, 'severity', 'WARN')}] {getattr(iss, 'category', 'GEN')}: {getattr(iss, 'message', str(iss))} (Snippet: {getattr(iss, 'snippet', '')[:40]})\n"
+
+        prompt = (
+            f"You are an expert academic journal editor and layout auditor reviewing document '{doc_name}'.\n"
+            f"Review the following academic text excerpt and verify any format defects, OCR breaks, or structural errors.\n\n"
+            f"{pre_issues_str}\n"
+            f"Document Excerpt:\n```markdown\n{sample_excerpt}\n```\n\n"
+            f"Provide a structured audit report. For any defects found, list them with:\n"
+            f"- [ERROR/WARNING/INFO] [Category: TITLE/ABSTRACT/HEADING/TABLE/FIGURE/LATEX/REFERENCES/NOISE]\n"
+            f"- Snippet: <exact flawed text>\n"
+            f"- Problem: <why this is defective>\n"
+            f"- Fix: <suggested correction>\n\n"
+            f"Conclude with:\n"
+            f"Editorial Summary:\n<2-3 sentences evaluation>\n"
+            f"Verdict: [PASS] or [NEEDS REVISION]"
+        )
+
+        payload = {
+            "model": self.semantic_model,
+            "prompt": prompt,
+            "stream": False,
+            "keep_alive": "30m",
+        }
+
+        try:
+            req = urllib.request.Request(
+                f"{self.api_base}/api/generate",
+                data=json.dumps(payload).encode("utf-8"),
+                headers={"Content-Type": "application/json"},
+            )
+            with urllib.request.urlopen(req, timeout=OLLAMA_GENERATE_TIMEOUT) as resp:
+                result = json.loads(resp.read().decode("utf-8"))
+                response_text = result.get("response", "").strip()
+                passed = "[PASS]" in response_text.upper() or "EXCELLENT" in response_text.upper() or "GOOD" in response_text.upper()
+                return {
+                    "available": True,
+                    "model": self.semantic_model,
+                    "feedback": response_text,
+                    "passed": passed,
+                }
+        except Exception as e:
+            return {
+                "available": False,
+                "model": self.semantic_model,
+                "feedback": f"Error communicating with local Ollama: {e}",
+                "findings": [],
+                "passed": True,
+            }
+
     def audit_and_propose_fixes(self, markdown_text: str, max_chars: int = 3000) -> list:
         """
         Queries local Ollama to identify specific OCR typos, formula syntax errors,

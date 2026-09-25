@@ -5,29 +5,25 @@
 
 ---
 
-### 🕒 最新交接時間：2026-09-25 08:42
+### 🕒 最新交接時間：2026-09-25 08:48
  
 #### 1. 剛剛完成了什麼？ (Session Accomplishments)
-- **全面巡檢與修復全量 10 篇學術文獻版面瑕疵 (10 Literature Documents Full Verification & Audit)**：
-  1. **劍橋大學出版社 (CUP) 不對稱側邊欄分離 (`DigitalPDFParser.has_p1_side_rail` & `p1_rail_split_x`)**：
-     - 檢測首頁極窄側邊欄（寬度 $< 33\%$），動態將分欄分割線置於側邊欄右側邊界 (`split_x = 0.33 pw`)，徹底解決 `11 Pliatsikas` 首頁左側邊欄期刊/作者資訊與右側主內文水平粘連交錯之問題。
-     - 頁眉過濾擴充 Cambridge UP 標識與網址，成功識別並萃取出標準 Markdown 標題 `# Understanding structural plasticity in the bilingual brain: The Dynamic Restructuring Model` 與 `## Abstract`。
-  2. **論文標題層級相容與跨行縫合 (`LiteraturePipeline` & `LiteratureMetadataExtractor`)**：
-     - 將 H1 標題提升正則擴展為 `#{1,3}`，修復 `Universal_consciousness` 輸出空白標題問題。
-     - 支援跨行長標題合併（如 `05 Hartshorne` 之 `Evidence from` + `2/3 million English speakers`），並確保 H1 正式標題優先於快速元數據抽取候選。
-  3. **參考文獻格式相容與粘連分離 (`IMRADResolver` & `ReferenceParser`)**：
-     - 新增支援 Annual Reviews 之 `LITERATURE CITED` / `Literature Cited` 分隔符識別。
-     - 預先拆分粘連在致謝末尾之 `**References**`（如 Elsevier/NIH 論文的 `award). **References** FirstAuthor...`），解除內聯粘連並獨立為標準 `## References` 清單。
-     - 支援無括號年代與分號結尾之引用條目（如 `Abrahamsson N. 2012;`）。
-  4. **指引建議清單降級處理 (`DigitalPDFParser.is_section_num`)**：
-     - 針對 APA 臨床實踐指引（如 `3 Psychotherapy`）中的 28 條建議，自動識別並保留為有序列表條目，避免膨脹為 28 個 `## ` 標題，TOC 成功精簡至標準 5 個核心區塊。
-  5. **10 篇文獻全量自動化審計與單元測試 100% 通過**：
-     - 197 項單元測試 100% 通過。
-     - 10 篇文獻重跑並全數通過版面稽核檢查（`04 Bialystok`, `05 Hartshorne`, `08 Kroll`, `11 Pliatsikas`, `115319`, `2002-01194-001`, `2008-17521-013`, `3 Psychotherapy`, `Journal of Adolescence`, `Universal_consciousness`）。
+- **實裝專屬排版與格式稽核器 (`FormatAuditor`) 與 Ollama 結構化核對整合**：
+  1. **專門格式稽核器 (`src/doc_processor/verification/format_auditor.py`)**：
+     - 將除錯排查機制正式納入專案核心架構，涵蓋標題完整性、摘要提取、IMRAD 標題密度、圖表語義定位與註釋隔離、LaTeX/統計符號、參考文獻格式、孤立頁碼/頁眉過濾等 8 大排版維度。
+     - 支援產生詳細 Markdown 報表 (`audit_report.md`)、JSON 結構化數據 (`audit_report.json`) 與終端診斷表格。
+  2. **增強 Ollama 結構化核驗 (`OllamaVerifier.audit_structured_format_defects`)**：
+     - 規則預檢結合本地大模型深度語義複核，輸出包含問題等級、類別、摘錄片段、問題描述與修正建議的結構化清單。
+  3. **雙軌整合與獨立 CLI 指令 (`run.py audit`)**：
+     - `LiteraturePipeline` 管線末端自動執行稽核並產出 `audit_report.md`。
+     - 新增獨立 CLI 指令 `uv run python run.py audit [target] [--all] [--ollama] [--fix]`，支援一鍵全量稽核與高置信度瑕疵自動修補（`--fix`）。
+  4. **全量文獻稽核與單元測試 100% 通過**：
+     - 新增 `tests/test_v39_format_auditor.py`，全套 206/206 單元測試 100% 通過。
+     - `data/output/literature/` 下 10 篇學術文獻全量稽核全數獲得 `[PASS]` 綠燈評級。
 
 #### 2. 目前專案狀態與代碼位置
 - 分支：`main`
-- 狀態：所有 10 篇文獻轉檔結果皆已達到黃金標準；代碼庫全量測試 100% 通過，文檔同步完畢。
+- 狀態：所有模組、功能、文檔 100% 同步，代碼庫極致整潔，已完整通過全量測試。
 
 #### 3. 下一個 AI 回來接手時的第 1 步指令 (Next Steps)
 ```bash

@@ -54,10 +54,10 @@ books-project/
 │   ├── needs_review/               # 🚨 [人機隔離區] 遇疑難公式或壞頁自動存於此，不卡死主程序
 │   └── state/                      # 💾 斷點續傳快照、TOC 預覽與 Dashboard 狀態
 │
-├── tests/                          # 🧪 [自動化測試體系] (197 個測試全部 PASS)
+├── tests/                          # 🧪 [自動化測試體系] (206 個測試全部 PASS)
 │   ├── __init__.py                 # 動態注入 sys.path，確保任何環境直跑 unittest/pytest
-│   └── test_*.py                   # 24 個測試檔案，平坦結構於 tests/ 頂層
-│                                   # (含 test_v37_semantic_figure_table_placement.py, test_v38_universal_literature_profiling.py)
+│   └── test_*.py                   # 25 個測試檔案，平坦結構於 tests/ 頂層
+│                                   # (含 test_v38_universal_literature_profiling.py, test_v39_format_auditor.py)
 │
 ├── src/                            # 💻 [業務核心原始碼] (Clean Architecture)
 │   ├── guards/                     # 🛡️ 守衛防線
@@ -76,7 +76,7 @@ books-project/
 │       │   └── literature_pipeline.py  # 🎯 學術文獻主管線 (雙欄帶狀流動、APA 表格對齊、IMRAD 標題)
 │       ├── parsers/                # 解析層 (PDF, EPUB, LaTeX, 雙欄版面)
 │       │   └── literature/         # 🎯 學術文獻解析子模組 (metadata_extractor, imrad_resolver, figure_formatter, reference_parser)
-│       ├── verification/           # 檢驗層 (OllamaVerifier, rules, OllamaHealer)
+│       ├── verification/           # 檢驗層 (format_auditor 全維度格式稽核器, OllamaVerifier, rules, OllamaHealer)
 │       ├── utils/                  # 輔助模組 (obsidian_linker 雙鏈與索引生成)
 │       └── core/                   # 核心調度 (orchestrator, global_state 全域狀態, splitter)
 │

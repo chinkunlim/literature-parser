@@ -39,6 +39,7 @@ from doc_processor.parsers.literature.metadata_extractor import LiteratureMetada
 from doc_processor.parsers.literature.figure_formatter import FigureFormatter
 from doc_processor.verification.verifier import AccuracyVerifier
 from doc_processor.verification.ollama_healer import OllamaHealer
+from doc_processor.verification.format_auditor import FormatAuditor
 from doc_processor.utils.text_utils import sanitize_filename, stitch_cross_page_continuity
 from doc_processor.literature_style import build_literature_css
 
@@ -453,6 +454,18 @@ class LiteraturePipeline(BasePipeline):
                     print(f"  [*] Re-running verification following Ollama healing...")
                     v_res = verifier.verify_chapter(str(doc_out), expected_pages=total_pages)
 
+        # Run dedicated format and typography audit
+        print(f"  [*] Running dedicated format and typography audit...")
+        format_auditor = FormatAuditor(is_literature=True)
+        audit_rep = format_auditor.audit_file(md_file, ollama_verifier=verifier.ollama if self.use_ollama else None)
+        audit_rep_path = doc_out / "audit_report.md"
+        with open(audit_rep_path, "w", encoding="utf-8") as f:
+            f.write(audit_rep.to_markdown())
+        audit_json_path = doc_out / "audit_report.json"
+        with open(audit_json_path, "w", encoding="utf-8") as f:
+            json.dump(audit_rep.to_dict(), f, indent=2)
+        print(f"  [📋 Format Audit] Score: {audit_rep.score_percent:.1f}% ({'PASS' if audit_rep.passed else 'NEEDS ATTENTION'}) -> {audit_rep_path.name}")
+
         # ---------------------------------------------------------------------
         # Stage 6: Status Manifest & Archival
         # ---------------------------------------------------------------------
@@ -462,21 +475,27 @@ class LiteraturePipeline(BasePipeline):
             "subtype": subtype,
             "doc_name": doc_name,
             "total_pages": total_pages,
-            "passed": v_res.get("passed", False),
+            "passed": v_res.get("passed", False) and audit_rep.passed,
             "accuracy_percent": v_res.get("accuracy_percent", 0),
+            "format_audit": {
+                "passed": audit_rep.passed,
+                "score_percent": audit_rep.score_percent,
+                "errors": audit_rep.error_count,
+                "warnings": audit_rep.warning_count,
+            },
             "images_extracted": len(saved_images),
             "publisher": config.get("publisher"),
         }
         with open(status_file, "w", encoding="utf-8") as f:
             json.dump(status_payload, f, indent=2)
 
-        if v_res.get("passed", False):
+        if v_res.get("passed", False) and audit_rep.passed:
             print(f"\n[✓ LITERATURE COMPLETE] 100% verified! Output saved in: {doc_out}\n")
             if "inbox" in str(p_path):
                 self.archive_source(str(p_path))
 
         return {
-            "passed": v_res.get("passed", False),
+            "passed": v_res.get("passed", False) and audit_rep.passed,
             "output_dir": str(doc_out),
             "markdown_file": str(md_file),
             "literature_subtype": subtype,

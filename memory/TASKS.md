@@ -6,6 +6,12 @@
 
 ## 🏃 當前 Sprint (v1.0.0-rc1 專案治理與守衛上線)
 
+- [x] [2026-09-25] 實裝專屬排版與格式稽核器 (`FormatAuditor`) 與 Ollama 結構化核對整合：
+  - 新增 `src/doc_processor/verification/format_auditor.py`，全維度覆蓋標題完整性、摘要提取、IMRAD 架構與目錄密度、圖表語義定位與註釋隔離、LaTeX/統計符號、參考文獻格式、頁碼/頁眉過濾等 8 大維度
+  - 增強 `OllamaVerifier.audit_structured_format_defects`，支援以規則掃描候選為基礎進行 AI 深度語義核驗與結構化診斷清單輸出
+  - 雙軌整合：於 `LiteraturePipeline` 管線末端自動產出 `audit_report.md` / `audit_report.json`；同時新增獨立 CLI 指令 `uv run python run.py audit <path> [--ollama] [--fix] [--all]`
+  - 實作高置信度瑕疵自動修補（`--fix` 自動修復孤立頁碼、貨幣轉義、黏連參考文獻），無法修補之嚴重缺陷隔離備查
+  - 新增 `tests/test_v39_format_auditor.py`，全專案 206 項單元測試 100% 通過；全量 10 篇文獻全數 PASS
 - [x] [2026-09-25] 全量學術文獻排查與排版瑕疵修復 (Comprehensive 10-Document Literature Verification & Layout Fixes)：
   - 修正標題提取與 NIH 多行標題自動縫合 (`LiteraturePipeline` & `LiteratureMetadataExtractor`)，徹底解決 `Universal_consciousness` 空標題與 `05 Hartshorne` 標題截斷缺陷
   - 實裝劍橋大學出版社 (CUP) 首頁非對稱側欄隔離保護 (`has_p1_side_rail` & `p1_rail_split_x`)，解決 `11 Pliatsikas` 橫幅混淆與 Abstract 遭吞噬問題

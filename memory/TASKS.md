@@ -6,6 +6,14 @@
 
 ## 🏃 當前 Sprint (v1.0.0-rc1 專案治理與守衛上線)
 
+- [x] [2026-09-25] 修復學術文獻版面與排版瑕疵 (Universal Literature Layout Defect Fixes)：
+  - 修復第一頁頁眉與標題保護 (`DigitalPDFParser._is_running_header`)，保留完整標題
+  - 實施第一頁雙欄基線避難所 (`page_1_body_start_y`)，根除摘要欄位交錯碎裂
+  - 完善作者姓名與摘要候選區清洗 (`LiteratureMetadataExtractor`)，剔除 Acknowledgments 前綴與 DOI/卷期字串
+  - 實裝多行表格附註隔離機制 (`TableParser.fn_start_top`)，完整收納至 `<tfoot><tr class="table-notes">`，消除洩漏至內文之孤兒段落
+  - 擴充統計數字與 OCR 分隔符正規化 (`IMRADResolver._fix_ocr_stats`)，修復 Elsevier 格式 `$t(24) = 2.06$`、`$M = 4.46$`、`$SD = 2.02$`
+  - 完善真圖 (Raster Images) 標題捕獲 (`DigitalPDFParser`)，保留 Figure 2 完整圖說且不破壞內文排版
+  - 197 項單元測試 100% 通過，全量驗證 `2002-01194-001.pdf`、`2008-17521-013.pdf`、`Journal of Adolescence` 達成 [SUCCESS (PASS)]
 - [x] [2026-09-25] 實作多期刊學術文獻版面分析與物理座標校準 (`CoordinateCalibrator.calibrate_literature_geometry` & `document_profile.json`)：
   - 提取頁面寬高、頂部導覽 cutoff、底部頁碼 cutoff、單雙欄判定與分欄 gutter、第一頁內文起始 Y 座標
   - 自動為每篇文獻持久化專屬 `document_profile.json`，並擴充出版商範本 (`literature_aip.json`, `literature_cup.json`, `literature_annual_reviews.json`)

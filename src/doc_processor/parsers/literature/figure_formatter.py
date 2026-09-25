@@ -83,7 +83,7 @@ class FigureFormatter:
         If a figure is not cited in the text (fallback), places the figure at the
         end of the section before the next heading.
         """
-        if not markdown_text or "<figure" not in markdown_text:
+        if not markdown_text or ("<figure" not in markdown_text and "<table" not in markdown_text):
             return markdown_text
 
         # 0. Pre-split paragraphs where (see Figure N). or (Figure N). is immediately followed by a new sentence
@@ -95,8 +95,6 @@ class FigureFormatter:
 
         fig_pattern = re.compile(r'<figure[\s\S]*?</figure>')
         matches = list(fig_pattern.finditer(markdown_text))
-        if not matches:
-            return markdown_text
 
         figs = []
         text = markdown_text
@@ -204,6 +202,50 @@ class FigureFormatter:
                         text = text[:cand_h.start()] + fig_html + '\n\n' + text[cand_h.start():]
                     else:
                         text = text + '\n\n' + fig_html + '\n\n'
+
+        # Re-position Tables after the paragraph containing their first in-text mention
+        p_tbl = re.compile(
+            r'((?:(?:\*\*Table\s+\d+[\.\d]*\*\*|<p\s+class="table-caption">Table\s+\d+[\.\d]*</p>|Table\s+\d+[\.\d]*[^\n]*)\s*\n+)?<table\b[^>]*>.*?</table>(?:\s*\n+<p\s+class="table-notes">.*?</p>)?)',
+            re.DOTALL | re.I
+        )
+        tbl_matches = list(p_tbl.finditer(text))
+        if tbl_matches:
+            tbls = []
+            for m in reversed(tbl_matches):
+                start, end = m.span()
+                tbl_html = m.group(1).strip()
+                num_m = re.search(r'Table\s+(\d+(?:\.\d+)*)', tbl_html, re.I)
+                tbl_id = num_m.group(1) if num_m else ''
+
+                pre = text[:start].rstrip()
+                post = text[end:].lstrip()
+
+                is_broken = False
+                if pre and post:
+                    if pre[-1] not in ('.', '?', '!', ':', '\"', '”', ')') and (post[0].islower() or post[0] in ('(', '[')):
+                        is_broken = True
+
+                if is_broken:
+                    text = pre + ' ' + post
+                else:
+                    text = pre + '\n\n' + post
+
+                tbls.append((tbl_id, tbl_html))
+
+            tbls.reverse()
+
+            for tbl_id, tbl_html in tbls:
+                if tbl_id:
+                    mention_pat = re.compile(rf'(?i)\bTable\s+{re.escape(tbl_id)}\b')
+                    m = mention_pat.search(text)
+                    if m:
+                        p_end = text.find('\n\n', m.end())
+                        if p_end != -1:
+                            text = text[:p_end] + '\n\n' + tbl_html + '\n\n' + text[p_end:].lstrip()
+                        else:
+                            text = text + '\n\n' + tbl_html + '\n\n'
+                else:
+                    text = text + '\n\n' + tbl_html + '\n\n'
 
         text = re.sub(r'\n{3,}', '\n\n', text)
         return text.strip()

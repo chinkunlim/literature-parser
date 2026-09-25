@@ -20,10 +20,10 @@
       "height": 1174.0
     },
     "margins": {
-      "header_cutoff_y": 72.0,
-      "header_cutoff_ratio": 0.061,
-      "footer_cutoff_y": 1066.0,
-      "footer_cutoff_ratio": 0.908
+      "header_cutoff_y": 113.0,
+      "header_cutoff_ratio": 0.096,
+      "footer_cutoff_y": 1033.12,
+      "footer_cutoff_ratio": 0.88
     },
     "columns": {
       "layout": "two_column",

@@ -238,6 +238,7 @@ class TableParser:
                 grid_data = []
                 col0_max_x = (col_bounds[1] + 20.0) if len(col_bounds) > 1 else 9999.0
                 curr_row_top = first_top
+                fn_start_top = None
                 for d in raw_grid_data:
                     d_top = float(d.attrib.get('top', 0))
                     d_left = float(d.attrib.get('left', 0))
@@ -246,14 +247,24 @@ class TableParser:
                     # Stop if gap between consecutive table rows exceeds 35pt
                     if d_top - curr_row_top > 35.0:
                         break
-                    # Allow footnote lines starting with * or Note
-                    if not re.match(r'^(?:\*|Note\b)', d_txt, re.I):
+                    # Footnotes must start after table header/content rows
+                    is_fn_start = (d_top > first_top + 40) and bool(re.match(r'^(?:\*+|Note\b|\.?\s*BART indicates\b)', d_txt, re.I))
+                    if is_fn_start and fn_start_top is None:
+                        fn_start_top = d_top
+
+                    is_fn = (fn_start_top is not None and d_top >= fn_start_top)
+                    if not is_fn:
                         if d_left < (col_bounds[0] + col_bounds[1]) / 2 and (d_left + d_w > col0_max_x or d_w > 250.0):
                             break
                     grid_data.append(d)
                     curr_row_top = max(curr_row_top, d_top)
 
-                row_starts = sorted(set(float(d.attrib.get('top', 0)) for d in grid_data if get_col_idx(float(d.attrib.get('left', 0))) == 0 and not re.match(r'^(?:\*|Note\b)', ''.join(d.itertext()).strip(), re.I)))
+                row_starts = sorted(set(
+                    float(d.attrib.get('top', 0)) for d in grid_data
+                    if get_col_idx(float(d.attrib.get('left', 0))) == 0
+                    and (fn_start_top is None or float(d.attrib.get('top', 0)) < fn_start_top)
+                    and not re.match(r'^(?:\*+|Note\b|\.?\s*BART indicates\b)', ''.join(d.itertext()).strip(), re.I)
+                ))
                 if not header_titles:
                     header_titles = [''.join(c.itertext()).strip() for c in header_cells]
 
@@ -262,12 +273,14 @@ class TableParser:
                 parsed_rows = []
 
                 for i, r_top in enumerate(row_starts):
-                    next_top = row_starts[i+1] if i + 1 < len(row_starts) else (r_top + 70)
+                    next_top = row_starts[i+1] if i + 1 < len(row_starts) else (fn_start_top if fn_start_top else r_top + 70)
                     row_cells = [[] for _ in range(len(header_titles))]
                     for d in grid_data:
                         d_top = float(d.attrib.get('top', 0))
                         d_left = float(d.attrib.get('left', 0))
                         d_txt = ''.join(d.itertext()).strip()
+                        if fn_start_top is not None and d_top >= fn_start_top:
+                            continue
                         if re.match(r'^(?:\*|Note\b)', d_txt, re.I):
                             if d not in grid_consumed:
                                 fn_texts.append(d_txt)
@@ -281,15 +294,22 @@ class TableParser:
                     cell_strs = [' '.join(c).strip() for c in row_cells]
                     parsed_rows.append(cell_strs)
 
-                # Also collect any remaining footnote in grid_data
-                for d in grid_data:
-                    d_txt = ''.join(d.itertext()).strip()
-                    if re.match(r'^(?:\*|Note\b)', d_txt, re.I) and len(d_txt) > 2 and d not in grid_consumed:
-                        fn_texts.append(d_txt)
-                        grid_consumed.append(d)
+                # Collect all footnote elements at or below fn_start_top
+                if fn_start_top is not None:
+                    fn_elements = [d for d in grid_data if float(d.attrib.get('top', 0)) >= fn_start_top]
+                    fn_elements.sort(key=lambda t: (float(t.attrib.get('top', 0)), float(t.attrib.get('left', 0))))
+                    for d in fn_elements:
+                        d_txt = ''.join(d.itertext()).strip()
+                        if d_txt:
+                            fn_texts.append(d_txt)
+                            if d not in grid_consumed:
+                                grid_consumed.append(d)
 
-                clean_fn = [f for f in fn_texts if f != '*']
-                note_str = ' '.join(clean_fn).lstrip('*').strip() if clean_fn else ""
+                clean_fn = [f for f in fn_texts if f not in ('*', '·', '•', ':')]
+                raw_note = ' '.join(clean_fn).lstrip('*').strip() if clean_fn else ""
+                note_str = re.sub(r'^\.?\s*', '', raw_note)
+                if note_str.lower().startswith('note'):
+                    note_str = re.sub(r'^note\s*\.?\s*', 'Note. ', note_str, flags=re.I)
 
                 table_lines = []
                 use_html_table = style.get("table_html_semantic", True)

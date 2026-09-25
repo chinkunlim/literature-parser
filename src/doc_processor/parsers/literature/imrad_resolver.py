@@ -33,6 +33,7 @@ class IMRADResolver:
         ("Results", [r'^(?:#+\s*)?Results?\b', r'^\*\*Results?\*\*']),
         ("Discussion", [r'^(?:#+\s*)?(?:General\s+)?Discussion\b', r'^\*\*(?:General\s+)?Discussion\*\*']),
         ("Conclusions", [r'^(?:#+\s*)?Conclusions?\b', r'^\*\*Conclusions?\*\*']),
+        ("Acknowledgments", [r'^(?:#+\s*)?Acknowledgements?\b', r'^\*\*Acknowledgements?\*\*']),
         ("References", [r'^(?:#+\s*)?(?:References|REFERENCES|Bibliography)\b', r'^\*\*(?:References|REFERENCES)\*\*']),
     ]
 
@@ -291,33 +292,43 @@ class IMRADResolver:
     @classmethod
     def _relocate_author_note(cls, md: str) -> str:
         """
-        In academic PDFs, the Author Note is often placed at the bottom of page 1.
-        Standard academic layout requires it at the end of the text, immediately
-        preceding ## References. Handles both explicit markdown headings and inline APA footnotes.
+        In academic PDFs, the Author Note and Acknowledgments are relocated immediately
+        preceding ## References. Consolidates both explicit markdown headings, raw sections,
+        and inline APA footnotes.
         """
-        an_block = ""
+        aux_parts = []
+
+        # 0. Check for raw un-promoted Acknowledgements section
+        p_raw_ack = re.compile(r'(?m)^(?:\*\*)?Acknowledgements?(?:\*\*)?\s*\n+(The authors thank\b.*?)(?=\n#{1,3}\s+|\n---\n|\Z)', re.DOTALL | re.I)
+        m_raw_ack = p_raw_ack.search(md)
+        if m_raw_ack:
+            aux_parts.append(m_raw_ack.group(1).strip())
+            md = md[:m_raw_ack.start()].rstrip() + "\n\n" + md[m_raw_ack.end():]
+
         # 1. Check for explicit header
         p_an_hdr = re.compile(
-            r'(#+\s*(?:Author\s+Note(?:\s*&\s*Acknowledgments)?)\b[^\n]*\n+'
+            r'(#+\s*(?:Author\s+Note(?:\s*&\s*Acknowledgments)?|Acknowledgments?|Acknowledgements?)\b[^\n]*\n+'
             r'.*?'
             r'(?:(?:E-mail|Email|Correspondence)[^\n]+|\.edu|\.org|\.gov|[^\n]+(?=\n\n)|\Z))',
             re.DOTALL | re.I
         )
+        m_hdr = p_an_hdr.search(md)
+        if m_hdr:
+            an_text = m_hdr.group(1).strip()
+            clean_an = re.sub(r'^#+\s*(?:Author\s+Note(?:\s*&\s*Acknowledgments)?|Acknowledgments?|Acknowledgements?)\s*\n*', '', an_text, flags=re.I).strip()
+            if clean_an:
+                aux_parts.append(clean_an)
+            md = md[:m_hdr.start()].rstrip() + "\n\n" + md[m_hdr.end():].lstrip()
+
         # 2. Check for inline author note embedded in text
         p_an_inline = re.compile(
-            r'([A-Z]\.\s*[A-Z]\.\s+[A-Za-z]+,\s+Department\s+of.*?'
+            r'([A-Z][a-zA-Z\.\s]+,\s+(?:Department|Center|Division|School|Faculty|Institute)\s+(?:of|for).*?'
             r'Correspondence\s+concerning\s+this\s+article[^\n]*'
             r'(?:E-mail|Email):\s*[\w\.\-]+@[A-Za-z0-9\.\-]+(?:\.edu|\.org|\.com|\.gov)?\.?)',
             re.DOTALL | re.I
         )
-
-        m_hdr = p_an_hdr.search(md)
         m_inline = p_an_inline.search(md)
-
-        if m_hdr:
-            an_block = m_hdr.group(1).strip()
-            md = md[:m_hdr.start()].rstrip() + "\n\n" + md[m_hdr.end():].lstrip()
-        elif m_inline:
+        if m_inline:
             raw_inline = m_inline.group(1).strip()
             parts = []
             m_ack = re.search(r'\b(We thank\b.*?)(?=\bCorrespondence\b|\Z)', raw_inline, re.DOTALL | re.I)
@@ -334,12 +345,15 @@ class IMRADResolver:
                 corr_text = re.sub(r'E-mail:\s*([^\s<>]+)', r'E-mail: [\1](mailto:\1)', corr_text)
                 parts.append(corr_text)
 
-            an_content = "\n\n".join(parts)
-            an_block = f"## Author Note & Acknowledgments\n\n{an_content}"
-            # Remove inline author note and stitch the surrounding text
+            inline_content = "\n\n".join(parts)
+            if inline_content:
+                aux_parts.append(inline_content)
             md = md[:m_inline.start()].rstrip() + " " + md[m_inline.end():].lstrip()
-        else:
+
+        if not aux_parts:
             return md
+
+        an_block = "## Author Note & Acknowledgments\n\n" + "\n\n".join(aux_parts)
 
         # 3. Check for Received / Revision / Accepted dates at the end of md
         p_dates = re.compile(
@@ -443,6 +457,12 @@ class IMRADResolver:
     def _fix_ocr_stats(cls, md: str, config: Optional[Dict[str, Any]] = None) -> str:
         """Fixes common OCR artefacts in statistical text."""
         fixes = [
+            (re.compile(r'\*?t\*?\s*[ð\(]\s*(\d+)\s*[Þ\)]\s*=\s*(\d+):\s*(\d+)'), r'$t(\1) = \2.\3$'),
+            (re.compile(r'\(\s*\*?M\*?\s*=\s*(\d+):\s*(\d+)\s*;\s*s\.\s*d\.\s*\*?=\s*([\d\.]+)\*?\s*\)'), r'($M = \1.\2$; $SD = \3$)'),
+            (re.compile(r'\[\s*\*?M\*?\s*=\s*(\d+):\s*(\d+)\s*;\s*s\.\s*d\.\s*\*?=\s*([\d\.]+)\*?;\s*'), r'[$M = \1.\2$; $SD = \3$; '),
+            (re.compile(r'\$p\s*=\s*0\$:\s*(\d+)'), r'$p = 0.\1$'),
+            (re.compile(r'\bp\s*=\s*0:\s*(\d+)'), r'$p = 0.\1$'),
+            (re.compile(r'\*?p\*?\s*o\s*0:\s*(\d+):?'), r'$p < 0.\1$'),
             (re.compile(r'\bp\s+o\s+0\s+(\d{2})\b'), r'$p < 0.\1$'),
             (re.compile(r'\bp\s+o\s+(0\.\d+)\b'), r'$p < \1$'),
             (re.compile(r'\br\s*=\s*0\$\s*(\d+)\b'), r'$r = 0.\1$'),
@@ -457,6 +477,7 @@ class IMRADResolver:
             (re.compile(r'\bZ\s+scores\b'), r'$Z$ scores'),
             (re.compile(r'(?:“|")?Collect\s+(?:\$\$\$|&#36;&#36;&#36;)(?:”|")?'), r'“Collect &#36;&#36;&#36;”'),
             (re.compile(r'(?<!\\)\$\$\$(?!\$)'), r'&#36;&#36;&#36;'),
+            (re.compile(r'(?m)^:\s+'), r''),
         ]
 
         result = md

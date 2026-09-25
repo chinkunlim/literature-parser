@@ -130,39 +130,52 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
         return combined
 
     @staticmethod
-    def _is_running_header(top: float, ph: float, txt: str = "", font_size: float = 12.0) -> bool:
+    def _is_running_header(top: float, ph: float, txt: str = "", font_size: float = 12.0, page_num: int = 1, is_journal: bool = False) -> bool:
         """Determines if a text element is part of the top running header."""
+        clean = txt.strip()
+        # On page 1, titles, authors and major headings have font_size >= 14 and must NEVER be filtered as running headers
+        if page_num == 1 and font_size >= 14.0:
+            return False
+
+        # In top 12%, check explicit journal headers regardless of font size (e.g. 18pt AIP Advances logo)
+        if top < ph * 0.12:
+            if re.search(r'\b(?:ARTICLE IN PRESS|RESEARCH ARTICLE|AIP Advances|ARTICLE|Bilingualism: Language and Cognition|Journal of [A-Za-z]+|EXPERIMENTAL AND CLINICAL PSYCHOPHARMACOLOGY|Psychotherapy)\b', clean, re.I):
+                return True
+            if re.search(r'\b(?:Cite as:|cambridge\.org/bil|pubs\.aip\.org|Downloaded from https?://)\b', clean, re.I):
+                return True
+            if re.search(r'\b(?:NIH-PA Author Manuscript|HHS Public Access|Author [Mm]anuscript|available in PMC)\b', clean, re.I):
+                return True
+            # Running headers containing authors or paper title only appear on page 2 onwards!
+            if page_num > 1:
+                if re.search(r'\b(?:et al\.\s*/|WHITE,\s*LEJUEZ,\s*AND\s*DE\s*WIT|HARTSHORNE ET AL|BIALYSTOK|KROLL ET AL|PLIATSIKAS ET AL)\b', clean, re.I):
+                    return True
+                if re.search(r'\bTEST-RETEST CHARACTERISTICS\b', clean, re.I):
+                    return True
+
         if font_size >= 18.0:
             return False
         if top < ph * 0.04:
             return True
         if top < ph * 0.12:
-            clean = txt.strip()
             if re.match(r'^\d+$', clean):
-                return True
-            if re.search(r'\b(?:ARTICLE IN PRESS|RESEARCH ARTICLE|AIP Advances|Bilingualism: Language and Cognition|Journal of [A-Za-z]+|EXPERIMENTAL AND CLINICAL PSYCHOPHARMACOLOGY|Psychotherapy)\b', clean, re.I):
-                return True
-            if re.search(r'\b(?:NIH-PA Author Manuscript|HHS Public Access|Author [Mm]anuscript|available in PMC)\b', clean, re.I):
-                return True
-            if re.search(r'\b(?:Cite as:|cambridge\.org/bil|pubs\.aip\.org|Downloaded from https?://)\b', clean, re.I):
-                return True
-            if re.search(r'\b(?:et al\.\s*/|WHITE,\s*LEJUEZ,\s*AND\s*DE\s*WIT|HARTSHORNE ET AL|BIALYSTOK|KROLL ET AL|PLIATSIKAS ET AL)\b', clean, re.I):
-                return True
-            if re.search(r'\bTEST-RETEST CHARACTERISTICS\b', clean, re.I):
                 return True
             if clean.isupper() and len(clean) > 5 and font_size <= 14.0:
                 return True
         return False
 
     @staticmethod
-    def _is_running_footer(top: float, ph: float, txt: str, footer_ratio: float = 0.08) -> bool:
+    def _is_running_footer(top: float, ph: float, txt: str, footer_ratio: float = 0.08, is_journal: bool = False) -> bool:
         """Determines if a text element is part of the bottom running footer."""
+        clean = txt.strip()
         cut_ratio = max(footer_ratio, 0.08)
         if top > ph * (1.0 - cut_ratio):
-            return bool(re.match(r'^\d+$', txt) or 'copyright' in txt.lower())
-        # Also drop standalone page numbers in bottom 10%
-        if top > ph * 0.90 and re.match(r'^\d{1,4}$', txt):
-            return True
+            return bool(re.match(r'^\d+$', clean) or 'copyright' in clean.lower() or re.match(r'^\d{1,4}\s*-\s*\d{1,4}$', clean) or re.search(r'\b(?:pubs\.aip\.org|Downloaded from|doi\.org|\b\d{6}-\d+\b)\b', clean, re.I))
+        # Also drop standalone page numbers or article IDs in bottom 10%
+        if top > ph * 0.90:
+            if re.match(r'^\d{1,4}$', clean) or re.search(r'^\d+,\s*\d+-\d+$', clean):
+                return True
+            if re.search(r'\b(?:pubs\.aip\.org|Downloaded from|doi\.org|\b\d{6}-\d+\b)\b', clean, re.I):
+                return True
         return False
 
     @staticmethod
@@ -283,7 +296,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             except Exception as e:
                 logger.debug("pdftotext fallback failed on page %d: %s", page_num, e)
 
-        is_journal = _STYLE.get("is_journal_article", False) or DocumentClassifier.is_journal_article(pdf_path)
+        is_journal = _STYLE.get("is_journal_article", False) or _STYLE.get("is_journal", False) or str(_STYLE.get("archetype", "")).startswith("literature") or DocumentClassifier.is_journal_article(pdf_path)
 
         # 1. Pre-extract Learning Objectives (textbooks only)
         lo_md, lo_consumed = "", set()
@@ -354,14 +367,41 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 if not any(cg['term'].lower() == g_item['term'].lower() for cg in cls._chapter_glossaries):
                     cls._chapter_glossaries.append(g_item)
 
-        # 6. Pre-extract Vector Figures (e.g. Figure 1.1, Figure 1.2)
-        vec_images, vec_consumed = LayoutDetector.extract_vector_figures(page_elem, fonts, pdf_path, page_num, pw, ph)
-        if page_images and vec_images:
-            for r_img, v_img in zip(page_images, vec_images):
-                if v_img.get('caption') and not r_img.get('caption'):
-                    r_img['caption'] = v_img['caption']
+        # 6. Pre-extract Vector Figures (textbooks only; disabled on academic literature to prevent eating body text/formulas)
+        if is_journal:
+            vec_images, vec_consumed = [], set()
+            if page_images:
+                for t in page_elem.findall('text'):
+                    txt = ''.join(t.itertext()).strip()
+                    m = re.match(r'^(?:Figure|Fig\.)\s+(\d+[\.\d]*)(?:\s*[:\.\-–—]|\s+[A-Z]|$)', txt, re.I)
+                    if m and not re.match(r'^(?:Figure|Fig\.)\s+\d+[\.\d]*\s+(?:shows|illustrates|depicts|reveals|demonstrates|is|was|can)\b', txt, re.I):
+                        f_top = float(t.attrib.get('top', 0))
+                        f_left = float(t.attrib.get('left', 0))
+                        cap_lines = [txt]
+                        cap_consumed = {t}
+                        for t2 in page_elem.findall('text'):
+                            if t2 == t:
+                                continue
+                            top2 = float(t2.attrib.get('top', 0))
+                            left2 = float(t2.attrib.get('left', 0))
+                            txt2 = ''.join(t2.itertext()).strip()
+                            if (0 <= top2 - f_top <= 45) and abs(left2 - f_left) < 150:
+                                cap_lines.append(txt2)
+                                cap_consumed.add(t2)
+                        full_cap = ' '.join(cap_lines)
+                        for r_img in page_images:
+                            if not r_img.get('caption'):
+                                r_img['caption'] = full_cap
+                                vec_consumed.update(cap_consumed)
+                                break
         else:
-            page_images = list(page_images) + vec_images
+            vec_images, vec_consumed = LayoutDetector.extract_vector_figures(page_elem, fonts, pdf_path, page_num, pw, ph)
+            if page_images and vec_images:
+                for r_img, v_img in zip(page_images, vec_images):
+                    if v_img.get('caption') and not r_img.get('caption'):
+                        r_img['caption'] = v_img['caption']
+            else:
+                page_images = list(page_images) + vec_images
 
         # 7. Pre-extract End-of-Chapter Sections (e.g. Pages 16-17; textbooks only)
         eoc_sections, eoc_consumed = LayoutDetector.extract_end_of_chapter_sections(page_elem, fonts, pw, ph, page_num) if not is_journal else ([], set())
@@ -381,12 +421,12 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             font_info = fonts.get(font_id, {'is_bold': False, 'is_italic': False, 'is_math': False, 'family': '', 'size': 12})
 
             txt_raw = ''.join(text_el.itertext()).strip()
-            # Check running header (top 4% to 11%)
-            if cls._is_running_header(top, ph, txt_raw, font_info.get('size', 12)):
+            # Check running header (top 4% to 12%)
+            if cls._is_running_header(top, ph, txt_raw, font_info.get('size', 12), page_num=page_num, is_journal=is_journal):
                 continue
-            # Check running footer: drop if pure page number digit or copyright at bottom 6%
+            # Check running footer
             footer_ratio = _STYLE.get("footer_cut_ratio", 0.06)
-            if cls._is_running_footer(top, ph, txt_raw, footer_ratio):
+            if cls._is_running_footer(top, ph, txt_raw, footer_ratio, is_journal=is_journal):
                 continue
 
             # Filter rotated or vertical margin watermarks
@@ -447,19 +487,27 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
         if not raw_lines and not map_md and not lo_md and not page_tables and not eoc_sections and not page_exhibits:
             return ""
 
-        # Baseline clustering: cluster text elements within 5.0pt vertically into baseline lines
+        # Baseline clustering: cluster text elements within baseline tolerance into lines
         is_single_col_doc = _STYLE.get("geometry", {}).get("columns", {}).get("layout") == "single_column"
+        p1_body_y = _STYLE.get("geometry", {}).get("content_start", {}).get("page_1_body_start_y") or (ph * 0.45)
         raw_lines.sort(key=lambda x: x[0])
         clusters = []
         for item in raw_lines:
             matched_c = None
+            item_top = item[0]
+            # Page 1 Sanctuary: On page 1 above the body content start (title, author, abstract), enforce single column!
+            is_p1_header_area = (page_num == 1) and (item_top < p1_body_y)
+            treat_as_single_col = is_single_col_doc or is_p1_header_area
+
             item_is_left = item[1] < pw * 0.48 and item[2] < pw * 0.48
             item_is_right = item[1] >= pw * 0.48
             for c in clusters:
                 c_top = sum(x[0] for x in c) / len(c)
-                if abs(c_top - item[0]) <= 5.0:
+                # Normal vertical threshold: 6.5pt; allow up to 10.5pt for math subscripts/punctuation (e.g. colons/dots)
+                max_v = 10.5 if item[4] in (':', ';', ',', '.') else 6.5
+                if abs(c_top - item[0]) <= max_v:
                     # In multi-column layouts, don't mix left-column and right-column items into the same baseline cluster
-                    if not is_single_col_doc:
+                    if not treat_as_single_col:
                         c_has_left = any(x[1] < pw * 0.48 and x[2] < pw * 0.48 for x in c)
                         c_has_right = any(x[1] >= pw * 0.48 for x in c)
                         if item_is_left and c_has_right:
@@ -480,13 +528,15 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             cur_line = []
             for item in c_sorted:
                 top_val, left_val, width_val, size_val, txt_val = item
+                item_is_p1_header = (page_num == 1) and (top_val < p1_body_y)
+                treat_as_single_col = is_single_col_doc or item_is_p1_header
                 if not cur_line:
                     cur_line = [top_val, left_val, width_val, size_val, txt_val]
                 else:
                     prev_top, prev_left, prev_width, prev_size, prev_txt = cur_line
                     prev_right = prev_left + prev_width
                     gap = left_val - prev_right
-                    is_diff_col = not is_single_col_doc and (gap > 20) and ((prev_left < pw * 0.48 and left_val >= pw * 0.48) or (gap > 60 and left_val < prev_left))
+                    is_diff_col = not treat_as_single_col and (gap > 20) and ((prev_left < pw * 0.48 and left_val >= pw * 0.48) or (gap > 60 and left_val < prev_left))
                     if is_diff_col:
                         merged_same_y.append(tuple(cur_line))
                         cur_line = [top_val, left_val, width_val, size_val, txt_val]

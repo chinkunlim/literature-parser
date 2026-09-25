@@ -208,8 +208,8 @@ class CoordinateCalibrator:
         is_two_col = (left_count >= 15 and right_count >= 15 and (left_count + right_count) > wide_count * 1.2)
         layout = 'two_column' if is_two_col else 'single_column'
 
-        hdr_cut = min(header_cutoffs) if header_cutoffs else ph * 0.06
-        ftr_cut = max(footer_cutoffs) if footer_cutoffs else ph * 0.92
+        hdr_cut = min(max(header_cutoffs) + 5.0, ph * 0.12) if header_cutoffs else ph * 0.06
+        ftr_cut = max(min(footer_cutoffs) - 5.0, ph * 0.88) if footer_cutoffs else ph * 0.92
 
         return {
             'page_dimensions': {'width': round(pw, 2), 'height': round(ph, 2)},

@@ -217,38 +217,48 @@ class LiteratureMetadataExtractor:
         # 5. Extract authors from author note or text if not already populated
         if not meta["authors"]:
             p_an = re.search(
-                r'([A-Z]\.\s*[A-Z]\.\s+[A-Za-z]+,\s+Department\s+of.*?(?:E-mail|Email):\s*[\w\.\-]+@[A-Za-z0-9\.\-]+)',
+                r'([A-Z][a-zA-Z\.\s]+,\s+(?:Department|Center|Division|School|Faculty|Institute)\s+(?:of|for).*?(?:E-mail|Email):\s*[\w\.\-]+@[A-Za-z0-9\.\-]+)',
                 raw_text, re.DOTALL | re.I
             )
             an_text = p_an.group(1) if p_an else ("\n".join(pdf_lines) if pdf_lines else "")
-            if an_text and "Department of" in an_text:
+            if an_text and any(k in an_text for k in ("Department of", "Center for", "Institute of", "School of")):
                 for chunk in an_text.split(";"):
                     chunk = chunk.strip().rstrip(".")
                     if not chunk:
                         continue
-                    parts = re.split(r",\s*(?=(?:Department\s+of|Center\s+for|Division\s+of|School\s+of|Faculty\s+of|Institute\s+of))", chunk, maxsplit=1, flags=re.I)
+                    parts = re.split(r",\s*(?=(?:Department\s+(?:of|for)|Center\s+(?:of|for)|Division\s+(?:of|for)|School\s+(?:of|for)|Faculty\s+(?:of|for)|Institute\s+(?:of|for)))", chunk, maxsplit=1, flags=re.I)
                     if len(parts) == 2:
                         name = parts[0].strip()
+                        name = re.sub(r'^(?:Acknowledgments?|Author\s+Note[s]?)\s*', '', name, flags=re.I).strip()
+                        if '\n' in name:
+                            name = name.splitlines()[-1].strip()
                         raw_affil = parts[1].strip()
-                        m_inst = re.search(r"((?:University\s+at\s+Buffalo,\s+The\s+State\s+University\s+of\s+New\s+York|Brown\s+University\s+School\s+of\s+Medicine\s+and\s+Butler\s+Hospital|University\s+of\s+[A-Za-z]+|[A-Z][a-zA-Z\s]+(?:University|College|Institute|Hospital))[^\.,]*)", raw_affil)
+                        m_inst = re.search(r"((?:University\s+at\s+Buffalo,\s+The\s+State\s+University\s+of\s+New\s+York|Brown\s+University|The\s+University\s+of\s+Chicago|University\s+of\s+[A-Za-z]+|[A-Z][a-zA-Z\s]+(?:University|College|Institute|Hospital))[^\.,]*)", raw_affil)
                         inst = m_inst.group(1).strip() if m_inst else raw_affil
                         meta["authors"].append({"name": name, "affiliation": inst})
 
         # 6. Abstract
-        abs_m = re.search(r'(?:##\s*Abstract|(?:\n|^)Abstract\b)\s*[:\n]\s*(.+?)(?=\n#+|\n<!-- Page|\Z)', raw_text, re.I | re.S)
+        abs_m = re.search(r'(?:##\s*Abstract|(?:\n|^)Abstract\b)\s*[:\n]\s*(.+?)(?=\n#+|\n<!-- Page|\n(?:[I|1]\.?\s+)?INTRODUCTION\b|\n(?:\*?Key\s*words|\*?Keywords):|\Z)', raw_text, re.I | re.S)
         if abs_m:
             raw_abs = abs_m.group(1).strip()
             raw_abs = re.sub(r'^>\s*', '', raw_abs, flags=re.M)
-            meta["abstract"] = raw_abs.strip()
+            raw_abs = re.sub(r'\n*(?:©|\(c\))\s*\d{4}.*?(?:Creative Commons|doi:|\Z)', '', raw_abs, flags=re.I | re.DOTALL).strip()
+            meta["abstract"] = raw_abs
         else:
-            m_kw = re.search(r'(?m)^\*?Keywords:?\*?\s*(.+?)$', raw_text, re.I)
+            m_kw = re.search(r'(?m)^\*?(?:Keywords|Key\s*words):?\*?\s*', raw_text, re.I)
             if m_kw:
                 pre_kw = raw_text[:m_kw.start()].strip()
-                paragraphs = [p.strip() for p in pre_kw.split('\n\n') if p.strip()]
-                for para in reversed(paragraphs):
-                    if len(para) > 100 and not para.startswith('#') and not para.startswith('<') and not ('University' in para[-35:] or 'College' in para[-35:]):
-                        meta["abstract"] = para
-                        break
+                paras = [p.strip() for p in pre_kw.split('\n\n') if p.strip()]
+                cand_paras = []
+                for p in paras:
+                    if p.startswith(('#', '<', '©', 'doi:', 'http')):
+                        continue
+                    if re.search(r'^\d{4},\s*Vol\.\s*\d+', p) or re.search(r'\bDOI:\s*10\.\d+', p):
+                        continue
+                    if len(p) > 60 and not ('University' in p[-35:] or 'College' in p[-35:]):
+                        cand_paras.append(p)
+                if cand_paras:
+                    meta["abstract"] = "\n\n".join(cand_paras)
             elif "The present study" in raw_text:
                 m_study = re.search(r'(The present study\s*\(.*?\).*?assessment of risk taking\.)', raw_text, re.DOTALL)
                 if m_study:
@@ -410,7 +420,7 @@ TEXT TO EXTRACT FROM:
         m_abs_hdr = re.search(r'##\s*Abstract\b', full_md)
         if m_abs_hdr:
             sub = full_md[m_abs_hdr.end():]
-            m_end = re.search(r'\n---\n|\n(?=##\s+)', sub)
+            m_end = re.search(r'\n---\n|\n(?=##\s+)|\n(?=(?:[I|1]\.?\s+)?INTRODUCTION\b)|\n(?=(?:Key\s*words|Keywords):)', sub, re.I)
             if m_end:
                 cutoff = m_abs_hdr.end() + m_end.end()
                 body_text = full_md[cutoff:].strip()
@@ -421,7 +431,7 @@ TEXT TO EXTRACT FROM:
 
         # If body_text not found via heading, match Introduction or end of Keywords
         if not body_text:
-            m_intro = re.search(r'(?mi)^#*\s*Introduction(?:\s*:|\b)[^\n]*', full_md)
+            m_intro = re.search(r'(?mi)^#*\s*(?:[I|1]\.?\s+)?Introduction(?:\s*:|\b)[^\n]*', full_md)
             if m_intro and m_intro.start() > 100:
                 body_text = full_md[m_intro.start():].strip()
             else:

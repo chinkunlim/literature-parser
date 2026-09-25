@@ -7,7 +7,7 @@
 ## 🏃 當前 Sprint (v1.0.0-rc1 專案治理與守衛上線)
 
 - [x] [2026-09-25] 全專案代碼深度解耦、模組重構與 PromptRegistry 統一架構實裝：
-  - 統一 Ollama Prompt 提示詞中樞 (`src/guards/prompts.py`)：建立強型別 `PromptRegistry` 類別，統一收攏 LaTeX 修復、Manifest 驗證、語義格式稽核、修復配方合成、自我修復重試、雙欄展開與引用解析，並與專案最新修復規則（KaTeX `\$`、正則 `\g<1>`、APA 表格附註、雙欄閱讀流）緊密對齊。
+  - 統一 Ollama Prompt 提示詞中樞 (`src/guards/prompts.py`)：建立強型別 `PromptRegistry` 類別，統一收攏 LaTeX 修復、Manifest 驗證、語義格式稽核、修復配方合成、自我修復重試、雙欄展開、引用解析、OCR 字符校對、多模態版面視覺稽核、複雜表格重構與書籍特徵偵測，全面替換散落在 `ollama_verifier.py`、`table_llm_fixer.py`、`ollama_profiler.py` 中的硬編碼 prompt，並與專案最新修復規則（KaTeX `\$`、正則 `\g<1>`、APA 表格附註、雙欄閱讀流）緊密對齊。
   - 重構 1,820 行單一龐大 `run.py`：拆分出 `src/cli/` 專屬領域子模組（`cli_audit.py`, `cli_fix.py`, `cli_git.py`, `cli_process.py`, `cli_project.py`, `common.py`），使 `run.py` 精簡至 200 行極簡 CLI 派發器。
   - 提取跨模組共用純函數文字與正則工具 (`src/doc_processor/utils/shared_text.py`)：統一孤立頁碼、KaTeX 貨幣轉義、OCR 統計符號、稿件水印、黏連引用等純函數清洗轉換。
   - 解耦 1,206 行 `layout_detector.py`：抽取 `VectorFigureParser`（向量圖與符號圖式抽取）與 `EndOfChapterParser`（章末練習題、詞彙索引與延伸閱讀解析器），檔案行數降至 662 行，大幅提升內聚力與可維護性。

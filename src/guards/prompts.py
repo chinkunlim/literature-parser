@@ -295,3 +295,86 @@ class PromptRegistry:
         """Returns (system_prompt, user_prompt) for converting reference strings to BibTeX."""
         user = PROMPT_REFERENCE_PARSER_TEMPLATE.format(raw_references=raw_references[:3000])
         return SYSTEM_REFERENCE_PARSER, user
+
+    # --------------------------------------------------------------------------
+    # 9. OCR Character Proofreading
+    # --------------------------------------------------------------------------
+    @staticmethod
+    def get_ocr_proofreading(markdown_text: str, max_chars: int = 4000) -> Tuple[str, str]:
+        """Returns (system_prompt, user_prompt) for detecting clear OCR typographical defects."""
+        system_prompt = (
+            "You are an expert academic proofreader. Analyze the following textbook Markdown text.\n"
+            "If you detect clear OCR character errors (e.g., '2s1' -> '281', 'tezt' -> 'text'), "
+            "broken formula syntax, or garbled words, return your proposed corrections in valid JSON format.\n"
+            "Format:\n"
+            "{\n"
+            '  "proposals": [\n'
+            '    {\n'
+            '      "id": "rev-1",\n'
+            '      "original": "exact flawed string from text",\n'
+            '      "proposed": "corrected clean string",\n'
+            '      "reason": "brief reason for fix",\n'
+            '      "category": "ocr_typo",\n'
+            '      "confidence": 0.97\n'
+            "    }\n"
+            "  ]\n"
+            "}\n"
+            "Rules:\n"
+            "- Set confidence = 1.0 only for unambiguous character substitutions (e.g. 0->O, l->1).\n"
+            "- Set confidence >= 0.95 for clear OCR errors with no plausible alternative meaning.\n"
+            "- Set confidence < 0.90 for ambiguous or context-dependent corrections.\n"
+            "- If KaTeX currency symbols are unescaped (e.g. $25), propose escaping to \\$25.\n"
+            "If no issues exist, return: {\"proposals\": []}\n"
+            "Respond ONLY with the JSON object."
+        )
+        user_prompt = f"Markdown text to analyze:\n```markdown\n{markdown_text[:max_chars]}\n```"
+        return system_prompt, user_prompt
+
+    # --------------------------------------------------------------------------
+    # 10. Multi-Modal Vision Layout Audit
+    # --------------------------------------------------------------------------
+    @staticmethod
+    def get_multimodal_layout_audit(element_type: str, markdown_snippet: str) -> str:
+        """Returns user prompt for visual comparison between crop image and extracted Markdown."""
+        return (
+            f"You are an expert textbook layout auditor. Compare the attached original textbook {element_type} image "
+            f"with the following extracted Markdown representation:\n\n"
+            f"```markdown\n{markdown_snippet[:1500]}\n```\n\n"
+            f"Audit criteria:\n"
+            f"1. Are all key headers/nodes present without omissions?\n"
+            f"2. Is the structure faithful to the original image?\n"
+            f"Respond ONLY in valid JSON format:\n"
+            f'{{"passed": true, "defect": null, "confidence": 0.95}}\n'
+            f'If flawed, return:\n'
+            f'{{"passed": false, "defect": "brief description of defect", "confidence": 0.95}}'
+        )
+
+    # --------------------------------------------------------------------------
+    # 11. Complex Academic Table Reconstruction
+    # --------------------------------------------------------------------------
+    @staticmethod
+    def get_table_reconstruction(table_text: str, caption: str = "") -> str:
+        """Returns prompt for reconstructing complex unbordered tabular text into Markdown table."""
+        return (
+            "You are an expert data formatting AI. The following raw text represents a complex academic table.\n"
+            f"Table Title: {caption}\n\n"
+            "Raw Table Content:\n"
+            f"```\n{table_text[:3000]}\n```\n\n"
+            "Instructions:\n"
+            "1. Output ONLY a clean, valid Markdown table with proper header row and alignment delimiters (| :--- | :---: |).\n"
+            "2. Preserve all numbers, decimal places, minus signs, and statistical symbols (e.g., *, **, p, M, SD, F).\n"
+            "3. If table footnotes or notes are present at the bottom, format them inside <tfoot><tr class=\"table-notes\"><td colspan=\"N\">...</td></tr></tfoot>.\n"
+            "4. Do NOT include conversational preamble, explanations, or enclosing markdown tags. Output ONLY the table."
+        )
+
+    # --------------------------------------------------------------------------
+    # 12. Book Special Block Profiling
+    # --------------------------------------------------------------------------
+    @staticmethod
+    def get_profile_special_blocks(sample_text: str) -> str:
+        """Returns prompt for determining concept maps, margin glossaries, and learning objectives."""
+        return (
+            "Analyze this sample textbook excerpt and return a JSON object with: "
+            "has_concept_map (boolean), has_margin_glossary (boolean), lo_pattern (regex string).\n"
+            f"Text:\n{sample_text[:2000]}"
+        )

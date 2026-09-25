@@ -223,34 +223,11 @@ class OllamaVerifier:
         if not self.is_available:
             return []
 
-        prompt = (
-            "You are an expert academic proofreader. Analyze the following textbook Markdown text.\n"
-            "If you detect clear OCR character errors (e.g., '2s1' -> '281', 'tezt' -> 'text'), "
-            "broken formula syntax, or garbled words, return your proposed corrections in valid JSON format.\n"
-            "Format:\n"
-            "{\n"
-            '  "proposals": [\n'
-            '    {\n'
-            '      "id": "rev-1",\n'
-            '      "original": "exact flawed string from text",\n'
-            '      "proposed": "corrected clean string",\n'
-            '      "reason": "brief reason for fix",\n'
-            '      "category": "ocr_typo",\n'
-            '      "confidence": 0.97\n'
-            "    }\n"
-            "  ]\n"
-            "}\n"
-            "Rules:\n"
-            "- Set confidence = 1.0 only for unambiguous character substitutions (e.g. 0->O, l->1).\n"
-            "- Set confidence >= 0.95 for clear OCR errors with no plausible alternative meaning.\n"
-            "- Set confidence < 0.90 for ambiguous or context-dependent corrections.\n"
-            "If no issues exist, return: {\"proposals\": []}\n\n"
-            f"Markdown text to analyze:\n```markdown\n{markdown_text[:max_chars]}\n```\n"
-            "Respond ONLY with the JSON object."
-        )
+        system_prompt, prompt = PromptRegistry.get_ocr_proofreading(markdown_text, max_chars)
 
         payload = {
             "model": self.healer_model,
+            "system": system_prompt,
             "prompt": prompt,
             "stream": False,
             "format": "json",
@@ -332,18 +309,7 @@ class OllamaVerifier:
             with open(crop_image_path, "rb") as f:
                 img_b64 = base64.b64encode(f.read()).decode("utf-8")
 
-            prompt = (
-                f"You are an expert textbook layout auditor. Compare the attached original textbook {element_type} image "
-                f"with the following extracted Markdown representation:\n\n"
-                f"```markdown\n{markdown_snippet[:1500]}\n```\n\n"
-                f"Audit criteria:\n"
-                f"1. Are all key headers/nodes present without omissions?\n"
-                f"2. Is the structure faithful to the original image?\n"
-                f"Respond ONLY in valid JSON format:\n"
-                f'{{"passed": true, "defect": null, "confidence": 0.95}}\n'
-                f'If flawed, return:\n'
-                f'{{"passed": false, "defect": "brief description of defect", "confidence": 0.95}}'
-            )
+            prompt = PromptRegistry.get_multimodal_layout_audit(element_type, markdown_snippet)
 
             payload = {
                 "model": vision_model,

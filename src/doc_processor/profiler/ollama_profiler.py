@@ -177,11 +177,8 @@ def create_or_update_book_profile(book_dir: Path, force_refresh: bool = False) -
                     pass
 
             if sample_text:
-                prompt = (
-                    f"Analyze this sample textbook excerpt and return a JSON object with: "
-                    f"has_concept_map (boolean), has_margin_glossary (boolean), lo_pattern (regex string).\n"
-                    f"Text:\n{sample_text}"
-                )
+                from src.guards.prompts import PromptRegistry
+                prompt = PromptRegistry.get_profile_special_blocks(sample_text)
                 refined = query_ollama_json(prompt, model=chosen_model)
                 if refined and isinstance(refined, dict):
                     if "has_concept_map" in refined:

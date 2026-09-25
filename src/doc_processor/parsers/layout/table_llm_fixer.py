@@ -46,16 +46,9 @@ class TableLLMFixer:
         Sends raw tabular text to local Ollama to output a clean Markdown table.
         Returns the formatted markdown table string, or None if Ollama is unreachable.
         """
-        prompt = (
-            "You are an expert data formatting AI. The following raw text represents a complex academic table.\n"
-            f"Table Title: {caption}\n\n"
-            "Raw Table Content:\n"
-            f"```\n{table_text[:3000]}\n```\n\n"
-            "Instructions:\n"
-            "1. Output ONLY a clean, valid Markdown table with proper header row and alignment delimiters (| :--- | :---: |).\n"
-            "2. Preserve all numbers, decimal places, minus signs, and statistical symbols (e.g., *, **, p, M, SD, F).\n"
-            "3. Do NOT include any conversational preamble, explanations, or enclosing notes. Output ONLY the markdown table."
-        )
+        from src.guards.prompts import PromptRegistry
+
+        prompt = PromptRegistry.get_table_reconstruction(table_text=table_text, caption=caption)
 
         payload = {
             "model": model_name,

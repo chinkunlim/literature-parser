@@ -113,6 +113,15 @@ Journal of Adolescence</strong><br>
 
 # Evaluation of the Balloon Analogue Risk Task (BART) as a predictor of adolescent real-world risk-taking behaviours
 
+<div class="author-block">
+  <div class="author-name">C.W. Lejuez, Will M. Aklin</div>
+  <div class="author-affiliation">Department of Psychology, University of Maryland, College Park, MD 20742, USA</div>
+
+  <div class="author-name">Michael J. Zvolensky, Christina M. Pedulla</div>
+  <div class="author-affiliation">The University of Vermont, USA</div>
+
+</div>
+
 <details open>
 <summary>📑 <b>Table of Contents</b></summary>
 
@@ -134,7 +143,9 @@ Journal of Adolescence</strong><br>
 
 ## Abstract
 
-> The Balloon Analogue Risk Task (BART) was administered to a sample of 26 high school-aged adolescents to test the utility of the BART as a behavioural measure of risk-taking propensity. Data indicate that riskyness on the BART was related to self-reported engagement in real-world risk-taking behaviours. These data replicate and uniquely extend past research to an adolescent sample, suggesting that the BART may be a useful addition to self-report batteries for the assessment of risk-taking behaviours in adolescents.
+> Journal of
+>
+> Adolescence a, Michael J. Zvolensky b, Christina M. Pedulla c b *The University of Vermont, USA* c *University of Maryland, USA*
 
 ---
 
@@ -151,16 +162,14 @@ Participants were 26 adolescents (15 females and 11 males) between the ages of 1
 
 ### 2.2. Materials
 
-): 1 The BART is presented as a *Balloon Analogue Risk Task* (BART; Lejuez et al., 2002 computer-based measure of risk-taking propensity. Supporting its use in this regard, we have found in a sample of young adults between the ages of 18 and 25 that riskiness on the task is related to the self-reported engagement in a variety of real-world risk behaviours in the domains of substance use (e.g. smoking), delinquency (e.g. stealing), and safety (e.g. not wearing a seatbelt; Lejuez et al., 2002, 2003 ). During the task, the computer screen showed a small simulated balloon accompanied by a balloon pump, a reset button labeled ‘‘“Collect &#36;&#36;&#36;”’’, a permanent money earned display labeled ‘‘Total Earned’’, and a second display listing the money earned on the last balloon and labeled ‘‘Last Balloon.’’ With each pump, 5 cents were accrued in a temporary reserve (the amount of money in this reserve is never indicated to the participant). Once a balloon was pumped past its individual explosion point, a ‘‘pop’’ sound effect is emitted. When a balloon exploded, all money in the temporary bank was lost. At any point during each balloon, the participant could stop pumping the balloon and click the “Collect &#36;&#36;&#36;” button. Clicking this button transferred all money from the temporary bank to the permanent bank, during which the new total earned would be incrementally updated cent by cent while a slot machine payoff sound effect played. After each balloon explosion or money collection, the participant’s exposure to that balloon ended and a new balloon appeared until all 30 balloons (i.e. trials) had been completed. All balloons had a different explosion point with the weakest balloon exploding on the first pump and the strongest balloon exploding after 128 pumps (see Lejuez et al., 2003, for further details). Participants were told that if they earned an amount of money above an undisclosed amount, that
+Lejuez et al., 2002 ): 1 The BART is presented as a *Balloon Analogue Risk Task* (BART; computer-based measure of risk-taking propensity. Supporting its use in this regard, we have found in a sample of young adults between the ages of 18 and 25 that riskiness on the task is related to the self-reported engagement in a variety of real-world risk behaviours in the domains of substance use (e.g. smoking), delinquency (e.g. stealing), and safety (e.g. not wearing a seatbelt; Lejuez et al., 2002, 2003 ). During the task, the computer screen showed a small simulated balloon accompanied by a balloon pump, a reset button labeled ‘‘“Collect &#36;&#36;&#36;”’’, a permanent money earned display labeled ‘‘Total Earned’’, and a second display listing the money earned on the last balloon and labeled ‘‘Last Balloon.’’ With each pump, 5 cents were accrued in a temporary reserve (the amount of money in this reserve is never indicated to the participant). Once a balloon was pumped past its individual explosion point, a ‘‘pop’’ sound effect is emitted. When a balloon exploded, all money in the temporary bank was lost. At any point during each balloon, the participant could stop pumping the balloon and click the “Collect &#36;&#36;&#36;” button. Clicking this button transferred all money from the temporary bank to the permanent bank, during which the new total earned would be incrementally updated cent by cent while a slot machine payoff sound effect played. After each balloon explosion or money collection, the participant’s exposure to that balloon ended and a new balloon appeared until all 30 balloons (i.e. trials) had been completed. All balloons had a different explosion point with the weakest balloon exploding on the first pump and the strongest balloon exploding after 128 pumps (see Lejuez et al., 2003, for further details). Participants were told that if they earned an amount of money above an undisclosed amount, that
 
 1 A computerized version of the Balloon Analogue Risk Task (BART) is available by request from the first author at no charge.
 
 <!-- Page 3 -->
 they would receive 2 movie tickets. To prevent disappointment however, all participants were given the tickets after completing the task. The primary dependent measure on the BART was the adjusted number of pumps across balloons ( Lejuez et al., 2002 ). This adjusted value, defined as the average number of pumps excluding balloons that exploded (i.e. the average number of pumps on each balloon prior to collecting money), is preferable because the number of pumps is necessarily constrained on balloons that exploded, thereby limiting between-participant variability in the absolute averages. As a within session measure of test-retest reliability, previous research with the task has shown high correlations when the adjusted number of pumps is examined across the first, second, and third block of ten trials (average $r = 0$: 82). In the current sample, the average correlation among the three blocks of trials was 0.86. *Self-report of risk-taking behaviours*. The 10-item measure based on the Centers for Disease Control Youth Risk Behaviour Surveillance System ( CDC, 2001 ), representing an index of engagement in risk-taking behaviours in daily life, was used to provide concurrent validation for the BART as a measure of risk-taking propensity. Specifically, participants answered yes or no to engagement in the following behaviours over the past 12 months: (1) smoked a cigarette (even a puff); (2) drank alcohol (even one drink); (3) used any illegal drug; (4) gambled for real money; (5) had sexual intercourse without a condom; (6) stolen anything from a store; (7) carried a weapon such as a gun, knife, or club outside of your home; (8) been in a physical fight; (9) ridden in a car without wearing your seatbelt (even once); (10) ridden a bicycle or motorcycle without a helmet (even once). A total risk behaviour index score was derived by summing the number of affirmative responses. *Self-report correlates of risk-taking behaviours*. Assessing the construct validity of the BART, we used a battery of self-report measures aimed at tapping different constructs relevant to risk taking. To assess the seeking of varied, novel, complex, and intense situations and experiences, and the willingness to take physical, social, and financial risks for the sake of such experiences ( Zuckerman, 1994 ), participants completed the *Sensation Seeking Scale* ( Zuckerman, Eysenck, & Eysenck, 1978 ). On this 40-item measure, participants are given a forced choice between two opposite statements, with one choice indicative of sensation seeking. The number of times the sensation seeking choice is selected is summed to create a total score ranging from 0 to 40, with higher scores indicating higher levels of sensation seeking. The measure has good internal consistency with alpha coefficients above 0.8 for both males and females ( Zuckerman et al., 1978; Zuckerman, 1994 ). To measure a propensity to engage in impulsive behaviour, participants completed the impulsivity subscale of the *Eysenck Impulsiveness Scale*
 
-( Eysenck, Pearson, Easting, & Allsopp, 1985 ). On this 19-item subscale, participants affirm or deny a particular impulsivityrelated statement. Affirmative responses are summed to create a total subscale score ranging from 0 to 19, with higher scores indicating higher levels of impulsivity. This subscale has good internal consistency with an alpha coefficient equaling 0.84 (
-
-Eysenck et al., 1985 ). To measure global feelings of self-worth or self-regard, participants completed the *Rosenberg Self-Esteem Scale* ( Rosenberg, 1965 ). This 10-item measure is scored on a 4-point likert scale with options ranging from strongly agree through strongly disagree. The total score on the measure ranges from 10 to 40, with higher scores indicating higher self-esteem. This measure is commonly used and adequate psychometric properties have been established across numerous studies ( Gray-Little, Williams, & Hancock, 1997; Blascovich & Tomaka, 1991 ).
+( Eysenck, Pearson, Easting, & Allsopp, 1985 ). On this 19-item subscale, participants affirm or deny a particular impulsivityrelated statement. Affirmative responses are summed to create a total subscale score ranging from 0 to 19, with higher scores indicating higher levels of impulsivity. This subscale has good internal consistency with an alpha coefficient equaling 0.84 ( Eysenck et al., 1985 ). To measure global feelings of self-worth or self-regard, participants completed the *Rosenberg Self-Esteem Scale* ( Rosenberg, 1965 ). This 10-item measure is scored on a 4-point likert scale with options ranging from strongly agree through strongly disagree. The total score on the measure ranges from 10 to 40, with higher scores indicating higher self-esteem. This measure is commonly used and adequate psychometric properties have been established across numerous studies ( Gray-Little, Williams, & Hancock, 1997; Blascovich & Tomaka, 1991 ).
 
 <!-- Page 4 -->
 ### 2.3. Procedure
@@ -250,7 +259,7 @@ The authors thank Eshe Raki Earl, Marya Gwadz, Timothy Jones, William Pence, Gil
 
 ## Author Note & Acknowledgments
 
-*Corresponding author. Tel.: +1-301-405-5932; fax: 301-405-5689. E-mail address: clejuez@psyc.umd.edu (C.W. Lejuez). 0140-1971/03/&#36;30.00 © 2003 The Association for Professionals in Services for Adolescents. Published by Elsevier Ltd.
+*Corresponding author. Tel.: +1-301-405-5932; fax: 301-405-5689. E-mail address: clejuez@psyc.umd.edu (C.W. Lejuez). 0140-1971/03/&#36;30.00 © 2003 The Association for Professionals in Services for Adolescents. Published by Elsevier Ltd. doi:10.1016/S0140-1971(03)00036-8
 
 ---
 
@@ -267,4 +276,4 @@ The authors thank Eshe Raki Earl, Marya Gwadz, Timothy Jones, William Pence, Gil
 - Lejuez, C. W., Read, J. P., Kahler, C. W., Richards, J. B., Ramsey, S. E., Stuart, G. L., Strong, D. R., & Brown, R. A. (2002). Evaluation of a behavioral measure of risk-taking: The Balloon Analogue Risk Task (BART). *Journal of* * Experimental Psychology: Applied*, * 6*, 75-84.
 - Rosenberg, M. (1965). *Society and the adolescent self-image*. Princeton, NJ: Princeton University Press.
 - Zuckerman, M. (1994). *Behavioral expressions and biosocial bases of sensation seeking* . New York: Cambridge University Press.
-- Zuckerman, M., Eysenck, S., & Eysenck, H. J. (1978). Sensation seeking in England and America: Cross-cultural, age, and sex comparisons. *Journal of Consulting and Clinical Psychology* , * 46*, 139-149.
+- Zuckerman, M., Eysenck, S., & Eysenck, H. J. (1978). Sensation seeking in England and America: Cross-cultural, age, *Journal of Consulting and Clinical Psychology*, * 46*, 139-149. and sex comparisons.

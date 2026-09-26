@@ -45,6 +45,7 @@ from src.cli import (
     cmd_dashboard,
     cmd_doctor,
     cmd_end_session,
+    cmd_epub,
     cmd_fix,
     cmd_handoff,
     cmd_init_project,
@@ -123,6 +124,7 @@ def main():
     p_proc.add_argument("file", help="輸入檔案路徑 (PDF/EPUB)")
     p_proc.add_argument("--type", choices=["book", "literature", "journal"], default=None, help="強制指定處理類型 (book 或 literature)")
     p_proc.add_argument("--ignore-battery", action="store_true", help="忽略電池電量限制")
+    p_proc.add_argument("--epub", action="store_true", help="轉檔完成後自動輸出 EPUB 3 電子書")
     p_proc.set_defaults(func=cmd_process)
 
     # 5. batch
@@ -130,7 +132,16 @@ def main():
     p_batch.add_argument("directory", help="輸入資料夾路徑 (例如 data/input/books/)")
     p_batch.add_argument("--type", choices=["book", "literature", "journal"], default=None, help="強制指定處理類型 (book 或 literature)")
     p_batch.add_argument("--ignore-battery", action="store_true", help="忽略電池電量限制")
+    p_batch.add_argument("--epub", action="store_true", help="批次轉檔完成後自動輸出 EPUB 3 電子書")
     p_batch.set_defaults(func=cmd_batch)
+
+    # 5b. epub
+    p_epub = subparsers.add_parser("epub", help="將 Markdown、文獻資料夾或書籍目錄匯出為 EPUB 3 電子書")
+    p_epub.add_argument("path", help="目標 Markdown 檔案、文獻資料夾或書籍目錄路徑")
+    p_epub.add_argument("--output", "-o", default=None, help="可選：指定輸出的 EPUB 檔案路徑")
+    p_epub.add_argument("--chapter", "-c", default=None, help="可選：指定僅匯出書籍的特定章節")
+    p_epub.add_argument("--engine", choices=["auto", "pandoc", "python"], default="auto", help="指定轉換引擎 (預設 auto)")
+    p_epub.set_defaults(func=cmd_epub)
 
     # 6. save
     p_save = subparsers.add_parser("save", help="日常本地存檔 (先更新文檔日期後 commit)")

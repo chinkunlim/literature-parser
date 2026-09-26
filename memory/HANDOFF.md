@@ -5,32 +5,24 @@
 
 ---
 
-### 🕒 最新交接時間：2026-09-25 12:36
+### 🕒 最新交接時間：2026-09-26 08:14
  
 #### 1. 剛剛完成了什麼？ (Session Accomplishments)
-- **全專案代碼深度解耦、模組重構與 PromptRegistry 統一架構實裝**：
-  1. **統一 Ollama 提示詞中樞 (`src/guards/prompts.py`)**：
-     - 實作強型別 `PromptRegistry` 類別，統一收攏 LaTeX 公式修復、Manifest 結構校驗、語義排版格式稽核、修復配方合成、自我修復重試、雙欄展開與引用解析提示詞。
-     - 與專案最新修復規則（KaTeX `\$` 貨幣轉義、Python 正則 `\g<1>` 反向引用、APA 表格附註 `<tfoot><tr class="table-notes">`、雙欄閱讀流）緊密對齊。
-  2. **模組化重構龐大命令中心 (`run.py` ➔ `src/cli/*`)**：
-     - 建立 `src/cli/` 專用領域子套件：
-       - `common.py`: 根目錄錨定、過期暫存清理、文檔時間戳同步。
-       - `cli_audit.py`: 文獻排版格式全維度稽核與 AI 複核。
-       - `cli_fix.py`: 修復手冊清單、套用、沙盒測試與 Ollama 合成。
-       - `cli_git.py`: agent-init, save, handoff, end-session, publish, archive-sessions。
-       - `cli_process.py`: process, batch 單檔與批次轉檔管線派發。
-       - `cli_project.py`: doctor, watchdog, init-project, obsidian-link, status, dashboard, test-ollama-auto-trigger。
-     - `run.py` 精簡至 200 行極簡 CLI 派發器。
-  3. **提取跨模組共用純函數文字與正則工具 (`src/doc_processor/utils/shared_text.py`)**：
-     - 統一集中孤立頁碼、KaTeX 貨幣轉義、OCR 統計符號修復、稿件水印過濾、黏連引用等純函數清洗轉換。
-     - `FixPlaybook` 與 `FormatAuditor` 同步繼承引用，消除代碼重複。
-  4. **解耦 1,206 行版面特徵解析巨石 (`layout_detector.py` ➔ 662 行)**：
-     - 抽取 `VectorFigureParser`（向量圖表與研究符號圖式抽取）至 `src/doc_processor/parsers/layout/vector_figure_parser.py`。
-     - 抽取 `EndOfChapterParser`（章末練習題、詞彙索引與延伸閱讀解析器）至 `src/doc_processor/parsers/layout/eoc_parser.py`。
-     - `LayoutDetector` 各方法直接委派，保持 100% 向後相容。
-  5. **全套測試與文獻稽核 100% 通過**：
-     - 全套 229/229 單元測試 100% 通過（5.06 秒）。
-     - 全量 10 篇學術文獻全維度稽核 100% 通過（96%~100% 分數）。
+- **實裝標準 EPUB 3 電子書自適應生成架構 (`EpubExporter`) 與多格式發布管線**：
+  1. **建立多格式匯出模組 (`src/doc_processor/exporter/`)**：
+     - `EpubExporter`: 統一跨書籍與學術文獻的 EPUB 3 匯出控制器，具備自適應引擎選擇（Pandoc 優先 + 純 Python 回退）。
+     - `PurePythonEpubBuilder`: 零依賴 EPUB 3 封裝引擎，嚴格遵循 IDPF 規範（未壓縮 mimetype 第一位、container.xml、content.opf、雙導航 nav.xhtml 與 toc.ncx、CSS 樣式表、圖片打包與 MathML 宣告）。
+     - `MarkdownToXHTML`: 實裝 HTML 標籤棧追蹤器（Tag-Stack Tracker），保證多行 HTML 區塊與巢狀標籤不被破壞；修正 void tags 自閉合 (`<img />`, `<br />`, `<hr />`)、布林屬性規範化 (`<details open="open">`) 與 XML 特殊字符轉義。
+     - `LaTeXToMathML`: 支援 LaTeX 公式轉 MathML（`<math>`），並嚴格保護貨幣符號（`&#36;15.50`）。
+     - `epub_styles.py`: 提供 EPUB 3 專屬排版樣式表，支援閱讀器深淺色模式自適應、響應式表格與圖說美化。
+  2. **支援教科書整本多章節合併與單章獨立匯出**：
+     - 自動遍歷 `chapters/` 將所有章節整合進同一本電子書，具備完整層級導航與 Spine 順序。
+  3. **CLI 總入口整合 (`run.py epub`)**：
+     - 新增獨立指令 `uv run python run.py epub <path>`。
+     - 於 `process` 與 `batch` 深度整合 `--epub` 參數，轉檔完成後自動輸出 EPUB 3。
+  4. **全套測試 100% 通過**：
+     - 新增 `tests/test_v42_epub_exporter.py`，全套 240/240 單元測試 100% 通過（5.4 秒）。
+     - 實際驗證 `2002-01194-001.epub` 與 `2008-17521-013.epub` 完整打包且 XML 驗證無誤。
 
 #### 2. 目前專案狀態與代碼位置
 - 分支：`main`

@@ -103,11 +103,18 @@
 
 <div class="article-meta">
   <strong>Bilingualism: Language and</strong><br>
+  2020, Vol. 23, No. 2, 459 - 471<br>
   © The Author(s) 2019. This is an Open Access<br>
   DOI: <a href="https://doi.org/10.1017/S1366728919000130">10.1017/S1366728919000130</a>
 </div>
 
 # Understanding structural plasticity in the bilingual brain: The Dynamic Restructuring Model
+
+<div class="author-block">
+  <div class="author-name">Christos Pliatsikas</div>
+  <div class="author-affiliation">School of Psychology and Clinical Language Sciences, University of Reading, Reading, UK and Facultad de Lenguas y Educación, Universidad Nebrija, Madrid, Spain</div>
+
+</div>
 
 <details open>
 <summary>📑 <b>Table of Contents</b></summary>

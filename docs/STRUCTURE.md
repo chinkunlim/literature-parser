@@ -70,7 +70,7 @@ books-project/
 │   │   ├── cli_audit.py            # cmd_audit: 排版格式全維度稽核與 AI 複核
 │   │   ├── cli_fix.py              # cmd_fix: 修復手冊清單、套用、沙盒測試與 Ollama 合成
 │   │   ├── cli_git.py              # cmd_agent_init, save, handoff, end-session, publish, archive-sessions
-│   │   ├── cli_process.py          # cmd_process, batch: 單檔與批次轉檔管線派發
+│   │   ├── cli_process.py          # cmd_process, batch, epub: 單檔/批次轉檔與 EPUB 3 電子書匯出
 │   │   └── cli_project.py          # cmd_doctor, watchdog, init-project, obsidian-link, status, dashboard
 │   │
 │   ├── guards/                     # 🛡️ [守衛防線]
@@ -134,7 +134,10 @@ books-project/
 │       │   ├── text_utils.py       # 文本清理通用函式庫 (連字號縫合, 首字下沉修復, 排版符號)
 │       │   ├── obsidian_linker.py  # Obsidian 全書 index.md 索引與章節前後導航雙鏈注入
 │       │   ├── anki_exporter.py    # Anki 記憶閃卡匯出工具
-│       │   └── system.py           # 系統底層調用輔助
+│       ├── exporter/               # 📦 [多格式匯出層] (EPUB 3 電子書自適應生成)
+│       │   ├── __init__.py         # 統一匯出 EpubExporter
+│       │   ├── epub_exporter.py    # EPUB 3 匯出核心 (Pandoc 混合自適應 + 純 Python 零依賴封裝、LaTeX 轉 MathML)
+│       │   └── epub_styles.py      # EPUB 3 專屬排版樣式表 (深淺色自適應、響應式表格與圖說)
 │       │
 │       ├── profiler/               # [版面探測層]
 │       │   ├── coordinate_calibrator.py # 文獻物理幾何座標校準與 document_profile.json 生成

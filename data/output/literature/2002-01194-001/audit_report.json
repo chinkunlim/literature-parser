@@ -8,7 +8,7 @@
   "info_count": 0,
   "score_percent": 100.0,
   "repaired_count": 0,
-  "ollama_review": null,
+  "ollama_review": "Error communicating with local Ollama: timed out",
   "recipe_recommendations": [
     {
       "recipe_id": "normalize_corrupted_stats",

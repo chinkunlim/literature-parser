@@ -21,7 +21,12 @@ from src.utils.logger import get_diagnostic_logger
 logger = get_diagnostic_logger("CommandCenter")
 
 
-def _run_process_pipeline(filepath: Path, doc_type: Optional[str] = None, ignore_battery: bool = False) -> bool:
+def _run_process_pipeline(
+    filepath: Path,
+    doc_type: Optional[str] = None,
+    ignore_battery: bool = False,
+    export_epub: bool = False
+) -> bool:
     """Executes the conversion pipeline for a single file. Returns True on success, False on failure."""
     if not filepath.exists():
         print(f"🛑 錯誤：找不到指定的輸入檔案: {filepath}")
@@ -76,6 +81,18 @@ def _run_process_pipeline(filepath: Path, doc_type: Optional[str] = None, ignore
     res = subprocess.run(cli_cmd, env=env)
     if res.returncode == 0:
         print(f"\n✅ 處理完成！結果已儲存至 {output_base}")
+        if export_epub:
+            from doc_processor.exporter.epub_exporter import EpubExporter
+            doc_name = filepath.stem
+            target_out = output_base / doc_name
+            try:
+                if doc_type == "literature":
+                    EpubExporter.export_literature(target_out)
+                else:
+                    EpubExporter.export_book(target_out)
+            except Exception as e:
+                logger.error("EPUB export failed for '%s': %s", doc_name, e)
+                print(f"  [!] EPUB 匯出失敗: {e}")
         return True
     else:
         print("\n⚠️ 處理過程中遇到警告或錯誤，請檢視 logs/process.log 或 data/needs_review/")
@@ -85,8 +102,45 @@ def _run_process_pipeline(filepath: Path, doc_type: Optional[str] = None, ignore
 def cmd_process(args):
     """Processes a single document file."""
     filepath = Path(args.file)
-    success = _run_process_pipeline(filepath, doc_type=args.type, ignore_battery=args.ignore_battery)
+    success = _run_process_pipeline(
+        filepath,
+        doc_type=args.type,
+        ignore_battery=args.ignore_battery,
+        export_epub=getattr(args, "epub", False)
+    )
     if not success:
+        sys.exit(1)
+
+
+def cmd_epub(args):
+    """Exports a markdown file, literature directory, or book directory to EPUB."""
+    from doc_processor.exporter.epub_exporter import EpubExporter
+
+    target_path = Path(args.path)
+    if not target_path.exists():
+        print(f"🛑 錯誤：找不到指定的路徑: {target_path}")
+        sys.exit(1)
+
+    output_path = Path(args.output) if getattr(args, "output", None) else None
+    engine = getattr(args, "engine", "auto")
+    chapter = getattr(args, "chapter", None)
+
+    try:
+        if target_path.is_file() and target_path.suffix.lower() == ".md":
+            res = EpubExporter.export_literature(target_path, output_epub_path=output_path, engine=engine)
+        elif target_path.is_dir():
+            if (target_path / "chapters").exists():
+                res = EpubExporter.export_book(target_path, output_epub_path=output_path, chapter=chapter, engine=engine)
+            else:
+                res = EpubExporter.export_literature(target_path, output_epub_path=output_path, engine=engine)
+        else:
+            print(f"🛑 錯誤：無法識別的目標檔案或資料夾: {target_path}")
+            sys.exit(1)
+
+        print(f"\n🎉 [EPUB 完成] 電子書產出路徑: {res}")
+    except Exception as e:
+        logger.error("EPUB export failed: %s", e, exc_info=True)
+        print(f"🛑 錯誤：EPUB 匯出失敗: {e}")
         sys.exit(1)
 
 
@@ -133,7 +187,12 @@ def cmd_batch(args):
             break
 
         try:
-            ok = _run_process_pipeline(fpath, doc_type=doc_type, ignore_battery=getattr(args, "ignore_battery", False))
+            ok = _run_process_pipeline(
+                fpath,
+                doc_type=doc_type,
+                ignore_battery=getattr(args, "ignore_battery", False),
+                export_epub=getattr(args, "epub", False)
+            )
             if ok:
                 success.append(fpath.name)
             else:

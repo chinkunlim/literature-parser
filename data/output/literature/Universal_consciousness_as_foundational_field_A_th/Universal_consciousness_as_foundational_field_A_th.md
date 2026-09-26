@@ -282,6 +282,7 @@ Symmetry breaking is a fundamental process in physics, where a system transition
 
 *V* ( Φ ) = *$\lambda$* ( Φ 2 − Φ 0 2 ) 2. (3)
 
+4
 
 Initially, Φ resides at Φ 0, reflecting the undifferentiated state of universal consciousness. Universal thought introduces slight perturbations, causing the field to shift away from Φ 0 and break symmetry. This process results in the emergence of differentiated states, ∣ Φ *k* ⟩.
 

@@ -40,7 +40,19 @@ uv run python run.py process data/input/literature/nature_paper.pdf
 uv run python run.py test-ollama-auto-trigger
 ```
 
-### ④ 日常本地存檔、結束對話與離席交接 (Git Local-Only)
+### ④ 匯出為標準 EPUB 3 電子書 (EPUB Export)
+```bash
+# 將單篇文獻或 Markdown 轉為 EPUB 3
+uv run python run.py epub data/output/literature/2002-01194-001/
+
+# 將整本教科書所有章節打包為一本完整電子書
+uv run python run.py epub data/output/books/Research_Methods/
+
+# 於轉檔時直接一鍵產出 Markdown 與 EPUB 雙版本
+uv run python run.py process data/input/literature/paper.pdf --epub
+```
+
+### ⑤ 日常本地存檔、結束對話與離席交接 (Git Local-Only)
 ```bash
 # 一般進度存檔（自動更新文檔時間戳並 commit）
 uv run python run.py save "完成雙欄排版修正"

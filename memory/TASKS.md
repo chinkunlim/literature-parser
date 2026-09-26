@@ -1,11 +1,18 @@
 # 📋 memory/TASKS.md (專案任務進度看板)
 
-最後更新日期：2026-09-25
+最後更新日期：2026-09-26
 
 ---
 
 ## 🏃 當前 Sprint (v1.0.0-rc1 專案治理與守衛上線)
 
+- [x] [2026-09-26] 實裝標準 EPUB 3 電子書自適應生成架構 (`EpubExporter`) 與多格式發布管線：
+  - 核心模組實作：建立 `src/doc_processor/exporter/`，包含 `EpubExporter`、`PurePythonEpubBuilder`、`MarkdownToXHTML`、`LaTeXToMathML` 與 `epub_styles.py`。
+  - 混合自適應架構：優先調用 Pandoc 生成高品質向量 MathML，若未安裝 Pandoc 則 100% 無縫回退至內建純 Python EPUB 3 封裝引擎（嚴格遵從 IDPF 規範：未壓縮 mimetype 第一位、container.xml、content.opf、雙導航 nav.xhtml 與 toc.ncx、CSS 樣式表、圖片打包與 MathML 宣告）。
+  - XHTML5 安全防線：實裝 HTML 標籤棧追蹤器（Tag-Stack Tracker），徹底解決多行 HTML 區塊與巢狀標籤遭破壞問題；修正 void tags 自閉合 (`<img />`, `<br />`, `<hr />`)、布林屬性規範化 (`<details open="open">`) 與 XML 特殊字符轉義。
+  - 書籍多章節自動整併：教科書預設整合成包含完整層級導航與 Spine 的單一多章節 EPUB，同時支援按需單章匯出；學術文獻一鍵打包為包含元數據卡片與參考文獻的獨立 EPUB。
+  - CLI 命令總成：`run.py epub <path>` 獨立轉換指令，並於 `process` 與 `batch` 深度整合 `--epub` 一鍵轉檔旗標。
+  - 單元測試門禁：新增 `tests/test_v42_epub_exporter.py`，全套 240/240 單元測試 100% 通過（5.4 秒）。
 - [x] [2026-09-25] 全專案代碼深度解耦、模組重構與 PromptRegistry 統一架構實裝：
   - 統一 Ollama Prompt 提示詞中樞 (`src/guards/prompts.py`)：建立強型別 `PromptRegistry` 類別，統一收攏 LaTeX 修復、Manifest 驗證、語義格式稽核、修復配方合成、自我修復重試、雙欄展開、引用解析、OCR 字符校對、多模態版面視覺稽核、複雜表格重構與書籍特徵偵測，全面替換散落在 `ollama_verifier.py`、`table_llm_fixer.py`、`ollama_profiler.py` 中的硬編碼 prompt，並與專案最新修復規則（KaTeX `\$`、正則 `\g<1>`、APA 表格附註、雙欄閱讀流）緊密對齊。
   - 重構 1,820 行單一龐大 `run.py`：拆分出 `src/cli/` 專屬領域子模組（`cli_audit.py`, `cli_fix.py`, `cli_git.py`, `cli_process.py`, `cli_project.py`, `common.py`），使 `run.py` 精簡至 200 行極簡 CLI 派發器。

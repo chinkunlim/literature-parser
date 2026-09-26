@@ -19,7 +19,7 @@ from src.cli.cli_git import (
     cmd_publish,
     cmd_save,
 )
-from src.cli.cli_process import cmd_batch, cmd_process
+from src.cli.cli_process import cmd_batch, cmd_epub, cmd_process
 from src.cli.cli_project import (
     cmd_dashboard,
     cmd_doctor,
@@ -47,6 +47,7 @@ __all__ = [
     "cmd_dashboard",
     "cmd_doctor",
     "cmd_end_session",
+    "cmd_epub",
     "cmd_fix",
     "cmd_handoff",
     "cmd_init_project",

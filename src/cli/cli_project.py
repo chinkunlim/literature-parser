@@ -219,7 +219,7 @@ def cmd_watchdog(args):
 
 def cmd_init_project(args):
     """
-    Initializes a new enterprise-grade project according to PROJECT_INIT_STANDARD.md
+    Initializes a new enterprise-grade project according to the Antigravity standard layout
     with full directory scaffolding, security locks, two-tier coding rules, and run.py.
     """
     target_dir = Path(args.target_dir).resolve()
@@ -305,13 +305,13 @@ OLLAMA_HOST=http://localhost:11434
 """, encoding="utf-8")
 
     # 5. Core Documentation
-    if (ROOT / "PROJECT_INIT_STANDARD.md").exists():
-        shutil.copy2(ROOT / "PROJECT_INIT_STANDARD.md", target_dir / "PROJECT_INIT_STANDARD.md")
+    if (ROOT / "docs" / "ARCHITECTURE.md").exists():
+        shutil.copy2(ROOT / "docs" / "ARCHITECTURE.md", target_dir / "docs" / "ARCHITECTURE.md")
     if (ROOT / "docs" / "CODING_RULES.md").exists():
         shutil.copy2(ROOT / "docs" / "CODING_RULES.md", target_dir / "docs" / "CODING_RULES.md")
 
-    # 6. OPERATIONS.md
-    (target_dir / "OPERATIONS.md").write_text(f"""# 🚀 OPERATIONS.md (專案操作速查手冊 - {pkg_name})
+    # 6. WORKFLOW_GUIDE.md
+    (target_dir / "WORKFLOW_GUIDE.md").write_text(f"""# 🚀 WORKFLOW_GUIDE.md (專案操作速查手冊 - {pkg_name})
 
 > 💡 **專為「3 個月後的自己」與「剛喚醒的 AI Agent」設計**。無論何時重啟專案，請先閱讀此手冊，30 秒內即可快速上手！
 

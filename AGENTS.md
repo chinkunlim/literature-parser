@@ -42,7 +42,7 @@
 - 每次準備提交代碼前：
   - 若完成功能：先在 `memory/TASKS.md` 勾選並標註日期 `[YYYY-MM-DD]`。
   - 若中斷或交接：先在 `memory/HANDOFF.md` 刷新當前時間戳與下次接手指令。
-  - 若更動架構或檔案：先同步更新 `docs/STRUCTURE.md`。
+  - 若更動架構或檔案：先同步更新 `docs/ARCHITECTURE.md`。
 - **⚠️ 語言約束：所有 Git Commit 訊息必須使用【英文】(English Only)**：
   - 嚴格遵循 Conventional Commits 格式，例如：
     - `[YYYY-MM-DD] feat: implement RAM guard and auto-wake for Ollama`
@@ -92,13 +92,13 @@
 ### 10. ⏱️ 全生命週期同步與存檔時機矩陣 (The 6 Golden Triggers)
 所有 AI 必須嚴格遵照以下節奏執行文檔同步、Git 提交與會話歸檔：
 1. **開場喚醒**：跑 `run.py agent-init` 讀檔簡報，不 commit、不備份。
-2. **架構異動**：即時更新 `docs/STRUCTURE.md`，隨功能一併 commit。
-3. **規則更新**：即時同步 `docs/CODING_RULES.md`、`AGENTS.md` 與 `PROJECT_INIT_STANDARD.md`，小步 commit。
+2. **架構異動**：即時更新 `docs/ARCHITECTURE.md`，隨功能一併 commit。
+3. **規則更新**：即時同步 `docs/CODING_RULES.md`、`AGENTS.md` 與 `WORKFLOW_GUIDE.md`，小步 commit。
 4. **功能完成**：在 `memory/TASKS.md` 勾選並標註日期，跑 `run.py save "<English_msg>"` commit。對話中持續保留各項 md 檔案之常態維護。
 5. **結束對話 / 結案離席** ⭐：
    - 當使用者說明「結束對話」時，AI 主動執行閉環 SOP (`run.py end-session "<English_summary>"` 或手動執行三部曲)：
      1. **備份對話**：產出本次會話雙軌檔案 (`-summary.md` + `-transcript.md`)，嚴格限定本專案。
-     2. **最終全面檢查與文檔同步**：全面檢查並同步更新所有相關 `.md` 文件，包含 `memory/HANDOFF.md`、`memory/TASKS.md`、`docs/STRUCTURE.md`、以及 `.agent/skills/` 內所有 `SKILL.md`。
+     2. **最終全面檢查與文檔同步**：全面檢查並同步更新所有相關 `.md` 文件，包含 `memory/HANDOFF.md`、`memory/TASKS.md`、`docs/ARCHITECTURE.md`、以及 `.agent/skills/` 內所有 `SKILL.md`。
      3. **測試與 Git 提交**：執行單元測試門禁（100% 通過），以全英文 Conventional Commit 提交本地存檔。
 6. **里程碑發布** ⭐：更新 `CHANGELOG.md`，跑 `run.py publish "<notes>"`，自動執行全量測試、雙軌封存與 Squash Merge。
 
@@ -126,8 +126,8 @@
 - **強型別集中中樞**：所有與 Ollama 互動之 Prompt 必須定義於 `src/guards/prompts.py` 中的 `PromptRegistry` 類別，具備強型別入參與方法簽名，並嚴格連結專案修正規範（如 KaTeX `\$` 貨幣轉義、Python 正則 `\g<1>` 反向引用、APA 表格附註、雙欄閱讀流）。
 
 ### 15. 📖 文檔分層規範：【完整詳細版】vs【精簡摘要版】 (Document Granularity Standard)
-- **單一真理架構地圖**：`docs/STRUCTURE.md` 明確註記為 `【完整詳細版】`，必須詳列所有資料夾、檔案、具體職責、公開類別與架構設計，且隨檔案增刪即時同步。
-- **高層次導讀手冊**：`README.md` 與 `OPERATIONS.md` 明確註記為 `【精簡摘要版】`，維持 30 秒上手的高密度摘要，並提供指向詳細版的雙向跳轉連結。
+- **單一真理架構地圖**：`docs/ARCHITECTURE.md` 明確註記為 `【完整詳細版】`，必須詳列所有資料夾、檔案、具體職責、公開類別與架構設計，且隨檔案增刪即時同步。
+- **高層次導讀手冊**：`README.md` 與 `WORKFLOW_GUIDE.md` 明確註記為 `【精簡摘要版】`，維持 30 秒上手的高密度摘要，並提供指向詳細版的雙向跳轉連結。
 
 ### 16. 🛡️ 零容忍物理硬不變量與漸進式 AST 沙盒 (Invariants & Safe AST Sandbox)
 - **物理硬不變量防線**：以物理指標（標題存在、摘要完整、參考文獻獨立、LaTeX 括號閉合、無表格洩漏、無孤立頁碼）進行防呆驗證，杜絕「有錯還報對」之假陽性。

@@ -88,8 +88,8 @@ uv run python run.py watchdog
 | 時機點 | 觸發事件 | 該改哪個 MD？ | Git 指令 | 會話歸檔 (`archive-sessions`) |
 | :--- | :--- | :--- | :--- | :--- |
 | **1. 開場喚醒** | 接收新任務 | 唯讀讀取 `HANDOFF.md`, `TASKS.md` | ❌ 不 Commit | ❌ 不歸檔 |
-| **2. 架構異動** | 檔案/模組增刪 | 即時更新 `docs/STRUCTURE.md` | `run.py save "<msg>"` | ❌ 不歸檔 |
-| **3. 規則調整** | 流程/約束更新 | 更新 `CODING_RULES.md`, `PROJECT_INIT_STANDARD.md` | `run.py save "<msg>"` | ❌ 不歸檔 |
+| **2. 架構異動** | 檔案/模組增刪 | 即時更新 `docs/ARCHITECTURE.md` | `run.py save "<msg>"` | ❌ 不歸檔 |
+| **3. 規則調整** | 流程/約束更新 | 更新 `CODING_RULES.md`, `WORKFLOW_GUIDE.md` | `run.py save "<msg>"` | ❌ 不歸檔 |
 | **4. 功能完成** | 單元測試通過 | 勾選 `memory/TASKS.md` | `run.py save "<msg>"` | ❌ 不歸檔 |
 | **5. 離席暫停** ⭐ | 上課/外出/暫停 | 刷新 `memory/HANDOFF.md` | `run.py handoff "<reason>"` | **⭐ 立即執行** |
 | **6. 里程碑結案** ⭐| 版本發布/大交接 | 更新 `CHANGELOG.md`, `TASKS.md` | `run.py publish "<notes>"` | **⭐ 立即執行** |
@@ -121,5 +121,5 @@ uv run python run.py watchdog
 ## 5. 專案目錄地圖版本說明 (Directory Maps)
 
 - **【精簡摘要版】**：請見本手冊與 [README.md](README.md)，供 30 秒快速冷啟動時掌握核心骨幹。
-- **【完整詳細版】**：請直接參閱 [docs/STRUCTURE.md](docs/STRUCTURE.md)，全景收錄全專案每一個檔案的功能職責、依賴關係、設計備註與防重構約束。
+- **【完整詳細版】**：請直接參閱 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)，全景收錄全專案每一個檔案的功能職責、依賴關係、設計備註與防重構約束。
 

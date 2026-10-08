@@ -9,6 +9,18 @@
 
 ---
 
+## [3.2.0] - 2026-10-08
+
+### 🌟 架構對齊與合規審計 (Structure Alignment & Compliance)
+- **全面對齊 `02_PROJECT_ALIGN_CHECK_GUIDE.md` 標準架構**：
+  - 根目錄導入自動化合規審計工具 `audit_project.py`，並於 `Makefile` 新增 `audit` 門禁指令。
+  - 完成歷史對話全量回溯、脫敏切分與雙軌摘要補齊（`conversations/raw/` 與 `conversations/summaries/` 涵蓋 001~009，100% 脫敏存證）。
+  - 全面豐富治理與技術文檔實質內容：`docs/CONTEXT.md`、`docs/DEPLOYMENT.md`、`docs/PROMPT_TEMPLATES.md`、`docs/TOOLS.md`、`evals/README.md`、`.github/CONTRIBUTING.md` 與 `.github/SECURITY.md`。
+  - 憲法與引導文件參照收斂：全面替換歷史 `docs/STRUCTURE.md` 與 `OPERATIONS.md` 引用為 `docs/ARCHITECTURE.md` 與 `WORKFLOW_GUIDE.md`。
+  - 修正腳手架命令 `run.py init-project` 之生成模板，確保新開案直接符合最新標準。
+
+---
+
 ## [3.1.0] - 2026-09-24
 
 ### 🌟 新增 (Added)

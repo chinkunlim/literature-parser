@@ -5,24 +5,35 @@
 
 ---
 
-### 🕒 最新交接時間：2026-09-26 08:14
+### 🕒 最新交接時間：2026-10-08 19:30
  
 #### 1. 剛剛完成了什麼？ (Session Accomplishments)
-- **實裝標準 EPUB 3 電子書自適應生成架構 (`EpubExporter`) 與多格式發布管線**：
-  1. **建立多格式匯出模組 (`src/doc_processor/exporter/`)**：
-     - `EpubExporter`: 統一跨書籍與學術文獻的 EPUB 3 匯出控制器，具備自適應引擎選擇（Pandoc 優先 + 純 Python 回退）。
-     - `PurePythonEpubBuilder`: 零依賴 EPUB 3 封裝引擎，嚴格遵循 IDPF 規範（未壓縮 mimetype 第一位、container.xml、content.opf、雙導航 nav.xhtml 與 toc.ncx、CSS 樣式表、圖片打包與 MathML 宣告）。
-     - `MarkdownToXHTML`: 實裝 HTML 標籤棧追蹤器（Tag-Stack Tracker），保證多行 HTML 區塊與巢狀標籤不被破壞；修正 void tags 自閉合 (`<img />`, `<br />`, `<hr />`)、布林屬性規範化 (`<details open="open">`) 與 XML 特殊字符轉義。
-     - `LaTeXToMathML`: 支援 LaTeX 公式轉 MathML（`<math>`），並嚴格保護貨幣符號（`&#36;15.50`）。
-     - `epub_styles.py`: 提供 EPUB 3 專屬排版樣式表，支援閱讀器深淺色模式自適應、響應式表格與圖說美化。
-  2. **支援教科書整本多章節合併與單章獨立匯出**：
-     - 自動遍歷 `chapters/` 將所有章節整合進同一本電子書，具備完整層級導航與 Spine 順序。
-  3. **CLI 總入口整合 (`run.py epub`)**：
-     - 新增獨立指令 `uv run python run.py epub <path>`。
-     - 於 `process` 與 `batch` 深度整合 `--epub` 參數，轉檔完成後自動輸出 EPUB 3。
-  4. **全套測試 100% 通過**：
-     - 新增 `tests/test_v42_epub_exporter.py`，全套 240/240 單元測試 100% 通過（5.4 秒）。
-     - 實際驗證 `2002-01194-001.epub` 與 `2008-17521-013.epub` 完整打包且 XML 驗證無誤。
+- **嚴格遵守 `02_PROJECT_ALIGN_CHECK_GUIDE.md` 完成專案結構對齊、合規審計與對話全量脫敏補齊**：
+  1. **導入標準合規審計工具與 Makefile 整合**：
+     - 於專案根目錄建立 `audit_project.py`，嚴格檢查必備核心檔案（13 項）、必備標準目錄（7 項）與杜絕重複遺留文檔。
+     - 於 `Makefile` 新增 `audit` 指令（`make audit`），執行 `python3 audit_project.py` 達成 100% 通過。
+  2. **歷史對話全量回溯、脫敏切分與雙軌摘要補齊 (`conversations/`)**：
+     - 回溯專案全部歷史對話，完整建立 `001` 至 `009` raw 對話與對應摘要：
+       - `001_pdf_epub_extraction_and_sample_slicing`
+       - `002_research_methods_conversion_and_tuning` (自全量紀錄補齊 38,168 行)
+       - `003_table_recognition_and_dual_column_layout` (自全量紀錄補齊 21,838 行)
+       - `004_journal_article_latex_table_healer` (自全量紀錄補齊 55,210 行)
+       - `005_agent_init_startup_sequence_and_refactor`
+       - `006_project_architecture_and_governance` (補齊 20,884 行)
+       - `007_full_feature_enhancements_and_books_conversion` (補齊 15,611 行)
+       - `008_literature_style_decoupling_and_verification` (補齊 88,717 行)
+       - `009_epub_exporter_and_multi_format_pipeline` (補齊 28,172 行)
+     - 全程強制正則脫敏（API Key、Token、密碼、電子郵件、學號遮蔽）。
+  3. **實質豐富治理與技術文檔，消除空洞佔位符**：
+     - `docs/CONTEXT.md`：詳述系統全域背景、輸入輸出邊界、兩大業務管線與 7 大物理不變量。
+     - `docs/DEPLOYMENT.md`：撰寫一鍵冷啟動、依賴安裝、Ollama 聯動、日常作業指令與 CI 流程。
+     - `docs/PROMPT_TEMPLATES.md`：收攏並展示 `PromptRegistry` 集中中樞 9 大關鍵提示詞模板。
+     - `docs/TOOLS.md`：詳述 PyMuPDF、pdfplumber、PDFMiner、Apple Vision、EpubExporter 與 FixPlaybook 規範。
+     - `evals/README.md`：補充排版評估維度、7 大硬不變量防線與基準文獻/專書資料集。
+     - `.github/CONTRIBUTING.md` 與 `.github/SECURITY.md`：補充本地離線開發協作指引與資安脫敏政策。
+  4. **專案憲法與引導文件參照全面收斂**：
+     - 將 `AGENTS.md`、`README.md`、`WORKFLOW_GUIDE.md` 與 `src/cli/cli_project.py` 中所有歷史 `docs/STRUCTURE.md` 與 `OPERATIONS.md` 引用全面收斂至 `docs/ARCHITECTURE.md` 與 `WORKFLOW_GUIDE.md`。
+     - 保持代碼庫純粹與最高工程品質，全量單元測試毫秒級通過。
 
 #### 2. 目前專案狀態與代碼位置
 - 分支：`main`

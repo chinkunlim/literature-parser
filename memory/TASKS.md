@@ -1,11 +1,16 @@
 # 📋 memory/TASKS.md (專案任務進度看板)
 
-最後更新日期：2026-09-26
+最後更新日期：2026-10-08
 
 ---
 
 ## 🏃 當前 Sprint (v1.0.0-rc1 專案治理與守衛上線)
 
+- [x] [2026-10-08] 嚴格遵守 `02_PROJECT_ALIGN_CHECK_GUIDE.md` 完成專案結構對齊、文檔無損整併與對話自動補齊：
+  - 工具鏈與審計門禁：根目錄導入標準 `audit_project.py` 合規審計工具，於 `Makefile` 增加 `audit` 目標，審計 100% 通過。
+  - 對話深度挖掘與補齊：全量回溯並脫敏補齊 `conversations/raw/` 與 `conversations/summaries/`（001 至 009 全系列），建立雙軌紀錄與高密度摘要，嚴格執行 API Key、密碼、信箱、學號脫敏。
+  - 治理文檔實質擴充：全面充實 `docs/CONTEXT.md`、`docs/DEPLOYMENT.md`、`docs/PROMPT_TEMPLATES.md`、`docs/TOOLS.md`、`evals/README.md`、`.github/CONTRIBUTING.md` 與 `.github/SECURITY.md`，杜絕任何空洞佔位符。
+  - 憲法條文收斂：將 `AGENTS.md`、`README.md`、`WORKFLOW_GUIDE.md` 與 `src/cli/cli_project.py` 中所有歷史 `docs/STRUCTURE.md` 與 `OPERATIONS.md` 引用收斂至 `docs/ARCHITECTURE.md` 與 `WORKFLOW_GUIDE.md`。
 - [x] [2026-09-26] 實裝標準 EPUB 3 電子書自適應生成架構 (`EpubExporter`) 與多格式發布管線：
   - 核心模組實作：建立 `src/doc_processor/exporter/`，包含 `EpubExporter`、`PurePythonEpubBuilder`、`MarkdownToXHTML`、`LaTeXToMathML` 與 `epub_styles.py`。
   - 混合自適應架構：優先調用 Pandoc 生成高品質向量 MathML，若未安裝 Pandoc 則 100% 無縫回退至內建純 Python EPUB 3 封裝引擎（嚴格遵從 IDPF 規範：未壓縮 mimetype 第一位、container.xml、content.opf、雙導航 nav.xhtml 與 toc.ncx、CSS 樣式表、圖片打包與 MathML 宣告）。

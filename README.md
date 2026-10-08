@@ -5,7 +5,7 @@
 > [!TIP]
 > **🚀 快速上手 (Quick Start)**:
 > 本專案已全面升級為統一總指揮中心 [run.py](run.py) 與跨 Agent 協作治理體系。
-> - **人類與新 AI 快速指引**：請優先閱讀 [OPERATIONS.md](OPERATIONS.md)（30 秒喚醒手冊）與 [AGENTS.md](AGENTS.md)（跨 Agent 憲法）。
+> - **人類與新 AI 快速指引**：請優先閱讀 [WORKFLOW_GUIDE.md](WORKFLOW_GUIDE.md)（30 秒喚醒手冊）與 [AGENTS.md](AGENTS.md)（跨 Agent 憲法）。
 > - **常用指令**：執行 `uv run python run.py agent-init` 讀取原則；執行 `uv run python run.py doctor` 進行軟硬體健檢；執行 `uv run python run.py process <filepath>` 開始轉檔。
 > - **資料目錄標準**：書籍請放至 `data/input/books/`，期刊論文請放至 `data/input/literature/`。
 
@@ -123,7 +123,7 @@ flowchart TD
 
 > 💡 **目錄版本說明**：
 > - **【精簡摘要版】（本節）**：提供專案骨幹與主要資料夾之高階摘要，供快速瀏覽。
-> - **【完整詳細版】**：請直接參閱 [docs/STRUCTURE.md](docs/STRUCTURE.md)，收錄全專案每一個檔案的功能職責、依賴關係與架構備註。
+> - **【完整詳細版】**：請直接參閱 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)，收錄全專案每一個檔案的功能職責、依賴關係與架構備註。
 
 The project conforms to modern Python package standards (PEP 517/518, `pyproject.toml`) with decoupled, single-responsibility modules:
 
@@ -132,7 +132,7 @@ books/
 ├── run.py                             # 🎯 Unified CLI Command Center (entry point for all operations)
 ├── pyproject.toml                     # Modern Python packaging configuration (uv)
 ├── AGENTS.md                          # Cross-Agent governance constitution (mandatory read)
-├── OPERATIONS.md                      # 30-second onboarding guide for humans & AI
+├── WORKFLOW_GUIDE.md                  # Standard workflow and operational guide for humans & AI
 ├── data/
 │   ├── input/
 │   │   ├── books/                     # 📥 Drop incoming textbook PDF/EPUB here

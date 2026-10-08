@@ -1,0 +1,3 @@
+# Books Document Processor Rules
+- Strictly adhere to Checkpoint and Healing protocols.
+- Follow clean architecture in src/doc_processor and src/book_processor.

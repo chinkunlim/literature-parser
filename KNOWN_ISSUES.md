@@ -1,3 +1,7 @@
+# 已知問題與踩坑避障指南 (KNOWN_ISSUES.md)
+
+本文件收錄文檔解析、PDF 表格識別、LaTeX 公式渲染、雙欄佈局抽取與 Ollama AI 修復之已知限制與歷史踩坑記錄（整合原 `docs/ISSUES_ARCHIVE.md`）。
+
 # 📚 Book Processor: 產出品質與架構缺陷深度分析報告 (Issues Tracking)
 
 **建立日期**：2026-09-20  
@@ -436,3 +440,4 @@ flowchart TD
 
 5. **全套 123 項單元測試**：
    - `python3 -m unittest discover tests` $\rightarrow$ **123/123 tests PASSED (100% OK)**。
+

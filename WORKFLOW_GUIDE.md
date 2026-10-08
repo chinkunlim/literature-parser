@@ -1,3 +1,8 @@
+# 書籍與文檔排版轉換系統標準作業流程指南 (WORKFLOW_GUIDE.md)
+
+## 1. 系統定位
+本手冊整合原 `OPERATIONS.md` 與標準 Agent 執行流程，提供書籍、PDF、EPUB 轉 Markdown 與數學公式/表格/圖形提取之標準作業流程（SOP）。
+
 # 🚀 OPERATIONS.md (專案操作速查手冊)
 
 > 💡 **專為「3 個月後的自己」與「剛喚醒的 AI Agent」設計**。無論何時重啟專案，請先閱讀此手冊，30 秒內即可快速上手，無需重新通讀原始碼！
@@ -117,3 +122,4 @@ uv run python run.py watchdog
 
 - **【精簡摘要版】**：請見本手冊與 [README.md](README.md)，供 30 秒快速冷啟動時掌握核心骨幹。
 - **【完整詳細版】**：請直接參閱 [docs/STRUCTURE.md](docs/STRUCTURE.md)，全景收錄全專案每一個檔案的功能職責、依賴關係、設計備註與防重構約束。
+

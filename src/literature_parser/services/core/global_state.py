@@ -37,7 +37,8 @@ class GlobalStateManager:
         if state_dir:
             self.state_dir = Path(state_dir)
         else:
-            self.state_dir = find_project_root() / "data" / "state"
+            from literature_parser.config.settings import load_config
+            self.state_dir = load_config().state_dir
 
         self.state_dir.mkdir(parents=True, exist_ok=True)
         self.state_file = self.state_dir / _STATE_FILE_NAME
@@ -117,7 +118,8 @@ class GlobalStateManager:
         and reconstructs global_status.json.
         """
         if not output_root:
-            output_root = find_project_root() / "data" / "output"
+            from literature_parser.config.settings import load_config
+            output_root = load_config().output_dir
         out_path = Path(output_root)
         if not out_path.is_dir():
             return 0

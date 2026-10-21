@@ -112,7 +112,8 @@ class VisualAuditor:
 
 
 if __name__ == "__main__":
-    b_dir = Path("./data/output/books/Research Methods, Design, and Analysis 13th ed")
+    from literature_parser.config.settings import load_config
+    b_dir = load_config().output_dir / "books/Research Methods, Design, and Analysis 13th ed"
     ch_pdf = b_dir / "chapters/Ch02 Research Approaches and Methods of Data Collection/Ch02 Research Approaches and Methods of Data Collection.pdf"
     ch_md = b_dir / "chapters/Ch02 Research Approaches and Methods of Data Collection/Ch02 Research Approaches and Methods of Data Collection.md"
     if ch_pdf.exists() and ch_md.exists():

@@ -146,16 +146,18 @@ def cmd_watchdog(args):
     while continuously auditing macOS hardware health (RAM, Battery, SSD, MPS, Ollama).
     Auto-triggers safe conversion when files arrive.
     """
-    books_in = ROOT / "data" / "input" / "books"
-    lit_in = ROOT / "data" / "input" / "literature"
+    from literature_parser.config.settings import load_config as _load_config
+    app_cfg = _load_config()
+    books_in = app_cfg.input_dir / "books"
+    lit_in = app_cfg.input_dir / "literature"
     books_in.mkdir(parents=True, exist_ok=True)
     lit_in.mkdir(parents=True, exist_ok=True)
 
     print("\n" + "=" * 65)
     print("👁️ [WATCHDOG] 軟硬體一體化智慧看門狗 (Hardware & Input Monitor)")
     print("=" * 65)
-    print("• 監控目錄 (Books)     : data/input/books/")
-    print("• 監控目錄 (Literature): data/input/literature/")
+    print(f"• 監控目錄 (Books)     : {books_in}")
+    print(f"• 監控目錄 (Literature): {lit_in}")
     print("• 守衛防線             : RAM ≥ 4GB | SSD ≥ 10GB | 非低電量電池模式")
     print("=" * 65 + "\n")
 

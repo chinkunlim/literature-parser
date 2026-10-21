@@ -8,6 +8,9 @@ All notable changes to **literature-parser** are documented here
 ### Changed
 - refactor(migration): complete legacy codebase migration to structured layout (by `@antigravity`)
 
+### Fixed
+- fix(config): standardize DATA_DIR hierarchy and route all data paths through AppConfig (by `@antigravity`)
+
 ## [0.1.0] - 2026-10-21
 ### Added
 - Initial project scaffold (framework v3.1.0).

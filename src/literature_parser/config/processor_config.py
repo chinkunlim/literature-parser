@@ -30,10 +30,16 @@ _DICT_CANDIDATES = [
 ]
 DEFAULT_DICT_PATH = next((p for p in _DICT_CANDIDATES if os.path.exists(p)), "")
 
-DEFAULT_INPUT_DIR = "./data/input/books"
-DEFAULT_OUTPUT_DIR = "./data/output/books"
-DEFAULT_INBOX_DIR = "./data/input/books"
-DEFAULT_PROCESSED_DIR = "./data/processed"
+from literature_parser.config.settings import load_config as _load_app_config
+_app_cfg = _load_app_config()
+
+DEFAULT_DATA_DIR = str(_app_cfg.data_dir)
+DEFAULT_INPUT_DIR = str(_app_cfg.input_dir / "books")
+DEFAULT_OUTPUT_DIR = str(_app_cfg.output_dir / "books")
+DEFAULT_INBOX_DIR = str(_app_cfg.input_dir / "books")
+DEFAULT_PROCESSED_DIR = str(_app_cfg.data_dir / "processed")
+DEFAULT_NEEDS_REVIEW_DIR = str(_app_cfg.needs_review_dir)
+DEFAULT_STATE_DIR = str(_app_cfg.state_dir)
 
 # Global learned-rules store (survives individual book cleanups).
 GLOBAL_RULES_DIR = Path.home() / ".doc_processor"

@@ -19,8 +19,8 @@ from literature_parser.services.guards.prompts import (
 from literature_parser.services.utils.app_logger import get_diagnostic_logger
 
 logger = get_diagnostic_logger("Validator")
-PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-QUARANTINE_DIR = PROJECT_ROOT / "data" / "needs_review"
+from literature_parser.config.settings import load_config as _load_config
+QUARANTINE_DIR = _load_config().needs_review_dir
 
 
 class ValidatorGuard:

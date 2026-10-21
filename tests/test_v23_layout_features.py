@@ -25,8 +25,10 @@ class TestV23LayoutFeatures(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.ch01_pdf = "./data/output/books/Research Methods, Design, and Analysis 13th ed/chapters/Ch01 Introduction to Scientific Research/Ch01 Introduction to Scientific Research.pdf"
-        cls.pdf_exists = Path(cls.ch01_pdf).exists()
+        import shutil
+        from literature_parser.config.settings import load_config
+        cls.ch01_pdf = str(load_config().output_dir / "books/Research Methods, Design, and Analysis 13th ed/chapters/Ch01 Introduction to Scientific Research/Ch01 Introduction to Scientific Research.pdf")
+        cls.pdf_exists = Path(cls.ch01_pdf).exists() and shutil.which("pdftohtml") is not None
         from literature_parser.services.style_loader import load_style
         cls.orig_style = load_style()
         test_style = dict(cls.orig_style)

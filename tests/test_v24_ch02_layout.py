@@ -10,11 +10,14 @@ sys.path.insert(0, str(ROOT / 'src'))
 from literature_parser.services.parsers.digital_pdf import DigitalPDFParser
 from literature_parser.services.parsers.layout_detector import LayoutDetector
 from literature_parser.services.style_loader import load_style
+from literature_parser.config.settings import load_config
 
-CH02_PDF = ROOT / 'output/Research Methods, Design, and Analysis 13th ed/chapters/Ch02 Research Approaches and Methods of Data Collection/Ch02 Research Approaches and Methods of Data Collection.pdf'
+import shutil
+
+CH02_PDF = load_config().output_dir / "books/Research Methods, Design, and Analysis 13th ed/chapters/Ch02 Research Approaches and Methods of Data Collection/Ch02 Research Approaches and Methods of Data Collection.pdf"
 
 
-@unittest.skipIf(not CH02_PDF.exists(), "Ch02 PDF not yet generated; run batch_convert or split first.")
+@unittest.skipIf(not CH02_PDF.exists() or not shutil.which("pdftohtml"), "Ch02 PDF not yet generated or pdftohtml not installed")
 class TestV24Ch02LayoutFixes(unittest.TestCase):
 
     @classmethod

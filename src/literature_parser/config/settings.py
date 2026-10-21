@@ -32,8 +32,14 @@ def resolve_data_dir(raw: str) -> Path:
     return path if path.is_absolute() else (PROJECT_ROOT / path).resolve()
 
 
+PROJECT_FILE_WINS = ("DATA_DIR",)
+
+
 def load_dotenv_file(path: Path) -> None:
     """Load `KEY=value` lines from a `.env` file without overriding variables that are already set.
+
+    Keys in `PROJECT_FILE_WINS` override `os.environ` so inherited shell variables
+    (e.g. Open WebUI's DATA_DIR) cannot redirect the project's data folder.
 
     Args:
         path: The `.env` file (missing files are ignored).
@@ -44,7 +50,11 @@ def load_dotenv_file(path: Path) -> None:
         line = raw.strip()
         if line and not line.startswith("#") and "=" in line:
             key, _, value = line.partition("=")
-            os.environ.setdefault(key.strip(), value.strip().strip("\"'"))
+            k, v = key.strip(), value.strip().strip("\"'")
+            if k in PROJECT_FILE_WINS:
+                os.environ[k] = v
+            else:
+                os.environ.setdefault(k, v)
 
 
 @dataclass(frozen=True)

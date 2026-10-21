@@ -61,10 +61,6 @@ class GlobalLearner:
     @classmethod
     def _load(cls) -> dict:
         target = cls._rules_file
-        if not target.exists():
-            fallback = Path(".book_processor") / "global_rules.json"
-            if fallback.exists():
-                target = fallback
         if target.exists():
             try:
                 with open(target, "r", encoding="utf-8") as f:
@@ -77,13 +73,8 @@ class GlobalLearner:
     def _save(cls, rules: dict) -> None:
         try:
             _atomic_write_json(cls._rules_file, rules)
-        except OSError:
-            # Graceful fallback to project directory if ~/.book_processor is non-writable
-            try:
-                fallback = Path(".book_processor") / "global_rules.json"
-                _atomic_write_json(fallback, rules)
-            except OSError as e2:
-                logger.warning("GlobalLearner: could not save global rules – %s", e2)
+        except OSError as e:
+            logger.warning("GlobalLearner: could not save global rules – %s", e)
 
     @classmethod
     def get_noise_patterns(cls) -> list:

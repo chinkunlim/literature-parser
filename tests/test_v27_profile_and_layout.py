@@ -23,14 +23,20 @@ if str(SRC_DIR) not in sys.path:
 
 from literature_parser.services.parsers.digital_pdf import DigitalPDFParser
 from literature_parser.services.parsers.layout_detector import LayoutDetector
+from literature_parser.config.settings import load_config
 
-BOOK_DIR = Path(__file__).parent.parent / "./data/output/books/Research Methods, Design, and Analysis 13th ed"
+BOOK_DIR = load_config().output_dir / "books/Research Methods, Design, and Analysis 13th ed"
 CH01_PDF = BOOK_DIR / "chapters/Ch01 Introduction to Scientific Research/Ch01 Introduction to Scientific Research.pdf"
 CH02_PDF = BOOK_DIR / "chapters/Ch02 Research Approaches and Methods of Data Collection/Ch02 Research Approaches and Methods of Data Collection.pdf"
 APP_PDF = BOOK_DIR / "chapters/Appendix/Appendix.pdf"
 
 
 class TestV27ProfileAndLayout(unittest.TestCase):
+
+    def setUp(self):
+        import shutil
+        if not shutil.which("pdftohtml"):
+            self.skipTest("pdftohtml not found")
 
     def test_appendix_skips_concept_map(self):
         """Verify Appendix page 1 does not reconstruct concept map mindmap."""

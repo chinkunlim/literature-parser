@@ -9,15 +9,17 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from literature_parser.services.parsers.layout_detector import LayoutDetector
 from literature_parser.services.parsers.digital_pdf import DigitalPDFParser
+from literature_parser.config.settings import load_config
 
-CH04_PDF = ROOT / "./data/output/books/Research Methods, Design, and Analysis 13th ed/chapters/Ch04 Ethics/Ch04 Ethics.pdf"
+CH04_PDF = load_config().output_dir / "books/Research Methods, Design, and Analysis 13th ed/chapters/Ch04 Ethics/Ch04 Ethics.pdf"
 
 
 class TestV26ExhibitsAndColumns(unittest.TestCase):
 
     def setUp(self):
-        if not CH04_PDF.exists():
-            self.skipTest("Chapter 4 PDF not found")
+        import shutil
+        if not CH04_PDF.exists() or not shutil.which("pdftohtml"):
+            self.skipTest("Chapter 4 PDF or pdftohtml not found")
 
     def test_exhibit_4_3_two_column_uncurling(self):
         """Verify Exhibit 4.3 on Page 8 is extracted with columns uncurled, not interleaved."""

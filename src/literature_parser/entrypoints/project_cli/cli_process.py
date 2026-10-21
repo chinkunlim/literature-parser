@@ -60,7 +60,9 @@ def _run_process_pipeline(
         print(f"🛑 硬體空間不足拒絕啟動: {'; '.join(hw['reasons'])}")
         return False
 
-    output_base = Path("data/output") / ("books" if doc_type == "book" else "literature")
+    from literature_parser.config.settings import load_config as _load_config
+    app_cfg = _load_config()
+    output_base = app_cfg.output_dir / ("books" if doc_type == "book" else "literature")
     output_base.mkdir(parents=True, exist_ok=True)
 
     print(f"• 輸出目標資料夾: {output_base}")

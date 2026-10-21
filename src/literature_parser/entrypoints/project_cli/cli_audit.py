@@ -49,7 +49,8 @@ def cmd_audit(args):
 
     md_files = []
     if audit_all or not target:
-        lit_dir = ROOT / "data" / "output" / "literature"
+        from literature_parser.config.settings import load_config as _load_config
+        lit_dir = _load_config().output_dir / "literature"
         if lit_dir.exists():
             for d in sorted(lit_dir.iterdir()):
                 if d.is_dir():

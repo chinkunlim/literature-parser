@@ -6,3 +6,5 @@
 |---|---|---|---|
 | [SPEC-001](001-textbook-pipeline.md) | 教科書解析管線規格 | Implemented | `services.pipelines.textbook_pipeline` |
 | [SPEC-002](002-literature-pipeline.md) | 學術期刊文獻解析管線規格 | Implemented | `adapters.pipelines.literature_pipeline` |
+| [SPEC-003](003-epub-exporter.md) | EPUB 3 電子書匯出管線規格 | Implemented | `services.exporter.epub_exporter` |
+| [SPEC-004](004-fix-playbook-and-synthesizer.md) | 排版修復手冊與配方合成規格 | Implemented | `adapters.fixes.synthesizer` |

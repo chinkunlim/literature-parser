@@ -46,3 +46,14 @@
 
 ### [2026-10-21 16:01 UTC] 認領任務 `TASK-001` (遷移批次 1：依賴與設定檔轉換（uv / pnpm / .env.example / Brewfile）) (by `antigravity`)
 - **相關範圍**: `legacy, legacy`
+
+### [2026-10-21 16:02 UTC] 完成任務 `TASK-001` — 遷移批次 1：依賴與設定檔轉換（uv / pnpm / .env.example / Brewfile） (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: 依賴與設定檔轉換完成，已合併 .env.example 與 pyproject.toml 腳本設定並移除 legacy 舊設定檔
+
+### [2026-10-21 16:02 UTC] 認領任務 `TASK-002` (遷移批次 2：config 層（設定、環境變數讀取）) (by `antigravity`)
+- **相關範圍**: `src/literature_parser/config/, legacy`
+
+### [2026-10-21 16:03 UTC] 完成任務 `TASK-002` — 遷移批次 2：config 層（設定、環境變數讀取） (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: config 層遷移完成，processor_config.py 與 config_manager.py 正確載入資源，0 critical issues

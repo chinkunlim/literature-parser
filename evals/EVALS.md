@@ -1,4 +1,4 @@
-# 排版轉換品質評估與基準資料集 (evals/README.md)
+# 排版轉換品質評估與基準資料集 (evals/EVALS.md)
 
 ## 1. 評估目標與維度 (Evaluation Objectives)
 
@@ -24,21 +24,23 @@ flowchart LR
     G5 --> G6["6. 無孤立頁碼"]
     G6 --> G7["7. 非空白檔案 (>500B)"]
     G7 --> Verdict{"門禁評估結果"}
-    Verdict -->|全部通過| Pass["✅ 驗收通過 (data/output/)"]
-    Verdict -->|任一失敗| Quarantine["🚨 自動隔離 (data/needs_review/)"]
+    Verdict -->|全部通過| Pass["✅ 驗收通過 (DATA_DIR/output/)"]
+    Verdict -->|任一失敗| Quarantine["🚨 自動隔離 (DATA_DIR/needs_review/)"]
 ```
 
 ---
 
 ## 3. 評估資料集清單 (Benchmark Datasets)
 
-### 3.1 學術文獻基準組 (`data/input/literature/`)
+所有資料集均存放於 `DATA_DIR/input/`（依 `.env` 之 `DATA_DIR` 配置）：
+
+### 3.1 學術文獻基準組 (`DATA_DIR/input/literature/`)
 - `2002-01194-001.pdf`：APA 標準雙欄期刊論文（含大量統計公式、三線表格）
 - `2008-17521-013.pdf`：APA 標準雙欄期刊論文（含複雜實驗流程與跨欄圖表）
 - `Journal of Adolescence...pdf`：Elsevier 雙欄期刊論文（含自定義頁首浮水印）
-- 其餘 7 篇涵蓋 IEEE、Springer 與 SpringerOpen 之不同排版樣本。
+- 其餘涵蓋 IEEE、Springer 與 SpringerOpen 之不同排版樣本。
 
-### 3.2 專書基準組 (`data/input/books/`)
+### 3.2 專書基準組 (`DATA_DIR/input/books/`)
 - `Research Methods, Design, and Analysis 13th ed.pdf`：數位原生 PDF，長篇教科書基準（840+ 頁）
 - `Group Counseling- Strategies and Skills...pdf`：掃描版書籍 (Scanned PDF)，神經 OCR 與首字下沉基準
 - `Research-Methods-in-Psychology-1641401901.epub`：EPUB 參考組，多章節結構對比
@@ -49,8 +51,8 @@ flowchart LR
 
 ```bash
 # 1. 執行排版格式自動化稽核
-python3 run.py audit data/output/literature/2002-01194-001/
+uv run literature-parser audit path/to/document.md
 
 # 2. 執行全量稽核測試套件
-python3 -m unittest tests/test_v39_format_auditor.py tests/test_v40_fix_playbook_and_invariants.py
+uv run --offline python -m unittest tests/test_v39_format_auditor.py tests/test_v40_fix_playbook_and_invariants.py
 ```

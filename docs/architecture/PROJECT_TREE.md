@@ -71,7 +71,8 @@ literature-parser/
 │   │   ├── TASK-007-7-web-html-css-js.json
 │   │   ├── TASK-008-8.json
 │   │   ├── TASK-009-9-readme.json
-│   │   └── TASK-010-10.json
+│   │   ├── TASK-010-10.json
+│   │   └── TASK-011-md.json
 │   ├── framework.lock                      # [框架鎖定檔] 框架版本與檔案雜湊，供 update_framework 判斷是否被修改
 │   └── project.toml                        # [專案設定・各專案自訂] 語言、分層、品質門檻、指令、業務規則
 ├── .cursor/                                # [Agent 轉接] Cursor 規則 (自動產生)
@@ -101,6 +102,7 @@ literature-parser/
 │   ├── known-issues/                       # [已知問題庫] 一問題一檔案
 │   │   ├── 001-two-column-and-math-shattering.md
 │   │   ├── 002-table-banner-and-styling.md
+│   │   ├── 003-external-pdf-tools-fallback.md
 │   │   ├── _TEMPLATE.md                    # 已知問題範本 (tracker_cli 會套用)
 │   │   └── KNOWN_ISSUES.md                 # 已知問題總表 (🔴/🟡/🟢)
 │   ├── migration/                          # [遷移紀錄] 舊專案搬移清單、批次與完成標準
@@ -108,6 +110,8 @@ literature-parser/
 │   ├── specs/                              # [功能規格書] PRD / API Contract
 │   │   ├── 001-textbook-pipeline.md
 │   │   ├── 002-literature-pipeline.md
+│   │   ├── 003-epub-exporter.md
+│   │   ├── 004-fix-playbook-and-synthesizer.md
 │   │   ├── _TEMPLATE.md                    # 規格範本
 │   │   └── SPECS.md                        # 規格清單
 │   ├── standards/                          # [工程規範] 依任務載入 (Progressive Disclosure)

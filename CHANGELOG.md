@@ -5,17 +5,26 @@ All notable changes to **literature-parser** are documented here
 
 ## [Unreleased]
 
+### Added
+- docs(specs): add SPEC-003 (EPUB 3 Exporter) and SPEC-004 (Fix Playbook & Recipe Synthesizer) specifications (by `@antigravity`)
+- docs(known-issues): document ISSUE-003 on external PDF tools fallback and graceful degradation (by `@antigravity`)
+
 ### Changed
+- docs(migration): mark all migration acceptance criteria as completed (by `@antigravity`)
+- docs(evals,web,readme): update eval commands, dashboard guide, CLI command references, and offline test instructions (by `@antigravity`)
 - refactor(migration): complete legacy codebase migration to structured layout (by `@antigravity`)
 
 ### Fixed
 - fix(config): standardize DATA_DIR hierarchy and route all data paths through AppConfig (by `@antigravity`)
 
+### Documentation
+- docs: update and synchronize all project markdown documentation (by `@antigravity`)
+
 ### Testing
 - test(workflows): verify all CLI workflows, fix pathing and pure-python fallbacks (by `@antigravity`)
 
 ### Chore
-- chore(project): update project tooling and config (TASK-001, TASK-009, TASK-010) (by `@antigravity`)
+- chore(project): update project tooling and config (TASK-001, TASK-009, TASK-010, TASK-011) (by `@antigravity`)
 
 ## [0.1.0] - 2026-10-21
 ### Added

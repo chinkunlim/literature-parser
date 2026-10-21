@@ -47,8 +47,11 @@ uv run literature-parser process path/to/textbook.pdf --type book
 # 批次遞迴處理整個目錄
 uv run literature-parser batch path/to/folder/ --type journal
 
-# 匯出結構化 Markdown 為標準 EPUB 3 電子書
+# 匯出結構化 Markdown 為標準 EPUB 3 電子書（支援書籍多章節與單篇論文）
 uv run literature-parser epub path/to/output_dir/ --type book
+
+# 為轉換後之書籍自動生成 Obsidian 雙向導航雙鏈與全書 index.md
+uv run literature-parser obsidian-link path/to/book_output_dir/
 ```
 
 ### 驗證與自動修復
@@ -59,15 +62,21 @@ uv run literature-parser audit path/to/chapter.md --ollama --fix
 # 查看或套用專案排版修復配方 (Fix Playbook)
 uv run literature-parser fix list
 uv run literature-parser fix apply clean_orphan_page_numbers path/to/chapter.md
+
+# 自主合成排版瑕疵修復配方（沙盒測試與 AST 安全防護）
+uv run literature-parser fix synthesize "瑕疵症狀描述"
 ```
 
-### 監控與儀表板
+### 監控、儀表板與自動化
 ```bash
 # 查看全域文獻處理進度快照
 uv run literature-parser status
 
 # 生成並瀏覽 HTML 視覺化進度看板
 uv run literature-parser dashboard
+
+# 啟動軟硬體看門狗（常駐監控 DATA_DIR/input 來檔自動轉檔）
+uv run literature-parser watchdog
 ```
 
 ---
@@ -76,7 +85,7 @@ uv run literature-parser dashboard
 
 ```bash
 # 執行全套單元與整合測試
-uv run python -m unittest discover -s tests -v
+uv run --offline python -m unittest discover -s tests -v
 
 # 執行架構分層、型別、註解與秘密審查
 python3 scripts/agentctl.py check

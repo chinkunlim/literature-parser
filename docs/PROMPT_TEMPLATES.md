@@ -4,7 +4,7 @@
 
 本專案全面落實 **PromptRegistry 單一真理來源 (Single Source of Truth, SSOT)** 原則：
 - **嚴禁硬編碼提示詞**：所有模組嚴禁在業務程式碼（如 parser、verifier、pipeline）中以行內拼接字串方式呼叫大模型。
-- **強型別集中管理**：所有與本地 Ollama 互動之 Prompt 必須統一定義於 `src/guards/prompts.py` 中的 `PromptRegistry` 類別，具備靜態型別標註與入參約束。
+- **強型別集中管理**：所有與本地 Ollama 互動之 Prompt 必須統一定義於 `src/literature_parser/services/guards/prompts.py` 中的 `PromptRegistry` 類別，具備靜態型別標註與入參約束。
 - **排版不變量保護**：所有 Prompt 模板皆嚴格嵌入防重構與排版規範（KaTeX 貨幣符號 `\$` 轉義、Python 正則反向引用 `\g<1>`、APA 表格附註結構隔離 `<tfoot>`、雙欄帶狀流動不變量）。
 
 ---

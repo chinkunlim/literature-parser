@@ -1,0 +1,48 @@
+/*
+ * Styles for the web front end: design tokens first, then layout and components.
+ * Change colours and spacing through the custom properties in :root only.
+ */
+:root {
+  --color-bg: #faf8f5;
+  --color-text: #1f2328;
+  --color-muted: #59636e;
+  --color-accent: #0f6cbd;
+  --space: 1rem;
+  --radius: 10px;
+  --font: system-ui, -apple-system, "Noto Sans TC", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.6;
+}
+
+.site-header, main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--space);
+}
+
+#app {
+  min-height: 6rem;
+  padding: var(--space);
+  border: 1px solid #d0d7de;
+  border-radius: var(--radius);
+}
+
+button {
+  margin-top: var(--space);
+  padding: 0.5rem 1rem;
+  border: 0;
+  border-radius: var(--radius);
+  color: #fff;
+  background: var(--color-accent);
+  cursor: pointer;
+}
+
+.muted { color: var(--color-muted); }

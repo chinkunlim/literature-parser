@@ -1,0 +1,24 @@
+{
+  "id": "TASK-003",
+  "title": "遷移批次 3：domain 層（資料模型、純邏輯）",
+  "status": "open",
+  "agent": "",
+  "handed_off_from": "",
+  "handed_off_to": "",
+  "paths": [
+    "src/literature_parser/domain/",
+    "legacy"
+  ],
+  "done_items": "",
+  "todo_items": "",
+  "blockers": "",
+  "created_at": "2026-10-21 04:12 UTC",
+  "updated_at": "2026-10-21 04:12 UTC",
+  "history": [
+    {
+      "timestamp": "2026-10-21 04:12 UTC",
+      "action": "created",
+      "agent": "system"
+    }
+  ]
+}

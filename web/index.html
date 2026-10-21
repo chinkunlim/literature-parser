@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<!--
+  literature-parser — web front end entry page.
+  Loads styles.css and app.js; the #app section shows loading / empty / error / data states.
+-->
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>literature-parser</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <h1>literature-parser</h1>
+  </header>
+  <main>
+    <section id="app" aria-live="polite"></section>
+    <button type="button" id="refresh">重新載入</button>
+  </main>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

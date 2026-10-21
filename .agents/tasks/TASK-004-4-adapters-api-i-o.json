@@ -1,0 +1,24 @@
+{
+  "id": "TASK-004",
+  "title": "遷移批次 4：adapters 層（外部 API、資料庫、檔案 I/O）",
+  "status": "open",
+  "agent": "",
+  "handed_off_from": "",
+  "handed_off_to": "",
+  "paths": [
+    "src/literature_parser/adapters/",
+    "legacy"
+  ],
+  "done_items": "",
+  "todo_items": "",
+  "blockers": "",
+  "created_at": "2026-10-21 04:12 UTC",
+  "updated_at": "2026-10-21 04:12 UTC",
+  "history": [
+    {
+      "timestamp": "2026-10-21 04:12 UTC",
+      "action": "created",
+      "agent": "system"
+    }
+  ]
+}

@@ -229,7 +229,7 @@ class ConfigManager:
 
     @classmethod
     def get_page_count(cls, pdf_path: str) -> int:
-        """Retrieves page count using pdfinfo."""
+        """Retrieves page count using pdfinfo or pure Python fallback."""
         try:
             out = subprocess.check_output(
                 ['pdfinfo', pdf_path],
@@ -239,6 +239,15 @@ class ConfigManager:
             for line in out.splitlines():
                 if line.startswith('Pages:'):
                     return int(line.split(':')[1].strip())
+        except Exception:
+            pass
+
+        try:
+            with open(pdf_path, 'rb') as f:
+                content = f.read()
+            matches = re.findall(rb'/Type\s*/Pages[^>]*?/Count\s+(\d+)', content, re.DOTALL)
+            if matches:
+                return max(int(m) for m in matches)
         except Exception:
             pass
         return 0

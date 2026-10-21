@@ -245,7 +245,7 @@ def cmd_archive_sessions(args):
     and archives them into memory/sessions/ with dual-track pairing (summary + transcript).
     """
     brain_dir = Path.home() / ".gemini" / "antigravity" / "brain"
-    sessions_dir = ROOT / "memory" / "sessions"
+    sessions_dir = ROOT / ".agents" / "conversations"
     sessions_dir.mkdir(parents=True, exist_ok=True)
 
     print("\n" + "=" * 65)

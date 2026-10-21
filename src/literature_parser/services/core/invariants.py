@@ -28,19 +28,24 @@ class QualityInvariantGuard:
         if p.stat().st_size == 0:
             raise InvariantViolationError(f"Pre-split failure: Source file '{p.name}' is completely empty (0 bytes).")
 
+        pages = 0
         try:
             out = subprocess.check_output(['pdfinfo', str(p)], stderr=subprocess.DEVNULL, timeout=15).decode('utf-8', errors='ignore')
-            pages = 0
             for line in out.splitlines():
                 if line.startswith('Pages:'):
                     pages = int(line.split(':')[1].strip())
-            if pages <= 0:
-                raise InvariantViolationError(f"Pre-split failure: '{p.name}' contains 0 readable pages.")
-            return {'valid': True, 'pages': pages}
-        except Exception as e:
-            if isinstance(e, InvariantViolationError):
-                raise
-            raise InvariantViolationError(f"Pre-split failure: Unable to read PDF header of '{p.name}': {e}")
+        except Exception:
+            try:
+                with open(p, 'rb') as f:
+                    content = f.read()
+                matches = re.findall(rb'/Type\s*/Pages[^>]*?/Count\s+(\d+)', content, re.DOTALL)
+                if matches:
+                    pages = max(int(m) for m in matches)
+            except Exception as e:
+                raise InvariantViolationError(f"Pre-split failure: Unable to read PDF header of '{p.name}': {e}")
+        if pages <= 0:
+            raise InvariantViolationError(f"Pre-split failure: '{p.name}' contains 0 readable pages.")
+        return {'valid': True, 'pages': pages}
 
     @staticmethod
     def check_split_chapter(ch_pdf: str, expected_pages: int = None) -> dict:
@@ -49,12 +54,21 @@ class QualityInvariantGuard:
         if not p.exists() or p.stat().st_size == 0:
             raise InvariantViolationError(f"Post-split failure: Chapter PDF '{p.name}' was not created or is 0 bytes.")
 
+        actual_pages = 0
         try:
             out = subprocess.check_output(['pdfinfo', str(p)], stderr=subprocess.DEVNULL, timeout=15).decode('utf-8', errors='ignore')
-            actual_pages = 0
             for line in out.splitlines():
                 if line.startswith('Pages:'):
                     actual_pages = int(line.split(':')[1].strip())
+        except Exception:
+            try:
+                with open(p, 'rb') as f:
+                    content = f.read()
+                matches = re.findall(rb'/Type\s*/Pages[^>]*?/Count\s+(\d+)', content, re.DOTALL)
+                if matches:
+                    actual_pages = max(int(m) for m in matches)
+            except Exception as e:
+                raise InvariantViolationError(f"Post-split failure: Unable to read PDF header of '{p.name}': {e}")
 
             if expected_pages is not None and actual_pages != expected_pages:
                 raise InvariantViolationError(

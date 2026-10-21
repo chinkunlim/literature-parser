@@ -7,7 +7,7 @@ import datetime
 import re
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent.parent
+ROOT = Path(__file__).resolve().parents[4]
 
 
 def get_current_date() -> str:

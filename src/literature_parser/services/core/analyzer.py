@@ -36,7 +36,16 @@ class PDFAnalyzer:
         except subprocess.TimeoutExpired:
             logger.warning("pdfinfo timed out (15s) for %s", pdf_path)
         except Exception as e:
-            logger.debug("Error getting page count for %s: %s", pdf_path, e)
+            logger.debug("pdfinfo not available for %s: %s, falling back to pure Python", pdf_path, e)
+
+        try:
+            with open(pdf_path, 'rb') as f:
+                content = f.read()
+            matches = re.findall(rb'/Type\s*/Pages[^>]*?/Count\s+(\d+)', content, re.DOTALL)
+            if matches:
+                return max(int(m) for m in matches)
+        except Exception as e:
+            logger.debug("Pure Python page count failed for %s: %s", pdf_path, e)
         return 0
 
     @staticmethod

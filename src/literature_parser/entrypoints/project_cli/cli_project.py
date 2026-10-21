@@ -118,23 +118,23 @@ def cmd_test_ollama_auto_trigger(args):
         print("  ⚠️ 修復回傳未預期狀態")
 
     # 2. Test Input Manifest Schema Check Auto-Trigger
-    test_dir = ROOT / "scratch" / "test_manifest_drill"
-    test_dir.mkdir(parents=True, exist_ok=True)
-    manifest_file = test_dir / "manifest.json"
-    manifest_file.write_text(
-        '{"title": "Test Book", "chapters": ["ch1_intro.pdf", "ch2_advanced.pdf"]}',
-        encoding="utf-8",
-    )
-    (test_dir / "ch1_intro.pdf").write_text("dummy", encoding="utf-8")
+    with tempfile.TemporaryDirectory(prefix="test_manifest_drill_") as tmp_drill:
+        test_dir = Path(tmp_drill)
+        manifest_file = test_dir / "manifest.json"
+        manifest_file.write_text(
+            '{"title": "Test Book", "chapters": ["ch1_intro.pdf", "ch2_advanced.pdf"]}',
+            encoding="utf-8",
+        )
+        (test_dir / "ch1_intro.pdf").write_text("dummy", encoding="utf-8")
 
-    print("\n• [情境 2: 輸入校驗自動攔截] 注入缺少章節的測試檔案...")
-    manifest_res = val.validate_input_manifest(test_dir)
-    if not manifest_res["valid"]:
-        print(f"  ✅ [輸入校驗防線觸發] 成功偵測到結構不符: {manifest_res['discrepancies']}")
-        if manifest_res.get("ollama_diagnosis"):
-            print(f"  🤖 [Ollama 診斷反饋]: {manifest_res['ollama_diagnosis'][:120]}...")
-    else:
-        print("  ⚠️ 未能偵測出輸入不符")
+        print("\n• [情境 2: 輸入校驗自動攔截] 注入缺少章節的測試檔案...")
+        manifest_res = val.validate_input_manifest(test_dir)
+        if not manifest_res["valid"]:
+            print(f"  ✅ [輸入校驗防線觸發] 成功偵測到結構不符: {manifest_res['discrepancies']}")
+            if manifest_res.get("ollama_diagnosis"):
+                print(f"  🤖 [Ollama 診斷反饋]: {manifest_res['ollama_diagnosis'][:120]}...")
+        else:
+            print("  ⚠️ 未能偵測出輸入不符")
 
     print("=" * 65)
     print("🎉 檢驗完成！證明 Ollama 守衛與異常攔截功能已真實掛載於程式碼中。\n")
@@ -374,19 +374,29 @@ python run.py publish "release v1.0.0" --tag v1.0.0
 """, encoding="utf-8")
 
     # 9. Hardware & Logger scaffolds
+    src_guards = ROOT / "src" / "literature_parser" / "adapters" / "guards"
+    if not src_guards.exists():
+        src_guards = ROOT / "src" / "guards"
+
     for g_dir in [target_dir / "src" / "guards", target_dir / "src" / pkg_name / "guards"]:
         g_dir.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(ROOT / "src" / "guards" / "hardware.py", g_dir / "hardware.py")
-        if (ROOT / "src" / "guards" / "ollama_guard.py").exists():
-            shutil.copy2(ROOT / "src" / "guards" / "ollama_guard.py", g_dir / "ollama_guard.py")
-        if (ROOT / "src" / "guards" / "validator.py").exists():
-            shutil.copy2(ROOT / "src" / "guards" / "validator.py", g_dir / "validator.py")
-        if (ROOT / "src" / "guards" / "prompts.py").exists():
-            shutil.copy2(ROOT / "src" / "guards" / "prompts.py", g_dir / "prompts.py")
+        if (src_guards / "hardware.py").exists():
+            shutil.copy2(src_guards / "hardware.py", g_dir / "hardware.py")
+        if (src_guards / "ollama_guard.py").exists():
+            shutil.copy2(src_guards / "ollama_guard.py", g_dir / "ollama_guard.py")
+        if (src_guards / "validator.py").exists():
+            shutil.copy2(src_guards / "validator.py", g_dir / "validator.py")
+        if (src_guards / "prompts.py").exists():
+            shutil.copy2(src_guards / "prompts.py", g_dir / "prompts.py")
+
+    src_utils = ROOT / "src" / "literature_parser" / "services" / "utils"
+    if not src_utils.exists():
+        src_utils = ROOT / "src" / "utils"
 
     for u_dir in [target_dir / "src" / "utils", target_dir / "src" / pkg_name / "utils"]:
         u_dir.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(ROOT / "src" / "utils" / "logger.py", u_dir / "logger.py")
+        if (src_utils / "app_logger.py").exists():
+            shutil.copy2(src_utils / "app_logger.py", u_dir / "logger.py")
 
     # 10. tests/__init__.py and sample unit test
     (target_dir / "tests" / "__init__.py").write_text(f"""import sys
@@ -398,6 +408,7 @@ sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "src" / "{pkg_name}"))
 """, encoding="utf-8")
 
+    (target_dir / "tests" / "unit").mkdir(parents=True, exist_ok=True)
     (target_dir / "tests" / "unit" / f"test_{pkg_name}_baseline.py").write_text("""import unittest
 import sys
 from pathlib import Path
@@ -419,7 +430,9 @@ if __name__ == "__main__":
 """, encoding="utf-8")
 
     # 11. Copy run.py scaffold
-    shutil.copy2(ROOT / "run.py", target_dir / "run.py")
+    src_run = ROOT / "src" / "literature_parser" / "entrypoints" / "run.py"
+    if src_run.exists():
+        shutil.copy2(src_run, target_dir / "run.py")
 
     # 12. Initial Git commit
     subprocess.run(["git", "add", "-A"], cwd=str(target_dir), capture_output=True)
@@ -537,15 +550,19 @@ def cmd_dashboard(args):
         gsm.sync_from_output_dir()
         data = gsm.get_all()
 
-    dashboard_dir = ROOT / "dashboard"
+    dashboard_dir = ROOT / "web"
     dashboard_dir.mkdir(parents=True, exist_ok=True)
-    html_path = dashboard_dir / "index.html"
+    html_path = dashboard_dir / "dashboard.html"
 
     books_data = data.get("books", {})
     books_json = json.dumps(books_data, ensure_ascii=False, indent=2)
     last_updated = data.get("last_updated", "N/A")
 
-    html_content = f"""<!DOCTYPE html>
+    html_content = f"""<!--
+Literature Parser Web Dashboard
+Visualizes processing pipeline status, progress bars, and chapter stats.
+-->
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">

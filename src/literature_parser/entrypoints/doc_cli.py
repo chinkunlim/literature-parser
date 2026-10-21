@@ -16,6 +16,7 @@ from pathlib import Path
 from literature_parser.services import __version__
 from literature_parser.config.processor_config import (
     DEFAULT_OUTPUT_DIR,
+    DEFAULT_INPUT_DIR,
 )
 from literature_parser.adapters.core.orchestrator import BookProcessorOrchestrator
 from literature_parser.adapters.utils.system import check_dependencies
@@ -50,7 +51,7 @@ def main():
     p_run = subparsers.add_parser("run", help="Split, convert & auto-verify full book or target chapter")
     p_run.add_argument("--file", "-f", default=None, help="Process a specific PDF or EPUB file")
     p_run.add_argument("--chapter", "-c", default=None, help="Target a specific chapter name or number")
-    p_run.add_argument("--input-dir", "-i", default=".", help="Input directory (default: current directory)")
+    p_run.add_argument("--input-dir", "-i", default=DEFAULT_INPUT_DIR, help="Input directory (default: DATA_DIR/input/books)")
     p_run.add_argument("--output-dir", "-o", default=DEFAULT_OUTPUT_DIR, help="Output directory")
     add_ollama_args(p_run)
     p_run.add_argument("--parallel", action="store_true", help="Process chapters concurrently utilizing Apple M5 P-Cores")
@@ -131,7 +132,7 @@ def main():
 
     elif args.subcommand == "run":
         orchestrator = BookProcessorOrchestrator(
-            input_dir=getattr(args, 'input_dir', '.'),
+            input_dir=getattr(args, 'input_dir', DEFAULT_INPUT_DIR),
             output_dir=getattr(args, 'output_dir', DEFAULT_OUTPUT_DIR),
             use_ollama=resolve_ollama(getattr(args, 'ollama', None)),
             ollama_model=getattr(args, 'ollama_model', None)

@@ -253,12 +253,8 @@ class AccuracyVerifier:
         if pdf_files:
             split_pdf = pdf_files[0]
             try:
-                info_out = subprocess.check_output(['pdfinfo', str(split_pdf)], stderr=subprocess.DEVNULL, timeout=15).decode('utf-8')
-                pdf_pages = 0
-                for l in info_out.splitlines():
-                    if l.startswith('Pages:'):
-                        pdf_pages = int(l.split(':')[1].strip())
-                        break
+                from literature_parser.adapters.utils.system import get_pdf_page_count
+                pdf_pages = get_pdf_page_count(split_pdf)
                 pdf_pass = (expected_pages is None) or (pdf_pages == expected_pages)
                 results['checks']['split_pdf'] = {
                     'filename': split_pdf.name,

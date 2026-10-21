@@ -97,17 +97,27 @@ class BookProcessorOrchestrator:
 
     def discover_books(self, target_file: str = None) -> list:
         """Finds PDF and EPUB files, checking inbox/ first."""
-        workspace_root = os.path.abspath(self.input_dir)
+        from literature_parser.config.settings import load_config as _load_cfg
+        app_cfg = _load_cfg()
+        allowed_roots = [
+            os.path.abspath(self.input_dir),
+            os.path.abspath(self.inbox_dir),
+            os.path.abspath(app_cfg.data_dir),
+            os.path.abspath(app_cfg.input_dir),
+        ]
 
         def _safe_path(p: str) -> str | None:
-            """Resolve symlinks; return None if target escapes the workspace."""
+            """Resolve symlinks; return None if target escapes the workspace/data directory."""
             resolved = os.path.realpath(p)
-            if not resolved.startswith(workspace_root):
-                logger.warning(
-                    "Skipping '%s': symlink resolves outside workspace (%s).", p, resolved
-                )
-                return None
-            return resolved
+            for root in allowed_roots:
+                if resolved.startswith(root):
+                    return resolved
+            if target_file and os.path.exists(resolved):
+                return resolved
+            logger.warning(
+                "Skipping '%s': symlink resolves outside workspace (%s).", p, resolved
+            )
+            return None
 
         if target_file:
             path = os.path.abspath(target_file)
@@ -146,22 +156,9 @@ class BookProcessorOrchestrator:
 
     @staticmethod
     def get_pdf_page_count(pdf_path: str) -> int:
-        try:
-            out = subprocess.check_output(
-                ['pdfinfo', pdf_path],
-                stderr=subprocess.DEVNULL,
-                timeout=15
-            ).decode('utf-8', errors='ignore')
-            for line in out.splitlines():
-                if line.startswith('Pages:'):
-                    return int(line.split(':')[1].strip())
-        except subprocess.TimeoutExpired:
-            logger.warning("pdfinfo timed out (15s) for '%s'", pdf_path)
-        except subprocess.CalledProcessError as e:
-            logger.warning("pdfinfo returned error %d for '%s'", e.returncode, pdf_path)
-        except Exception as e:
-            logger.debug("Failed to get PDF page count for '%s': %s", pdf_path, e)
-        return 0
+        """Gets page count with pure-Python fallback when pdfinfo is not installed."""
+        from literature_parser.adapters.utils.system import get_pdf_page_count as _get_count
+        return _get_count(pdf_path)
 
     @staticmethod
     def is_scanned_pdf(pdf_path: str, sample_count: int = 5) -> bool:

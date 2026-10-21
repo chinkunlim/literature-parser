@@ -3,12 +3,41 @@ System Environment & Dependency Diagnostics
 ===========================================
 """
 
+import re
 import shutil
 import subprocess
 import urllib.error
 import urllib.request
+from pathlib import Path
 
 from literature_parser.config.processor_config import OLLAMA_API_BASE
+
+
+def get_pdf_page_count(pdf_path: str | Path) -> int:
+    """Gets total page count from a PDF, trying pdfinfo first then pure-Python fallback."""
+    if check_command("pdfinfo"):
+        try:
+            out = subprocess.check_output(
+                ["pdfinfo", str(pdf_path)],
+                stderr=subprocess.DEVNULL,
+                timeout=15,
+            ).decode("utf-8", errors="ignore")
+            for line in out.splitlines():
+                if line.startswith("Pages:"):
+                    return int(line.split(":")[1].strip())
+        except Exception:
+            pass
+
+    # Pure Python fallback
+    try:
+        with open(pdf_path, "rb") as f:
+            content = f.read()
+        matches = re.findall(rb"/Type\s*/Pages[^>]*?/Count\s+(\d+)", content, re.DOTALL)
+        if matches:
+            return max(int(m) for m in matches)
+    except Exception:
+        pass
+    return 0
 
 
 def check_command(cmd: str) -> bool:

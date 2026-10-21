@@ -99,6 +99,9 @@ class ImageManager:
 
             try:
                 subprocess.run(cmd, stderr=subprocess.DEVNULL, check=True, timeout=120)
+            except FileNotFoundError:
+                logger.warning("pdfimages binary not found; skipping image extraction for '%s'", pdf_path)
+                return []
             except subprocess.TimeoutExpired:
                 logger.warning("pdfimages timed out (120s) for '%s'", pdf_path)
                 return []

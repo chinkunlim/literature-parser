@@ -11,6 +11,9 @@ All notable changes to **literature-parser** are documented here
 ### Fixed
 - fix(config): standardize DATA_DIR hierarchy and route all data paths through AppConfig (by `@antigravity`)
 
+### Testing
+- test(workflows): verify all CLI workflows, fix pathing and pure-python fallbacks (by `@antigravity`)
+
 ## [0.1.0] - 2026-10-21
 ### Added
 - Initial project scaffold (framework v3.1.0).

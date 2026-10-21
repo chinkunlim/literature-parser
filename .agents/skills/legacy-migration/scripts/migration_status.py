@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Migration progress and final acceptance check for projects moved in with `migrate_project.py`.
+"""Migration progress and final acceptance check for projects moved in with the template's `scripts/migrate_project.py`.
 
 Purpose:
     Shows how much of `legacy/` is still waiting to be migrated, and (`--verify`) checks

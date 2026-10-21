@@ -1,7 +1,7 @@
 ---
 name: legacy-migration
 description: >-
-  Migrate an old project that was moved into legacy/ by migrate_project.py, one batch at a
+  Migrate an old project that was moved into legacy/ by the template's scripts/migrate_project.py, one batch at a
   time, until the whole program meets every rule of the new project (structure, comments,
   types, layers, tests, docs, uv/pnpm). Use when docs/migration/MIGRATION.md exists, or when
   the user asks to continue or finish the migration.

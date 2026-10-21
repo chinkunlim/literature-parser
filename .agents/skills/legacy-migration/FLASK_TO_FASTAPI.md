@@ -1,6 +1,6 @@
 # Flask → FastAPI 改寫對照（開發模式）
 
-> 適用：舊專案要繼續開發時（`migrate_project.py --mode develop`，或之後執行 `agentctl migration --develop`）。完成條件：程式與依賴裡完全沒有 Flask（`code-review-guard` 會擋下 `import flask`，`agentctl migration --verify` 會檢查 `pyproject.toml`）。
+> 適用：舊專案要繼續開發時（母版的 `scripts/migrate_project.py --mode develop`，或之後執行 `agentctl migration --develop`）。完成條件：程式與依賴裡完全沒有 Flask（`code-review-guard` 會擋下 `import flask`，`agentctl migration --verify` 會檢查 `pyproject.toml`）。
 
 ## 1. 先加依賴
 

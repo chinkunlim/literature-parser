@@ -25,7 +25,7 @@ def setup_logging(book_dir: str | None = None, verbose: bool = False) -> None:
         book_dir: If provided, attaches a RotatingFileHandler to ``<book_dir>/error.log``.
         verbose:  If True, stdout handler shows DEBUG messages (default: INFO).
     """
-    root = logging.getLogger("doc_processor")
+    root = logging.getLogger("literature_parser.services")
     if root.handlers:
         # Already configured – avoid adding duplicate handlers on re-entry.
         return

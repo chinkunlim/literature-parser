@@ -6,7 +6,7 @@ merges per-book settings from ``book_profile.json`` and/or ``book_style_override
 located in the book's output directory.
 
 Usage:
-    from doc_processor.style_loader import load_style
+    from literature_parser.services.style_loader import load_style
     style = load_style(book_output_dir="/path/to/output/My Book")
 """
 
@@ -16,7 +16,7 @@ import logging
 from copy import deepcopy
 from pathlib import Path
 
-from doc_processor.book_style import STYLE as _DEFAULT_STYLE
+from literature_parser.services.book_style import STYLE as _DEFAULT_STYLE
 
 logger = logging.getLogger(__name__)
 

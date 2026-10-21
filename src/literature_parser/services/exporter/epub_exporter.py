@@ -25,7 +25,7 @@ import zipfile
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
-from doc_processor.exporter.epub_styles import get_epub_css
+from literature_parser.services.exporter.epub_styles import get_epub_css
 
 logger = logging.getLogger("EpubExporter")
 

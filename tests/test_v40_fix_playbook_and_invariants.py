@@ -18,9 +18,9 @@ Verifies:
 
 import unittest
 from pathlib import Path
-from doc_processor.core.invariants import QualityInvariantGuard, InvariantViolationError
-from doc_processor.fixes.playbook import FixPlaybook, FixRecipe
-from doc_processor.verification.format_auditor import FormatAuditor
+from literature_parser.services.core.invariants import QualityInvariantGuard, InvariantViolationError
+from literature_parser.adapters.fixes.playbook import FixPlaybook, FixRecipe
+from literature_parser.adapters.verification.format_auditor import FormatAuditor
 
 
 class TestFixPlaybookAndInvariants(unittest.TestCase):

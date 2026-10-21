@@ -1,15 +1,8 @@
-# 已知問題 (Known Issues)
+# 已知問題庫 (Known Issues)
 
-記錄「踩過的坑」：值得記住的 bug、外部服務的怪行為、環境問題，以及它們的根本原因與修正方式。
-除錯時先查這裡：`grep -rn "關鍵字" docs/known-issues .agents/conversations`（後者只在本機）。
+本目錄追蹤系統中已發現的重大缺陷、版面解析坑點與其根本原因。
 
-- 新增：`python3 .agents/skills/adr-issue-tracker/scripts/tracker_cli.py --add-issue <slug> --title "標題" --summary "錯誤訊息" --agent <名字>`
-- 格式：[`_TEMPLATE.md`](_TEMPLATE.md)；在修正的程式碼註解加 `Refs: ISSUE-NNN`，並寫防回歸測試。
-- 狀態：🔴 未解決 (open) → 🟡 已規避 (mitigated) → 🟢 已根治 (resolved)
-
-> 命名規則：`_TEMPLATE.md` 是新增紀錄時要照著寫的範本；紀錄檔命名為 `NNN-<slug>.md`。整個專案只有根目錄一份 `README.md`。
-
-## 總表
-
-| ISSUE | 狀態 | 標題 | 現象 | 程式與測試 |
+| 編號 | 標題 | 狀態 | 嚴重程度 | 發現日期 |
 |---|---|---|---|---|
+| [ISSUE-001](001-two-column-and-math-shattering.md) | 雙欄學術論文排版與粉碎數學公式修復 | Open (Mitigated) | Medium | 2026-09-20 |
+| [ISSUE-002](002-table-banner-and-styling.md) | 複雜色塊條幅表格撕裂與 CSS 空白 | Open (Mitigated) | Medium | 2026-09-20 |

@@ -14,7 +14,7 @@ Verifies all 8 inspection dimensions:
 
 import unittest
 from pathlib import Path
-from doc_processor.verification.format_auditor import FormatAuditor, AuditIssue, AuditReport
+from literature_parser.adapters.verification.format_auditor import FormatAuditor, AuditIssue, AuditReport
 
 
 class TestFormatAuditor(unittest.TestCase):

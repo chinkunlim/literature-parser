@@ -8,7 +8,7 @@ with fallback support for local Ollama table reconstruction.
 import logging
 import re
 
-from doc_processor.style_loader import load_style
+from literature_parser.services.style_loader import load_style
 
 logger = logging.getLogger(__name__)
 _DEFAULT_STYLE = load_style()

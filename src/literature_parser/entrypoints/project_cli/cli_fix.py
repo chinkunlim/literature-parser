@@ -15,7 +15,7 @@ Provides command-line interface for the Fix Playbook:
 import sys
 from pathlib import Path
 
-from src.utils.logger import get_diagnostic_logger
+from literature_parser.services.utils.app_logger import get_diagnostic_logger
 
 logger = get_diagnostic_logger("CommandCenter")
 
@@ -25,8 +25,8 @@ def cmd_fix(args):
     Fix Playbook Command Center.
     Enables viewing and executing specialized document repair recipes.
     """
-    from doc_processor.fixes.playbook import FixPlaybook
-    from doc_processor.verification.format_auditor import FormatAuditor
+    from literature_parser.adapters.fixes.playbook import FixPlaybook
+    from literature_parser.adapters.verification.format_auditor import FormatAuditor
 
     action = getattr(args, "fix_action", None) or "list"
 
@@ -159,7 +159,7 @@ def cmd_fix(args):
             sys.exit(1)
 
     elif action == "synthesize":
-        from doc_processor.fixes.synthesizer import OllamaRecipeSynthesizer
+        from literature_parser.adapters.fixes.synthesizer import OllamaRecipeSynthesizer
         target = Path(args.target) if getattr(args, "target", None) else None
         issue = getattr(args, "issue", "")
         id_hint = getattr(args, "id_hint", None)

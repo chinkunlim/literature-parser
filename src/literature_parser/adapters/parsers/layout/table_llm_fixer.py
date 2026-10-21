@@ -11,7 +11,7 @@ import urllib.error
 import urllib.request
 from typing import Optional
 
-from doc_processor.config import (
+from literature_parser.config.processor_config import (
     OLLAMA_API_BASE,
     OLLAMA_GENERATE_TIMEOUT,
 )
@@ -46,7 +46,7 @@ class TableLLMFixer:
         Sends raw tabular text to local Ollama to output a clean Markdown table.
         Returns the formatted markdown table string, or None if Ollama is unreachable.
         """
-        from src.guards.prompts import PromptRegistry
+        from literature_parser.services.guards.prompts import PromptRegistry
 
         prompt = PromptRegistry.get_table_reconstruction(table_text=table_text, caption=caption)
 

@@ -1,20 +1,11 @@
-"""
-Academic Literature Parsers
-===========================
-Sub-parsers tailored for academic literature (journals, conference papers,
-preprints, and dissertations).
-"""
+"""Academic Literature Parsers."""
 
-from doc_processor.parsers.literature.figure_formatter import FigureFormatter
-from doc_processor.parsers.literature.imrad_resolver import IMRADResolver
-from doc_processor.parsers.literature.metadata_extractor import (
-    LiteratureMetadataExtractor,
-)
-from doc_processor.parsers.literature.reference_parser import ReferenceParser
+from literature_parser.services.parsers.literature.figure_formatter import FigureFormatter
+from literature_parser.services.parsers.literature.imrad_resolver import IMRADResolver
+from literature_parser.services.parsers.literature.reference_parser import ReferenceParser
 
 __all__ = [
     "FigureFormatter",
     "IMRADResolver",
-    "LiteratureMetadataExtractor",
     "ReferenceParser",
 ]

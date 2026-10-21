@@ -1,24 +1,37 @@
 {
   "id": "TASK-001",
   "title": "遷移批次 1：依賴與設定檔轉換（uv / pnpm / .env.example / Brewfile）",
-  "status": "open",
-  "agent": "",
+  "status": "done",
+  "agent": "antigravity",
   "handed_off_from": "",
   "handed_off_to": "",
   "paths": [
     "legacy",
     "legacy"
   ],
-  "done_items": "",
+  "done_items": "依賴與設定檔轉換完成，已合併 .env.example 與 pyproject.toml 腳本設定並移除 legacy 舊設定檔",
   "todo_items": "",
   "blockers": "",
   "created_at": "2026-10-21 04:12 UTC",
-  "updated_at": "2026-10-21 04:12 UTC",
+  "updated_at": "2026-10-21 16:02 UTC",
   "history": [
     {
       "timestamp": "2026-10-21 04:12 UTC",
       "action": "created",
       "agent": "system"
+    },
+    {
+      "timestamp": "2026-10-21 16:01 UTC",
+      "action": "claimed",
+      "agent": "antigravity",
+      "previous_agent": ""
+    },
+    {
+      "timestamp": "2026-10-21 16:02 UTC",
+      "action": "done",
+      "agent": "antigravity",
+      "summary": "依賴與設定檔轉換完成，已合併 .env.example 與 pyproject.toml 腳本設定並移除 legacy 舊設定檔"
     }
-  ]
+  ],
+  "summary": "依賴與設定檔轉換完成，已合併 .env.example 與 pyproject.toml 腳本設定並移除 legacy 舊設定檔"
 }

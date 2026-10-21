@@ -9,7 +9,7 @@ Safety Architecture:
    blocking dangerous imports (os, sys, subprocess, etc.) and builtins (eval, exec, open).
 2. Sandbox Execution: Evaluates synthesized test cases within an isolated scope
    with strict timeouts before writing to disk.
-3. Quarantined Staging: Writes validated recipes to `src/doc_processor/fixes/staged/`
+3. Quarantined Staging: Writes validated recipes to `src/literature_parser.services/fixes/staged/`
    for human review and CLI-driven lifecycle management (review, test, promote, reject).
 """
 
@@ -21,10 +21,10 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, Optional, Tuple
 
-from src.guards.hardware import check_hardware_safety
-from src.guards.ollama_guard import OllamaGuard
-from src.guards.prompts import PromptRegistry
-from src.utils.logger import get_diagnostic_logger
+from literature_parser.adapters.guards.hardware import check_hardware_safety
+from literature_parser.adapters.guards.ollama_guard import OllamaGuard
+from literature_parser.services.guards.prompts import PromptRegistry
+from literature_parser.services.utils.app_logger import get_diagnostic_logger
 
 logger = get_diagnostic_logger("RecipeSynthesizer")
 

@@ -11,8 +11,8 @@ import time
 import urllib.error
 import urllib.request
 
-from src.guards.hardware import check_hardware_safety
-from src.utils.logger import get_diagnostic_logger
+from literature_parser.adapters.guards.hardware import check_hardware_safety
+from literature_parser.services.utils.app_logger import get_diagnostic_logger
 
 logger = get_diagnostic_logger("OllamaGuard")
 

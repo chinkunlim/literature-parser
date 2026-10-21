@@ -18,7 +18,7 @@ import logging
 import re
 from typing import Any, Dict, List, Optional
 
-from doc_processor.config_manager import ConfigManager
+from literature_parser.services.config_manager import ConfigManager
 
 logger = logging.getLogger(__name__)
 

@@ -6,7 +6,7 @@ Text Processing Utilities
 import re
 from typing import Optional
 
-from doc_processor.config import MAX_FILENAME_LEN
+from literature_parser.config.processor_config import MAX_FILENAME_LEN
 
 
 def sanitize_filename(name: str, max_len: int = MAX_FILENAME_LEN) -> str:

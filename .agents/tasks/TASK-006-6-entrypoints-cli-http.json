@@ -1,24 +1,37 @@
 {
   "id": "TASK-006",
   "title": "遷移批次 6：entrypoints 層（CLI、HTTP、排程入口）",
-  "status": "open",
-  "agent": "",
+  "status": "done",
+  "agent": "antigravity",
   "handed_off_from": "",
   "handed_off_to": "",
   "paths": [
     "src/literature_parser/entrypoints/",
     "legacy"
   ],
-  "done_items": "",
+  "done_items": "entrypoints 層遷移完成，run.py, doc_cli.py 與 project_cli 系列功能完備且通過 CLI 測試，0 critical issues",
   "todo_items": "",
   "blockers": "",
   "created_at": "2026-10-21 04:12 UTC",
-  "updated_at": "2026-10-21 04:12 UTC",
+  "updated_at": "2026-10-21 16:09 UTC",
   "history": [
     {
       "timestamp": "2026-10-21 04:12 UTC",
       "action": "created",
       "agent": "system"
+    },
+    {
+      "timestamp": "2026-10-21 16:08 UTC",
+      "action": "claimed",
+      "agent": "antigravity",
+      "previous_agent": ""
+    },
+    {
+      "timestamp": "2026-10-21 16:09 UTC",
+      "action": "done",
+      "agent": "antigravity",
+      "summary": "entrypoints 層遷移完成，run.py, doc_cli.py 與 project_cli 系列功能完備且通過 CLI 測試，0 critical issues"
     }
-  ]
+  ],
+  "summary": "entrypoints 層遷移完成，run.py, doc_cli.py 與 project_cli 系列功能完備且通過 CLI 測試，0 critical issues"
 }

@@ -13,13 +13,13 @@ import argparse
 import sys
 from pathlib import Path
 
-from doc_processor import __version__
-from doc_processor.config import (
+from literature_parser.services import __version__
+from literature_parser.config.processor_config import (
     DEFAULT_OUTPUT_DIR,
 )
-from doc_processor.core.orchestrator import BookProcessorOrchestrator
-from doc_processor.utils.system import check_dependencies
-from doc_processor.verification.verifier import AccuracyVerifier
+from literature_parser.adapters.core.orchestrator import BookProcessorOrchestrator
+from literature_parser.adapters.utils.system import check_dependencies
+from literature_parser.adapters.verification.verifier import AccuracyVerifier
 
 
 def main():
@@ -101,7 +101,7 @@ def main():
     def resolve_ollama(val: bool | None) -> bool:
         if val is not None:
             return val
-        from doc_processor.utils.system import is_ollama_running
+        from literature_parser.adapters.utils.system import is_ollama_running
         return is_ollama_running()
 
     if args.subcommand == "doctor":
@@ -171,7 +171,7 @@ def main():
             sys.exit(0 if all_ok else 1)
 
     elif args.subcommand == "watchdog":
-        from doc_processor.core.watchdog import WatchdogService
+        from literature_parser.services.core.watchdog import WatchdogService
         watchdog = WatchdogService(
             inbox_dir=args.inbox_dir,
             processed_dir=args.processed_dir,
@@ -197,7 +197,7 @@ def main():
         )
 
     elif args.subcommand == "review":
-        from doc_processor.verification.review_manager import ReviewManager
+        from literature_parser.adapters.verification.review_manager import ReviewManager
         if args.book_dir:
             ReviewManager.interactive_review_book(args.book_dir)
         elif args.chapter_dir:

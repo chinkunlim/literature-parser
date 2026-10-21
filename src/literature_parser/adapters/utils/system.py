@@ -8,7 +8,7 @@ import subprocess
 import urllib.error
 import urllib.request
 
-from doc_processor.config import OLLAMA_API_BASE
+from literature_parser.config.processor_config import OLLAMA_API_BASE
 
 
 def check_command(cmd: str) -> bool:

@@ -1,24 +1,37 @@
 {
   "id": "TASK-007",
   "title": "遷移批次 7：web 前端（HTML / CSS / JS）",
-  "status": "open",
-  "agent": "",
+  "status": "done",
+  "agent": "antigravity",
   "handed_off_from": "",
   "handed_off_to": "",
   "paths": [
     "web/",
     "legacy"
   ],
-  "done_items": "",
+  "done_items": "web 前端遷移完成，dashboard.html 搬遷並加上用途註解，0 critical issues",
   "todo_items": "",
   "blockers": "",
   "created_at": "2026-10-21 04:12 UTC",
-  "updated_at": "2026-10-21 04:12 UTC",
+  "updated_at": "2026-10-21 16:04 UTC",
   "history": [
     {
       "timestamp": "2026-10-21 04:12 UTC",
       "action": "created",
       "agent": "system"
+    },
+    {
+      "timestamp": "2026-10-21 16:03 UTC",
+      "action": "claimed",
+      "agent": "antigravity",
+      "previous_agent": ""
+    },
+    {
+      "timestamp": "2026-10-21 16:04 UTC",
+      "action": "done",
+      "agent": "antigravity",
+      "summary": "web 前端遷移完成，dashboard.html 搬遷並加上用途註解，0 critical issues"
     }
-  ]
+  ],
+  "summary": "web 前端遷移完成，dashboard.html 搬遷並加上用途註解，0 critical issues"
 }

@@ -21,12 +21,12 @@ import time
 import webbrowser
 from pathlib import Path
 
-from src.cli.cli_process import cmd_process
-from src.cli.common import ROOT, clean_dangling_tmp_files, get_current_date
-from src.guards.hardware import check_hardware_safety
-from src.guards.ollama_guard import OllamaGuard
-from src.guards.validator import ValidatorGuard
-from src.utils.logger import get_diagnostic_logger
+from literature_parser.entrypoints.project_cli.cli_process import cmd_process
+from literature_parser.entrypoints.project_cli.common import ROOT, clean_dangling_tmp_files, get_current_date
+from literature_parser.adapters.guards.hardware import check_hardware_safety
+from literature_parser.adapters.guards.ollama_guard import OllamaGuard
+from literature_parser.adapters.guards.validator import ValidatorGuard
+from literature_parser.services.utils.app_logger import get_diagnostic_logger
 
 logger = get_diagnostic_logger("CommandCenter")
 
@@ -404,7 +404,7 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
-from src.guards.hardware import check_hardware_safety
+from literature_parser.adapters.guards.hardware import check_hardware_safety
 
 class TestBaseline(unittest.TestCase):
     def test_hardware_probe(self):
@@ -433,7 +433,7 @@ def cmd_obsidian_link(args):
     Scans a processed book output directory, generates index.md with Obsidian
     wikilinks, and injects inter-chapter previous/next navigation footers.
     """
-    from doc_processor.utils.obsidian_linker import (
+    from literature_parser.services.utils.obsidian_linker import (
         generate_book_index,
         inject_chapter_navigation,
     )
@@ -477,7 +477,7 @@ def cmd_status(args):
     Displays an aggregated visual snapshot of all processed books/literature
     from data/state/global_status.json (with automatic rebuild if needed).
     """
-    from doc_processor.core.global_state import GlobalStateManager
+    from literature_parser.services.core.global_state import GlobalStateManager
 
     gsm = GlobalStateManager()
     data = gsm.get_all()
@@ -527,7 +527,7 @@ def cmd_dashboard(args):
     Generates a modern, standalone static HTML dashboard (dashboard/index.html)
     visualizing real-time conversion progress, and opens it in the default browser.
     """
-    from doc_processor.core.global_state import GlobalStateManager
+    from literature_parser.services.core.global_state import GlobalStateManager
 
     gsm = GlobalStateManager()
     data = gsm.get_all()

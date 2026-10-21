@@ -1,5 +1,5 @@
 import unittest
-from doc_processor.pipelines.literature_pipeline import LiteraturePipeline
+from literature_parser.adapters.pipelines.literature_pipeline import LiteraturePipeline
 
 
 class TestLiteraturePipeline(unittest.TestCase):

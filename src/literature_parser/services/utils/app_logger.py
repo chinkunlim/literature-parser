@@ -9,9 +9,11 @@ import logging
 import sys
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-LOG_DIR = PROJECT_ROOT / "logs"
-LOG_DIR.mkdir(exist_ok=True)
+from literature_parser.config.settings import AppConfig
+
+_cfg = AppConfig()
+LOG_DIR = _cfg.logs_dir
+LOG_DIR.mkdir(parents=True, exist_ok=True)
 DEFAULT_LOG_FILE = LOG_DIR / "process.log"
 
 

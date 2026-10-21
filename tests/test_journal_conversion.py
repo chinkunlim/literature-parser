@@ -3,9 +3,9 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 import unittest
-from doc_processor.fingerprinting.document_classifier import DocumentClassifier
-from doc_processor.parsers.math.apa_stats_normalizer import APAStatsNormalizer
-from doc_processor.parsers.layout.table_parser import TableParser
+from literature_parser.services.fingerprinting.document_classifier import DocumentClassifier
+from literature_parser.services.parsers.math.apa_stats_normalizer import APAStatsNormalizer
+from literature_parser.services.parsers.layout.table_parser import TableParser
 
 
 class TestJournalConversion(unittest.TestCase):

@@ -45,16 +45,20 @@ class ConfigManager:
 
     @classmethod
     def get_config_root(cls) -> Path:
-        """Locates the project root `config/` directory."""
-        # 1. Project root relative to this file: src/doc_processor/config_manager.py -> config/
-        candidate1 = Path(__file__).resolve().parent.parent.parent / "config"
+        """Locates the configuration resources directory."""
+        # 1. Package resources directory: src/literature_parser/config/resources/
+        candidate_pkg = Path(__file__).resolve().parent.parent / "config" / "resources"
+        if candidate_pkg.exists() and candidate_pkg.is_dir():
+            return candidate_pkg
+        # 2. Project root config/
+        candidate1 = Path(__file__).resolve().parent.parent.parent.parent / "config"
         if candidate1.exists() and candidate1.is_dir():
             return candidate1
-        # 2. Current working directory config/
+        # 3. Current working directory config/
         candidate2 = Path.cwd() / "config"
         if candidate2.exists() and candidate2.is_dir():
             return candidate2
-        return candidate1
+        return candidate_pkg
 
     @classmethod
     def load_json(cls, path: Path) -> dict:
@@ -159,7 +163,7 @@ class ConfigManager:
         if total_pages > 45:
             return "textbook"
 
-        from doc_processor.fingerprinting.document_classifier import DocumentClassifier
+        from literature_parser.services.fingerprinting.document_classifier import DocumentClassifier
         if DocumentClassifier.is_journal_article(pdf_path):
             return "literature"
 

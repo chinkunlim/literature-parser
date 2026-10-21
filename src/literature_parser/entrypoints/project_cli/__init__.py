@@ -9,9 +9,9 @@ Modular command center split into dedicated domain modules:
 - cli_project: Health checks, watchdog, scaffolding, and dashboard
 """
 
-from src.cli.cli_audit import cmd_audit
-from src.cli.cli_fix import cmd_fix
-from src.cli.cli_git import (
+from literature_parser.entrypoints.project_cli.cli_audit import cmd_audit
+from literature_parser.entrypoints.project_cli.cli_fix import cmd_fix
+from literature_parser.entrypoints.project_cli.cli_git import (
     cmd_agent_init,
     cmd_archive_sessions,
     cmd_end_session,
@@ -19,8 +19,8 @@ from src.cli.cli_git import (
     cmd_publish,
     cmd_save,
 )
-from src.cli.cli_process import cmd_batch, cmd_epub, cmd_process
-from src.cli.cli_project import (
+from literature_parser.entrypoints.project_cli.cli_process import cmd_batch, cmd_epub, cmd_process
+from literature_parser.entrypoints.project_cli.cli_project import (
     cmd_dashboard,
     cmd_doctor,
     cmd_init_project,
@@ -29,7 +29,7 @@ from src.cli.cli_project import (
     cmd_test_ollama_auto_trigger,
     cmd_watchdog,
 )
-from src.cli.common import (
+from literature_parser.entrypoints.project_cli.common import (
     ROOT,
     clean_dangling_tmp_files,
     get_current_date,

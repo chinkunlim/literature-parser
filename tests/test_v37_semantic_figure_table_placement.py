@@ -8,7 +8,7 @@ Verifies:
 """
 
 import unittest
-from doc_processor.parsers.literature.figure_formatter import FigureFormatter
+from literature_parser.services.parsers.literature.figure_formatter import FigureFormatter
 
 
 class TestSemanticFigureTablePlacement(unittest.TestCase):

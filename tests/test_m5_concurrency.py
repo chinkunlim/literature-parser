@@ -9,7 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 import unittest
 from unittest.mock import patch
-from doc_processor.concurrency.m5_worker_pool import (
+from literature_parser.services.concurrency.m5_worker_pool import (
     M5HardwareProfile,
     M5WorkerPool,
     get_m5_optimal_workers

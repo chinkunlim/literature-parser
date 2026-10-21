@@ -1,18 +1,13 @@
-"""
-Core Processing Engine: Orchestrator, Checkpoint Manifest, Splitter & Image Manager
-===================================================================================
-"""
+"""Core Processing Engine: Checkpoint Manifest, Splitter & Image Manager."""
 
-from doc_processor.core.analyzer import PDFAnalyzer
-from doc_processor.core.checkpoint import CheckpointManager
-from doc_processor.core.image_manager import ImageManager
-from doc_processor.core.orchestrator import BookProcessorOrchestrator
-from doc_processor.core.splitter import PDFSplitter
+from literature_parser.services.core.analyzer import PDFAnalyzer
+from literature_parser.services.core.checkpoint import CheckpointManager
+from literature_parser.services.core.image_manager import ImageManager
+from literature_parser.services.core.splitter import PDFSplitter
 
 __all__ = [
-    "BookProcessorOrchestrator",
     "CheckpointManager",
     "ImageManager",
     "PDFAnalyzer",
-    "PDFSplitter"
+    "PDFSplitter",
 ]

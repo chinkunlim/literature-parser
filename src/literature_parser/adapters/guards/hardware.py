@@ -12,7 +12,7 @@ import platform
 import shutil
 import subprocess
 
-from src.utils.logger import get_diagnostic_logger
+from literature_parser.services.utils.app_logger import get_diagnostic_logger
 
 logger = get_diagnostic_logger("HardwareGuard")
 
@@ -26,9 +26,10 @@ MIN_BATTERY_PERCENT = 40
 def get_available_ram_gb() -> float:
     """Returns available RAM in Gigabytes using psutil or macOS vm_stat fallback."""
     try:
-        import psutil
+        import importlib
+        psutil = importlib.import_module("psutil")
         return psutil.virtual_memory().available / (1024 ** 3)
-    except ImportError:
+    except Exception:
         pass
 
     if platform.system() == "Darwin":
@@ -97,7 +98,8 @@ def get_disk_free_gb(path: str = ".") -> float:
 def is_mps_available() -> bool:
     """Checks if PyTorch Apple Silicon MPS acceleration is enabled."""
     try:
-        import torch
+        import importlib
+        torch = importlib.import_module("torch")
         return hasattr(torch.backends, "mps") and torch.backends.mps.is_available()
     except Exception:
         return False

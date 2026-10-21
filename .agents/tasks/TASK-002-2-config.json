@@ -1,24 +1,37 @@
 {
   "id": "TASK-002",
   "title": "遷移批次 2：config 層（設定、環境變數讀取）",
-  "status": "open",
-  "agent": "",
+  "status": "done",
+  "agent": "antigravity",
   "handed_off_from": "",
   "handed_off_to": "",
   "paths": [
     "src/literature_parser/config/",
     "legacy"
   ],
-  "done_items": "",
+  "done_items": "config 層遷移完成，processor_config.py 與 config_manager.py 正確載入資源，0 critical issues",
   "todo_items": "",
   "blockers": "",
   "created_at": "2026-10-21 04:12 UTC",
-  "updated_at": "2026-10-21 04:12 UTC",
+  "updated_at": "2026-10-21 16:03 UTC",
   "history": [
     {
       "timestamp": "2026-10-21 04:12 UTC",
       "action": "created",
       "agent": "system"
+    },
+    {
+      "timestamp": "2026-10-21 16:02 UTC",
+      "action": "claimed",
+      "agent": "antigravity",
+      "previous_agent": ""
+    },
+    {
+      "timestamp": "2026-10-21 16:03 UTC",
+      "action": "done",
+      "agent": "antigravity",
+      "summary": "config 層遷移完成，processor_config.py 與 config_manager.py 正確載入資源，0 critical issues"
     }
-  ]
+  ],
+  "summary": "config 層遷移完成，processor_config.py 與 config_manager.py 正確載入資源，0 critical issues"
 }

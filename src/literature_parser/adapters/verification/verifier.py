@@ -12,9 +12,9 @@ import shutil
 import subprocess
 from pathlib import Path
 
-from doc_processor.config import DEFAULT_DICT_PATH
-from doc_processor.verification.ollama_verifier import OllamaVerifier
-from doc_processor.verification.rules import (
+from literature_parser.config.processor_config import DEFAULT_DICT_PATH
+from literature_parser.adapters.verification.ollama_verifier import OllamaVerifier
+from literature_parser.adapters.verification.rules import (
     check_content_continuity,
     check_excessive_hard_wraps,
     check_heading_density,

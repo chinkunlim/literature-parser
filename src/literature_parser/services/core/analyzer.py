@@ -10,7 +10,7 @@ import subprocess
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from doc_processor.utils.text_utils import (
+from literature_parser.services.utils.text_utils import (
     format_appendix_title,
     format_chapter_title,
     sanitize_filename,
@@ -198,7 +198,7 @@ class PDFAnalyzer:
             pages = pages[:-1]
 
         # Check document classification first: journals stay single section
-        from doc_processor.fingerprinting.document_classifier import DocumentClassifier
+        from literature_parser.services.fingerprinting.document_classifier import DocumentClassifier
         p1_text = pages[0] if pages else ""
         classification = DocumentClassifier.classify(total_pages, p1_text)
         if classification["is_journal"]:

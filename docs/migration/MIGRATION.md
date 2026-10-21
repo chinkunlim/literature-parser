@@ -97,212 +97,212 @@ mkdir -p ../../projects-data/literature-parser/input/data/ && rsync -a "/Users/l
 
 | 狀態 | 舊檔案 | 建議位置 | 批次 |
 |---|---|---|---|
-| ☐ | `legacy/.env.example` | `pyproject.toml / package.json / .env.example（轉換後刪除舊檔）` | deps |
-| ☐ | `legacy/.gitignore` | `pyproject.toml / package.json / .env.example（轉換後刪除舊檔）` | deps |
-| ☐ | `legacy/.python-version` | `pyproject.toml / package.json / .env.example（轉換後刪除舊檔）` | deps |
-| ☐ | `legacy/pyproject.toml` | `pyproject.toml / package.json / .env.example（轉換後刪除舊檔）` | deps |
-| ☐ | `legacy/src/doc_processor/config.py` | `src/literature_parser/config/` | config |
-| ☐ | `legacy/src/doc_processor/config_manager.py` | `src/literature_parser/config/` | config |
-| ☐ | `legacy/src/doc_processor/profiler/model_advisor.py` | `src/literature_parser/domain/` | domain |
-| ☐ | `legacy/src/doc_processor/parsers/layout/table_llm_fixer.py` | `src/literature_parser/adapters/` | adapters |
-| ☐ | `legacy/src/doc_processor/parsers/literature/metadata_extractor.py` | `src/literature_parser/adapters/` | adapters |
-| ☐ | `legacy/src/doc_processor/profiler/ollama_profiler.py` | `src/literature_parser/adapters/` | adapters |
-| ☐ | `legacy/src/doc_processor/utils/system.py` | `src/literature_parser/adapters/` | adapters |
-| ☐ | `legacy/src/doc_processor/verification/ollama_healer.py` | `src/literature_parser/adapters/` | adapters |
-| ☐ | `legacy/src/doc_processor/verification/ollama_verifier.py` | `src/literature_parser/adapters/` | adapters |
-| ☐ | `legacy/src/guards/hardware.py` | `src/literature_parser/adapters/` | adapters |
-| ☐ | `legacy/src/guards/ollama_guard.py` | `src/literature_parser/adapters/` | adapters |
-| ☐ | `legacy/audit_project.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/__init__.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/book_style.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/concurrency/__init__.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/concurrency/m5_worker_pool.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/core/__init__.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/core/analyzer.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/core/checkpoint.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/core/global_state.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/core/image_manager.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/core/invariants.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/core/learner.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/core/logger.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/core/orchestrator.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/core/splitter.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/core/watchdog.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/exporter/__init__.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/exporter/epub_exporter.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/exporter/epub_styles.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/fingerprinting/__init__.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/fingerprinting/document_classifier.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/fingerprinting/publisher_detector.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/fixes/__init__.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/fixes/playbook.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/fixes/promoted/__init__.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/fixes/staged/__init__.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/fixes/synthesizer.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/literature_style.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/parsers/__init__.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/parsers/digital_pdf.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/parsers/epub_parser.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/parsers/layout/__init__.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/parsers/layout/callout_parser.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/parsers/layout/concept_map_parser.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/parsers/layout/eoc_parser.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/parsers/layout/list_parser.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/parsers/layout/margin_parser.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/parsers/layout/table_parser.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/parsers/layout/vector_figure_parser.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/parsers/layout_detector.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/parsers/literature/__init__.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/parsers/literature/figure_formatter.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/parsers/literature/imrad_resolver.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/parsers/literature/reference_parser.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/parsers/math/__init__.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/parsers/math/apa_stats_normalizer.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/parsers/math_latex.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/parsers/scanned_pdf.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/pipelines/__init__.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/pipelines/base_pipeline.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/pipelines/literature_pipeline.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/pipelines/textbook_pipeline.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/profiler/coordinate_calibrator.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/profiler/special_block_scanner.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/style_loader.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/utils/__init__.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/utils/anki_exporter.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/utils/obsidian_linker.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/utils/shared_text.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/utils/text_utils.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/verification/__init__.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/verification/format_auditor.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/verification/layout_healer.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/verification/review_manager.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/verification/rules.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/verification/verifier.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/doc_processor/verification/visual_auditor.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/guards/prompts.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/guards/validator.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/src/utils/logger.py` | `src/literature_parser/services/` | services |
-| ☐ | `legacy/run.py` | `src/literature_parser/entrypoints/` | entrypoints |
-| ☐ | `legacy/src/cli/__init__.py` | `src/literature_parser/entrypoints/` | entrypoints |
-| ☐ | `legacy/src/cli/cli_audit.py` | `src/literature_parser/entrypoints/` | entrypoints |
-| ☐ | `legacy/src/cli/cli_fix.py` | `src/literature_parser/entrypoints/` | entrypoints |
-| ☐ | `legacy/src/cli/cli_git.py` | `src/literature_parser/entrypoints/` | entrypoints |
-| ☐ | `legacy/src/cli/cli_process.py` | `src/literature_parser/entrypoints/` | entrypoints |
-| ☐ | `legacy/src/cli/cli_project.py` | `src/literature_parser/entrypoints/` | entrypoints |
-| ☐ | `legacy/src/cli/common.py` | `src/literature_parser/entrypoints/` | entrypoints |
-| ☐ | `legacy/src/doc_processor/cli.py` | `src/literature_parser/entrypoints/` | entrypoints |
-| ☐ | `legacy/dashboard/index.html` | `web/` | web |
-| ☐ | `legacy/tests/__init__.py` | `tests/` | tests |
-| ☐ | `legacy/tests/test_apa_stats_normalizer.py` | `tests/` | tests |
-| ☐ | `legacy/tests/test_archetype_pipeline_and_knowledge.py` | `tests/` | tests |
-| ☐ | `legacy/tests/test_fingerprinting.py` | `tests/` | tests |
-| ☐ | `legacy/tests/test_journal_conversion.py` | `tests/` | tests |
-| ☐ | `legacy/tests/test_layout_submodules.py` | `tests/` | tests |
-| ☐ | `legacy/tests/test_m5_concurrency.py` | `tests/` | tests |
-| ☐ | `legacy/tests/test_v21_features.py` | `tests/` | tests |
-| ☐ | `legacy/tests/test_v22_features.py` | `tests/` | tests |
-| ☐ | `legacy/tests/test_v23_layout_features.py` | `tests/` | tests |
-| ☐ | `legacy/tests/test_v24_ch02_layout.py` | `tests/` | tests |
-| ☐ | `legacy/tests/test_v25_layout_healer.py` | `tests/` | tests |
-| ☐ | `legacy/tests/test_v26_exhibits_and_columns.py` | `tests/` | tests |
-| ☐ | `legacy/tests/test_v27_profile_and_layout.py` | `tests/` | tests |
-| ☐ | `legacy/tests/test_v28_advanced_features.py` | `tests/` | tests |
-| ☐ | `legacy/tests/test_v29_special_block_scanner.py` | `tests/` | tests |
-| ☐ | `legacy/tests/test_v30_code_hardening.py` | `tests/` | tests |
-| ☐ | `legacy/tests/test_v31_table_semantic_healer.py` | `tests/` | tests |
-| ☐ | `legacy/tests/test_v32_syntax_and_table_integrity.py` | `tests/` | tests |
-| ☐ | `legacy/tests/test_v33_obsidian_linker.py` | `tests/` | tests |
-| ☐ | `legacy/tests/test_v34_global_state.py` | `tests/` | tests |
-| ☐ | `legacy/tests/test_v35_literature_pipeline.py` | `tests/` | tests |
-| ☐ | `legacy/tests/test_v36_literature_layout_refinement.py` | `tests/` | tests |
-| ☐ | `legacy/tests/test_v37_semantic_figure_table_placement.py` | `tests/` | tests |
-| ☐ | `legacy/tests/test_v38_universal_literature_profiling.py` | `tests/` | tests |
-| ☐ | `legacy/tests/test_v39_format_auditor.py` | `tests/` | tests |
-| ☐ | `legacy/tests/test_v40_fix_playbook_and_invariants.py` | `tests/` | tests |
-| ☐ | `legacy/tests/test_v41_ollama_synthesizer.py` | `tests/` | tests |
-| ☐ | `legacy/tests/test_v42_epub_exporter.py` | `tests/` | tests |
-| ☐ | `legacy/.agent/skills/document-processor/SKILL.md` | `docs/specs/ 或 docs/adr/ 或 docs/known-issues/` | docs |
-| ☐ | `legacy/.agent/skills/literature-processor/SKILL.md` | `docs/specs/ 或 docs/adr/ 或 docs/known-issues/` | docs |
-| ☐ | `legacy/.agent/skills/textbook-processor/SKILL.md` | `docs/specs/ 或 docs/adr/ 或 docs/known-issues/` | docs |
-| ☐ | `legacy/.github/CONTRIBUTING.md` | `docs/standards/PROJECT_RULES.md（只留本專案特有的規則；通用規則已在 AGENTS.md / standards）` | docs |
-| ☐ | `legacy/.github/SECURITY.md` | `README.md 的安全說明，或 docs/standards/PROJECT_RULES.md` | docs |
-| ☐ | `legacy/AGENTS.md` | `docs/standards/PROJECT_RULES.md（只留本專案特有的規則；通用規則已在 AGENTS.md / standards）` | docs |
-| ☐ | `legacy/CHANGELOG.md` | `CHANGELOG.md（舊版本紀錄貼在 0.1.0 下方，保留原日期）` | docs |
-| ☐ | `legacy/DECISIONS.md` | `docs/adr/（每個決策拆成一個 NNN-*.md，用 adr-issue-tracker）` | docs |
-| ☐ | `legacy/KNOWN_ISSUES.md` | `docs/known-issues/（每個問題一個 NNN-*.md）` | docs |
-| ☐ | `legacy/README.md` | `README.md（改寫成新專案的說明）` | docs |
-| ☐ | `legacy/WORKFLOW_GUIDE.md` | `docs/standards/PROJECT_RULES.md（只留本專案特有的規則；通用規則已在 AGENTS.md / standards）` | docs |
-| ☐ | `legacy/conversations/raw/001_pdf_epub_extraction_and_sample_slicing.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/conversations/raw/002_research_methods_conversion_and_tuning.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/conversations/raw/003_table_recognition_and_dual_column_layout.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/conversations/raw/004_journal_article_latex_table_healer.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/conversations/raw/005_agent_init_startup_sequence_and_refactor.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/conversations/raw/006_project_architecture_and_governance.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/conversations/raw/007_full_feature_enhancements_and_books_conversion.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/conversations/raw/008_literature_style_decoupling_and_verification.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/conversations/raw/009_epub_exporter_and_multi_format_pipeline.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/conversations/summaries/001_pdf_epub_extraction_and_sample_slicing_summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/conversations/summaries/002_research_methods_conversion_and_tuning_summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/conversations/summaries/003_table_recognition_and_dual_column_layout_summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/conversations/summaries/004_journal_article_latex_table_healer_summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/conversations/summaries/005_agent_init_startup_sequence_and_refactor_summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/conversations/summaries/006_project_architecture_and_governance_summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/conversations/summaries/007_full_feature_enhancements_and_books_conversion_summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/conversations/summaries/008_literature_style_decoupling_and_verification_summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/conversations/summaries/009_epub_exporter_and_multi_format_pipeline_summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/docs/ARCHITECTURE.md` | `docs/architecture/ARCHITECTURE.md` | docs |
-| ☐ | `legacy/docs/CODING_RULES.md` | `docs/specs/ 或 docs/adr/ 或 docs/known-issues/` | docs |
-| ☐ | `legacy/docs/CONTEXT.md` | `docs/specs/ 或 docs/adr/ 或 docs/known-issues/` | docs |
-| ☐ | `legacy/docs/DEPLOYMENT.md` | `docs/specs/ 或 docs/adr/ 或 docs/known-issues/` | docs |
-| ☐ | `legacy/docs/OPTIMIZATION_PROPOSAL.md` | `docs/specs/ 或 docs/adr/ 或 docs/known-issues/` | docs |
-| ☐ | `legacy/docs/PROMPT_TEMPLATES.md` | `docs/PROMPT_TEMPLATES.md` | docs |
-| ☐ | `legacy/docs/TOOLS.md` | `docs/specs/ 或 docs/adr/ 或 docs/known-issues/` | docs |
-| ☐ | `legacy/evals/README.md` | `evals/EVALS.md（全專案只有根目錄一份 README）` | docs |
-| ☐ | `legacy/memory/HANDOFF.md` | `docs/specs/ 或 docs/adr/ 或 docs/known-issues/` | docs |
-| ☐ | `legacy/memory/TASKS.md` | `docs/specs/ 或 docs/adr/ 或 docs/known-issues/` | docs |
-| ☐ | `legacy/memory/sessions/2026-09-17-read-the-full-conversation-transcript-at-usersli-transcript.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/memory/sessions/2026-09-18-initial-textbook-pipeline-development-summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/memory/sessions/2026-09-18-initial-textbook-pipeline-development-transcript.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/memory/sessions/2026-09-18-research-methods-book-conversion-summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/memory/sessions/2026-09-18-research-methods-book-conversion-transcript.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/memory/sessions/2026-09-20-typography-tables-and-formula-refinement-summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/memory/sessions/2026-09-20-typography-tables-and-formula-refinement-transcript.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/memory/sessions/2026-09-23-academic-journal-pipeline-and-dual-column-summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/memory/sessions/2026-09-23-academic-journal-pipeline-and-dual-column-transcript.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/memory/sessions/2026-09-23-project-architecture-and-governance-summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/memory/sessions/2026-09-23-project-architecture-and-governance-transcript.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/memory/sessions/2026-09-24-full-feature-enhancements-and-books-conversion-summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/memory/sessions/2026-09-24-full-feature-enhancements-and-books-conversion-transcript.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/memory/sessions/2026-09-24-uv-run-python-runpy-agent-init-additional-meta-summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/memory/sessions/2026-09-24-uv-run-python-runpy-agent-init-additional-meta-transcript.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
-| ☐ | `legacy/.cursorrules` | `docs/standards/PROJECT_RULES.md（只留本專案特有的規則；各工具入口檔由 agentctl sync 產生）` | other |
-| ☐ | `legacy/.github/workflows/ci.yml` | `比對模板產生的 .github/workflows/ci.yml，只併入本專案特有的步驟` | other |
-| ☐ | `legacy//data/output/books/Research-Methods-in-Psychology-1641401901/chapters/064_The Single-Subject Versus Group \342\200\234Debate\342\200\235/064_The Single-Subject Versus Group \342\200\234Debate\342\200\235.md"` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
-| ☐ | `legacy//data/output/books/Research-Methods-in-Psychology-1641401901/chapters/081_From the \342\200\234Replicability Crisis\342\200\235 to Open Science Practices/081_From the \342\200\234Replicability Crisis\342\200\235 to Open Science Practices.md"` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
-| ☐ | `legacy//data/output/books/Research-Methods-in-Psychology-1641401901/chapters/081_From the \342\200\234Replicability Crisis\342\200\235 to Open Science Practices/images/081_081.png"` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
-| ☐ | `legacy//data/output/books/Research-Methods-in-Psychology-1641401901/chapters/081_From the \342\200\234Replicability Crisis\342\200\235 to Open Science Practices/images/081_082.jpg"` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
-| ☐ | `legacy//memory/sessions/2026-09-24-\345\237\267\350\241\214-uv-run-python-runpy-agent-init-additional-me-summary.md"` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
-| ☐ | `legacy//memory/sessions/2026-09-24-\345\237\267\350\241\214-uv-run-python-runpy-agent-init-additional-me-transcript.md"` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
-| ☐ | `legacy/LICENSE` | `LICENSE（保留原授權）` | other |
-| ☐ | `legacy/Makefile` | `改用 agentctl / uv run / pnpm 指令，寫進 README；仍需要的腳本放 scripts/` | other |
-| ☐ | `legacy/config/archetypes/literature.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
-| ☐ | `legacy/config/archetypes/textbook.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
-| ☐ | `legacy/config/publishers/apa.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
-| ☐ | `legacy/config/publishers/elsevier.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
-| ☐ | `legacy/config/publishers/ieee.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
-| ☐ | `legacy/config/publishers/springer.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
-| ☐ | `legacy/config/publishers/wiley.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
-| ☐ | `legacy/config/shared_knowledge/literature_sections.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
-| ☐ | `legacy/config/shared_knowledge/symbol_mappings.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
-| ☐ | `legacy/src/doc_processor/profiles/global_profile.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
-| ☐ | `legacy/src/doc_processor/profiles/literature_aip.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
-| ☐ | `legacy/src/doc_processor/profiles/literature_annual_reviews.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
-| ☐ | `legacy/src/doc_processor/profiles/literature_apa.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
-| ☐ | `legacy/src/doc_processor/profiles/literature_cup.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
-| ☐ | `legacy/src/doc_processor/profiles/literature_elsevier.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
-| ☐ | `legacy/src/doc_processor/profiles/literature_sage.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
-| ☐ | `legacy/src/doc_processor/profiles/literature_springer.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
-| ☐ | `legacy/src/doc_processor/profiles/literature_wiley.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
-| ☐ | `legacy/src/doc_processor/profiles/publisher_cengage.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
-| ☐ | `legacy/src/doc_processor/profiles/publisher_pearson.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
-| ☐ | `legacy/uv.lock` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
+| ☑ | `legacy/.env.example` | `pyproject.toml / package.json / .env.example（轉換後刪除舊檔）` | deps |
+| ☑ | `legacy/.gitignore` | `pyproject.toml / package.json / .env.example（轉換後刪除舊檔）` | deps |
+| ☑ | `legacy/.python-version` | `pyproject.toml / package.json / .env.example（轉換後刪除舊檔）` | deps |
+| ☑ | `legacy/pyproject.toml` | `pyproject.toml / package.json / .env.example（轉換後刪除舊檔）` | deps |
+| ☑ | `legacy/src/doc_processor/config.py` | `src/literature_parser/config/` | config |
+| ☑ | `legacy/src/doc_processor/config_manager.py` | `src/literature_parser/config/` | config |
+| ☑ | `legacy/src/doc_processor/profiler/model_advisor.py` | `src/literature_parser/domain/` | domain |
+| ☑ | `legacy/src/doc_processor/parsers/layout/table_llm_fixer.py` | `src/literature_parser/adapters/` | adapters |
+| ☑ | `legacy/src/doc_processor/parsers/literature/metadata_extractor.py` | `src/literature_parser/adapters/` | adapters |
+| ☑ | `legacy/src/doc_processor/profiler/ollama_profiler.py` | `src/literature_parser/adapters/` | adapters |
+| ☑ | `legacy/src/doc_processor/utils/system.py` | `src/literature_parser/adapters/` | adapters |
+| ☑ | `legacy/src/doc_processor/verification/ollama_healer.py` | `src/literature_parser/adapters/` | adapters |
+| ☑ | `legacy/src/doc_processor/verification/ollama_verifier.py` | `src/literature_parser/adapters/` | adapters |
+| ☑ | `legacy/src/guards/hardware.py` | `src/literature_parser/adapters/` | adapters |
+| ☑ | `legacy/src/guards/ollama_guard.py` | `src/literature_parser/adapters/` | adapters |
+| ☑ | `legacy/audit_project.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/__init__.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/book_style.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/concurrency/__init__.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/concurrency/m5_worker_pool.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/core/__init__.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/core/analyzer.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/core/checkpoint.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/core/global_state.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/core/image_manager.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/core/invariants.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/core/learner.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/core/logger.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/core/orchestrator.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/core/splitter.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/core/watchdog.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/exporter/__init__.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/exporter/epub_exporter.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/exporter/epub_styles.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/fingerprinting/__init__.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/fingerprinting/document_classifier.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/fingerprinting/publisher_detector.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/fixes/__init__.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/fixes/playbook.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/fixes/promoted/__init__.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/fixes/staged/__init__.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/fixes/synthesizer.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/literature_style.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/parsers/__init__.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/parsers/digital_pdf.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/parsers/epub_parser.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/parsers/layout/__init__.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/parsers/layout/callout_parser.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/parsers/layout/concept_map_parser.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/parsers/layout/eoc_parser.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/parsers/layout/list_parser.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/parsers/layout/margin_parser.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/parsers/layout/table_parser.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/parsers/layout/vector_figure_parser.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/parsers/layout_detector.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/parsers/literature/__init__.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/parsers/literature/figure_formatter.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/parsers/literature/imrad_resolver.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/parsers/literature/reference_parser.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/parsers/math/__init__.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/parsers/math/apa_stats_normalizer.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/parsers/math_latex.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/parsers/scanned_pdf.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/pipelines/__init__.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/pipelines/base_pipeline.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/pipelines/literature_pipeline.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/pipelines/textbook_pipeline.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/profiler/coordinate_calibrator.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/profiler/special_block_scanner.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/style_loader.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/utils/__init__.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/utils/anki_exporter.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/utils/obsidian_linker.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/utils/shared_text.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/utils/text_utils.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/verification/__init__.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/verification/format_auditor.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/verification/layout_healer.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/verification/review_manager.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/verification/rules.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/verification/verifier.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/doc_processor/verification/visual_auditor.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/guards/prompts.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/guards/validator.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/src/utils/logger.py` | `src/literature_parser/services/` | services |
+| ☑ | `legacy/run.py` | `src/literature_parser/entrypoints/` | entrypoints |
+| ☑ | `legacy/src/cli/__init__.py` | `src/literature_parser/entrypoints/` | entrypoints |
+| ☑ | `legacy/src/cli/cli_audit.py` | `src/literature_parser/entrypoints/` | entrypoints |
+| ☑ | `legacy/src/cli/cli_fix.py` | `src/literature_parser/entrypoints/` | entrypoints |
+| ☑ | `legacy/src/cli/cli_git.py` | `src/literature_parser/entrypoints/` | entrypoints |
+| ☑ | `legacy/src/cli/cli_process.py` | `src/literature_parser/entrypoints/` | entrypoints |
+| ☑ | `legacy/src/cli/cli_project.py` | `src/literature_parser/entrypoints/` | entrypoints |
+| ☑ | `legacy/src/cli/common.py` | `src/literature_parser/entrypoints/` | entrypoints |
+| ☑ | `legacy/src/doc_processor/cli.py` | `src/literature_parser/entrypoints/` | entrypoints |
+| ☑ | `legacy/dashboard/index.html` | `web/` | web |
+| ☑ | `legacy/tests/__init__.py` | `tests/` | tests |
+| ☑ | `legacy/tests/test_apa_stats_normalizer.py` | `tests/` | tests |
+| ☑ | `legacy/tests/test_archetype_pipeline_and_knowledge.py` | `tests/` | tests |
+| ☑ | `legacy/tests/test_fingerprinting.py` | `tests/` | tests |
+| ☑ | `legacy/tests/test_journal_conversion.py` | `tests/` | tests |
+| ☑ | `legacy/tests/test_layout_submodules.py` | `tests/` | tests |
+| ☑ | `legacy/tests/test_m5_concurrency.py` | `tests/` | tests |
+| ☑ | `legacy/tests/test_v21_features.py` | `tests/` | tests |
+| ☑ | `legacy/tests/test_v22_features.py` | `tests/` | tests |
+| ☑ | `legacy/tests/test_v23_layout_features.py` | `tests/` | tests |
+| ☑ | `legacy/tests/test_v24_ch02_layout.py` | `tests/` | tests |
+| ☑ | `legacy/tests/test_v25_layout_healer.py` | `tests/` | tests |
+| ☑ | `legacy/tests/test_v26_exhibits_and_columns.py` | `tests/` | tests |
+| ☑ | `legacy/tests/test_v27_profile_and_layout.py` | `tests/` | tests |
+| ☑ | `legacy/tests/test_v28_advanced_features.py` | `tests/` | tests |
+| ☑ | `legacy/tests/test_v29_special_block_scanner.py` | `tests/` | tests |
+| ☑ | `legacy/tests/test_v30_code_hardening.py` | `tests/` | tests |
+| ☑ | `legacy/tests/test_v31_table_semantic_healer.py` | `tests/` | tests |
+| ☑ | `legacy/tests/test_v32_syntax_and_table_integrity.py` | `tests/` | tests |
+| ☑ | `legacy/tests/test_v33_obsidian_linker.py` | `tests/` | tests |
+| ☑ | `legacy/tests/test_v34_global_state.py` | `tests/` | tests |
+| ☑ | `legacy/tests/test_v35_literature_pipeline.py` | `tests/` | tests |
+| ☑ | `legacy/tests/test_v36_literature_layout_refinement.py` | `tests/` | tests |
+| ☑ | `legacy/tests/test_v37_semantic_figure_table_placement.py` | `tests/` | tests |
+| ☑ | `legacy/tests/test_v38_universal_literature_profiling.py` | `tests/` | tests |
+| ☑ | `legacy/tests/test_v39_format_auditor.py` | `tests/` | tests |
+| ☑ | `legacy/tests/test_v40_fix_playbook_and_invariants.py` | `tests/` | tests |
+| ☑ | `legacy/tests/test_v41_ollama_synthesizer.py` | `tests/` | tests |
+| ☑ | `legacy/tests/test_v42_epub_exporter.py` | `tests/` | tests |
+| ☑ | `legacy/.agent/skills/document-processor/SKILL.md` | `docs/specs/ 或 docs/adr/ 或 docs/known-issues/` | docs |
+| ☑ | `legacy/.agent/skills/literature-processor/SKILL.md` | `docs/specs/ 或 docs/adr/ 或 docs/known-issues/` | docs |
+| ☑ | `legacy/.agent/skills/textbook-processor/SKILL.md` | `docs/specs/ 或 docs/adr/ 或 docs/known-issues/` | docs |
+| ☑ | `legacy/.github/CONTRIBUTING.md` | `docs/standards/PROJECT_RULES.md（只留本專案特有的規則；通用規則已在 AGENTS.md / standards）` | docs |
+| ☑ | `legacy/.github/SECURITY.md` | `README.md 的安全說明，或 docs/standards/PROJECT_RULES.md` | docs |
+| ☑ | `legacy/AGENTS.md` | `docs/standards/PROJECT_RULES.md（只留本專案特有的規則；通用規則已在 AGENTS.md / standards）` | docs |
+| ☑ | `legacy/CHANGELOG.md` | `CHANGELOG.md（舊版本紀錄貼在 0.1.0 下方，保留原日期）` | docs |
+| ☑ | `legacy/DECISIONS.md` | `docs/adr/（每個決策拆成一個 NNN-*.md，用 adr-issue-tracker）` | docs |
+| ☑ | `legacy/KNOWN_ISSUES.md` | `docs/known-issues/（每個問題一個 NNN-*.md）` | docs |
+| ☑ | `legacy/README.md` | `README.md（改寫成新專案的說明）` | docs |
+| ☑ | `legacy/WORKFLOW_GUIDE.md` | `docs/standards/PROJECT_RULES.md（只留本專案特有的規則；通用規則已在 AGENTS.md / standards）` | docs |
+| ☑ | `legacy/conversations/raw/001_pdf_epub_extraction_and_sample_slicing.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/conversations/raw/002_research_methods_conversion_and_tuning.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/conversations/raw/003_table_recognition_and_dual_column_layout.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/conversations/raw/004_journal_article_latex_table_healer.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/conversations/raw/005_agent_init_startup_sequence_and_refactor.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/conversations/raw/006_project_architecture_and_governance.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/conversations/raw/007_full_feature_enhancements_and_books_conversion.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/conversations/raw/008_literature_style_decoupling_and_verification.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/conversations/raw/009_epub_exporter_and_multi_format_pipeline.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/conversations/summaries/001_pdf_epub_extraction_and_sample_slicing_summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/conversations/summaries/002_research_methods_conversion_and_tuning_summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/conversations/summaries/003_table_recognition_and_dual_column_layout_summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/conversations/summaries/004_journal_article_latex_table_healer_summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/conversations/summaries/005_agent_init_startup_sequence_and_refactor_summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/conversations/summaries/006_project_architecture_and_governance_summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/conversations/summaries/007_full_feature_enhancements_and_books_conversion_summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/conversations/summaries/008_literature_style_decoupling_and_verification_summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/conversations/summaries/009_epub_exporter_and_multi_format_pipeline_summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/docs/ARCHITECTURE.md` | `docs/architecture/ARCHITECTURE.md` | docs |
+| ☑ | `legacy/docs/CODING_RULES.md` | `docs/specs/ 或 docs/adr/ 或 docs/known-issues/` | docs |
+| ☑ | `legacy/docs/CONTEXT.md` | `docs/specs/ 或 docs/adr/ 或 docs/known-issues/` | docs |
+| ☑ | `legacy/docs/DEPLOYMENT.md` | `docs/specs/ 或 docs/adr/ 或 docs/known-issues/` | docs |
+| ☑ | `legacy/docs/OPTIMIZATION_PROPOSAL.md` | `docs/specs/ 或 docs/adr/ 或 docs/known-issues/` | docs |
+| ☑ | `legacy/docs/PROMPT_TEMPLATES.md` | `docs/PROMPT_TEMPLATES.md` | docs |
+| ☑ | `legacy/docs/TOOLS.md` | `docs/specs/ 或 docs/adr/ 或 docs/known-issues/` | docs |
+| ☑ | `legacy/evals/README.md` | `evals/EVALS.md（全專案只有根目錄一份 README）` | docs |
+| ☑ | `legacy/memory/HANDOFF.md` | `docs/specs/ 或 docs/adr/ 或 docs/known-issues/` | docs |
+| ☑ | `legacy/memory/TASKS.md` | `docs/specs/ 或 docs/adr/ 或 docs/known-issues/` | docs |
+| ☑ | `legacy/memory/sessions/2026-09-17-read-the-full-conversation-transcript-at-usersli-transcript.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/memory/sessions/2026-09-18-initial-textbook-pipeline-development-summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/memory/sessions/2026-09-18-initial-textbook-pipeline-development-transcript.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/memory/sessions/2026-09-18-research-methods-book-conversion-summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/memory/sessions/2026-09-18-research-methods-book-conversion-transcript.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/memory/sessions/2026-09-20-typography-tables-and-formula-refinement-summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/memory/sessions/2026-09-20-typography-tables-and-formula-refinement-transcript.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/memory/sessions/2026-09-23-academic-journal-pipeline-and-dual-column-summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/memory/sessions/2026-09-23-academic-journal-pipeline-and-dual-column-transcript.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/memory/sessions/2026-09-23-project-architecture-and-governance-summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/memory/sessions/2026-09-23-project-architecture-and-governance-transcript.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/memory/sessions/2026-09-24-full-feature-enhancements-and-books-conversion-summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/memory/sessions/2026-09-24-full-feature-enhancements-and-books-conversion-transcript.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/memory/sessions/2026-09-24-uv-run-python-runpy-agent-init-additional-meta-summary.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/memory/sessions/2026-09-24-uv-run-python-runpy-agent-init-additional-meta-transcript.md` | `決策 → docs/adr/、錯誤根因 → docs/known-issues/；原檔移到 .agents/conversations/（只存本機，不進 git）` | docs |
+| ☑ | `legacy/.cursorrules` | `docs/standards/PROJECT_RULES.md（只留本專案特有的規則；各工具入口檔由 agentctl sync 產生）` | other |
+| ☑ | `legacy/.github/workflows/ci.yml` | `比對模板產生的 .github/workflows/ci.yml，只併入本專案特有的步驟` | other |
+| ☑ | `legacy//data/output/books/Research-Methods-in-Psychology-1641401901/chapters/064_The Single-Subject Versus Group \342\200\234Debate\342\200\235/064_The Single-Subject Versus Group \342\200\234Debate\342\200\235.md"` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
+| ☑ | `legacy//data/output/books/Research-Methods-in-Psychology-1641401901/chapters/081_From the \342\200\234Replicability Crisis\342\200\235 to Open Science Practices/081_From the \342\200\234Replicability Crisis\342\200\235 to Open Science Practices.md"` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
+| ☑ | `legacy//data/output/books/Research-Methods-in-Psychology-1641401901/chapters/081_From the \342\200\234Replicability Crisis\342\200\235 to Open Science Practices/images/081_081.png"` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
+| ☑ | `legacy//data/output/books/Research-Methods-in-Psychology-1641401901/chapters/081_From the \342\200\234Replicability Crisis\342\200\235 to Open Science Practices/images/081_082.jpg"` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
+| ☑ | `legacy//memory/sessions/2026-09-24-\345\237\267\350\241\214-uv-run-python-runpy-agent-init-additional-me-summary.md"` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
+| ☑ | `legacy//memory/sessions/2026-09-24-\345\237\267\350\241\214-uv-run-python-runpy-agent-init-additional-me-transcript.md"` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
+| ☑ | `legacy/LICENSE` | `LICENSE（保留原授權）` | other |
+| ☑ | `legacy/Makefile` | `改用 agentctl / uv run / pnpm 指令，寫進 README；仍需要的腳本放 scripts/` | other |
+| ☑ | `legacy/config/archetypes/literature.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
+| ☑ | `legacy/config/archetypes/textbook.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
+| ☑ | `legacy/config/publishers/apa.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
+| ☑ | `legacy/config/publishers/elsevier.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
+| ☑ | `legacy/config/publishers/ieee.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
+| ☑ | `legacy/config/publishers/springer.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
+| ☑ | `legacy/config/publishers/wiley.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
+| ☑ | `legacy/config/shared_knowledge/literature_sections.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
+| ☑ | `legacy/config/shared_knowledge/symbol_mappings.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
+| ☑ | `legacy/src/doc_processor/profiles/global_profile.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
+| ☑ | `legacy/src/doc_processor/profiles/literature_aip.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
+| ☑ | `legacy/src/doc_processor/profiles/literature_annual_reviews.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
+| ☑ | `legacy/src/doc_processor/profiles/literature_apa.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
+| ☑ | `legacy/src/doc_processor/profiles/literature_cup.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
+| ☑ | `legacy/src/doc_processor/profiles/literature_elsevier.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
+| ☑ | `legacy/src/doc_processor/profiles/literature_sage.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
+| ☑ | `legacy/src/doc_processor/profiles/literature_springer.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
+| ☑ | `legacy/src/doc_processor/profiles/literature_wiley.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
+| ☑ | `legacy/src/doc_processor/profiles/publisher_cengage.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
+| ☑ | `legacy/src/doc_processor/profiles/publisher_pearson.json` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |
+| ☑ | `legacy/uv.lock` | `依用途判斷（資料 → DATA_DIR，靜態資源 → web/ 或 src/<pkg>/）` | other |

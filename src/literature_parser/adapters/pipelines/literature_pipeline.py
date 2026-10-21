@@ -22,30 +22,30 @@ import tempfile
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-import doc_processor.parsers.digital_pdf as _digital_pdf_mod
-from doc_processor.config_manager import ConfigManager
-from doc_processor.core.analyzer import PDFAnalyzer
-from doc_processor.core.image_manager import ImageManager
-from doc_processor.core.invariants import QualityInvariantGuard
-from doc_processor.core.learner import GlobalLearner
-from doc_processor.literature_style import build_literature_css
-from doc_processor.parsers.digital_pdf import DigitalPDFParser
-from doc_processor.parsers.layout_detector import set_style as _ld_set_style
-from doc_processor.parsers.literature.figure_formatter import FigureFormatter
-from doc_processor.parsers.literature.imrad_resolver import IMRADResolver
-from doc_processor.parsers.literature.metadata_extractor import (
+import literature_parser.services.parsers.digital_pdf as _digital_pdf_mod
+from literature_parser.services.config_manager import ConfigManager
+from literature_parser.services.core.analyzer import PDFAnalyzer
+from literature_parser.services.core.image_manager import ImageManager
+from literature_parser.services.core.invariants import QualityInvariantGuard
+from literature_parser.services.core.learner import GlobalLearner
+from literature_parser.services.literature_style import build_literature_css
+from literature_parser.services.parsers.digital_pdf import DigitalPDFParser
+from literature_parser.services.parsers.layout_detector import set_style as _ld_set_style
+from literature_parser.services.parsers.literature.figure_formatter import FigureFormatter
+from literature_parser.services.parsers.literature.imrad_resolver import IMRADResolver
+from literature_parser.adapters.parsers.literature.metadata_extractor import (
     LiteratureMetadataExtractor,
 )
-from doc_processor.parsers.literature.reference_parser import ReferenceParser
-from doc_processor.parsers.scanned_pdf import ScannedPDFParser
-from doc_processor.pipelines.base_pipeline import BasePipeline
-from doc_processor.utils.text_utils import (
+from literature_parser.services.parsers.literature.reference_parser import ReferenceParser
+from literature_parser.services.parsers.scanned_pdf import ScannedPDFParser
+from literature_parser.services.pipelines.base_pipeline import BasePipeline
+from literature_parser.services.utils.text_utils import (
     sanitize_filename,
     stitch_cross_page_continuity,
 )
-from doc_processor.verification.format_auditor import FormatAuditor
-from doc_processor.verification.ollama_healer import OllamaHealer
-from doc_processor.verification.verifier import AccuracyVerifier
+from literature_parser.adapters.verification.format_auditor import FormatAuditor
+from literature_parser.adapters.verification.ollama_healer import OllamaHealer
+from literature_parser.adapters.verification.verifier import AccuracyVerifier
 
 logger = logging.getLogger(__name__)
 
@@ -282,7 +282,7 @@ class LiteraturePipeline(BasePipeline):
         config = self.load_pipeline_config(str(p_path), archetype="literature")
 
         # Geometry Profiler: Calibrate exact coordinates and generate document_profile.json
-        from doc_processor.profiler.coordinate_calibrator import CoordinateCalibrator
+        from literature_parser.services.profiler.coordinate_calibrator import CoordinateCalibrator
         lit_profile = CoordinateCalibrator.calibrate_and_save_literature_profile(doc_out, p_path, total_pages=total_pages)
         if "geometry" in lit_profile:
             config["geometry"] = lit_profile["geometry"]
@@ -503,7 +503,7 @@ class LiteraturePipeline(BasePipeline):
                 if iss.severity == "ERROR":
                     print(f"   ❌ [{iss.category}] {iss.message}")
             try:
-                from src.guards.validator import ValidatorGuard
+                from literature_parser.adapters.guards.validator import ValidatorGuard
                 v_guard = ValidatorGuard()
                 err_details = "\n".join([f"- {i.message}" for i in audit_rep.issues if i.severity == "ERROR"])
                 v_guard.quarantine_issue(

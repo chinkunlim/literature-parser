@@ -128,7 +128,7 @@ class CheckpointManager:
 
         # 3. Synchronize with Global State Manager (atomic)
         try:
-            from doc_processor.core.global_state import GlobalStateManager
+            from literature_parser.services.core.global_state import GlobalStateManager
             gsm = GlobalStateManager()
             doc_type = "literature" if "literature" in str(self.book_dir) else "book"
             gsm.update_book(self.book_title, self.data.get("chapters", {}), doc_type=doc_type)
@@ -153,7 +153,7 @@ class CheckpointManager:
             f"- **Total Chapters**: {total}",
             f"- **Verified & Complete**: {verified} / {total} ({percent:.1f}%)",
             f"- **Last Session Updated**: {self.data['last_updated']}",
-            "- **Resume Command**: `python3 doc_processor.py resume --file \"<path_to_book>\"`\n",
+            "- **Resume Command**: `python3 literature_parser.services.py resume --file \"<path_to_book>\"`\n",
             "| Chapter | Page Range | Split PDF | Markdown | Images | Verification | Status |",
             "| :--- | :--- | :---: | :---: | :---: | :---: | :--- |",
         ]

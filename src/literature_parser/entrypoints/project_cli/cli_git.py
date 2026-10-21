@@ -16,7 +16,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from src.cli.common import (
+from literature_parser.entrypoints.project_cli.common import (
     ROOT,
     clean_dangling_tmp_files,
     get_current_date,

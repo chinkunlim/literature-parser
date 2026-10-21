@@ -13,11 +13,11 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from doc_processor.parsers.literature.metadata_extractor import LiteratureMetadataExtractor, generate_markdown_toc
-from doc_processor.parsers.literature.figure_formatter import FigureFormatter
-from doc_processor.parsers.literature.imrad_resolver import IMRADResolver
-from doc_processor.parsers.literature.reference_parser import ReferenceParser
-from doc_processor.pipelines.literature_pipeline import LiteraturePipeline
+from literature_parser.adapters.parsers.literature.metadata_extractor import LiteratureMetadataExtractor, generate_markdown_toc
+from literature_parser.services.parsers.literature.figure_formatter import FigureFormatter
+from literature_parser.services.parsers.literature.imrad_resolver import IMRADResolver
+from literature_parser.services.parsers.literature.reference_parser import ReferenceParser
+from literature_parser.adapters.pipelines.literature_pipeline import LiteraturePipeline
 
 
 class TestLiteratureLayoutRefinement(unittest.TestCase):
@@ -217,14 +217,14 @@ class TestLiteratureLayoutRefinement(unittest.TestCase):
         self.assertIn("Collect &#36;&#36;&#36;", fixed)
 
     def test_running_page_number_and_hyphen_compound(self):
-        from doc_processor.utils.text_utils import stitch_cross_page_continuity
+        from literature_parser.services.utils.text_utils import stitch_cross_page_continuity
         raw = "The BART is a computerized, laboratory-\n\n75\n<!-- Page 2 -->\n\nbased measure that involves..."
         stitched = stitch_cross_page_continuity(raw)
         self.assertNotIn("75", stitched)
         self.assertIn("laboratory-based", stitched)
 
     def test_no_false_bullet_on_lowercase_dash(self):
-        from doc_processor.parsers.layout.list_parser import ListParser
+        from literature_parser.services.parsers.layout.list_parser import ListParser
         raw = "Test-retest reliability has been\n– established ($r = .92)."
         res = ListParser.detect_and_format_lists(raw)
         self.assertNotIn("- established", res)

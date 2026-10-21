@@ -175,7 +175,7 @@ def create_or_update_book_profile(book_dir: Path, force_refresh: bool = False) -
                     pass
 
             if sample_text:
-                from src.guards.prompts import PromptRegistry
+                from literature_parser.services.guards.prompts import PromptRegistry
                 prompt = PromptRegistry.get_profile_special_blocks(sample_text)
                 refined = query_ollama_json(prompt, model=chosen_model)
                 if refined and isinstance(refined, dict):

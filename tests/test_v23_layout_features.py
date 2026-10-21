@@ -17,8 +17,8 @@ from pathlib import Path
 ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
-from doc_processor.parsers.layout_detector import LayoutDetector
-from doc_processor.parsers.digital_pdf import DigitalPDFParser
+from literature_parser.services.parsers.layout_detector import LayoutDetector
+from literature_parser.services.parsers.digital_pdf import DigitalPDFParser
 
 
 class TestV23LayoutFeatures(unittest.TestCase):
@@ -27,7 +27,7 @@ class TestV23LayoutFeatures(unittest.TestCase):
     def setUpClass(cls):
         cls.ch01_pdf = "./data/output/books/Research Methods, Design, and Analysis 13th ed/chapters/Ch01 Introduction to Scientific Research/Ch01 Introduction to Scientific Research.pdf"
         cls.pdf_exists = Path(cls.ch01_pdf).exists()
-        from doc_processor.style_loader import load_style
+        from literature_parser.services.style_loader import load_style
         cls.orig_style = load_style()
         test_style = dict(cls.orig_style)
         test_style["gloss_placement"] = "inline"

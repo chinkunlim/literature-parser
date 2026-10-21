@@ -15,39 +15,39 @@ import subprocess
 import tempfile
 from pathlib import Path
 
-from doc_processor.book_style import build_textbook_css
-from doc_processor.concurrency import M5WorkerPool
-from doc_processor.config import (
+from literature_parser.services.book_style import build_textbook_css
+from literature_parser.services.concurrency import M5WorkerPool
+from literature_parser.config.processor_config import (
     CIRCUIT_BREAKER_MAX_FAILURES,
     DEFAULT_INBOX_DIR,
     DEFAULT_OLLAMA_HEALER_MODEL,
     DEFAULT_OUTPUT_DIR,
     DEFAULT_PROCESSED_DIR,
 )
-from doc_processor.core.checkpoint import CheckpointManager
-from doc_processor.core.image_manager import ImageManager
-from doc_processor.core.invariants import CircuitBreaker, QualityInvariantGuard
-from doc_processor.core.learner import AdaptiveLearner, GlobalLearner
-from doc_processor.core.splitter import PDFSplitter
-from doc_processor.fingerprinting.document_classifier import DocumentClassifier
-from doc_processor.parsers import digital_pdf as _digital_pdf_mod
-from doc_processor.parsers.digital_pdf import DigitalPDFParser
-from doc_processor.parsers.epub_parser import EPUBProcessor
-from doc_processor.parsers.layout_detector import generate_markdown_toc
-from doc_processor.parsers.layout_detector import set_style as _ld_set_style
-from doc_processor.parsers.scanned_pdf import ScannedPDFParser
-from doc_processor.profiler.coordinate_calibrator import CoordinateCalibrator
-from doc_processor.profiler.special_block_scanner import SpecialBlockScanner
-from doc_processor.style_loader import load_style
-from doc_processor.utils.anki_exporter import AnkiExporter
-from doc_processor.utils.text_utils import (
+from literature_parser.services.core.checkpoint import CheckpointManager
+from literature_parser.services.core.image_manager import ImageManager
+from literature_parser.services.core.invariants import CircuitBreaker, QualityInvariantGuard
+from literature_parser.services.core.learner import AdaptiveLearner, GlobalLearner
+from literature_parser.services.core.splitter import PDFSplitter
+from literature_parser.services.fingerprinting.document_classifier import DocumentClassifier
+from literature_parser.services.parsers import digital_pdf as _digital_pdf_mod
+from literature_parser.services.parsers.digital_pdf import DigitalPDFParser
+from literature_parser.services.parsers.epub_parser import EPUBProcessor
+from literature_parser.services.parsers.layout_detector import generate_markdown_toc
+from literature_parser.services.parsers.layout_detector import set_style as _ld_set_style
+from literature_parser.services.parsers.scanned_pdf import ScannedPDFParser
+from literature_parser.services.profiler.coordinate_calibrator import CoordinateCalibrator
+from literature_parser.services.profiler.special_block_scanner import SpecialBlockScanner
+from literature_parser.services.style_loader import load_style
+from literature_parser.services.utils.anki_exporter import AnkiExporter
+from literature_parser.services.utils.text_utils import (
     sanitize_filename,
     stitch_cross_page_continuity,
 )
-from doc_processor.verification.layout_healer import LayoutAutoHealer
-from doc_processor.verification.ollama_verifier import OllamaVerifier
-from doc_processor.verification.review_manager import ReviewManager
-from doc_processor.verification.verifier import AccuracyVerifier
+from literature_parser.adapters.verification.layout_healer import LayoutAutoHealer
+from literature_parser.adapters.verification.ollama_verifier import OllamaVerifier
+from literature_parser.adapters.verification.review_manager import ReviewManager
+from literature_parser.adapters.verification.verifier import AccuracyVerifier
 
 logger = logging.getLogger(__name__)
 
@@ -194,7 +194,7 @@ class BookProcessorOrchestrator:
 
     @staticmethod
     def get_pdf_sections(pdf_path: str) -> list:
-        from doc_processor.core.analyzer import PDFAnalyzer
+        from literature_parser.services.core.analyzer import PDFAnalyzer
         secs, _ = PDFAnalyzer.get_sections(pdf_path)
         return secs or []
 
@@ -495,7 +495,7 @@ class BookProcessorOrchestrator:
                     with open(md_file, 'w', encoding='utf-8') as f:
                         f.write(annotated_md + '\n')
                     ReviewManager.save_review_manifest(str(ch_dir), applied)
-                    print(f"  [💡 AI Review] Saved {len(applied)} proposed correction(s). Run: python3 doc_processor.py review -c \"{ch_dir}\"")
+                    print(f"  [💡 AI Review] Saved {len(applied)} proposed correction(s). Run: python3 literature_parser.services.py review -c \"{ch_dir}\"")
 
         # 5. Self-Healing Adaptive Auto-Retry Loop
         if not v_res['passed'] and retry_count < 2:
@@ -531,10 +531,10 @@ class BookProcessorOrchestrator:
         QualityInvariantGuard.check_pdf_pre_split(pdf_path)
 
         # Check document archetype: dispatch directly to LiteraturePipeline if academic literature
-        from doc_processor.config_manager import ConfigManager
+        from literature_parser.services.config_manager import ConfigManager
         archetype = ConfigManager.detect_archetype(pdf_path)
         if archetype in ("literature", "journal"):
-            from doc_processor.pipelines.literature_pipeline import LiteraturePipeline
+            from literature_parser.adapters.pipelines.literature_pipeline import LiteraturePipeline
             pipeline = LiteraturePipeline(
                 output_dir=self.output_dir,
                 processed_dir=self.processed_dir,
@@ -637,7 +637,7 @@ class BookProcessorOrchestrator:
         # Generate Obsidian index.md and inter-chapter navigation footers
         try:
 
-            from doc_processor.utils.obsidian_linker import (
+            from literature_parser.services.utils.obsidian_linker import (
                 generate_book_index,
                 inject_chapter_navigation,
             )

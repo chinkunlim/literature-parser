@@ -12,16 +12,16 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 
-# Ensure src package shadows the root-level doc_processor.py shim
+# Ensure src package shadows the root-level literature_parser.services.py shim
 ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
-from doc_processor.profiler.special_block_scanner import (
+from literature_parser.services.profiler.special_block_scanner import (
     SpecialBlockScanner, _CALLOUT_SEED_PATTERNS, _LO_FORMAT_PATTERNS,
     _EOC_HEADING_SEEDS,
 )
-from doc_processor.parsers.digital_pdf import DigitalPDFParser
-from doc_processor.profiler.model_advisor import (
+from literature_parser.services.parsers.digital_pdf import DigitalPDFParser
+from literature_parser.domain.profiler.model_advisor import (
     RECOMMENDED_MODELS, MINIMUM_RECOMMENDED, check_models_status,
 )
 
@@ -248,7 +248,7 @@ class TestModelAdvisorUpdatedRoster(unittest.TestCase):
 
     def test_check_models_status_offline(self):
         """When Ollama is offline, missing_minimum should equal MINIMUM_RECOMMENDED."""
-        with patch('doc_processor.profiler.model_advisor.probe_ollama', return_value=False):
+        with patch('literature_parser.domain.profiler.model_advisor.probe_ollama', return_value=False):
             status = check_models_status()
         self.assertFalse(status["ollama_online"])
         self.assertIn("missing_minimum", status)

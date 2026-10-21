@@ -11,13 +11,13 @@ import unittest
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-from doc_processor.fixes.playbook import FixPlaybook, FixRecipe
-from doc_processor.fixes.synthesizer import (
+from literature_parser.adapters.fixes.playbook import FixPlaybook, FixRecipe
+from literature_parser.adapters.fixes.synthesizer import (
     OllamaRecipeSynthesizer,
     RecipeSafetyValidator,
     SynthesisResult,
 )
-from src.guards.hardware import (
+from literature_parser.adapters.guards.hardware import (
     MIN_RAM_GB_AC,
     MIN_RAM_GB_BATTERY,
     check_hardware_safety,
@@ -239,20 +239,20 @@ class TestDynamicHardwareThreshold(unittest.TestCase):
     """Verifies the dynamic power-aware RAM threshold evaluation."""
 
     def test_dynamic_ram_ac_threshold(self):
-        with patch("src.guards.hardware.get_battery_status", return_value={"is_battery": False, "percent": 100, "description": "AC Power Connected"}), \
-             patch("src.guards.hardware.get_available_ram_gb", return_value=2.8), \
-             patch("src.guards.hardware.get_disk_free_gb", return_value=25.0), \
-             patch("src.guards.hardware.get_macos_memory_pressure_level", return_value=1):
+        with patch("literature_parser.adapters.guards.hardware.get_battery_status", return_value={"is_battery": False, "percent": 100, "description": "AC Power Connected"}), \
+             patch("literature_parser.adapters.guards.hardware.get_available_ram_gb", return_value=2.8), \
+             patch("literature_parser.adapters.guards.hardware.get_disk_free_gb", return_value=25.0), \
+             patch("literature_parser.adapters.guards.hardware.get_macos_memory_pressure_level", return_value=1):
 
             hw = check_hardware_safety()
             self.assertTrue(hw["safe_for_heavy_llm"])
             self.assertEqual(hw["metrics"]["effective_min_ram_gb"], MIN_RAM_GB_AC)
 
     def test_dynamic_ram_battery_threshold(self):
-        with patch("src.guards.hardware.get_battery_status", return_value={"is_battery": True, "percent": 80, "description": "Battery Mode (80%)"}), \
-             patch("src.guards.hardware.get_available_ram_gb", return_value=2.8), \
-             patch("src.guards.hardware.get_disk_free_gb", return_value=25.0), \
-             patch("src.guards.hardware.get_macos_memory_pressure_level", return_value=1):
+        with patch("literature_parser.adapters.guards.hardware.get_battery_status", return_value={"is_battery": True, "percent": 80, "description": "Battery Mode (80%)"}), \
+             patch("literature_parser.adapters.guards.hardware.get_available_ram_gb", return_value=2.8), \
+             patch("literature_parser.adapters.guards.hardware.get_disk_free_gb", return_value=25.0), \
+             patch("literature_parser.adapters.guards.hardware.get_macos_memory_pressure_level", return_value=1):
 
             hw = check_hardware_safety()
             # In battery mode with 2.8 GB, should fail because battery mode requires 4.0 GB

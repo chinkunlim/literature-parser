@@ -1,24 +1,37 @@
 {
   "id": "TASK-004",
   "title": "遷移批次 4：adapters 層（外部 API、資料庫、檔案 I/O）",
-  "status": "open",
-  "agent": "",
+  "status": "done",
+  "agent": "antigravity",
   "handed_off_from": "",
   "handed_off_to": "",
   "paths": [
     "src/literature_parser/adapters/",
     "legacy"
   ],
-  "done_items": "",
+  "done_items": "adapters 層遷移完成，8 個適配器模組通過靜態檢查與單元測試，0 critical issues",
   "todo_items": "",
   "blockers": "",
   "created_at": "2026-10-21 04:12 UTC",
-  "updated_at": "2026-10-21 04:12 UTC",
+  "updated_at": "2026-10-21 16:07 UTC",
   "history": [
     {
       "timestamp": "2026-10-21 04:12 UTC",
       "action": "created",
       "agent": "system"
+    },
+    {
+      "timestamp": "2026-10-21 16:07 UTC",
+      "action": "claimed",
+      "agent": "antigravity",
+      "previous_agent": ""
+    },
+    {
+      "timestamp": "2026-10-21 16:07 UTC",
+      "action": "done",
+      "agent": "antigravity",
+      "summary": "adapters 層遷移完成，8 個適配器模組通過靜態檢查與單元測試，0 critical issues"
     }
-  ]
+  ],
+  "summary": "adapters 層遷移完成，8 個適配器模組通過靜態檢查與單元測試，0 critical issues"
 }

@@ -16,7 +16,7 @@ import shutil
 import time
 from pathlib import Path
 
-from doc_processor.config import (
+from literature_parser.config.processor_config import (
     DEFAULT_INBOX_DIR,
     DEFAULT_OUTPUT_DIR,
     DEFAULT_PROCESSED_DIR,
@@ -107,7 +107,7 @@ class WatchdogService:
 
     def log_alert(self, message: str) -> None:
         """Appends timestamped alert to watchdog_alerts.log, rotating at MAX_ALERT_LOG_BYTES."""
-        import doc_processor.config as _cfg
+        import literature_parser.config.processor_config as _cfg
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
         entry = f"[{timestamp}] {message}\n"
         try:
@@ -190,7 +190,7 @@ class WatchdogService:
             for book_name, count, examples in stuck:
                 ex_str = ", ".join(examples)
                 lines.append(f"| `{book_name}` | {count} | {ex_str}… |")
-            lines.append("\n> [!NOTE]\n> Run `python3 doc_processor.py resume --file <book_path>` to continue.\n")
+            lines.append("\n> [!NOTE]\n> Run `python3 literature_parser.services.py resume --file <book_path>` to continue.\n")
         else:
             lines.append("*All output books are fully verified.*")
 

@@ -1,9 +1,9 @@
 import unittest
 from pathlib import Path
-from doc_processor.profiler.coordinate_calibrator import CoordinateCalibrator
-from doc_processor.fingerprinting.publisher_detector import PublisherDetector
-from doc_processor.parsers.literature.imrad_resolver import IMRADResolver
-from doc_processor.parsers.literature.metadata_extractor import LiteratureMetadataExtractor
+from literature_parser.services.profiler.coordinate_calibrator import CoordinateCalibrator
+from literature_parser.services.fingerprinting.publisher_detector import PublisherDetector
+from literature_parser.services.parsers.literature.imrad_resolver import IMRADResolver
+from literature_parser.adapters.parsers.literature.metadata_extractor import LiteratureMetadataExtractor
 
 
 class TestV38UniversalLiteratureProfiling(unittest.TestCase):

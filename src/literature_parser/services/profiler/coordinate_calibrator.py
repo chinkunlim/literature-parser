@@ -132,7 +132,7 @@ class CoordinateCalibrator:
             try:
                 import re
 
-                from doc_processor.fingerprinting.publisher_detector import (
+                from literature_parser.services.fingerprinting.publisher_detector import (
                     PublisherDetector,
                 )
                 p1_xml = cls.extract_page_xml(str(sample_pdf), 1)
@@ -254,7 +254,7 @@ class CoordinateCalibrator:
 
         # Detect publisher
         try:
-            from doc_processor.fingerprinting.publisher_detector import (
+            from literature_parser.services.fingerprinting.publisher_detector import (
                 PublisherDetector,
             )
             p1_xml = cls.extract_page_xml(str(sample_pdf), 1)

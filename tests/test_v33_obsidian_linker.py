@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from doc_processor.utils.obsidian_linker import (
+from literature_parser.services.utils.obsidian_linker import (
     sanitize_obsidian_slug,
     generate_book_index,
     inject_chapter_navigation,

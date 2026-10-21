@@ -9,7 +9,7 @@ import re
 import subprocess
 from pathlib import Path
 
-from doc_processor.parsers.math_latex import MathLaTeXConverter
+from literature_parser.services.parsers.math_latex import MathLaTeXConverter
 
 
 class InvariantViolationError(Exception):

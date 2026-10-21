@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from doc_processor.core.global_state import GlobalStateManager
+from literature_parser.services.core.global_state import GlobalStateManager
 
 
 class TestGlobalStateManager(unittest.TestCase):

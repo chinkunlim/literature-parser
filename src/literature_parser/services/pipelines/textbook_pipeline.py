@@ -15,12 +15,12 @@ import logging
 from pathlib import Path
 from typing import Any, Dict
 
-from doc_processor.core.analyzer import PDFAnalyzer
-from doc_processor.core.checkpoint import CheckpointManager
-from doc_processor.core.invariants import QualityInvariantGuard
-from doc_processor.core.splitter import PDFSplitter
-from doc_processor.pipelines.base_pipeline import BasePipeline
-from doc_processor.utils.text_utils import sanitize_filename
+from literature_parser.services.core.analyzer import PDFAnalyzer
+from literature_parser.services.core.checkpoint import CheckpointManager
+from literature_parser.services.core.invariants import QualityInvariantGuard
+from literature_parser.services.core.splitter import PDFSplitter
+from literature_parser.services.pipelines.base_pipeline import BasePipeline
+from literature_parser.services.utils.text_utils import sanitize_filename
 
 logger = logging.getLogger(__name__)
 

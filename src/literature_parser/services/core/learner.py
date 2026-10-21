@@ -18,7 +18,7 @@ import re
 import tempfile
 from pathlib import Path
 
-from doc_processor.config import GLOBAL_RULES_DIR
+from literature_parser.config.processor_config import GLOBAL_RULES_DIR
 
 logger = logging.getLogger(__name__)
 
@@ -377,7 +377,7 @@ class AdaptiveLearner:
             page_cuts = cont_check.get("page_break_cuts", 0)
             if md_file.exists() and (abrupt > 0 or page_cuts > 0):
                 try:
-                    from doc_processor.utils.text_utils import (
+                    from literature_parser.services.utils.text_utils import (
                         stitch_cross_page_continuity,
                     )
                     cur_text = md_file.read_text(encoding="utf-8")

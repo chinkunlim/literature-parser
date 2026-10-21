@@ -10,12 +10,12 @@ import re
 import subprocess
 import xml.etree.ElementTree as ET
 
-from doc_processor.fingerprinting.document_classifier import DocumentClassifier
-from doc_processor.parsers.layout_detector import LayoutDetector
-from doc_processor.parsers.math.apa_stats_normalizer import APAStatsNormalizer
-from doc_processor.parsers.math_latex import MathLaTeXConverter
-from doc_processor.style_loader import load_style
-from doc_processor.utils.text_utils import (
+from literature_parser.services.fingerprinting.document_classifier import DocumentClassifier
+from literature_parser.services.parsers.layout_detector import LayoutDetector
+from literature_parser.services.parsers.math.apa_stats_normalizer import APAStatsNormalizer
+from literature_parser.services.parsers.math_latex import MathLaTeXConverter
+from literature_parser.services.style_loader import load_style
+from literature_parser.services.utils.text_utils import (
     clean_page_text_artifacts,
     clean_punctuation_spacing,
     clean_typography_artifacts,
@@ -1033,7 +1033,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             img_caption = resolve_caption(img)
             fname = img.get('filename', f"{img.get('page', page_num):03d}_img.{img.get('ext', 'png')}")
             if is_lit_or_jrnl:
-                from doc_processor.parsers.literature.figure_formatter import (
+                from literature_parser.services.parsers.literature.figure_formatter import (
                     FigureFormatter,
                 )
                 placed_img_blocks.append(FigureFormatter.render_figure_html(f"images/{fname}", img_caption))
@@ -1047,7 +1047,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             img_caption = resolve_caption(img)
             fname = img.get('filename', f"{img.get('page', page_num):03d}_img.{img.get('ext', 'png')}")
             if is_lit_or_jrnl:
-                from doc_processor.parsers.literature.figure_formatter import (
+                from literature_parser.services.parsers.literature.figure_formatter import (
                     FigureFormatter,
                 )
                 placed_img_blocks.append(FigureFormatter.render_figure_html(f"images/{fname}", img_caption))

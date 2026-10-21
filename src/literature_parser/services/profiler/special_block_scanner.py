@@ -15,7 +15,7 @@ Results are merged into `book_profile.json` under `discovered_blocks` and
 re-scanning.
 
 Usage:
-    from doc_processor.profiler.special_block_scanner import SpecialBlockScanner
+    from literature_parser.services.profiler.special_block_scanner import SpecialBlockScanner
     scanner = SpecialBlockScanner(book_dir=Path("./data/output/books/MyBook"))
     scanner.scan_and_update(chapter_pdfs=[Path("chapters/Ch01/Ch01.pdf"), ...])
 """

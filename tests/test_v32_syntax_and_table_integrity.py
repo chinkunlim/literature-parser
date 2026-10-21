@@ -10,7 +10,7 @@ Tests automated detection of:
 """
 
 import unittest
-from doc_processor.verification.rules import (
+from literature_parser.adapters.verification.rules import (
     check_latex_and_symbol_integrity,
     check_table_column_integrity,
     check_unescaped_special_chars,

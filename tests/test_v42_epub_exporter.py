@@ -16,7 +16,7 @@ import zipfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-from doc_processor.exporter.epub_exporter import (
+from literature_parser.services.exporter.epub_exporter import (
     EpubExporter,
     LaTeXToMathML,
     MarkdownToXHTML,
@@ -235,9 +235,9 @@ class TestEpubExporterLiteratureAndBook(unittest.TestCase):
 class TestEpubCLIDispatch(unittest.TestCase):
     """Verifies CLI argument parsing and dispatching for the 'epub' command."""
 
-    @patch("doc_processor.exporter.epub_exporter.EpubExporter.export_literature")
+    @patch("literature_parser.services.exporter.epub_exporter.EpubExporter.export_literature")
     def test_cmd_epub_literature_dispatch(self, mock_export):
-        from src.cli.cli_process import cmd_epub
+        from literature_parser.entrypoints.project_cli.cli_process import cmd_epub
 
         mock_export.return_value = Path("dummy.epub")
         args = MagicMock()

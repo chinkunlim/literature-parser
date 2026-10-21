@@ -10,15 +10,15 @@ import logging
 import urllib.error
 import urllib.request
 
-from doc_processor.config import (
+from literature_parser.config.processor_config import (
     DEFAULT_OLLAMA_HEALER_MODEL,
     DEFAULT_OLLAMA_SEMANTIC_MODEL,
     DEFAULT_OLLAMA_VISION_MODEL,
     OLLAMA_API_BASE,
     OLLAMA_GENERATE_TIMEOUT,
 )
-from doc_processor.utils.system import ensure_ollama_running, is_ollama_running
-from src.guards.prompts import PromptRegistry
+from literature_parser.adapters.utils.system import ensure_ollama_running, is_ollama_running
+from literature_parser.services.guards.prompts import PromptRegistry
 
 logger = logging.getLogger(__name__)
 

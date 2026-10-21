@@ -1,102 +1,112 @@
 # literature-parser
 
-AI-assisted software project with standard structure and agent handoff.
+> Enterprise-grade PDF & EPUB Structured Markdown & Image Extractor with Neural Layout OCR, LaTeX Math & Local Ollama AI Verification.
 
-> 請把上面兩行改寫成這個專案的說明（`agentctl finish` 會檢查）。以下是開發環境與日常操作。
+本專案專注於將教科書（Textbooks）與學術文獻/期刊論文（Academic Literature / Journals）從 PDF 與 EPUB 高精度解析為結構化 Markdown、提取圖表與數學公式（LaTeX），並具備本地 Ollama 自我修復、硬體守衛與 EPUB 3 匯出功能。
 
-## 第一次在這台電腦使用
+---
 
-1. 取得程式（已經在本機就略過）
+## 快速開始
 
-```bash
-git clone <repo-url> && cd literature-parser
-```
-
-2. 檢查並修復環境：啟用 git hook、建立 `.env`、建立 DATA_DIR、檢查 uv（只修這個專案，不安裝全域工具）
+### 1. 環境前置檢查
+本專案依賴純本地 Python 工具鏈與可選的本地 OCR / PDF 轉換工具：
 
 ```bash
-python3 scripts/agentctl.py doctor --fix
+# 系統前置軟硬體與 Ollama 健康檢查
+uv run literature-parser doctor
 ```
 
-3. 打開 `.env` 填入金鑰與設定（`.env` 不會被 commit）。
+系統建議工具（選配，用於掃描版 PDF OCR）：
+```bash
+brew install poppler tesseract
+```
 
-4. 安裝依賴：uv sync（專案內 `.venv/`）
-
+### 2. 環境與依賴
+專案採用 `uv` 管理環境與虛擬隔離環境：
 ```bash
 python3 scripts/agentctl.py setup --install
 ```
 
-> 換電腦時：資料不在 git 裡，另外複製整個 `DATA_DIR`（路徑寫在 `.env`）。
-> 搬移或改名專案資料夾後：執行一次 `python3 scripts/agentctl.py doctor --fix`（重建記住舊位置的 `.venv`）。
+環境設定檔複製自 `.env.example`（設定檔與資料夾位於專案目錄外之 `DATA_DIR`）：
+```bash
+cp .env.example .env
+```
 
-新增 Python 套件：`uv add <套件>`（開發工具 `uv add --dev <套件>`）；執行程式：`uv run ...`。Python 版本由 uv 依 `.python-version` 自動下載，不會動到主機的 Python / pip。
+---
 
-## 確認一切正常
+## 常用指令 (CLI)
 
-註解、分層、秘密、lint、型別、目錄樹
+本專案提供統一命令行入口 `literature-parser`（亦相容 `book-processor` 與 `doc-processor`）：
+
+### 處理文獻或書籍
+```bash
+# 處理單一學術文獻或書籍
+uv run literature-parser process path/to/document.pdf --type journal
+uv run literature-parser process path/to/textbook.pdf --type book
+
+# 批次遞迴處理整個目錄
+uv run literature-parser batch path/to/folder/ --type journal
+
+# 匯出結構化 Markdown 為標準 EPUB 3 電子書
+uv run literature-parser epub path/to/output_dir/ --type book
+```
+
+### 驗證與自動修復
+```bash
+# 執行 Markdown 排版格式與數學符號稽核
+uv run literature-parser audit path/to/chapter.md --ollama --fix
+
+# 查看或套用專案排版修復配方 (Fix Playbook)
+uv run literature-parser fix list
+uv run literature-parser fix apply clean_orphan_page_numbers path/to/chapter.md
+```
+
+### 監控與儀表板
+```bash
+# 查看全域文獻處理進度快照
+uv run literature-parser status
+
+# 生成並瀏覽 HTML 視覺化進度看板
+uv run literature-parser dashboard
+```
+
+---
+
+## 執行測試與品質檢查
 
 ```bash
+# 執行全套單元與整合測試
+uv run python -m unittest discover -s tests -v
+
+# 執行架構分層、型別、註解與秘密審查
 python3 scripts/agentctl.py check
 ```
 
-專案測試
+---
 
-```bash
-uv run python -m unittest discover -s tests -v
-```
+## 檔案與資料分離原則 (Data Isolation)
+所有書籍輸入、產出 Markdown、斷點資訊與 Log 均置於專案外的 `DATA_DIR`（預設為 `../../projects-data/literature-parser`）：
+- `DATA_DIR/input/`：原始書籍與論文（唯讀）
+- `DATA_DIR/output/`：轉換產出之 Markdown 與圖像
+- `DATA_DIR/needs_review/`：低信心度或需人工複審之段落隔離區
+- `DATA_DIR/state/`：斷點清單與處理進度
+- `DATA_DIR/logs/`：結構化執行紀錄（`process.log`）
 
-## 和 AI Agent 一起開發
+---
 
-用 Claude Code、Antigravity、Cursor 等工具打開這個資料夾，Agent 會自動讀 `AGENTS.md`。直接用口語下指令：
+## 安全性與隱私 (Security & Privacy)
+- **零資料上雲**：所有文字處理、版面辨識與大模型驗證均在本地執行，Ollama 服務預設僅綁定 `http://127.0.0.1:11434`。
+- **機密隔離**：專案程式碼內嚴禁硬編碼任何 API Key，機密與金鑰統一存放於本地 `.env`。
 
-| 你說 | Agent 會做 |
-|---|---|
-| 「開工」「繼續上次的」 | 看交接看板、上次的下一步、未完成的任務 |
-| 「新功能：…」 | 建任務卡，寫測試與程式 |
-| 「commit」 | 檢查後本機 commit（英文訊息，不會推送） |
-| 「去上課」「先暫停」 | 記下進度，下次接著做 |
-| 「收工」 | 測試、寫對話紀錄與摘要、更新交接看板、commit |
-| 「推上去」 | 列出要推送的 commit，等你同意 |
-| 「出版本」「專案完成了」 | 完成驗收；`--tag` 時升版並打 tag |
-
-完整對照表見 [`AGENTS.md`](AGENTS.md) §1。
-
-## 常用指令
-
-```bash
-python3 scripts/agentctl.py status
-```
-
-```bash
-python3 scripts/agentctl.py task create "標題" --agent <名字>
-```
-
-```bash
-python3 scripts/agentctl.py commit --agent <名字>
-```
-
-```bash
-python3 scripts/agentctl.py closeout --agent <名字>
-```
-
-全部子指令
-
-```bash
-python3 scripts/agentctl.py --help
-```
-
-## 各部分說明
-
-- [`web/WEB.md`](web/WEB.md) — 網頁前端（本機預覽）
+---
 
 ## 文件索引
 
 - [`AGENTS.md`](AGENTS.md) — Agent 規則與「文件放哪裡」對照表
 - [`.agents/handoff/LATEST.md`](.agents/handoff/LATEST.md) — 交接看板
-- `.agents/conversations/` — 每次對話的逐字稿與摘要（本機，不進 git）
-- [`docs/adr/DECISIONS.md`](docs/adr/DECISIONS.md) — 架構決策
-- [`docs/known-issues/KNOWN_ISSUES.md`](docs/known-issues/KNOWN_ISSUES.md) — 已知問題
-- [`docs/specs/SPECS.md`](docs/specs/SPECS.md) — 需求規格
-- [`docs/architecture/ARCHITECTURE.md`](docs/architecture/ARCHITECTURE.md) — 系統架構與目錄樹（依賴圖、審計報告需要時用 `agentctl graph` / `agentctl audit` 產生）
-- [`docs/standards/PROJECT_RULES.md`](docs/standards/PROJECT_RULES.md) — 本專案特有的規則
-- [`CHANGELOG.md`](CHANGELOG.md) — 版本變更
+- [`docs/adr/DECISIONS.md`](docs/adr/DECISIONS.md) — 架構決策紀錄 (ADR)
+- [`docs/known-issues/KNOWN_ISSUES.md`](docs/known-issues/KNOWN_ISSUES.md) — 已知問題庫
+- [`docs/specs/SPECS.md`](docs/specs/SPECS.md) — 功能規格清單
+- [`docs/architecture/ARCHITECTURE.md`](docs/architecture/ARCHITECTURE.md) — 系統架構與分層設計
+- [`docs/standards/PROJECT_RULES.md`](docs/standards/PROJECT_RULES.md) — 本專案特有規則
+- [`CHANGELOG.md`](CHANGELOG.md) — 版本變更紀錄

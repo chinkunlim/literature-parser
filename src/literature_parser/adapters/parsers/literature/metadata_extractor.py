@@ -24,7 +24,7 @@ import urllib.error
 import urllib.request
 from typing import Any, Dict, Optional
 
-from doc_processor.verification.ollama_verifier import OllamaVerifier
+from literature_parser.adapters.verification.ollama_verifier import OllamaVerifier
 
 logger = logging.getLogger(__name__)
 

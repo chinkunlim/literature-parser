@@ -5,7 +5,7 @@ import sys
 ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
-from doc_processor.verification.layout_healer import LayoutAutoHealer
+from literature_parser.adapters.verification.layout_healer import LayoutAutoHealer
 
 
 class TestV25LayoutHealer(unittest.TestCase):

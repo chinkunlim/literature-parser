@@ -149,7 +149,7 @@ def build_textbook_css(style: dict) -> str:
     ba = s.get("css_blockquote_align", "left")
 
     if s.get("is_journal_article"):
-        from doc_processor.literature_style import build_literature_css
+        from literature_parser.services.literature_style import build_literature_css
         return build_literature_css()
 
     lines = [

@@ -7,8 +7,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 import unittest
-from doc_processor.fingerprinting.publisher_detector import PublisherDetector
-from doc_processor.fingerprinting.document_classifier import DocumentClassifier
+from literature_parser.services.fingerprinting.publisher_detector import PublisherDetector
+from literature_parser.services.fingerprinting.document_classifier import DocumentClassifier
 
 
 class TestFingerprinting(unittest.TestCase):

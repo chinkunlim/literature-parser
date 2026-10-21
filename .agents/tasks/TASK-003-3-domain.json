@@ -1,24 +1,37 @@
 {
   "id": "TASK-003",
   "title": "遷移批次 3：domain 層（資料模型、純邏輯）",
-  "status": "open",
-  "agent": "",
+  "status": "done",
+  "agent": "antigravity",
   "handed_off_from": "",
   "handed_off_to": "",
   "paths": [
     "src/literature_parser/domain/",
     "legacy"
   ],
-  "done_items": "",
+  "done_items": "domain 層遷移完成，model_advisor.py 搬遷與型別註解通過，0 critical issues",
   "todo_items": "",
   "blockers": "",
   "created_at": "2026-10-21 04:12 UTC",
-  "updated_at": "2026-10-21 04:12 UTC",
+  "updated_at": "2026-10-21 16:03 UTC",
   "history": [
     {
       "timestamp": "2026-10-21 04:12 UTC",
       "action": "created",
       "agent": "system"
+    },
+    {
+      "timestamp": "2026-10-21 16:03 UTC",
+      "action": "claimed",
+      "agent": "antigravity",
+      "previous_agent": ""
+    },
+    {
+      "timestamp": "2026-10-21 16:03 UTC",
+      "action": "done",
+      "agent": "antigravity",
+      "summary": "domain 層遷移完成，model_advisor.py 搬遷與型別註解通過，0 critical issues"
     }
-  ]
+  ],
+  "summary": "domain 層遷移完成，model_advisor.py 搬遷與型別註解通過，0 critical issues"
 }

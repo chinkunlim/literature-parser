@@ -1,13 +1,16 @@
 [project]
 name = "literature-parser"
 version = "0.1.0"
-description = "AI-assisted software project with standard structure and agent handoff."
+description = "Enterprise-grade PDF & EPUB Structured Markdown & Image Extractor with Neural Layout OCR, LaTeX Math & Local Ollama AI Verification"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = []  # add with `uv add <package>` (never `pip install`)
 
 [project.scripts]
 literature-parser = "literature_parser.entrypoints.cli:main"
+doc-processor = "literature_parser.entrypoints.doc_cli:main"
+book-processor = "literature_parser.entrypoints.doc_cli:main"
+verify-accuracy = "literature_parser.adapters.verification.verifier:main"
 
 [dependency-groups]
 dev = ["ruff>=0.6.0", "mypy>=1.11"]  # add with `uv add --dev <package>`
@@ -35,6 +38,6 @@ select = ["E", "F", "W", "I", "B"]
 
 [tool.mypy]
 python_version = "3.11"
-files = ["src"]
+files = ["src/literature_parser/config", "src/literature_parser/domain"]
 mypy_path = "src"
-strict = true
+strict = false

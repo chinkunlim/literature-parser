@@ -48,6 +48,7 @@ build/
 /data/
 /input/
 /output/
+.book_processor/
 *.db
 *.sqlite
 *.sqlite3

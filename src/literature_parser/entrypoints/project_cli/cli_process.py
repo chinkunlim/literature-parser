@@ -14,9 +14,9 @@ import time
 from pathlib import Path
 from typing import Optional
 
-from src.cli.common import ROOT
-from src.guards.hardware import check_hardware_safety
-from src.utils.logger import get_diagnostic_logger
+from literature_parser.entrypoints.project_cli.common import ROOT
+from literature_parser.adapters.guards.hardware import check_hardware_safety
+from literature_parser.services.utils.app_logger import get_diagnostic_logger
 
 logger = get_diagnostic_logger("CommandCenter")
 
@@ -64,10 +64,10 @@ def _run_process_pipeline(
     output_base.mkdir(parents=True, exist_ok=True)
 
     print(f"• 輸出目標資料夾: {output_base}")
-    print(f"• 呼叫對應領域管線: src/doc_processor/pipelines/{'textbook_pipeline' if doc_type == 'book' else 'literature_pipeline'}.py")
+    print(f"• 呼叫對應領域管線: src/literature_parser.services/pipelines/{'textbook_pipeline' if doc_type == 'book' else 'literature_pipeline'}.py")
 
     cli_cmd = [
-        sys.executable, "-m", "doc_processor.cli", "run",
+        sys.executable, "-m", "literature_parser.entrypoints.doc_cli", "run",
         "--file", str(filepath),
         "--output-dir", str(output_base),
     ]
@@ -75,14 +75,16 @@ def _run_process_pipeline(
         cli_cmd.append("--ollama")
 
     logger.info(f"Executing: {' '.join(cli_cmd)}")
-    env = os.environ.copy()
+    from literature_parser.config.env import child_process_env
     src_dir = str(ROOT / "src")
-    env["PYTHONPATH"] = f"{src_dir}:{env['PYTHONPATH']}" if "PYTHONPATH" in env else src_dir
+    base_env = child_process_env()
+    python_path = f"{src_dir}:{base_env['PYTHONPATH']}" if "PYTHONPATH" in base_env else src_dir
+    env = child_process_env({"PYTHONPATH": python_path})
     res = subprocess.run(cli_cmd, env=env)
     if res.returncode == 0:
         print(f"\n✅ 處理完成！結果已儲存至 {output_base}")
         if export_epub:
-            from doc_processor.exporter.epub_exporter import EpubExporter
+            from literature_parser.services.exporter.epub_exporter import EpubExporter
             doc_name = filepath.stem
             target_out = output_base / doc_name
             try:
@@ -114,7 +116,7 @@ def cmd_process(args):
 
 def cmd_epub(args):
     """Exports a markdown file, literature directory, or book directory to EPUB."""
-    from doc_processor.exporter.epub_exporter import EpubExporter
+    from literature_parser.services.exporter.epub_exporter import EpubExporter
 
     target_path = Path(args.path)
     if not target_path.exists():

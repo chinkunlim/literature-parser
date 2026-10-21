@@ -13,7 +13,7 @@ import json
 import logging
 import subprocess
 import urllib.request
-from typing import Dict, List
+from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 
@@ -55,7 +55,7 @@ def get_installed_models(url: str = DEFAULT_OLLAMA_URL, timeout: float = 2.0) ->
         return []
 
 
-def check_models_status(url: str = DEFAULT_OLLAMA_URL) -> Dict[str, any]:
+def check_models_status(url: str = DEFAULT_OLLAMA_URL) -> Dict[str, Any]:
     """
     Checks status of recommended models.
     Returns:

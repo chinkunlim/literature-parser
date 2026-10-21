@@ -10,7 +10,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, Dict
 
-from doc_processor.config_manager import ConfigManager
+from literature_parser.services.config_manager import ConfigManager
 
 logger = logging.getLogger(__name__)
 

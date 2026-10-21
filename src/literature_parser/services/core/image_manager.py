@@ -12,7 +12,7 @@ import shutil
 import subprocess
 import tempfile
 
-from doc_processor.config import (
+from literature_parser.config.processor_config import (
     FULL_PAGE_MIN_PX,
     MIN_IMAGE_SIZE_BYTES,
 )

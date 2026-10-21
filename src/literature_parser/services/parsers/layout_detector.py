@@ -12,19 +12,19 @@ Humanities, Social Sciences, and Medicine:
 import logging
 import re
 
-from doc_processor.style_loader import load_style
+from literature_parser.services.style_loader import load_style
 
 logger = logging.getLogger(__name__)
 
 # Module-level style — can be replaced per-book by calling set_style()
 _STYLE = load_style()
 
-from doc_processor.parsers.layout.callout_parser import CalloutParser
-from doc_processor.parsers.layout.concept_map_parser import ConceptMapParser
-from doc_processor.parsers.layout.eoc_parser import EndOfChapterParser
-from doc_processor.parsers.layout.margin_parser import MarginParser
-from doc_processor.parsers.layout.table_parser import TableParser
-from doc_processor.parsers.layout.vector_figure_parser import VectorFigureParser
+from literature_parser.services.parsers.layout.callout_parser import CalloutParser
+from literature_parser.services.parsers.layout.concept_map_parser import ConceptMapParser
+from literature_parser.services.parsers.layout.eoc_parser import EndOfChapterParser
+from literature_parser.services.parsers.layout.margin_parser import MarginParser
+from literature_parser.services.parsers.layout.table_parser import TableParser
+from literature_parser.services.parsers.layout.vector_figure_parser import VectorFigureParser
 
 
 def set_style(style: dict) -> None:

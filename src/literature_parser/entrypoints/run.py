@@ -5,7 +5,7 @@ Book & Journal Processor: Unified Command Center (run.py)
 Central CLI orchestrating hardware pre-flight checks, convention-based routing,
 auto-Ollama triggering, date-stamped doc synchronization, and local-only Git checkpoints.
 
-Modularized architecture delegating command implementations to `src.cli.*`.
+Modularized architecture delegating command implementations to `literature_parser.entrypoints.project_cli.*`.
 
 Usage:
   uv run python run.py doctor
@@ -37,7 +37,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
 # Re-export all CLI functions for direct API / script compatibility
-from src.cli import (
+from literature_parser.entrypoints.project_cli import (
     cmd_agent_init,
     cmd_archive_sessions,
     cmd_audit,
@@ -59,9 +59,9 @@ from src.cli import (
 )
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser(
-        prog="python run.py",
+        prog="literature-parser",
         description="Book & Journal Processor Unified Command Center",
     )
     subparsers = parser.add_subparsers(dest="subcommand", required=True)
@@ -203,8 +203,10 @@ def main():
     p_dash.add_argument("--no-open", action="store_true", help="僅生成檔案，不自動開啟瀏覽器")
     p_dash.set_defaults(func=cmd_dashboard)
 
-    args = parser.parse_args()
-    args.func(args)
+    args = parser.parse_args(argv)
+    if hasattr(args, "func"):
+        return args.func(args)
+    return 0
 
 
 if __name__ == "__main__":

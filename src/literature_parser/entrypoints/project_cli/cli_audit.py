@@ -15,9 +15,9 @@ import json
 import sys
 from pathlib import Path
 
-from doc_processor.verification.format_auditor import FormatAuditor
-from doc_processor.verification.ollama_verifier import OllamaVerifier
-from src.cli.common import ROOT
+from literature_parser.adapters.verification.format_auditor import FormatAuditor
+from literature_parser.adapters.verification.ollama_verifier import OllamaVerifier
+from literature_parser.entrypoints.project_cli.common import ROOT
 
 
 def cmd_audit(args):
@@ -34,7 +34,7 @@ def cmd_audit(args):
     ollama = None
     if getattr(args, "ollama", False):
         print("🤖 啟用 Ollama 本地大模型深度語義與排版核對...")
-        from src.guards.ollama_guard import OllamaGuard
+        from literature_parser.adapters.guards.ollama_guard import OllamaGuard
         guard = OllamaGuard()
         service = guard.ensure_service_ready(auto_wake=True)
         if service.get("alive"):

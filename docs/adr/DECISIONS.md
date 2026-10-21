@@ -1,14 +1,9 @@
-# 架構決策 (Architecture Decision Records)
+# 架構決策紀錄 (Architecture Decision Records)
 
-記錄「為什麼這樣設計」：每個重要的架構取捨一個檔案，之後的人（或 Agent）不用再猜。
+本目錄記錄系統演進過程中的重要架構決策。
 
-- 新增：`python3 .agents/skills/adr-issue-tracker/scripts/tracker_cli.py --add-adr <slug> --title "標題" --agent <名字>`
-- 格式：[`_TEMPLATE.md`](_TEMPLATE.md)；在相關程式碼註解加 `Refs: ADR-NNN`。
-- 決策被推翻時不要刪檔，把狀態改成 `Superseded by ADR-NNN`。
-
-> 命名規則：`_TEMPLATE.md` 是新增紀錄時要照著寫的範本；紀錄檔命名為 `NNN-<slug>.md`。整個專案只有根目錄一份 `README.md`。
-
-## 總表
-
-| ADR | 標題 | 狀態 | 日期 | 相關程式 |
-|---|---|---|---|---|
+| 編號 | 標題 | 狀態 | 日期 |
+|---|---|---|---|
+| [ADR-001](001-ollama-hardware-guard-and-auto-verify.md) | 本地 Ollama 離線硬體防護與自我修復管線 | Accepted | 2026-09-23 |
+| [ADR-002](002-domain-split-book-and-paper.md) | 教科書與學術期刊管道與實體路徑分離 | Accepted | 2026-09-23 |
+| [ADR-003](003-external-tools-in-adapters-layer.md) | 呼叫外部工具與模型之核心協調器收斂至 Adapters 分層 | Accepted | 2026-10-21 |

@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import patch
 import subprocess
 
-from doc_processor.utils.text_utils import (
+from literature_parser.services.utils.text_utils import (
     sanitize_filename,
     repair_hyphens,
     stitch_cross_page_continuity,
@@ -13,8 +13,8 @@ from doc_processor.utils.text_utils import (
     format_chapter_title,
     format_appendix_title,
 )
-from doc_processor.parsers.digital_pdf import DigitalPDFParser
-from doc_processor.core.orchestrator import BookProcessorOrchestrator
+from literature_parser.services.parsers.digital_pdf import DigitalPDFParser
+from literature_parser.adapters.core.orchestrator import BookProcessorOrchestrator
 
 
 class TestCodeHardening(unittest.TestCase):

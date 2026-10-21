@@ -20,6 +20,7 @@ literature-parser/
 │   │   ├── update_framework.py
 │   │   └── update_tree.py
 │   ├── handoff/                            # [交接紀錄] 頂部即時狀態看板 + 歷史交接時間軸，開工前必讀
+│   │   ├── ARCHIVE.md                      # [歷史交接歸檔] 超過 20 筆之舊交接紀錄自動歸檔
 │   │   └── LATEST.md                       # [即時交接看板] 目前分支、進行中/待接手任務、已完成與待辦事項
 │   ├── hooks/                              # [版本控管的 git hooks] 由 core.hooksPath 啟用（pre-commit、pre-push）
 │   │   ├── pre-commit
@@ -89,17 +90,24 @@ literature-parser/
 │       └── 00-project-constitution.md
 ├── docs/                                   # 【工程知識庫】架構、規格、決策、已知問題、維運、規範
 │   ├── adr/                                # [架構決策庫] 一決定一檔案
+│   │   ├── 001-ollama-hardware-guard-and-auto-verify.md
+│   │   ├── 002-domain-split-book-and-paper.md
+│   │   ├── 003-external-tools-in-adapters-layer.md
 │   │   ├── _TEMPLATE.md                    # ADR 範本 (tracker_cli 會套用)
 │   │   └── DECISIONS.md                    # 架構決策總表
 │   ├── architecture/                       # [系統架構與資料模型]
 │   │   ├── ARCHITECTURE.md                 # 系統架構總覽 (手動) 與自動報告索引
 │   │   └── PROJECT_TREE.md                 # 完整檔案結構樹 (自動產生)
 │   ├── known-issues/                       # [已知問題庫] 一問題一檔案
+│   │   ├── 001-two-column-and-math-shattering.md
+│   │   ├── 002-table-banner-and-styling.md
 │   │   ├── _TEMPLATE.md                    # 已知問題範本 (tracker_cli 會套用)
 │   │   └── KNOWN_ISSUES.md                 # 已知問題總表 (🔴/🟡/🟢)
 │   ├── migration/                          # [遷移紀錄] 舊專案搬移清單、批次與完成標準
 │   │   └── MIGRATION.md
 │   ├── specs/                              # [功能規格書] PRD / API Contract
+│   │   ├── 001-textbook-pipeline.md
+│   │   ├── 002-literature-pipeline.md
 │   │   ├── _TEMPLATE.md                    # 規格範本
 │   │   └── SPECS.md                        # 規格清單
 │   ├── standards/                          # [工程規範] 依任務載入 (Progressive Disclosure)
@@ -111,33 +119,214 @@ literature-parser/
 │   │   ├── MULTI_AGENT_COLLABORATION.md    # Agent 輪流接力：開工、交接、收尾與溯源
 │   │   ├── PROJECT_RULES.md
 │   │   └── TESTING_AND_QUALITY.md          # 測試金字塔與 DoD 驗收清單
+│   ├── PROMPT_TEMPLATES.md
 │   └── TEMPLATE_FEEDBACK.md
-├── legacy/                                 # [遷移中] 舊專案原始檔，逐批搬到新結構後刪除（見 docs/migration/MIGRATION.md）
+├── evals/
+│   └── EVALS.md
 ├── scripts/                                # 【專案腳本】agentctl.py 是框架的單一入口；其餘放本專案自己的腳本
 │   └── agentctl.py                         # [單一入口] 轉呼叫 .agents/bin/agentctl.py
 ├── src/                                    # 【核心原始碼層】分層與依賴方向定義於 .agents/project.toml
 │   └── literature_parser/
 │       ├── adapters/
+│       │   ├── core/
+│       │   │   ├── __init__.py
+│       │   │   ├── chapter_converter.py
+│       │   │   └── orchestrator.py
+│       │   ├── fixes/
+│       │   │   ├── promoted/
+│       │   │   │   └── __init__.py
+│       │   │   ├── staged/
+│       │   │   │   └── __init__.py
+│       │   │   ├── __init__.py
+│       │   │   ├── playbook.py
+│       │   │   └── synthesizer.py
+│       │   ├── guards/
+│       │   │   ├── __init__.py
+│       │   │   ├── hardware.py
+│       │   │   ├── ollama_guard.py
+│       │   │   └── validator.py
+│       │   ├── parsers/
+│       │   │   ├── layout/
+│       │   │   │   ├── __init__.py
+│       │   │   │   └── table_llm_fixer.py
+│       │   │   └── literature/
+│       │   │       ├── __init__.py
+│       │   │       └── metadata_extractor.py
+│       │   ├── pipelines/
+│       │   │   ├── __init__.py
+│       │   │   └── literature_pipeline.py
+│       │   ├── profiler/
+│       │   │   ├── __init__.py
+│       │   │   └── ollama_profiler.py
+│       │   ├── utils/
+│       │   │   ├── __init__.py
+│       │   │   └── system.py
+│       │   ├── verification/
+│       │   │   ├── __init__.py
+│       │   │   ├── format_auditor.py
+│       │   │   ├── layout_healer.py
+│       │   │   ├── ollama_healer.py
+│       │   │   ├── ollama_verifier.py
+│       │   │   ├── review_manager.py
+│       │   │   ├── rules.py
+│       │   │   ├── verifier.py
+│       │   │   └── visual_auditor.py
 │       │   └── __init__.py
 │       ├── config/
+│       │   ├── resources/
+│       │   │   ├── archetypes/
+│       │   │   │   ├── literature.json
+│       │   │   │   └── textbook.json
+│       │   │   ├── profiles/
+│       │   │   │   ├── global_profile.json
+│       │   │   │   ├── literature_aip.json
+│       │   │   │   ├── literature_annual_reviews.json
+│       │   │   │   ├── literature_apa.json
+│       │   │   │   ├── literature_cup.json
+│       │   │   │   ├── literature_elsevier.json
+│       │   │   │   ├── literature_sage.json
+│       │   │   │   ├── literature_springer.json
+│       │   │   │   ├── literature_wiley.json
+│       │   │   │   ├── publisher_cengage.json
+│       │   │   │   └── publisher_pearson.json
+│       │   │   ├── publishers/
+│       │   │   │   ├── apa.json
+│       │   │   │   ├── elsevier.json
+│       │   │   │   ├── ieee.json
+│       │   │   │   ├── springer.json
+│       │   │   │   └── wiley.json
+│       │   │   └── shared_knowledge/
+│       │   │       ├── literature_sections.json
+│       │   │       └── symbol_mappings.json
 │       │   ├── __init__.py
+│       │   ├── env.py
 │       │   ├── logging_setup.py
+│       │   ├── processor_config.py
 │       │   └── settings.py
 │       ├── domain/
-│       │   ├── __init__.py
-│       │   └── models.py
+│       │   ├── profiler/
+│       │   │   ├── __init__.py
+│       │   │   └── model_advisor.py
+│       │   └── __init__.py
 │       ├── entrypoints/
+│       │   ├── project_cli/
+│       │   │   ├── __init__.py
+│       │   │   ├── cli_audit.py
+│       │   │   ├── cli_fix.py
+│       │   │   ├── cli_git.py
+│       │   │   ├── cli_process.py
+│       │   │   ├── cli_project.py
+│       │   │   └── common.py
 │       │   ├── __init__.py
-│       │   └── cli.py
+│       │   ├── cli.py
+│       │   ├── doc_cli.py
+│       │   └── run.py
 │       ├── services/
+│       │   ├── concurrency/
+│       │   │   ├── __init__.py
+│       │   │   └── m5_worker_pool.py
+│       │   ├── core/
+│       │   │   ├── __init__.py
+│       │   │   ├── analyzer.py
+│       │   │   ├── checkpoint.py
+│       │   │   ├── global_state.py
+│       │   │   ├── image_manager.py
+│       │   │   ├── invariants.py
+│       │   │   ├── learner.py
+│       │   │   ├── logger.py
+│       │   │   ├── splitter.py
+│       │   │   └── watchdog.py
+│       │   ├── exporter/
+│       │   │   ├── __init__.py
+│       │   │   ├── epub_exporter.py
+│       │   │   ├── epub_math.py
+│       │   │   └── epub_styles.py
+│       │   ├── fingerprinting/
+│       │   │   ├── __init__.py
+│       │   │   ├── document_classifier.py
+│       │   │   └── publisher_detector.py
+│       │   ├── guards/
+│       │   │   ├── __init__.py
+│       │   │   └── prompts.py
+│       │   ├── parsers/
+│       │   │   ├── layout/
+│       │   │   │   ├── __init__.py
+│       │   │   │   ├── callout_parser.py
+│       │   │   │   ├── concept_map_parser.py
+│       │   │   │   ├── eoc_parser.py
+│       │   │   │   ├── list_parser.py
+│       │   │   │   ├── margin_parser.py
+│       │   │   │   ├── table_parser.py
+│       │   │   │   └── vector_figure_parser.py
+│       │   │   ├── literature/
+│       │   │   │   ├── __init__.py
+│       │   │   │   ├── figure_formatter.py
+│       │   │   │   ├── imrad_resolver.py
+│       │   │   │   └── reference_parser.py
+│       │   │   ├── math/
+│       │   │   │   ├── __init__.py
+│       │   │   │   └── apa_stats_normalizer.py
+│       │   │   ├── __init__.py
+│       │   │   ├── digital_pdf.py
+│       │   │   ├── epub_parser.py
+│       │   │   ├── layout_detector.py
+│       │   │   ├── math_latex.py
+│       │   │   └── scanned_pdf.py
+│       │   ├── pipelines/
+│       │   │   ├── __init__.py
+│       │   │   ├── base_pipeline.py
+│       │   │   └── textbook_pipeline.py
+│       │   ├── profiler/
+│       │   │   ├── __init__.py
+│       │   │   ├── coordinate_calibrator.py
+│       │   │   └── special_block_scanner.py
+│       │   ├── utils/
+│       │   │   ├── __init__.py
+│       │   │   ├── anki_exporter.py
+│       │   │   ├── app_logger.py
+│       │   │   ├── obsidian_linker.py
+│       │   │   ├── shared_text.py
+│       │   │   └── text_utils.py
 │       │   ├── __init__.py
-│       │   └── greeting.py
+│       │   ├── audit_project.py
+│       │   ├── book_style.py
+│       │   ├── config_manager.py
+│       │   ├── literature_style.py
+│       │   └── style_loader.py
 │       └── __init__.py
 ├── tests/                                  # 【測試層】單元與整合測試
 │   ├── __init__.py
-│   └── test_greeting.py
+│   ├── test_apa_stats_normalizer.py
+│   ├── test_archetype_pipeline_and_knowledge.py
+│   ├── test_fingerprinting.py
+│   ├── test_journal_conversion.py
+│   ├── test_layout_submodules.py
+│   ├── test_m5_concurrency.py
+│   ├── test_v21_features.py
+│   ├── test_v22_features.py
+│   ├── test_v23_layout_features.py
+│   ├── test_v24_ch02_layout.py
+│   ├── test_v25_layout_healer.py
+│   ├── test_v26_exhibits_and_columns.py
+│   ├── test_v27_profile_and_layout.py
+│   ├── test_v28_advanced_features.py
+│   ├── test_v29_special_block_scanner.py
+│   ├── test_v30_code_hardening.py
+│   ├── test_v31_table_semantic_healer.py
+│   ├── test_v32_syntax_and_table_integrity.py
+│   ├── test_v33_obsidian_linker.py
+│   ├── test_v34_global_state.py
+│   ├── test_v35_literature_pipeline.py
+│   ├── test_v36_literature_layout_refinement.py
+│   ├── test_v37_semantic_figure_table_placement.py
+│   ├── test_v38_universal_literature_profiling.py
+│   ├── test_v39_format_auditor.py
+│   ├── test_v40_fix_playbook_and_invariants.py
+│   ├── test_v41_ollama_synthesizer.py
+│   └── test_v42_epub_exporter.py
 ├── web/
 │   ├── app.js
+│   ├── dashboard.html
 │   ├── index.html
 │   ├── styles.css
 │   └── WEB.md
@@ -149,6 +338,7 @@ literature-parser/
 ├── CHANGELOG.md                            # [版本歷史] commit 寫入 Unreleased；agentctl finish --tag 發布版本
 ├── CLAUDE.md                               # [Agent 轉接檔] Claude Code 入口，匯入 AGENTS.md (自動產生)
 ├── GEMINI.md                               # [Agent 轉接檔] Gemini CLI 入口，指向 AGENTS.md (自動產生)
+├── LICENSE
 ├── pyproject.toml                          # [PEP 621 單一真相來源] Python 中繼資料、依賴分組、pytest 與 ruff 設定
 └── README.md                               # [唯一 README] 專案入口、快速開始與文件索引
 ```

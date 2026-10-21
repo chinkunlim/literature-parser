@@ -12,13 +12,13 @@ import urllib.error
 import urllib.request
 from typing import Any, Dict, List, Optional, Tuple
 
-from doc_processor.config import (
+from literature_parser.config.processor_config import (
     DEFAULT_OLLAMA_HEALER_MODEL,
     OLLAMA_API_BASE,
     OLLAMA_GENERATE_TIMEOUT,
 )
-from doc_processor.core.learner import GlobalLearner
-from doc_processor.verification.ollama_verifier import OllamaVerifier
+from literature_parser.services.core.learner import GlobalLearner
+from literature_parser.adapters.verification.ollama_verifier import OllamaVerifier
 
 logger = logging.getLogger(__name__)
 

@@ -57,3 +57,6 @@
 ### [2026-10-21 16:03 UTC] 完成任務 `TASK-002` — 遷移批次 2：config 層（設定、環境變數讀取） (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
 - **完成摘要**: config 層遷移完成，processor_config.py 與 config_manager.py 正確載入資源，0 critical issues
+
+### [2026-10-21 16:03 UTC] 認領任務 `TASK-003` (遷移批次 3：domain 層（資料模型、純邏輯）) (by `antigravity`)
+- **相關範圍**: `src/literature_parser/domain/, legacy`

@@ -14,6 +14,9 @@ All notable changes to **literature-parser** are documented here
 ### Testing
 - test(workflows): verify all CLI workflows, fix pathing and pure-python fallbacks (by `@antigravity`)
 
+### Chore
+- chore(project): update project tooling and config (TASK-001, TASK-009, TASK-010) (by `@antigravity`)
+
 ## [0.1.0] - 2026-10-21
 ### Added
 - Initial project scaffold (framework v3.1.0).

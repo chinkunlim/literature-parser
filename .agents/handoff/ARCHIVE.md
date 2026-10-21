@@ -43,3 +43,6 @@
 ### [2026-10-21 04:12 UTC] 建立任務 `TASK-010`: 遷移批次 10：其他（資料、資源、需人工判斷） (by `system`)
 - **狀態**: `open`
 - **相關範圍**: `docs/standards/PROJECT_RULES.md, legacy`
+
+### [2026-10-21 16:01 UTC] 認領任務 `TASK-001` (遷移批次 1：依賴與設定檔轉換（uv / pnpm / .env.example / Brewfile）) (by `antigravity`)
+- **相關範圍**: `legacy, legacy`

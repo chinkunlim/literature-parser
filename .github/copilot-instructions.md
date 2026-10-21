@@ -6,7 +6,7 @@
 以下規則段落**直接取自 AGENTS.md**。
 
 - **本專案分層（上 ➔ 下，下層不可 import 上層）**：`entrypoints ➔ adapters ➔ services ➔ domain ➔ config`
-- **測試指令**：`uv run python -m unittest discover -s tests -v`
+- **測試指令**：`uv run --offline python -m unittest discover -s tests -v`
 
 ## 1. 使用者說什麼 → 執行什麼
 

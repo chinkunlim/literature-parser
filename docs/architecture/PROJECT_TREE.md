@@ -78,7 +78,8 @@ literature-parser/
 │   │   ├── TASK-014-front-matter-markdown.json
 │   │   ├── TASK-015-markdown.json
 │   │   ├── TASK-016-markdownconversionservice-css.json
-│   │   └── TASK-017-markdown.json
+│   │   ├── TASK-017-markdown.json
+│   │   └── TASK-018-markdown.json
 │   ├── framework.lock                      # [框架鎖定檔] 框架版本與檔案雜湊，供 update_framework 判斷是否被修改
 │   └── project.toml                        # [專案設定・各專案自訂] 語言、分層、品質門檻、指令、業務規則
 ├── .cursor/                                # [Agent 轉接] Cursor 規則 (自動產生)
@@ -101,6 +102,7 @@ literature-parser/
 │   │   ├── 002-domain-split-book-and-paper.md
 │   │   ├── 003-external-tools-in-adapters-layer.md
 │   │   ├── 004-hierarchical-profile-and-front-matter-isolation.md
+│   │   ├── 005-modular-conversion-and-three-tier-verification.md
 │   │   ├── _TEMPLATE.md                    # ADR 範本 (tracker_cli 會套用)
 │   │   └── DECISIONS.md                    # 架構決策總表
 │   ├── architecture/                       # [系統架構與資料模型]
@@ -121,6 +123,7 @@ literature-parser/
 │   │   ├── 003-epub-exporter.md
 │   │   ├── 004-fix-playbook-and-synthesizer.md
 │   │   ├── 005-unified-profile-and-front-matter.md
+│   │   ├── 006-conversion-service-and-three-tier-verification.md
 │   │   ├── _TEMPLATE.md                    # 規格範本
 │   │   └── SPECS.md                        # 規格清單
 │   ├── standards/                          # [工程規範] 依任務載入 (Progressive Disclosure)

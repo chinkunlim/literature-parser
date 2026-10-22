@@ -41,6 +41,21 @@
 - **硬體守衛優先**：所有啟動本地 Ollama 大模型推理或密集 OCR 運算的任務，必須事先通過 RAM（≥ 2.0GB/4.0GB）與電源狀態（電池低電量防護）檢查，資源不足時應優雅降級或中止。
 - **純本地離線保證**：本地大模型服務僅綁定 `http://127.0.0.1:11434`，絕不將資料傳送至外部非授權端點。
 
+### 2.6 獨立轉換引擎與策略模式 (MarkdownConversionService)
+- **單一職責與可重入**：核心 Markdown 轉換邏輯必須由 `MarkdownConversionService` 承載，嚴禁在 Pipeline/Orchestrator 內覆寫模組全域變數（如 `_STYLE`）或編寫逐頁拼接迴圈。
+- **策略分離**：書籍採用 `BookPostProcessor`（處理 TOC、教學區塊、Front Matter 差異），論文採用 `LiteraturePostProcessor`（處理 IMRAD 標題、APA/IEEE 懸掛縮排與表格錨點）。
+
+### 2.7 圖表獨立裁切與等寬邊距規範 (Figure & Table Cropping with Uniform Margins)
+- **完整包覆**：所有 Figure 與 Table 必須獨立裁切成高畫質影像存於 `images/`，裁切範圍必須完整涵蓋 Caption（標題/編號）、圖表/表格本體與底部的 Notes（註釋/備註）。
+- **上下左右等寬 Margin**：裁切時四邊必須外擴等寬呼吸邊距（預設 `16 pt`，約 5.6 mm，150 DPI 下約 33 px），於 `ProfileGeometry.uniform_crop_margin_pt` 開放微調。
+- **表格雙軌呈現**：Markdown 內文保留結構化文字表格（供檢索與 AI 分析），並在該處嵌入獨立裁切圖片連結（供人類視覺對照）。
+- **CSS 混合雙出**：輸出根目錄產出獨立 `style.css`，並在產出的 Markdown 檔頭自動嵌入 `<style>` 區塊。
+
+### 2.8 三層漸進式品質檢驗體系 (Three-Tier Progressive Verification)
+- **三維度權重**：轉換完成後依序執行排版檢查（`LayoutAuditor`, 35%）、詞語與公式檢查（`LexicalAuditor`, 35%）、語意與閱讀流檢查（`SemanticAuditor`, 30%）。
+- **處置原則**：確定性瑕疵執行 Safe Auto-Fix（自動過濾洩漏頁首、清理孤立頁碼、閉合標籤、連字號斷詞黏合、統計符號標準化）；整體品質未達門檻（預設 85%）或排版破損時，隔離至 `DATA_DIR/needs_review/`。
+- **報告雙輸出與 CLI**：同目錄產出視覺化 `AUDIT.md` 與結構化 `audit_report.json`，並提供獨立 CLI 指令 `book-processor verify -f path/to/chapter.md` 供隨時體檢。
+
 ---
 
 ## 3. 和通用規範不同的例外

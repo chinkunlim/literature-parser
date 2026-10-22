@@ -133,3 +133,19 @@
 ### [2026-10-21 17:52 UTC] 完成任務 `TASK-011` — 更新所有 md 檔案與專案文件 (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
 - **完成摘要**: 全面更新並校準所有專案 Markdown 文件，包含 README、CHANGELOG、SPEC-003/004、ISSUE-003、EVALS、WEB、MIGRATION 及 PROJECT_TREE
+
+### [2026-10-21 17:56 UTC] Session Closeout (結束對話收尾) (by `antigravity`)
+- **檢查結果**: 測試與 Code Review Guard 通過
+- **目標**: 全面更新所有專案 Markdown 文件，補齊 SPEC 與 ISSUE，並同步目錄樹與依賴圖
+- **錯誤與根因**: 無未解決錯誤。前期 poppler/pdfimages 缺失問題已透過 ISSUE-003 完成文檔沉澱
+- **下一步**: 所有 16 個 CLI 工作流、240 項單元測試與全部 Markdown 文件皆已校對最新，後續可依需求串接 API 或擴充解析規則
+- **交接備註**: 全量文件與規格更新完成，測試與門禁全部通過
+- **本機對話紀錄**: `.agents/conversations/2026-10-22-0156-antigravity-summary.md`（只在這台電腦）
+
+### [2026-10-22 01:51 UTC] 建立任務 `TASK-012`: 輸入目錄結構分流與資料夾連字號命名規範 (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
+
+### [2026-10-22 01:51 UTC] 認領任務 `TASK-012` (輸入目錄結構分流與資料夾連字號命名規範) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`

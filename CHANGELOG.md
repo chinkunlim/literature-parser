@@ -6,6 +6,8 @@ All notable changes to **literature-parser** are documented here
 ## [Unreleased]
 
 ### Added
+- docs(adr): record ADR-005 on modular conversion service, dual CSS, and three-tier quality verification (by `@antigravity`)
+- docs(specs): add SPEC-006 on independent MarkdownConversionService and quality verification system (by `@antigravity`)
 - docs(adr): record ADR-004 on hierarchical profile inheritance, front matter isolation, and pure chapter 1 (by `@antigravity`)
 - docs(specs): add SPEC-005 on unified DocumentProfile schema, shared knowledge taxonomies, and front matter classification (by `@antigravity`)
 - docs(known-issues): document ISSUE-004 on Chapter 1 bookmark misattribution on page 1 and front matter pollution (by `@antigravity`)
@@ -29,6 +31,7 @@ All notable changes to **literature-parser** are documented here
 ### Documentation
 - docs: update and synchronize all project markdown documentation (by `@antigravity`)
 - docs: synchronize all project markdown documentation (TASK-015) (by `@antigravity`)
+- docs: synchronize all project markdown documentation for conversion and verification systems (TASK-018) (by `@antigravity`)
 
 ### Testing
 - test(workflows): verify all CLI workflows, fix pathing and pure-python fallbacks (by `@antigravity`)

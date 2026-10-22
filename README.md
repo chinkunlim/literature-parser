@@ -22,7 +22,19 @@
 4. **四階 Profile 繼承與全域共享知識庫 (Hierarchical Profiles & Shared Knowledge)**：
    - `Level 1 原型預設`（Textbook / Literature）➔ `Level 2 出版社模板`（APA, Elsevier, Pearson, Wiley...）➔ `Level 3 全域共享知識庫`（`front_matter_taxonomy.json`, `pedagogical_blocks.json`）➔ `Level 4 實例 Profile`（統一規範檔名 `profile.json`，並為舊工具提供鏡像相容）。
    - **排版細節完整記錄**：奇偶頁非對稱結構（`PageAsymmetry`，左右翻頁裝訂邊與邊欄相反）、雙欄跨欄橫幅（`has_spanning_boxes`）、首字下沉（`has_drop_caps`）與圖表標題正則（`caption_patterns`）。
-5. **閉環自我修復 (Closed-Loop Layout Healing)**：
+5. **獨立 Markdown 轉換引擎與策略模式 (MarkdownConversionService)**：
+   - 將核心轉換職責從管線中解耦，建立純粹可重入的 `MarkdownConversionService`，徹底消除對模組全域變數的污染，支援 Apple Silicon 多核心並發安全。
+   - 透過 `BookPostProcessor` 與 `LiteraturePostProcessor` 策略注入，分流處理書籍教學區塊/TOC 與論文 IMRAD/文獻引用結構化。
+6. **Figure 與 Table 獨立裁切（含 Caption/Notes/四邊等寬 Margin）與雙軌表格呈現**：
+   - 完整包覆 Caption、圖表/表格本體與 Notes 註釋，上下左右四邊等寬外擴 16 pt（約 5.6 mm，150 DPI 下約 33 px）呼吸邊距。
+   - 表格採雙軌呈現：Markdown 保留結構化文字（供全文檢索與 AI 分析），並在該處嵌入獨立裁切圖片對照連結。
+7. **CSS 混合雙出 (Dual CSS Output)**：
+   - 輸出目錄產出獨立 `style.css` 供網頁瀏覽與 EPUB 3 引用，同時在 Markdown 檔頭自動嵌入 `<style>` 區塊，保證在 Obsidian、Typora、VS Code 等任何原生預覽器中開箱即見完整排版美化效果。
+8. **三層漸進式品質檢驗體系 (Three-Tier Quality Verification)**：
+   - **第一層：排版檢查 (LayoutAuditor, 35%)**：H1 唯一性、大綱單調遞進、TOC 錨點跳轉有效性、表格標籤閉合、圖片實體存在性、頁首頁尾雜訊過濾。
+   - **第二層：詞語檢查 (LexicalAuditor, 35%)**：混成辭典比對、形態素衍生分析、連字號斷詞平滑黏合、首字下沉修復、LaTeX 公式定界符成對與破碎統計檢定式正規化。
+   - **第三層：語意檢查 (SemanticAuditor, 30%)**：跨頁未完句連續縫合、雙欄流向順序性、內文引註與章末 References 交叉比對、圖表指涉完整性；低信心時按需喚醒本地 Ollama 深度覆核。
+9. **閉環自我修復 (Closed-Loop Layout Healing)**：
    - 當格式稽核器偵測到頁首殘留（`LEAKED_HEADER`）或頁尾殘留（`LEAKED_FOOTER`）時，自動計算幾何位移並即時重寫 `profile.json`，全書後續章節自動受益。
 
 ---
@@ -77,6 +89,9 @@ uv run literature-parser obsidian-link path/to/book_output_dir/
 
 ### 驗證與自動修復
 ```bash
+# 執行三層式漸進品質檢驗（排版、詞語、語意），並產出 AUDIT.md 視覺化報告與 audit_report.json
+uv run book-processor verify -f path/to/chapter.md
+
 # 執行 Markdown 排版格式與數學符號稽核
 uv run literature-parser audit path/to/chapter.md --ollama --fix
 

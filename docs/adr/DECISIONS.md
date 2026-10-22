@@ -8,3 +8,4 @@
 | [ADR-002](002-domain-split-book-and-paper.md) | 教科書與學術期刊管道與實體路徑分離 | Accepted | 2026-09-23 |
 | [ADR-003](003-external-tools-in-adapters-layer.md) | 呼叫外部工具與模型之核心協調器收斂至 Adapters 分層 | Accepted | 2026-10-21 |
 | [ADR-004](004-hierarchical-profile-and-front-matter-isolation.md) | 四階層 Profile 繼承體系、前言獨立切分與純淨 Chapter 1 | Accepted | 2026-10-22 |
+| [ADR-005](005-modular-conversion-and-three-tier-verification.md) | 獨立 MarkdownConversionService、CSS 雙出與三層漸進檢驗體系 | Accepted | 2026-10-22 |

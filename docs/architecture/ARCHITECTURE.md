@@ -183,3 +183,50 @@ flowchart TD
 4. **閉環自我修復 (Closed-Loop Layout Healing)**：
    - 當後期 Format Auditor 或本地 AI 驗證器偵測到頁首殘留 (`LEAKED_HEADER`) 或頁尾殘留 (`LEAKED_FOOTER`) 時，呼叫 `CoordinateCalibrator.adjust_geometry_from_feedback()`。
    - 動態計算並修正幾何截止線，同步重寫本機之 `profile.json` 與鏡像檔案，實現「偵測到一次排版雜訊，即全本自動校正」之閉環自我修復。
+
+---
+
+## 5. 獨立轉換引擎與策略模式 (MarkdownConversionService & ElementCropper)
+
+為消除龐大管線的職責耦合與多核心轉檔時全域變數污染問題，系統將純粹轉換邏輯封裝至 `services/converter/`：
+
+```mermaid
+flowchart TD
+    InPDF["輸入 PDF (章節或論文)"] --> Engine["MarkdownConversionService.convert()<br>(pdf, profile, options, strategy)"]
+    Profile["DocumentProfile (4-Layer Canonical)"] --> Engine
+    
+    subgraph ConversionProcess ["內部轉換流水線"]
+        StepImg["圖片萃取 (ImageManager)"] --> StepCrop["Figure & Table 獨立裁切 (ElementCropper)<br>(含 Caption/Notes 與等寬 16pt Margin)"]
+        StepCrop --> StepParse["逐頁分流解析 (DigitalPDFParser / ScannedPDFParser)"]
+        StepParse --> StepStrategy["策略語義後處理 (BookPostProcessor / LiteraturePostProcessor)"]
+        StepStrategy --> StepCSS["CSS 雙出組裝 (style.css 檔案 + 檔頭 <style>)"]
+    end
+    
+    Engine --> Result["強型別 ConversionResult<br>(markdown, css, images, cropped_elements, stats)"]
+```
+
+1. **單一職責與強型別契約**：
+   - 核心轉換服務不直接進行發布或斷路隔離，專注於回傳包含 Markdown、CSS、圖片與裁切物件之 `ConversionResult`。
+2. **Figure 與 Table 獨立裁切**：
+   - `ElementCropper` 完整包覆 Caption、圖表/表格本體與 Notes，上下左右四邊等距外擴 `uniform_crop_margin_pt = 16.0` 呼吸邊距。
+   - 表格採雙軌呈現：Markdown 保留結構化文字（供全文檢索與 AI 分析），並在該處嵌入獨立裁切圖片對照連結。
+3. **CSS 混合雙出**：
+   - 輸出目錄產出獨立 `style.css`，並在產出的 Markdown 檔頭自動嵌入 `<style>` 區塊，保證在任何原生預覽器中開箱即見完整排版美化效果。
+
+---
+
+## 6. 三層漸進式品質檢驗體系 (Three-Tier Quality Verification)
+
+轉換完成之 Markdown 經過 `services.verification.quality_engine` 進行排版、詞語、語意三維度之階梯檢驗：
+
+1. **第一層：確定性排版檢查 (LayoutAuditor, 佔比 35%)**：
+   - 檢驗 H1 唯一性、大綱單調遞進、段落誤升標題檢測、TOC 錨點跳轉有效性、表格標籤閉合、圖片實體存在性、頁首頁尾雜訊。
+   - 提供 Safe Auto-Fix（自動過濾洩漏頁首、清理孤立頁碼、閉合標籤）。
+2. **第二層：詞語與符號詞法檢查 (LexicalAuditor, 佔比 35%)**：
+   - 結合系統字典與領域辭典、形態素衍生分析、行末連字號斷詞平滑黏合、首字下沉破損修復、LaTeX 公式定界符成對與破碎統計檢定式正規化。
+3. **第三層：雙階段語意檢查 (SemanticAuditor, 佔比 30%)**：
+   - **階段 3A（確定性語意守衛）**：跨頁未完句連續性分析（頁末無標點 ➔ 次頁小寫平滑接合）、雙欄閱讀流向中斷檢測、內文引註與章末 References 交叉比對、圖表指涉完整性。
+   - **階段 3B（本地 AI 深度覆核）**：評分低於門檻（預設 85%）或排版疑似破損時，按需喚醒本地 Ollama（RAM ≥ 4GB）進行深度語意審核並產出修復建議。
+4. **輸出報告與獨立 CLI**：
+   - 在該 Markdown 同目錄產出視覺化報告 `AUDIT.md` 與機器結構化檔案 `audit_report.json`。
+   - 提供獨立 CLI 指令 `book-processor verify -f path/to/chapter.md` 供隨時體檢。

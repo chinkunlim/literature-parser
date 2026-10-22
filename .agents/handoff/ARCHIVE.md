@@ -121,3 +121,15 @@
 - **下一步**: 所有 16 個 CLI 工作流與 240 項單元測試皆已實測通過，後續可依需求串接 FastAPI 或新增解析規則
 - **交接備註**: 所有工作流實測完畢，純 Python fallback 與 DATA_DIR 結構健全
 - **本機對話紀錄**: `.agents/conversations/2026-10-22-0146-antigravity-summary.md`（只在這台電腦）
+
+### [2026-10-21 17:48 UTC] 建立任務 `TASK-011`: 更新所有 md 檔案與專案文件 (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
+
+### [2026-10-21 17:48 UTC] 認領任務 `TASK-011` (更新所有 md 檔案與專案文件) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`
+
+### [2026-10-21 17:52 UTC] 完成任務 `TASK-011` — 更新所有 md 檔案與專案文件 (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: 全面更新並校準所有專案 Markdown 文件，包含 README、CHANGELOG、SPEC-003/004、ISSUE-003、EVALS、WEB、MIGRATION 及 PROJECT_TREE

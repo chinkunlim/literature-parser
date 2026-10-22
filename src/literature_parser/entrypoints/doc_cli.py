@@ -21,6 +21,7 @@ from literature_parser.config.processor_config import (
 from literature_parser.adapters.core.orchestrator import BookProcessorOrchestrator
 from literature_parser.adapters.utils.system import check_dependencies
 from literature_parser.adapters.verification.verifier import AccuracyVerifier
+from literature_parser.services.verification import QualityInspectionEngine
 
 
 def main():
@@ -68,6 +69,7 @@ def main():
 
     # 5. VERIFY Subcommand
     p_verify = subparsers.add_parser("verify", help="Run content accuracy verification suite")
+    p_verify.add_argument("--file", "-f", help="Path to specific Markdown file to inspect")
     p_verify.add_argument("--chapter-dir", "-c", help="Path to specific chapter folder")
     p_verify.add_argument("--book-dir", "-b", help="Path to book output folder (containing chapters/)")
     p_verify.add_argument("--expected-pages", "-p", type=int, default=None, help="Expected page count for split PDF")
@@ -159,6 +161,25 @@ def main():
                 orchestrator.process_epub_book(bpath)
 
     elif args.subcommand == "verify":
+        if getattr(args, 'file', None):
+            engine = QualityInspectionEngine()
+            target_path = Path(args.file)
+            if not target_path.exists():
+                print(f"[!] File not found: {target_path}")
+                sys.exit(1)
+            md_text = target_path.read_text(encoding="utf-8")
+            report = engine.inspect(md_text, doc_name=target_path.stem, file_path=target_path, base_dir=target_path.parent)
+            QualityInspectionEngine.export_report_files(report, target_path.parent)
+            print(f"\n{'='*70}\n[QUALITY AUDIT] {target_path.name}\n{'='*70}")
+            print(f"  Overall Score : {report.scores.overall_score}% ({'PASS' if report.passed else 'NEEDS REVIEW'})")
+            print(f"  • Layout      : {report.scores.layout_score}%")
+            print(f"  • Lexical     : {report.scores.lexical_score}%")
+            print(f"  • Semantic    : {report.scores.semantic_score}%")
+            print(f"  Issues        : {len(report.issues)} (Errors: {report.error_count}, Warnings: {report.warning_count})")
+            print(f"  Auto-Repairs  : {report.repaired_count}")
+            print(f"  Report Saved  : {target_path.parent / 'AUDIT.md'}\n")
+            sys.exit(0 if report.passed else 1)
+
         verifier = AccuracyVerifier(use_ollama=resolve_ollama(args.ollama), ollama_model=args.ollama_model)
         if args.chapter_dir:
             res = verifier.verify_chapter(args.chapter_dir, expected_pages=args.expected_pages)
@@ -175,6 +196,9 @@ def main():
                     if not res['passed']:
                         all_ok = False
             sys.exit(0 if all_ok else 1)
+        else:
+            print("[!] Please specify --file (-f), --chapter-dir (-c), or --book-dir (-b).")
+            sys.exit(1)
 
     elif args.subcommand == "watchdog":
         from literature_parser.services.core.watchdog import WatchdogService

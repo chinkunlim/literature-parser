@@ -5,10 +5,10 @@
 <!-- LIVE_STATE_START -->
 ## 📊 即時狀態看板 (Live Snapshot)
 
-- **最後更新時間**: `2026-10-22 03:44 UTC`
+- **最後更新時間**: `2026-10-22 03:53 UTC`
 - **最近操作 Agent**: `antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `dbdf44d chore(tooling): update tooling tooling and config (ADR-004, ISSUE-004, TASK-006, TASK-009, TASK-014, TASK-015) [agent:antigravity]`
+- **最新 Git Commit**: `fa508dd feat: implement modular MarkdownConversionService, CSS dual output, and figure/table cropping with equal margins (TASK-016) [agent:antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
@@ -17,6 +17,18 @@
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-10-22 03:53 UTC] 完成任務 `TASK-017` — 實作三層 Markdown 轉檔檢驗與品質評估體系（排版、詞語、語意） (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: 實作三層 Markdown 轉檔檢驗與品質評估體系（排版、詞語、語意）、評分引擎與獨立 CLI 整合
+
+### [2026-10-22 03:50 UTC] 認領任務 `TASK-017` (實作三層 Markdown 轉檔檢驗與品質評估體系（排版、詞語、語意）) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`
+
+### [2026-10-22 03:50 UTC] 建立任務 `TASK-017`: 實作三層 Markdown 轉檔檢驗與品質評估體系（排版、詞語、語意） (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
 
 ### [2026-10-22 03:44 UTC] 完成任務 `TASK-016` — 實作獨立 MarkdownConversionService 與圖表裁切/CSS 輸出模組 (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
@@ -93,15 +105,3 @@
 - **下一步**: 所有 16 個 CLI 工作流、240 項單元測試與全部 Markdown 文件皆已校對最新，後續可依需求串接 API 或擴充解析規則
 - **交接備註**: 全量文件與規格更新完成，測試與門禁全部通過
 - **本機對話紀錄**: `.agents/conversations/2026-10-22-0156-antigravity-summary.md`（只在這台電腦）
-
-### [2026-10-21 17:52 UTC] 完成任務 `TASK-011` — 更新所有 md 檔案與專案文件 (by `antigravity`)
-- **狀態**: ✅ 已完成 (`done`)
-- **完成摘要**: 全面更新並校準所有專案 Markdown 文件，包含 README、CHANGELOG、SPEC-003/004、ISSUE-003、EVALS、WEB、MIGRATION 及 PROJECT_TREE
-
-### [2026-10-21 17:48 UTC] 認領任務 `TASK-011` (更新所有 md 檔案與專案文件) (by `antigravity`)
-- **相關範圍**: `-`
-- **接棒自**: `antigravity`
-
-### [2026-10-21 17:48 UTC] 建立任務 `TASK-011`: 更新所有 md 檔案與專案文件 (by `antigravity`)
-- **狀態**: `in_progress`
-- **相關範圍**: `-`

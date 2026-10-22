@@ -5,18 +5,28 @@
 <!-- LIVE_STATE_START -->
 ## 📊 即時狀態看板 (Live Snapshot)
 
-- **最後更新時間**: `2026-10-22 08:36 UTC`
+- **最後更新時間**: `2026-10-22 08:37 UTC`
 - **最近操作 Agent**: `antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `5635939 feat: externalize typography, palette, layout rules, and quality thresholds into unified config/theme.json (TASK-021) [agent:antigravity]`
+- **最新 Git Commit**: `faff8ad docs: mark TASK-021 done with complete theme externalization and tests [agent:antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
-> 目前無進行中或待接手任務。可執行 `python3 scripts/agentctl.py task create "任務名稱" --agent <name>` 建立任務。
+| 任務 | 狀態 | 目前/上一位 Agent | 建議接手 | 相關範圍 | 已完成 | 待辦與卡點 |
+|---|---|---|---|---|---|---|
+| **TASK-022**<br/>Update all project documentation and architecture records | 🟢 `in_progress` | `antigravity` | `-` | - | - | - |
 
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-10-22 08:37 UTC] 認領任務 `TASK-022` (Update all project documentation and architecture records) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`
+
+### [2026-10-22 08:37 UTC] 建立任務 `TASK-022`: Update all project documentation and architecture records (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
 
 ### [2026-10-22 08:36 UTC] 完成任務 `TASK-021` — Externalize typography, palette, TOC, layout rules, and quality thresholds into unified config (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
@@ -93,15 +103,3 @@
 ### [2026-10-22 03:36 UTC] 認領任務 `TASK-016` (實作獨立 MarkdownConversionService 與圖表裁切/CSS 輸出模組) (by `antigravity`)
 - **相關範圍**: `-`
 - **接棒自**: `antigravity`
-
-### [2026-10-22 03:36 UTC] 建立任務 `TASK-016`: 實作獨立 MarkdownConversionService 與圖表裁切/CSS 輸出模組 (by `antigravity`)
-- **狀態**: `in_progress`
-- **相關範圍**: `-`
-
-### [2026-10-22 03:07 UTC] Session Closeout (結束對話收尾) (by `antigravity`)
-- **檢查結果**: 測試與 Code Review Guard 通過
-- **目標**: 規劃並實作 Front Matter 獨立切分、純淨 Chapter 1 起始頁校驗、四層級 Profile 與共享知識庫架構，並同步更新全專案 Markdown 文件
-- **錯誤與根因**: 第一章書籤起始頁若誤包前言，透過 Pre-flight Profile 的純淨 Chapter 1 校驗自動修正（ISSUE-004）。259 個單元測試全數通過。
-- **下一步**: 四層 Profile 與 Front Matter 切分已就緒且文件完備；下一步可接續實測真實大部頭教科書或擴充外部 API / 批次轉檔作業。
-- **交接備註**: Front Matter 獨立切分與純淨 Chapter 1 規格及四層 Profile 已全部落地並完成文件同步。
-- **本機對話紀錄**: `.agents/conversations/2026-10-22-1107-antigravity-summary.md`（只在這台電腦）

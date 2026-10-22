@@ -36,6 +36,16 @@
    - **第三層：語意檢查 (SemanticAuditor, 30%)**：跨頁未完句連續縫合、雙欄流向順序性、內文引註與章末 References 交叉比對、圖表指涉完整性；低信心時按需喚醒本地 Ollama 深度覆核。
 9. **閉環自我修復 (Closed-Loop Layout Healing)**：
    - 當格式稽核器偵測到頁首殘留（`LEAKED_HEADER`）或頁尾殘留（`LEAKED_FOOTER`）時，自動計算幾何位移並即時重寫 `profile.json`，全書後續章節自動受益。
+10. **原生 PyMuPDF 解析核心與流水線重疊並行 (Native Dual Engine & Concurrency)**：
+   - 引入 PyMuPDF 作為高能原生核心，文檔記憶體一次載入，提取文字 span、向量線條與高解析切圖，徹底消滅逐頁 `pdftohtml`/`pdftoppm` 子行程喚起開銷；保留 Poppler CLI 作為透明後備。
+   - 實作 Producer-Consumer 流水線並行（`PipelinedChapterProcessor`），當 CPU 正在解析 Chapter 2 時，GPU/Metal Ollama 同步對 Chapter 1 進行背景語意稽核，消除互鎖等待。
+11. **Marker 式版面輪廓分析與段落邊界首提錨定 (Marker-Style Layout & Anchoring)**：
+   - 依據版面輪廓骨架（Layout Frame）進行正文跨頁斷句縫合；提及圖表時**嚴禁在段中插入截斷句子**，嚴格在整段段落結束（`\n\n`）後才依序掛載輸出。
+   - 清單塊完整性保護、同段多圖平鋪佇列、子圖智慧歸一（Figure 1A ➔ 1），以及孤立未引用圖表安全章末釋放。
+   - 遇跨行跨欄之複雜表格自動轉譯為語意 HTML 表格（`<table class="book-table">`，支援 `colspan`/`rowspan`）。
+12. **集中外部化設定與一鍵即時重刷 (`config/theme.json` & `apply_theme.py`)**：
+   - 將「字型系統（Google Fonts/字型堆疊）、60-30-10 出版調色盤、目錄開闔與深度（`toc_mode: close`）、圖表錨定邊距、表格轉譯、教學模組、Obsidian 導航、品質門檻」全數收納於根目錄 `config/theme.json`（附帶 `theme.schema.json`）。
+   - 支援「全域母版 ＋ 單書選填覆寫」分層機制，免修 Python 程式碼即可自訂外觀；並提供 `scripts/apply_theme.py` 於數毫秒內重刷已轉出 Markdown 之樣式與目錄。
 
 ---
 
@@ -85,6 +95,12 @@ uv run literature-parser epub path/to/output_dir/ --type book
 
 # 為轉換後之書籍自動生成 Obsidian 雙向導航雙鏈與全書 index.md
 uv run literature-parser obsidian-link path/to/book_output_dir/
+```
+
+### 樣式與排版重刷 (Re-Theming)
+```bash
+# 根據 config/theme.json 或該書 theme.json，毫秒級快速重刷已轉出之 Markdown 樣式與目錄
+python3 scripts/apply_theme.py path/to/book_output_dir/
 ```
 
 ### 驗證與自動修復

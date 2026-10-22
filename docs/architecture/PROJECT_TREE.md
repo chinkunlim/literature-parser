@@ -82,7 +82,8 @@ literature-parser/
 │   │   ├── TASK-018-markdown.json
 │   │   ├── TASK-019-optimize-literature-and-textbook.json
 │   │   ├── TASK-020-implement-marker-style-layout-fr.json
-│   │   └── TASK-021-externalize-typography-palette-t.json
+│   │   ├── TASK-021-externalize-typography-palette-t.json
+│   │   └── TASK-022-update-all-project-documentation.json
 │   ├── framework.lock                      # [框架鎖定檔] 框架版本與檔案雜湊，供 update_framework 判斷是否被修改
 │   └── project.toml                        # [專案設定・各專案自訂] 語言、分層、品質門檻、指令、業務規則
 ├── .cursor/                                # [Agent 轉接] Cursor 規則 (自動產生)
@@ -110,6 +111,7 @@ literature-parser/
 │   │   ├── 004-hierarchical-profile-and-front-matter-isolation.md
 │   │   ├── 005-modular-conversion-and-three-tier-verification.md
 │   │   ├── 006-dual-engine-and-pipelined-concurrency.md
+│   │   ├── 007-unified-theme-and-pipeline-configuration.md
 │   │   ├── _TEMPLATE.md                    # ADR 範本 (tracker_cli 會套用)
 │   │   └── DECISIONS.md                    # 架構決策總表
 │   ├── architecture/                       # [系統架構與資料模型]

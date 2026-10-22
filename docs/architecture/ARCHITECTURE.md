@@ -230,3 +230,74 @@ flowchart TD
 4. **輸出報告與獨立 CLI**：
    - 在該 Markdown 同目錄產出視覺化報告 `AUDIT.md` 與機器結構化檔案 `audit_report.json`。
    - 提供獨立 CLI 指令 `book-processor verify -f path/to/chapter.md` 供隨時體檢。
+
+---
+
+## 7. 原生雙引擎解析核心與流水線重疊並行 (Native Dual Engine & Concurrency)
+
+為大幅消除舊有逐頁喚起外部 subprocess（`pdftohtml`, `pdftoppm`, `pdfseparate`）的系統進程啟動開銷，系統引入 PyMuPDF 原生雙引擎與流水線並行架構：
+
+```mermaid
+flowchart LR
+    PDF["輸入 PDF"] --> Engine["PDFDocumentEngine (adapters.parsers.pdf_engine)"]
+    Engine --> Mode{"引擎分流"}
+    Mode -->|原生模式 (預設)| PyMuPDF["PyMuPDF 原生記憶體解析<br>(page.get_text, get_pixmap, insert_pdf)"]
+    Mode -->|後備模式 (CLI 相容)| Poppler["Poppler CLI Subprocess<br>(pdftohtml / pdftoppm)"]
+    
+    subgraph PipelineOverlap ["Producer-Consumer 重疊流水線 (PipelinedChapterProcessor)"]
+        CPUWorker["CPU 解析執行緒<br>(解析 Chapter N+1)"]
+        Queue["內部緩衝佇列"]
+        GPUWorker["GPU / Ollama 稽核執行緒<br>(語意稽核 Chapter N)"]
+        CPUWorker --> Queue --> GPUWorker
+    end
+```
+
+1. **零進程啟動開銷**：文檔只在記憶體中載入一次，直接提取文字 span 幾何資訊、向量除線與微秒級 Pixmap 記憶體切圖。
+2. **流水線重疊執行**：CPU 密集之幾何解析與 GPU/Metal 密集之本地 Ollama 模型推論相互重疊，徹底消滅等待互鎖。
+
+---
+
+## 8. Marker 式版面輪廓分析與段落首提錨定 (Marker-Style Layout & Anchoring)
+
+正文流向與圖表穿插策略遵循 Marker 風格之版面解構與語意錨定原則：
+
+```mermaid
+flowchart TD
+    RawPages["跨頁原始文字與圖表"] --> LayoutFrame["版面輪廓骨架分析 (DocumentLayoutFrame)"]
+    LayoutFrame --> ProseStitch["正文跨頁斷句平滑接合 (Sentence Healing)"]
+    ProseStitch --> ParagraphBlocks["以完整段落 (\\n\\n) 為單位的純文字區塊"]
+    
+    ParagraphBlocks --> AnchorEmitter["語意錨定發射器 (reposition_figures_and_tables)"]
+    AnchorEmitter --> Rule1["段落完整性：嚴禁句中插圖，整段結束後始掛載"]
+    AnchorEmitter --> Rule2["清單塊保護：清單項目內部提圖時，待清單結束後掛載"]
+    AnchorEmitter --> Rule3["同段多圖平鋪：依提及先後循序掛載"]
+    AnchorEmitter --> Rule4["子圖智慧歸一：Figure 1A / 1B 對齊母圖 Figure 1"]
+    AnchorEmitter --> Rule5["孤立圖表安全釋放：未被文中提及之圖表於章末集中輸出"]
+    
+    AnchorEmitter --> CleanMD["出版級語意 Markdown"]
+```
+
+- **表格自適應呈現**：簡單無合併儲存格的表格輸出標準 Markdown 管道表格；若偵測到表頭分組（`colspan > 1`）或儲存格跨行（`rowspan > 1`），自動轉譯為具備語意屬性的 `<table class="book-table">`，由 CSS 進行美化，結構零丟失。
+
+---
+
+## 9. 全專案集中外部化設定與即時重刷系統 (Unified Theme & Instant Re-Theming)
+
+系統將所有可配置之排版與管線規則收斂至獨立設定檔 `config/theme.json`：
+
+```mermaid
+flowchart TD
+    GlobalJSON["全域預設母版<br>config/theme.json (8大分區)"] --> StyleLoader["style_loader.load_theme()"]
+    BookJSON["單書專屬覆寫 (選填)<br>{output_dir}/theme.json"] -.->|深層遞迴合併| StyleLoader
+    Schema["IDE 規範校驗<br>config/theme.schema.json"] -.-> GlobalJSON
+
+    StyleLoader --> ActiveConfig["統一合併後之強型別設定"]
+    ActiveConfig --> CSSGen["CSS 產生器 (book_style / literature_style)"]
+    ActiveConfig --> TOCGen["TOC 產生器 (layout_detector)"]
+    ActiveConfig --> FastCLI["一鍵即時重刷工具<br>scripts/apply_theme.py"]
+```
+
+1. **8 大語意分區**：`typography`、`palette`、`layout`、`artifacts`、`tables`、`learning_blocks`、`navigation`、`quality`。
+2. **目錄開闔與深度**：支援 `toc_mode`（`close` / `open` / `none`）、`toc_depth`（預設收錄至 H3）與自訂標題。
+3. **即時重刷 CLI**：提供 `python3 scripts/apply_theme.py [書籍輸出目錄]`，於數毫秒內在已產出的 Markdown 檔中抽換 `<style>` 區塊、重刷 TOC 並生成 `style.css`，免去重新解析 PDF 的昂貴運算。
+

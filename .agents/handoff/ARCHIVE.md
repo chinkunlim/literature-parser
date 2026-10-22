@@ -189,3 +189,15 @@
 ### [2026-10-22 03:06 UTC] 完成任務 `TASK-015` — 更新全專案 Markdown 文件：架構、規格、變更日誌與使用說明 (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
 - **完成摘要**: Synchronized all project markdown documentation: README.md, PROJECT_RULES.md, SPECS.md, SPEC-001, SPEC-005, DECISIONS.md, ADR-004, KNOWN_ISSUES.md, ISSUE-004, CHANGELOG.md, and synchronized agent entrypoints.
+
+### [2026-10-22 03:07 UTC] Session Closeout (結束對話收尾) (by `antigravity`)
+- **檢查結果**: 測試與 Code Review Guard 通過
+- **目標**: 規劃並實作 Front Matter 獨立切分、純淨 Chapter 1 起始頁校驗、四層級 Profile 與共享知識庫架構，並同步更新全專案 Markdown 文件
+- **錯誤與根因**: 第一章書籤起始頁若誤包前言，透過 Pre-flight Profile 的純淨 Chapter 1 校驗自動修正（ISSUE-004）。259 個單元測試全數通過。
+- **下一步**: 四層 Profile 與 Front Matter 切分已就緒且文件完備；下一步可接續實測真實大部頭教科書或擴充外部 API / 批次轉檔作業。
+- **交接備註**: Front Matter 獨立切分與純淨 Chapter 1 規格及四層 Profile 已全部落地並完成文件同步。
+- **本機對話紀錄**: `.agents/conversations/2026-10-22-1107-antigravity-summary.md`（只在這台電腦）
+
+### [2026-10-22 03:36 UTC] 建立任務 `TASK-016`: 實作獨立 MarkdownConversionService 與圖表裁切/CSS 輸出模組 (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`

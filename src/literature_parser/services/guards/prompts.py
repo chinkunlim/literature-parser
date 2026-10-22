@@ -55,18 +55,20 @@ SYSTEM_SEMANTIC_AUDITOR = (
 
 PROMPT_SEMANTIC_AUDITOR_TEMPLATE = (
     "Review the following extracted publication section titled '{chapter_title}'.\n"
-    "Audit these 4 critical dimensions:\n"
-    "1. Heading Authenticity: Are all headings genuine author section titles (NO AI-hallucinated summary subheadings)?\n"
-    "2. LaTeX & Symbols: Are all LaTeX formulas ($...$ or $$...$$) syntactically valid with NO unescaped currency (\\$3) or broken delimiters?\n"
-    "3. Table Note Separation: Are table notes clearly separated from subsequent body prose paragraphs?\n"
-    "4. Text Continuity & Prose Flow: Does prose flow naturally across pages without broken sentences or OCR glitches?\n\n"
+    "Audit these 5 critical dimensions:\n"
+    "1. Heading Authenticity: Are all headings genuine author section titles (NO AI-hallucinated summary subheadings, NO redundant heading words attached to paragraph start)?\n"
+    "2. Blockquote Sanity: Regular body paragraphs MUST NOT be formatted as blockquotes (> ...). Blockquotes are ONLY for genuine pull-quotes or cited quotes. Are standard narrative paragraphs free of runaway '>' prefixes?\n"
+    "3. LaTeX & Symbols: Are all LaTeX formulas ($...$ or $$...$$) syntactically valid with NO unescaped currency (\\$3) or broken delimiters?\n"
+    "4. Table & Layout Cleanliness: Are tables and figures clean without duplicate redundant PNG snapshots inserted?\n"
+    "5. Text Continuity & Prose Flow: Does prose flow naturally across pages without broken sentences, mid-sentence blockquote cuts, or OCR glitches?\n\n"
     "Text Excerpt:\n```markdown\n{sample_excerpt}\n```\n\n"
     "Response Format:\n"
     "1. Heading Authenticity: [PASS/FAIL] - brief comment\n"
-    "2. Formula & Symbol Integrity: [PASS/FAIL] - brief comment\n"
-    "3. Table & Note Separation: [PASS/FAIL] - brief comment\n"
-    "4. Quality Rating: [Excellent / Good / Needs Attention]\n"
-    "5. Final Verdict: [PASS] or [REVISE]"
+    "2. Blockquote Sanity: [PASS/FAIL] - brief comment\n"
+    "3. Formula & Symbol Integrity: [PASS/FAIL] - brief comment\n"
+    "4. Table & Layout Cleanliness: [PASS/FAIL] - brief comment\n"
+    "5. Text Continuity & Prose Flow: [PASS/FAIL] - brief comment\n"
+    "6. Final Verdict: [PASS] or [REVISE]"
 )
 
 SYSTEM_OCR_PROOFREADER = (

@@ -57,6 +57,7 @@ class TestMarkdownConversionService(unittest.TestCase):
             toc_mode="open",
             prepend_title_if_missing=True,
             custom_title="Chapter 1: Foundations",
+            dual_table_presentation=True,
         )
         processed = processor.process(
             raw_markdown=raw_md,

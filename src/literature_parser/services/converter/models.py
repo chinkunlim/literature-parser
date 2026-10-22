@@ -45,6 +45,7 @@ class ConversionOptions:
     embed_css: bool = True
     output_standalone_css: bool = True
     is_front_matter: bool = False
+    dual_table_presentation: bool = False
 
 
 @dataclass

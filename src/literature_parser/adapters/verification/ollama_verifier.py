@@ -101,16 +101,46 @@ class OllamaVerifier:
             }
 
         # Clean HTML style/metadata blocks to review actual markdown narrative & LaTeX
+        # Clean HTML style/metadata, TOC details, and Mermaid blocks to inspect actual prose narrative & transitions
         clean_text = re.sub(r'<style>.*?</style>', '', markdown_sample, flags=re.DOTALL)
-        clean_text = re.sub(r'<div class="article-meta">.*?</div>', '', clean_text, flags=re.DOTALL).strip()
+        clean_text = re.sub(r'<div class="article-meta">.*?</div>', '', clean_text, flags=re.DOTALL)
+        clean_text = re.sub(r'<details\b[^>]*>.*?</details>', '', clean_text, flags=re.DOTALL)
+        clean_text = re.sub(r'```mermaid[\s\S]*?```', '', clean_text)
+        clean_text = clean_text.strip()
 
         # Find an excerpt that ends cleanly at a sentence or paragraph boundary
-        raw_excerpt = clean_text[:2500].strip()
-        last_boundary = max(raw_excerpt.rfind('.\n'), raw_excerpt.rfind('. '), raw_excerpt.rfind('\n\n'))
-        if last_boundary > 1000:
-            sample_excerpt = raw_excerpt[:last_boundary + 1].strip()
+        # Multi-window smart sampling: (1) Chapter narrative opening, (2) Page transition boundary
+        # Window 1: Chapter opening prose (skip pure Learning Objective bullet lists if followed by prose)
+        lines = clean_text.splitlines()
+        first_prose_idx = 0
+        lo_count = 0
+        for idx, line in enumerate(lines):
+            l_strip = line.strip()
+            if l_strip.startswith('🎯') or l_strip.startswith('- 🎯') or l_strip.startswith('> 🎯'):
+                lo_count += 1
+            elif lo_count > 0 and len(l_strip) > 30:
+                first_prose_idx = idx
+                break
+
+        opening_text = "\n".join(lines[first_prose_idx:]).strip()
+        raw_w1 = opening_text[:1400].strip()
+        b1 = max(raw_w1.rfind('.\n'), raw_w1.rfind('. '), raw_w1.rfind('\n\n'))
+        w1 = raw_w1[:b1 + 1].strip() if b1 > 600 else raw_w1
+
+        # Window 2: Mid-chapter page transition boundary (verify cross-page sentence flow & blockquote sanity)
+        w2 = ""
+        page_markers = list(re.finditer(r'<!--\s*Page\s+\d+\s*-->', clean_text))
+        if len(page_markers) >= 2:
+            mid_marker = page_markers[len(page_markers) // 2]
+            start_pos = max(0, mid_marker.start() - 500)
+            end_pos = min(len(clean_text), mid_marker.end() + 600)
+            raw_w2 = clean_text[start_pos:end_pos].strip()
+            w2 = raw_w2
+
+        if w2:
+            sample_excerpt = f"--- [EXCERPT WINDOW 1: CHAPTER BODY OPENING] ---\n{w1}\n\n--- [EXCERPT WINDOW 2: PAGE TRANSITION CONTINUITY] ---\n{w2}"
         else:
-            sample_excerpt = raw_excerpt
+            sample_excerpt = w1
 
         system_prompt, prompt = PromptRegistry.get_semantic_auditor(chapter_title, sample_excerpt)
 
@@ -131,15 +161,25 @@ class OllamaVerifier:
             with urllib.request.urlopen(req, timeout=OLLAMA_GENERATE_TIMEOUT) as resp:
                 result = json.loads(resp.read().decode("utf-8"))
                 response_text = result.get("response", "").strip()
+                upper_resp = response_text.upper()
+
+                # Robust verdict parsing: prioritize explicit Final Verdict declaration
+                passed = False
+                m_verdict = re.search(r'(?:FINAL\s+VERDICT|VERDICT)\s*:\s*(\[[^\]]+\]|[A-Z]+)', upper_resp)
+                if m_verdict:
+                    verdict_val = m_verdict.group(1)
+                    if "PASS" in verdict_val and "REVISE" not in verdict_val and "FAIL" not in verdict_val:
+                        passed = True
+                else:
+                    has_fail = "[FAIL]" in upper_resp or "[REVISE]" in upper_resp or "NEEDS ATTENTION" in upper_resp
+                    has_pass = "[PASS]" in upper_resp or "EXCELLENT" in upper_resp or "GOOD" in upper_resp
+                    passed = has_pass and not has_fail
+
                 return {
                     "available": True,
                     "model": self.semantic_model,
                     "feedback": response_text,
-                    "passed": (
-                        "[PASS]" in response_text.upper()
-                        or "EXCELLENT" in response_text.upper()
-                        or "GOOD" in response_text.upper()
-                    ),
+                    "passed": passed,
                 }
         except Exception as e:
             return {

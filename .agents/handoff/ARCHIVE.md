@@ -305,3 +305,15 @@
 ### [2026-10-22 08:48 UTC] 認領任務 `TASK-023` (整理 DATA_DIR 之 input 與 output 目錄結構) (by `antigravity`)
 - **相關範圍**: `-`
 - **接棒自**: `antigravity`
+
+### [2026-10-22 08:53 UTC] 完成任務 `TASK-023` — 整理 DATA_DIR 之 input 與 output 目錄結構 (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: 完成 DATA_DIR 之 input 與 output 目錄結構重組（建立 books/literature 之 digital-pdf 與 scanned-pdf 子目錄，全面以連字號 - 重新命名 output 資料夾與文件）
+
+### [2026-10-22 08:54 UTC] 建立任務 `TASK-024`: 更新專案所有 Markdown 文件以反映最新目錄結構與架構規範 (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
+
+### [2026-10-22 08:54 UTC] 認領任務 `TASK-024` (更新專案所有 Markdown 文件以反映最新目錄結構與架構規範) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`

@@ -58,17 +58,18 @@ class BookPostProcessor(PostProcessorStrategy):
                 md = f"# {chapter_name}\n\n{md}"
 
         # 2. Table Dual Presentation (Insert image reference alongside text table)
-        for elem in cropped_elements:
-            if elem.element_type == "table":
-                # Look for table header e.g. "Table 1" or "Table 1.1" or "### Table 1"
-                t_id_clean = elem.identifier.replace("table_", "").replace("_", ".")
-                pattern = rf'(?m)(^\s*(?:###\s*Table\s+{re.escape(t_id_clean)}\b|\*\*Table\s+{re.escape(t_id_clean)}\*\*|<table\b))'
-                match = re.search(pattern, md)
-                img_tag = f'\n\n<p align="center"><img src="images/{elem.filename}" alt="{elem.caption or elem.identifier}" style="max-width: 95%; border: 1px solid #e1e4e8; border-radius: 4px;" /></p>\n'
-                if match and elem.filename not in md:
-                    # Place image right above the matched table
-                    idx = match.start()
-                    md = md[:idx] + img_tag + "\n" + md[idx:]
+        if getattr(options, "dual_table_presentation", False):
+            for elem in cropped_elements:
+                if elem.element_type == "table":
+                    # Look for table header e.g. "Table 1" or "Table 1.1" or "### Table 1"
+                    t_id_clean = elem.identifier.replace("table_", "").replace("_", ".")
+                    pattern = rf'(?m)(^\s*(?:###\s*Table\s+{re.escape(t_id_clean)}\b|\*\*Table\s+{re.escape(t_id_clean)}\*\*|<table\b))'
+                    match = re.search(pattern, md)
+                    img_tag = f'\n\n<p align="center"><img src="images/{elem.filename}" alt="{elem.caption or elem.identifier}" style="max-width: 95%; border: 1px solid #e1e4e8; border-radius: 4px;" /></p>\n'
+                    if match and elem.filename not in md:
+                        # Place image right above the matched table
+                        idx = match.start()
+                        md = md[:idx] + img_tag + "\n" + md[idx:]
 
         # 3. Insert clickable Table of Contents (TOC)
         if options.generate_toc and not is_front_matter and options.toc_mode != "none":

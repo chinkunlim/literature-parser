@@ -713,15 +713,31 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             ordered_lines = sorted([(l[0], l[1], l[3], l[4]) for l in lines], key=lambda x: (x[0], x[1]))
 
         # Detect base body size and column-relative base margins
-        body_sizes = [l[2] for l in ordered_lines if 11 <= l[2] <= 16]
-        body_size = max(set(body_sizes), key=body_sizes.count) if body_sizes else 14.0
+        body_sizes = [l[2] for l in ordered_lines if 8.5 <= l[2] <= 13.5 and len(l[3]) > 20]
+        if not body_sizes:
+            body_sizes = [l[2] for l in ordered_lines if 8.0 <= l[2] <= 16.0]
+        body_size = max(set(body_sizes), key=body_sizes.count) if body_sizes else 9.5
 
-        left_col_lefts = [l[1] for l in ordered_lines if l[1] < gutter_left and abs(l[2] - body_size) < 1.0 and len(l[3]) > 30]
-        col1_base_left = min(left_col_lefts) if left_col_lefts else 0.0
+        left_col_candidates = [
+            round(l[1], 1) for l in ordered_lines
+            if l[1] < gutter_left and abs(l[2] - body_size) < 1.0 and len(l[3]) > 25
+        ]
+        if left_col_candidates:
+            from collections import Counter
+            col1_base_left = Counter(left_col_candidates).most_common(1)[0][0]
+        else:
+            col1_base_left = min([l[1] for l in ordered_lines if l[1] < gutter_left]) if any(l[1] < gutter_left for l in ordered_lines) else 0.0
         base_left = col1_base_left
 
-        right_col_lefts = [l[1] for l in ordered_lines if l[1] >= gutter_left and abs(l[2] - body_size) < 1.0 and len(l[3]) > 30]
-        col2_base_left = min(right_col_lefts) if right_col_lefts else 0.0
+        right_col_candidates = [
+            round(l[1], 1) for l in ordered_lines
+            if l[1] >= gutter_left and abs(l[2] - body_size) < 1.0 and len(l[3]) > 25
+        ]
+        if right_col_candidates:
+            from collections import Counter
+            col2_base_left = Counter(right_col_candidates).most_common(1)[0][0]
+        else:
+            col2_base_left = min([l[1] for l in ordered_lines if l[1] >= gutter_left]) if any(l[1] >= gutter_left for l in ordered_lines) else 0.0
 
         blocks = []
         curr_p = []
@@ -734,7 +750,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 p_text = clean_punctuation_spacing(' '.join(curr_p))
                 # True blockquote has ALL lines indented significantly (>= 25pt) from their respective column base (textbooks only)
                 is_bq = False
-                if not is_journal and curr_p_lefts and len(p_text) > 40:
+                if not is_journal and len(curr_p_lefts) >= 2 and len(p_text) > 40:
                     indents = []
                     for l_val in curr_p_lefts:
                         base = col2_base_left if (col2_base_left and l_val >= gutter_left - 20) else col1_base_left
@@ -775,6 +791,13 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             is_h2 = (size >= 28.0 and len(clean_t) < 100) or is_journal_head
             # Check if subsection heading (20 <= size < 28) or Chapter N in Appendix or journal subhead
             is_h3 = ((20.0 <= size < 28.0 and len(clean_t) < 80) or bool(re.match(r'^(?:\*\*)?Chapter\s+\d+(?:\*\*)?$', text.strip(), re.IGNORECASE))) or is_journal_subhead
+            # Check if sub-subsection heading (14.0 <= size < 20.0) - only for textbooks
+            is_h4 = not is_journal and (
+                14.0 <= size < 18.0
+                and len(clean_t) < 70
+                and not re.search(r'[.?!:]$', clean_t)
+                and not bool(re.match(r'^(?:Figure|Fig\.|Table|Exhibit|Photo)\b', clean_t, re.IGNORECASE))
+            )
             # Check if objective heading (1.1 Compare ...) - only for textbooks
             is_obj = not is_journal and bool(re.match(r'^(?:\*\*)?\d+\.\d+(?:\*\*)?(?:\s+|$)', text.strip()))
 
@@ -836,6 +859,17 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                     blocks.append(f"{bullet_prefix}{lo_emoji} {num_rendered}{colon} {o_title}".strip())
                 else:
                     blocks.append(f"{bullet_prefix}{_STYLE.get('lo_emoji', '🎯')} {clean_t}".strip())
+                last_top = top
+                continue
+            elif is_h4:
+                flush_p()
+                if blocks and blocks[-1].startswith('#### ') and (top - last_top < 40):
+                    if len(blocks[-1]) + len(clean_t) < 70 and not re.search(r'[.?!:]$', blocks[-1]):
+                        blocks[-1] = blocks[-1] + " " + clean_t
+                    else:
+                        blocks.append(f"#### {clean_t}")
+                else:
+                    blocks.append(f"#### {clean_t}")
                 last_top = top
                 continue
 

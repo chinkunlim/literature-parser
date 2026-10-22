@@ -233,3 +233,11 @@
 ### [2026-10-22 03:58 UTC] 完成任務 `TASK-018` — 更新並同步全專案 Markdown 文件 (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
 - **完成摘要**: 更新並同步全專案 Markdown 文件（README, ARCHITECTURE, SPECS, ADR, PROJECT_RULES, CHANGELOG）
+
+### [2026-10-22 03:59 UTC] Session Closeout (結束對話收尾) (by `antigravity`)
+- **檢查結果**: 測試與 Code Review Guard 通過
+- **目標**: 實作獨立 MarkdownConversionService、CSS 雙出、圖表獨立裁切（含 Caption/Notes/等寬 16pt Margin）、三層漸進檢驗體系（排版/詞語/語意）與全專案 Markdown 同步
+- **錯誤與根因**: 統計檢定數字間空格導致正規化漏配（F ( 2 , 4 0 )）➔ 允許 \d\s+ 數字內空白並於替換時去空格；單一引註遺失門檻過高 ➔ 移除 len > 2 限制只要有未比對引註即發出警告
+- **下一步**: 核心轉換與三層檢驗已全部就緒（270 測試通過）；下一步可接續實測大型教科書批次轉檔，或對接本地 AI / Web 視覺化看板
+- **交接備註**: 獨立轉換引擎、CSS 雙出、圖表裁切與三層檢驗體系已完整落地，全專案文檔與規格已 100% 同步
+- **本機對話紀錄**: `.agents/conversations/2026-10-22-1159-antigravity-summary.md`（只在這台電腦）

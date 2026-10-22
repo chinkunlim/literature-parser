@@ -8,7 +8,7 @@
 - **最後更新時間**: `2026-10-22 08:58 UTC`
 - **最近操作 Agent**: `antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `414f8fb refactor(data): reorganize DATA_DIR input and output directory structures with convention routing and hyphen hygiene [agent:antigravity]`
+- **最新 Git Commit**: `3877b54 docs: synchronize all project markdown documentation for input/output convention routing, ADR-008, and ISSUE-005 [agent:antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
@@ -17,6 +17,14 @@
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-10-22 08:58 UTC] Session Closeout (結束對話收尾) (by `antigravity`)
+- **檢查結果**: 測試與 Code Review Guard 通過
+- **目標**: 整理 DATA_DIR 之 input 與 output 目錄結構，修正全域狀態路徑誤判 bug，並更新全專案 Markdown 文件
+- **錯誤與根因**: GlobalStateManager 在 sync_from_output_dir 時使用 'literature' in str(status_json) 比對，因專案路徑含 literature-parser 導致所有書籍被誤歸類為論文 -> 根本原因為字串包含判斷過寬 -> 改為 status_json.rela
+- **下一步**: 接續實測大型數位教科書或期刊論文批次轉檔，檢驗新版輸入路由與連字號目錄命名
+- **交接備註**: DATA_DIR 目錄重整完成，297 項測試全數通過，ADR-008 與 ISSUE-005 已收錄
+- **本機對話紀錄**: `.agents/conversations/2026-10-22-1658-antigravity-summary.md`（只在這台電腦）
 
 ### [2026-10-22 08:58 UTC] 完成任務 `TASK-024` — 更新專案所有 Markdown 文件以反映最新目錄結構與架構規範 (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
@@ -97,11 +105,3 @@
 ### [2026-10-22 07:35 UTC] 建立任務 `TASK-019`: Optimize literature and textbook pipeline for speed and quality (by `antigravity`)
 - **狀態**: `in_progress`
 - **相關範圍**: `-`
-
-### [2026-10-22 03:59 UTC] Session Closeout (結束對話收尾) (by `antigravity`)
-- **檢查結果**: 測試與 Code Review Guard 通過
-- **目標**: 實作獨立 MarkdownConversionService、CSS 雙出、圖表獨立裁切（含 Caption/Notes/等寬 16pt Margin）、三層漸進檢驗體系（排版/詞語/語意）與全專案 Markdown 同步
-- **錯誤與根因**: 統計檢定數字間空格導致正規化漏配（F ( 2 , 4 0 )）➔ 允許 \d\s+ 數字內空白並於替換時去空格；單一引註遺失門檻過高 ➔ 移除 len > 2 限制只要有未比對引註即發出警告
-- **下一步**: 核心轉換與三層檢驗已全部就緒（270 測試通過）；下一步可接續實測大型教科書批次轉檔，或對接本地 AI / Web 視覺化看板
-- **交接備註**: 獨立轉換引擎、CSS 雙出、圖表裁切與三層檢驗體系已完整落地，全專案文檔與規格已 100% 同步
-- **本機對話紀錄**: `.agents/conversations/2026-10-22-1159-antigravity-summary.md`（只在這台電腦）

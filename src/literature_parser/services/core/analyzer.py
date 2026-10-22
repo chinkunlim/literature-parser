@@ -64,18 +64,24 @@ class PDFAnalyzer:
     def get_outline_xml(pdf_path: str):
         # 1. Native PyMuPDF fast path
         try:
-            import html
             import pymupdf  # type: ignore
             doc = pymupdf.open(pdf_path)
             toc = doc.get_toc()
             doc.close()
             if toc:
-                xml_parts = ['<outline>']
+                root = ET.Element('outline')
+                stack = [(1, root)]
                 for lvl, title, page in toc:
-                    esc_title = html.escape(str(title))
-                    xml_parts.append(f'<item page="{page}">{esc_title}</item>')
-                xml_parts.append('</outline>')
-                return ET.fromstring(''.join(xml_parts))
+                    while len(stack) > lvl:
+                        stack.pop()
+                    while len(stack) < lvl:
+                        parent_outline = stack[-1][1]
+                        sub_outline = ET.SubElement(parent_outline, 'outline')
+                        stack.append((len(stack) + 1, sub_outline))
+                    current_outline = stack[-1][1]
+                    item = ET.SubElement(current_outline, 'item', page=str(page))
+                    item.text = str(title)
+                return root
         except Exception as e:
             logger.debug("PyMuPDF get_outline_xml failed for %s: %s, falling back to pdftohtml", pdf_path, e)
 

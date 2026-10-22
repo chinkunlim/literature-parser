@@ -5,10 +5,10 @@
 <!-- LIVE_STATE_START -->
 ## 📊 即時狀態看板 (Live Snapshot)
 
-- **最後更新時間**: `2026-10-22 10:25 UTC`
+- **最後更新時間**: `2026-10-22 10:51 UTC`
 - **最近操作 Agent**: `antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `6fd6b3e feat(converter): optimize image extraction fallback for vector chapters and verify Ch01 Markdown export (TASK-027) [agent:antigravity]`
+- **最新 Git Commit**: `6ead00e fix(verification): refine layout auditor TOC scope and adapt cli_audit for book chapters (TASK-028) [agent:antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
@@ -17,6 +17,18 @@
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-10-22 10:51 UTC] 完成任務 `TASK-029` — E2E Markdown conversion workflow test for Research Methods 13th ed Ch01 and Ch15 (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: Executed end-to-end workflow on Research Methods 13th ed for Ch01 and Ch15 in clean test directory. Fixed outline tree nesting, target chapter multi-select, and secret check false positives. Both chapters verified PASS with >94% scores, Anki decks, and Obsidian navigation.
+
+### [2026-10-22 10:45 UTC] 認領任務 `TASK-029` (E2E Markdown conversion workflow test for Research Methods 13th ed Ch01 and Ch15) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`
+
+### [2026-10-22 10:45 UTC] 建立任務 `TASK-029`: E2E Markdown conversion workflow test for Research Methods 13th ed Ch01 and Ch15 (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
 
 ### [2026-10-22 10:25 UTC] 完成任務 `TASK-028` — Test output verification and auditing features on Research Methods Ch01 (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
@@ -89,19 +101,3 @@
 ### [2026-10-22 08:53 UTC] 完成任務 `TASK-023` — 整理 DATA_DIR 之 input 與 output 目錄結構 (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
 - **完成摘要**: 完成 DATA_DIR 之 input 與 output 目錄結構重組（建立 books/literature 之 digital-pdf 與 scanned-pdf 子目錄，全面以連字號 - 重新命名 output 資料夾與文件）
-
-### [2026-10-22 08:48 UTC] 認領任務 `TASK-023` (整理 DATA_DIR 之 input 與 output 目錄結構) (by `antigravity`)
-- **相關範圍**: `-`
-- **接棒自**: `antigravity`
-
-### [2026-10-22 08:48 UTC] 建立任務 `TASK-023`: 整理 DATA_DIR 之 input 與 output 目錄結構 (by `antigravity`)
-- **狀態**: `in_progress`
-- **相關範圍**: `-`
-
-### [2026-10-22 08:40 UTC] Session Closeout (結束對話收尾) (by `antigravity`)
-- **檢查結果**: 測試與 Code Review Guard 通過
-- **目標**: 全專案流程優化：原生 PyMuPDF 解析、流水線並行、Marker 式版面輪廓與段落首提錨定、8大分區集中外部化設定檔 (config/theme.json)、即時重刷 CLI 與全專案 Markdown 同步更新
-- **錯誤與根因**: 表格提取 Regex 容易誤匹配 table class 中的 class 羅馬數字 -> 改用反向否定預查；未引用圖表不應在段落掃描前被提前 flush -> 建立 cited_fig_ids 全文預檢集合確保標題與正文順序正確
-- **下一步**: 接續實測大型數位教科書或期刊論文批次轉檔，檢驗新版樣式與即時重刷工具，或對接本地 Web 視覺化看板
-- **交接備註**: 全套 297 項測試 100% 通過，排版規則已集中至 config/theme.json，支援一鍵重刷
-- **本機對話紀錄**: `.agents/conversations/2026-10-22-1640-antigravity-summary.md`（只在這台電腦）

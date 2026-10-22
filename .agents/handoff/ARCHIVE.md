@@ -289,3 +289,19 @@
 ### [2026-10-22 08:39 UTC] 完成任務 `TASK-022` — Update all project documentation and architecture records (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
 - **完成摘要**: Updated and synchronized all project documentation including README.md, ARCHITECTURE.md, DECISIONS.md, ADR-007, and CHANGELOG.md.
+
+### [2026-10-22 08:40 UTC] Session Closeout (結束對話收尾) (by `antigravity`)
+- **檢查結果**: 測試與 Code Review Guard 通過
+- **目標**: 全專案流程優化：原生 PyMuPDF 解析、流水線並行、Marker 式版面輪廓與段落首提錨定、8大分區集中外部化設定檔 (config/theme.json)、即時重刷 CLI 與全專案 Markdown 同步更新
+- **錯誤與根因**: 表格提取 Regex 容易誤匹配 table class 中的 class 羅馬數字 -> 改用反向否定預查；未引用圖表不應在段落掃描前被提前 flush -> 建立 cited_fig_ids 全文預檢集合確保標題與正文順序正確
+- **下一步**: 接續實測大型數位教科書或期刊論文批次轉檔，檢驗新版樣式與即時重刷工具，或對接本地 Web 視覺化看板
+- **交接備註**: 全套 297 項測試 100% 通過，排版規則已集中至 config/theme.json，支援一鍵重刷
+- **本機對話紀錄**: `.agents/conversations/2026-10-22-1640-antigravity-summary.md`（只在這台電腦）
+
+### [2026-10-22 08:48 UTC] 建立任務 `TASK-023`: 整理 DATA_DIR 之 input 與 output 目錄結構 (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
+
+### [2026-10-22 08:48 UTC] 認領任務 `TASK-023` (整理 DATA_DIR 之 input 與 output 目錄結構) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`

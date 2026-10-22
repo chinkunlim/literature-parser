@@ -29,6 +29,7 @@ All notable changes to **literature-parser** are documented here
 - feat: externalize typography, palette, layout rules, and quality thresholds into unified config/theme.json (TASK-021) (by `@antigravity`)
 - feat(analyzer): add PyMuPDF memory fallback for outline-free scanned books and generalize test runner (TASK-026) (by `@antigravity`)
 - feat(converter): optimize image extraction fallback for vector chapters and verify Ch01 Markdown export (TASK-027) (by `@antigravity`)
+- feat(orchestrator): support comma-separated chapter filtering and fix outline hierarchy tree (TASK-029) (by `@antigravity`)
 
 ### Changed
 - docs(migration): mark all migration acceptance criteria as completed (by `@antigravity`)

@@ -551,7 +551,6 @@ class BookProcessorOrchestrator:
             res = pipeline.process(pdf_path, is_scanned=scanned_flag)
             if export_epub:
                 from literature_parser.services.exporter.epub_exporter import EpubExporter
-                from literature_parser.services.utils.text_utils import sanitize_filename
                 doc_name = sanitize_filename(Path(pdf_path).stem)
                 try:
                     EpubExporter.export_literature(Path(self.output_dir) / doc_name)
@@ -577,10 +576,10 @@ class BookProcessorOrchestrator:
         self.ensure_book_profile(Path(book_out), sections, chapters_root, pdf_path)
 
         if target_chapter:
-            clean_q = target_chapter.strip().lower()
-            sections = [s for s in sections if clean_q in s['name'].lower()]
+            queries = [q.strip().lower() for q in str(target_chapter).split(",") if q.strip()]
+            sections = [s for s in sections if any(q in s['name'].lower() for q in queries)]
             if not sections:
-                print(f"[!] Chapter '{target_chapter}' not found.")
+                print(f"[!] Chapter(s) '{target_chapter}' not found.")
                 return
 
         print(f"\n{'='*70}\n[PROCESSING BOOK] {book_name} ({len(sections)} sections)\n{'='*70}")

@@ -78,6 +78,7 @@ class ImageManager:
         pdf_path: str,
         is_scanned: bool = False,
         target_pages: set = None,
+        is_cover: bool = False,
     ) -> list:
         """
         Extracts embedded images from PDF using native PyMuPDF with pdfimages fallback.
@@ -85,7 +86,7 @@ class ImageManager:
         - Converts .jp2/.tiff to high-res JPEG using macOS sips when using CLI.
         - Discards .jb2e font masks.
         - If is_scanned is True, discards full-page background paper sheet scans.
-        - Cover art (page 1, sub-index 0) is always kept even in scanned mode.
+        - Cover art (page 1, sub-index 0) is only preserved if is_cover is True.
         """
         # 1. High-speed native PyMuPDF extraction
         try:
@@ -109,11 +110,11 @@ class ImageManager:
                             continue
                         if img_ext in ("jb2e", "jbig2"):
                             continue
-                        if p_num > 1:
-                            w = extracted.get("width", 0)
-                            h = extracted.get("height", 0)
-                            if (is_scanned and w >= FULL_PAGE_MIN_PX and h >= FULL_PAGE_MIN_PX) or ((w >= 1100 and h >= 1400) or (w >= 2000 and h >= 3000)):
-                                continue
+                        w = extracted.get("width", 0)
+                        h = extracted.get("height", 0)
+                        is_full_page = (is_scanned and w >= FULL_PAGE_MIN_PX and h >= FULL_PAGE_MIN_PX) or ((w >= 1100 and h >= 1400) or (w >= 2000 and h >= 3000))
+                        if is_full_page and not (is_cover and p_num == 1 and s_idx == 0):
+                            continue
                         native_images.append({
                             'page': p_num,
                             'sub_idx': s_idx,
@@ -201,9 +202,9 @@ class ImageManager:
                     continue
 
                 # 5. Full-page background scan filter for scanned books.
-                #    Cover art (page_num==1, sub_idx==0) is always preserved.
-                is_cover = page_num == 1 and sub_idx == 0
-                if is_scanned and not is_cover and cls._is_full_page_scan(src_file, is_scanned):
+                #    Cover art (page_num==1, sub_idx==0) is preserved only if is_cover is True.
+                is_cover_art = is_cover and page_num == 1 and sub_idx == 0
+                if is_scanned and not is_cover_art and cls._is_full_page_scan(src_file, is_scanned):
                     logger.debug("Discarding full-page scan: page %d sub %d", page_num, sub_idx)
                     continue
 

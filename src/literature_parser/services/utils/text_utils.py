@@ -355,7 +355,7 @@ def stitch_cross_page_continuity(text: str) -> str:
         return f"{p1} {p2}\n\n{page_tag}\n\n{intervening}"
 
     text = re.sub(
-        r'(?m)^(?P<p1>(?![#\-*>`|!])[^\n]+[^.\?!:;\n#`>|\*\-|])\n{2,}'
+        r'(?m)^(?P<p1>(?!(?:[#>`|!]|[-*+][ \t]+))[^\n]+[^.\?!:;\n#`>|\*\-|])\n{2,}'
         r'(?P<intervening>(?:(?:\*\*|#|>|\[\^|[-*•]|<table|\|)[^\n]*\n|[ \t]*\n)+)'
         r'\s*(?P<page><!--\s*Page\s+\d+\s*-->)\s*\n+(?P<p2>[a-z](?:[^\n]|\n(?!\n))*)',
         _join_sentence_with_intervening,
@@ -370,18 +370,22 @@ def stitch_cross_page_continuity(text: str) -> str:
         following_char = m.group(3)
         # Avoid joining if preceding line was a heading, list item, code fence, or table row
         last_line = preceding_text.splitlines()[-1].strip() if preceding_text else ""
-        if last_line.startswith(('#', '-', '*', '+', '`', '>', '|', '!')) or last_line.endswith('|'):
+        if (
+            last_line.startswith(('#', '`', '>', '|', '!'))
+            or re.match(r'^[-*+][ \t]+', last_line)
+            or last_line.endswith('|')
+        ):
             return m.group(0)  # leave intact
         return f"{preceding_text} <!-- {page_tag[4:-3].strip()} -->\n{following_char}"
 
     text = re.sub(
-        r'(?m)^((?![#\-*>`|!])[^\n]+[^.\?!:;\n#`>|\*\-|])\n{2,}\s*(<!--\s*Page\s+\d+\s*-->)\s*\n+([a-z])',
+        r'(?m)^((?!(?:[#>`|!]|[-*+][ \t]+))[^\n]+[^.\?!:;\n#`>|\*\-|])\n{2,}\s*(<!--\s*Page\s+\d+\s*-->)\s*\n+([a-z])',
         _join_direct_sentence,
         text,
     )
 
     # 4. Cleanup orphaned dual-newlines around remaining mid-paragraph page tags (excluding headings)
-    text = re.sub(r'(?m)^((?![#\-*>`|!])[^\n]*[a-zA-Z,])\s*\n{2,}(<!--\s*Page\s+\d+\s*-->)\s*\n{2,}([a-z])', r'\1 \2 \3', text)
+    text = re.sub(r'(?m)^((?!(?:[#>`|!]|[-*+][ \t]+))[^\n]*[a-zA-Z,])\s*\n{2,}(<!--\s*Page\s+\d+\s*-->)\s*\n{2,}([a-z])', r'\1 \2 \3', text)
 
     return text
 

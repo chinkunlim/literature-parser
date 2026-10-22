@@ -269,33 +269,101 @@ class ScannedPDFParser:
             Structured Markdown string with LaTeX math formulas for the page.
         """
         os.makedirs(work_dir, exist_ok=True)
-        page_prefix = os.path.join(work_dir, f"page_{page_num:03d}")
-        logger.debug("Rendering scanned PDF page %d with pdftoppm", page_num)
-        subprocess.run(
-            ["pdftoppm", "-png", "-r", str(DEFAULT_DPI), "-f", str(page_num), "-l", str(page_num), pdf_path, page_prefix],
-            check=True,
-            stderr=subprocess.DEVNULL,
-            timeout=90,
-        )
+        png_path = os.path.join(work_dir, f"page_{page_num:03d}.png")
+        logger.debug("Rendering scanned PDF page %d via native PyMuPDF", page_num)
+        rendered = False
+        try:
+            import pymupdf  # type: ignore
+            doc = pymupdf.open(pdf_path)
+            p_idx = max(0, min(page_num - 1, len(doc) - 1))
+            page = doc[p_idx]
+            pix = page.get_pixmap(dpi=DEFAULT_DPI)
+            pix.save(png_path)
+            doc.close()
+            rendered = True
+        except Exception as py_err:
+            logger.debug("PyMuPDF page rendering failed: %s; attempting pdftoppm fallback", py_err)
 
-        png_candidates = [
-            f for f in os.listdir(work_dir) if f.startswith(f"page_{page_num:03d}") and f.endswith(".png")
-        ]
-        if not png_candidates:
+        if not rendered:
+            page_prefix = os.path.join(work_dir, f"page_{page_num:03d}")
+            try:
+                subprocess.run(
+                    ["pdftoppm", "-png", "-r", str(DEFAULT_DPI), "-f", str(page_num), "-l", str(page_num), pdf_path, page_prefix],
+                    check=True,
+                    stderr=subprocess.DEVNULL,
+                    timeout=90,
+                )
+                png_candidates = [
+                    f for f in os.listdir(work_dir) if f.startswith(f"page_{page_num:03d}") and f.endswith(".png")
+                ]
+                if png_candidates:
+                    png_path = os.path.join(work_dir, png_candidates[0])
+                    rendered = True
+            except Exception as ppm_err:
+                logger.error("Failed to render page %d with both PyMuPDF and pdftoppm: %s", page_num, ppm_err)
+                return ""
+
+        if not os.path.exists(png_path):
             return ""
-        png_path = os.path.join(work_dir, png_candidates[0])
         pw, ph = cls.get_image_size(png_path)
 
-        # Execute Tesseract TSV
-        tess_bin = shutil.which("tesseract") or "/opt/homebrew/bin/tesseract" or "tesseract"
-        tsv_proc = subprocess.run(
-            [tess_bin, png_path, "stdout", "--psm", "1", "tsv"],
-            capture_output=True,
-            text=True,
-            check=True,
-            timeout=90,
-        )
-        words = cls._extract_ocr_words(tsv_proc.stdout)
+        words: list[dict[str, Any]] = []
+        # 1. Native PyMuPDF text layer extraction (faster and zero OCR dependency if text is present)
+        try:
+            import pymupdf  # type: ignore
+            doc = pymupdf.open(pdf_path)
+            p_idx = max(0, min(page_num - 1, len(doc) - 1))
+            page = doc[p_idx]
+            raw_words = page.get_text("words")
+            if raw_words and len(raw_words) >= 3:
+                scale_x = pw / page.rect.width if page.rect.width > 0 else 1.0
+                scale_y = ph / page.rect.height if page.rect.height > 0 else 1.0
+                for w_item in raw_words:
+                    x0, y0, x1, y1, txt = w_item[0], w_item[1], w_item[2], w_item[3], w_item[4]
+                    b_no = w_item[5] if len(w_item) > 5 else 0
+                    l_no = w_item[6] if len(w_item) > 6 else 0
+                    left = int(x0 * scale_x)
+                    top = int(y0 * scale_y)
+                    width = int((x1 - x0) * scale_x)
+                    height = int((y1 - y0) * scale_y)
+                    words.append({
+                        "text": txt,
+                        "conf": 99.0,
+                        "left": left,
+                        "top": top,
+                        "width": width,
+                        "height": height,
+                        "right": left + width,
+                        "bottom": top + height,
+                        "line_num": l_no,
+                        "par_num": 0,
+                        "block_num": b_no,
+                    })
+            doc.close()
+        except Exception as py_err:
+            logger.debug("PyMuPDF text extraction failed on page %d: %s", page_num, py_err)
+
+        # 2. Tesseract OCR fallback for pure image scans with no text layer
+        if not words:
+            tess_bin = shutil.which("tesseract")
+            if not tess_bin and os.path.exists("/opt/homebrew/bin/tesseract"):
+                tess_bin = "/opt/homebrew/bin/tesseract"
+
+            if tess_bin:
+                try:
+                    tsv_proc = subprocess.run(
+                        [tess_bin, png_path, "stdout", "--psm", "1", "tsv"],
+                        capture_output=True,
+                        text=True,
+                        check=True,
+                        timeout=90,
+                    )
+                    words = cls._extract_ocr_words(tsv_proc.stdout)
+                except Exception as t_err:
+                    logger.warning("Tesseract OCR execution failed on page %d: %s", page_num, t_err)
+            else:
+                logger.debug("Tesseract OCR binary not found on host; skipping OCR on page %d", page_num)
+
         filtered_lines = cls._filter_ocr_lines(words, ph)
         if not filtered_lines:
             return ""

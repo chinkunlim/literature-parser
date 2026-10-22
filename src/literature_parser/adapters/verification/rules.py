@@ -104,10 +104,10 @@ _ABRUPT_CUT_PATTERN = re.compile(
 
 
 # A "page boundary sentence break": text ending in the middle of a sentence
-# right before a <!-- Page N --> marker.
+# right before a <!-- Page N --> marker, continuing with a genuine lowercase word.
 _PAGE_BREAK_INCOMPLETE = re.compile(
-    r'([a-z,;]{3,})\s*\n\s*<!--\s*Page\s+\d+\s*-->\s*\n\s*([a-z])',
-    re.MULTILINE | re.IGNORECASE
+    r'(?<![.?!:;])\b([a-zA-Z]{3,})\s*\n+\s*<!--\s*Page\s+\d+\s*-->\s*\n+\s*([a-z](?![.\)]\s))',
+    re.MULTILINE
 )
 
 # Lines that are suspiciously short and don't end with punctuation
@@ -140,31 +140,37 @@ def check_content_continuity(content: str) -> dict:
           'examples': list[str],   # up to 5 example snippets for debugging
         }
     """
+    # Strip non-prose blocks before evaluating Markdown text continuity
+    clean_content = re.sub(r'```.*?```', '', content, flags=re.DOTALL)
+    clean_content = re.sub(r'<style.*?>.*?</style>', '', clean_content, flags=re.DOTALL)
+    clean_content = re.sub(r'<div.*?>.*?</div>', '', clean_content, flags=re.DOTALL)
+    clean_content = re.sub(r'\$\$.*?\$\$', '', clean_content, flags=re.DOTALL)
+
     examples = []
     issues = 0
 
     # 1. Abrupt paragraph breaks where next para starts lowercase
-    abrupt_cuts = _ABRUPT_CUT_PATTERN.findall(content)
+    abrupt_cuts = _ABRUPT_CUT_PATTERN.findall(clean_content)
     if abrupt_cuts:
         issues += len(abrupt_cuts)
         # Find context around each match for reporting
-        for m in _ABRUPT_CUT_PATTERN.finditer(content):
-            snippet = content[max(0, m.start() - 60): m.end() + 60].replace('\n', '↵')
+        for m in _ABRUPT_CUT_PATTERN.finditer(clean_content):
+            snippet = clean_content[max(0, m.start() - 60): m.end() + 60].replace('\n', '↵')
             examples.append(f"[ABRUPT CUT] ...{snippet}...")
             if len(examples) >= 5:
                 break
 
     # 2. Page-break sentence splits: text→page marker→lowercase continuation
-    page_break_cuts = list(_PAGE_BREAK_INCOMPLETE.finditer(content))
+    page_break_cuts = list(_PAGE_BREAK_INCOMPLETE.finditer(clean_content))
     if page_break_cuts:
         issues += len(page_break_cuts)
         for m in page_break_cuts[:5]:
-            snippet = content[max(0, m.start() - 40): m.end() + 40].replace('\n', '↵')
+            snippet = clean_content[max(0, m.start() - 40): m.end() + 40].replace('\n', '↵')
             if len(examples) < 5:
                 examples.append(f"[PAGE BREAK CUT] ...{snippet}...")
 
     # 3. Orphaned short fragments (these are soft warnings, not hard failures)
-    orphan_hits = _ORPHAN_FRAGMENT.findall(content)
+    orphan_hits = _ORPHAN_FRAGMENT.findall(clean_content)
     orphan_count = len(orphan_hits)
     # Only count as issue if there are many (> 5 per chapter is suspicious)
     orphan_issue = max(0, orphan_count - 5)
@@ -205,6 +211,8 @@ def check_sentence_completeness(content: str) -> dict:
 
     # Strip markdown code fences and LaTeX blocks to avoid false positives
     cleaned = re.sub(r'```.*?```', '', content, flags=re.DOTALL)
+    cleaned = re.sub(r'<style.*?>.*?</style>', '', cleaned, flags=re.DOTALL)
+    cleaned = re.sub(r'<div.*?>.*?</div>', '', cleaned, flags=re.DOTALL)
     cleaned = re.sub(r'\$\$.*?\$\$', '', cleaned, flags=re.DOTALL)
     cleaned = re.sub(r'<!--.*?-->', '', cleaned, flags=re.DOTALL)
 
@@ -214,8 +222,11 @@ def check_sentence_completeness(content: str) -> dict:
     incomplete_openings = []
 
     for para in paragraphs:
-        # Skip headings, bullet items, image references
-        if para.startswith(('#', '-', '*', '!', '|')):
+        # Skip headings, bullet items, image references, HTML tags
+        if para.startswith(('#', '-', '*', '!', '|', '<')):
+            continue
+        # Skip lettered choices like 'a. ', 'b. ', '(a) ', '1. '
+        if re.match(r'^(?:\([a-zA-Z0-9]+\)|[a-zA-Z0-9][\.\)])\s+', para):
             continue
         if len(para) < 20:
             continue
@@ -248,11 +259,17 @@ def check_numeric_coordinate_noise(content: str) -> dict:
     """
     # Strip tables, code fences, and math blocks
     cleaned = re.sub(r'```.*?```', '', content, flags=re.DOTALL)
+    cleaned = re.sub(r'<style.*?>.*?</style>', '', cleaned, flags=re.DOTALL)
     cleaned = re.sub(r'\$\$.*?\$\$', '', cleaned, flags=re.DOTALL)
     cleaned = re.sub(r'<table.*?>.*?</table>', '', cleaned, flags=re.DOTALL)
     cleaned = re.sub(r'<div class="framed-card">.*?</div>', '', cleaned, flags=re.DOTALL)
     cleaned = re.sub(r'<div class="comparison-card">.*?</div>', '', cleaned, flags=re.DOTALL)
     cleaned = re.sub(r'<!--.*?-->', '', cleaned, flags=re.DOTALL)
+    # Strip Markdown pipe tables
+    cleaned = re.sub(r'(?m)^\|.*\|$', '', cleaned)
+    # Strip collapsed tables and statistical exhibits (e.g. Table 8.1, ANOVA, Regression)
+    cleaned = re.sub(r'(?m)^.*?\bTable\s+\d+(?:\.\d+)?\b.*$', '', cleaned)
+    cleaned = re.sub(r'(?m)^.*?\b(?:ANOVA|Regression|Effect Sizes?|Analysis of variance)\b.*$', '', cleaned, flags=re.IGNORECASE)
 
     noise_matches = []
 

@@ -163,35 +163,60 @@ class VectorFigureParser:
                     crop_w = int(350.0 * scale)
                     crop_h = int(220.0 * scale)
 
-            out_prefix = img_dir / f"figure_{fig_sanitized}"
-            cmd = [
-                'pdftoppm', '-png', '-r', '150',
-                '-f', str(page_num), '-l', str(page_num),
-                '-x', str(crop_x), '-y', str(crop_y),
-                '-W', str(crop_w), '-H', str(crop_h),
-                '-singlefile', pdf_path, str(out_prefix)
-            ]
+            img_fname = f"figure_{fig_sanitized}.png"
+            target_img_path = img_dir / img_fname
+            cropped = False
             try:
-                subprocess.run(cmd, capture_output=True, check=True, timeout=30)
-                img_fname = f"figure_{fig_sanitized}.png"
-                if (img_dir / img_fname).exists():
-                    extracted_images.append({
-                        'page': page_num,
-                        'filename': img_fname,
-                        'caption': full_caption,
-                        'top': f_top
-                    })
-                    consumed.update(cap_consumed)
-                    consumed.update(diag_elems)
-                    for t_box in page_elem.findall('text'):
-                        t_b_top = float(t_box.attrib.get('top', 0))
-                        t_b_left = float(t_box.attrib.get('left', 0))
-                        if (left_b - 10.0 <= t_b_left <= right_b + 10.0) and (top_b - 10.0 <= t_b_top <= bottom_b + 10.0):
-                            consumed.add(t_box)
-            except subprocess.TimeoutExpired:
-                logger.warning("pdftoppm timed out (30s) cropping figure on page %d", page_num)
+                import pymupdf  # type: ignore
+                doc = pymupdf.open(pdf_path)
+                p_idx = max(0, min(page_num - 1, len(doc) - 1))
+                page = doc[p_idx]
+                zoom = 150.0 / 72.0
+                mat = pymupdf.Matrix(zoom, zoom)
+                clip_rect = pymupdf.Rect(
+                    max(0.0, crop_x / zoom),
+                    max(0.0, crop_y / zoom),
+                    min(page.rect.width, (crop_x + crop_w) / zoom),
+                    min(page.rect.height, (crop_y + crop_h) / zoom),
+                )
+                if clip_rect.width > 1.0 and clip_rect.height > 1.0:
+                    pix = page.get_pixmap(matrix=mat, clip=clip_rect, alpha=False)
+                    pix.save(str(target_img_path))
+                    cropped = target_img_path.exists() and target_img_path.stat().st_size > 0
+                doc.close()
             except Exception as e:
-                logger.debug("Figure crop failed on page %d: %s", page_num, e)
+                logger.debug("PyMuPDF figure crop failed on page %d: %s", page_num, e)
+
+            if not cropped:
+                out_prefix = img_dir / f"figure_{fig_sanitized}"
+                cmd = [
+                    'pdftoppm', '-png', '-r', '150',
+                    '-f', str(page_num), '-l', str(page_num),
+                    '-x', str(crop_x), '-y', str(crop_y),
+                    '-W', str(crop_w), '-H', str(crop_h),
+                    '-singlefile', pdf_path, str(out_prefix)
+                ]
+                try:
+                    subprocess.run(cmd, capture_output=True, check=True, timeout=30)
+                except subprocess.TimeoutExpired:
+                    logger.warning("pdftoppm timed out (30s) cropping figure on page %d", page_num)
+                except Exception as e:
+                    logger.debug("Figure crop failed on page %d: %s", page_num, e)
+
+            if target_img_path.exists():
+                extracted_images.append({
+                    'page': page_num,
+                    'filename': img_fname,
+                    'caption': full_caption,
+                    'top': f_top
+                })
+                consumed.update(cap_consumed)
+                consumed.update(diag_elems)
+                for t_box in page_elem.findall('text'):
+                    t_b_top = float(t_box.attrib.get('top', 0))
+                    t_b_left = float(t_box.attrib.get('left', 0))
+                    if (left_b - 10.0 <= t_b_left <= right_b + 10.0) and (top_b - 10.0 <= t_b_top <= bottom_b + 10.0):
+                        consumed.add(t_box)
 
         # Uncaptioned vector diagrams (e.g. research notation diagrams like RA -> X -> O)
         if pdf_path:
@@ -248,28 +273,53 @@ class VectorFigureParser:
                         crop_h = int((y1_pt - y0_pt) * scale_150)
 
                         diag_fname = f"diagram_p{page_num:02d}_{len(extracted_images)+1:02d}"
-                        out_prefix = img_dir / diag_fname
-                        cmd = [
-                            'pdftoppm', '-png', '-r', '150',
-                            '-f', str(page_num), '-l', str(page_num),
-                            '-x', str(crop_x), '-y', str(crop_y),
-                            '-W', str(crop_w), '-H', str(crop_h),
-                            '-singlefile', pdf_path, str(out_prefix)
-                        ]
+                        full_img_name = f"{diag_fname}.png"
+                        target_diag_path = img_dir / full_img_name
+                        diag_cropped = False
                         try:
-                            subprocess.run(cmd, capture_output=True, check=True, timeout=30)
-                            full_img_name = f"{diag_fname}.png"
-                            if (img_dir / full_img_name).exists():
-                                extracted_images.append({
-                                    'page': page_num,
-                                    'filename': full_img_name,
-                                    'caption': 'Diagram',
-                                    'top': min_y
-                                })
-                                consumed.update(diag_cands)
-                        except subprocess.TimeoutExpired:
-                            logger.warning("pdftoppm timed out (30s) cropping diagram on page %d", page_num)
+                            import pymupdf  # type: ignore
+                            doc = pymupdf.open(pdf_path)
+                            p_idx = max(0, min(page_num - 1, len(doc) - 1))
+                            page = doc[p_idx]
+                            zoom = 150.0 / 72.0
+                            mat = pymupdf.Matrix(zoom, zoom)
+                            clip_rect = pymupdf.Rect(
+                                max(0.0, crop_x / zoom),
+                                max(0.0, crop_y / zoom),
+                                min(page.rect.width, (crop_x + crop_w) / zoom),
+                                min(page.rect.height, (crop_y + crop_h) / zoom),
+                            )
+                            if clip_rect.width > 1.0 and clip_rect.height > 1.0:
+                                pix = page.get_pixmap(matrix=mat, clip=clip_rect, alpha=False)
+                                pix.save(str(target_diag_path))
+                                diag_cropped = target_diag_path.exists() and target_diag_path.stat().st_size > 0
+                            doc.close()
                         except Exception as e:
-                            logger.debug("Diagram crop failed on page %d: %s", page_num, e)
+                            logger.debug("PyMuPDF diagram crop failed on page %d: %s", page_num, e)
+
+                        if not diag_cropped:
+                            out_prefix = img_dir / diag_fname
+                            cmd = [
+                                'pdftoppm', '-png', '-r', '150',
+                                '-f', str(page_num), '-l', str(page_num),
+                                '-x', str(crop_x), '-y', str(crop_y),
+                                '-W', str(crop_w), '-H', str(crop_h),
+                                '-singlefile', pdf_path, str(out_prefix)
+                            ]
+                            try:
+                                subprocess.run(cmd, capture_output=True, check=True, timeout=30)
+                            except subprocess.TimeoutExpired:
+                                logger.warning("pdftoppm timed out (30s) cropping diagram on page %d", page_num)
+                            except Exception as e:
+                                logger.debug("Diagram crop failed on page %d: %s", page_num, e)
+
+                        if target_diag_path.exists():
+                            extracted_images.append({
+                                'page': page_num,
+                                'filename': full_img_name,
+                                'caption': 'Diagram',
+                                'top': min_y
+                            })
+                            consumed.update(diag_cands)
 
         return extracted_images, consumed

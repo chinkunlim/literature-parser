@@ -381,3 +381,15 @@
 ### [2026-10-22 10:45 UTC] 建立任務 `TASK-029`: E2E Markdown conversion workflow test for Research Methods 13th ed Ch01 and Ch15 (by `antigravity`)
 - **狀態**: `in_progress`
 - **相關範圍**: `-`
+
+### [2026-10-22 10:45 UTC] 認領任務 `TASK-029` (E2E Markdown conversion workflow test for Research Methods 13th ed Ch01 and Ch15) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`
+
+### [2026-10-22 10:51 UTC] 完成任務 `TASK-029` — E2E Markdown conversion workflow test for Research Methods 13th ed Ch01 and Ch15 (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: Executed end-to-end workflow on Research Methods 13th ed for Ch01 and Ch15 in clean test directory. Fixed outline tree nesting, target chapter multi-select, and secret check false positives. Both chapters verified PASS with >94% scores, Anki decks, and Obsidian navigation.
+
+### [2026-10-22 12:43 UTC] 建立任務 `TASK-030`: Fix runaway blockquotes, H4 headings, table duplication, and Ollama sample blindspots (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`

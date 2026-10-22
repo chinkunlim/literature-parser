@@ -116,7 +116,8 @@ class MarkdownConversionService:
         saved_images: List[Dict[str, Any]] = []
         if opts.extract_images:
             try:
-                raw_images = ImageManager.extract_pdf_images(str(p_path), is_scanned=is_scanned)
+                is_cover_doc = bool(opts.is_front_matter and ("cover" in p_path.stem.lower() or "00-01" in p_path.stem.lower()))
+                raw_images = ImageManager.extract_pdf_images(str(p_path), is_scanned=is_scanned, is_cover=is_cover_doc)
                 if raw_images:
                     for seq, img in enumerate(raw_images, 1):
                         p_num = img.get('page', 1)

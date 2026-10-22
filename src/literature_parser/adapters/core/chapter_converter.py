@@ -123,8 +123,9 @@ def extract_and_save_chapter_images(
     Returns:
         List of extracted image metadata dictionaries with populated filenames.
     """
+    is_cover_doc = "cover" in ch_name.lower() or "00-01" in ch_name.lower()
     raw_images: list[dict[str, Any]] = ImageManager.extract_pdf_images(
-        str(ch_pdf), is_scanned=is_scanned
+        str(ch_pdf), is_scanned=is_scanned, is_cover=is_cover_doc
     )
     saved_images: list[dict[str, Any]] = []
     if raw_images:

@@ -45,6 +45,7 @@ All notable changes to **literature-parser** are documented here
 - fix(parser): eliminate runaway blockquotes, isolate H4 headings, suppress duplicate table images, and enhance Ollama multi-window verification (TASK-030) (by `@antigravity`)
 - fix(parser): resolve cross-column baseline fragment split, multiline LO continuations, duplicate chapter slug heading, and study questions callout list spacing (TASK-031) (by `@antigravity`)
 - fix(parser): resolve exhibit column splits, table 15.4 grid row capture, margin glossary baseline clustering, and currency escaping (TASK-032) (by `@antigravity`)
+- fix(engine): unify PDF engine to PyMuPDF, strip style in verifier, and repair cross-page bold stitching (TASK-036) (by `@antigravity`)
 
 ### Documentation
 - docs: update and synchronize all project markdown documentation (by `@antigravity`)

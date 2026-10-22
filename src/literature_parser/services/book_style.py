@@ -126,10 +126,10 @@ STYLE: dict = {
     # If True, automatically generates a clickable markdown Table of Contents
     # at the start of each chapter from its ## and ### headings.
     "generate_toc": True,
-    # "open" = <details open> (default)
-    # "close" = <details> (HTML5 valid closed, single parameter override per book/global)
+    # "open" = <details open>
+    # "close" = <details> (default hidden)
     # "none" = suppress TOC block completely
-    "toc_mode": "open",
+    "toc_mode": "close",
 
     # ── Table & Card Color Theme ───────────────────────────────────────────
     "primary_theme_color": "#842959",
@@ -154,6 +154,53 @@ def build_textbook_css(style: dict) -> str:
 
     lines = [
         "<style>",
+        "  /* Google Fonts Dual-Mode Stack & Color Variables */",
+        "  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');",
+        "",
+        "  :root {",
+        "    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang TC', 'Noto Sans TC', sans-serif;",
+        "    --font-serif: 'Merriweather', 'Source Serif Pro', 'Georgia', 'Noto Serif TC', serif;",
+        "    --font-mono: 'JetBrains Mono', 'Fira Code', 'Menlo', monospace;",
+        "    --color-text-main: #1f2937;",
+        "    --color-text-muted: #4b5563;",
+        "    --color-blue: #2563eb;",
+        "    --color-emerald: #059669;",
+        "    --color-amber: #d97706;",
+        "    --color-rose: #e11d48;",
+        "    --color-highlight: #fef08a;",
+        "  }",
+        "",
+        "  body { font-family: var(--font-sans); color: var(--color-text-main); }",
+        "  h1, h2, h3, h4, h5, h6 { font-family: var(--font-serif); }",
+        "  code, pre { font-family: var(--font-mono); }",
+        "",
+        "  /* Publishing Utility Color Classes */",
+        "  .text-blue { color: var(--color-blue); }",
+        "  .text-emerald { color: var(--color-emerald); }",
+        "  .text-amber { color: var(--color-amber); }",
+        "  .text-rose { color: var(--color-rose); }",
+        "  .text-muted { color: var(--color-text-muted); }",
+        "  mark.term { background: #fef3c7; color: #92400e; padding: 1px 4px; border-radius: 3px; font-weight: 600; }",
+        "  mark, .highlight { background: var(--color-highlight); padding: 1px 3px; }",
+        "",
+        "  /* Adaptive HTML Table Styling */",
+        "  .book-table {",
+        "    width: 100%;",
+        "    border-collapse: collapse;",
+        "    margin: 1.5em 0;",
+        "    font-size: 0.9em;",
+        "  }",
+        "  .book-table th, .book-table td {",
+        "    border: 1px solid #d1d5db;",
+        "    padding: 8px 12px;",
+        "    text-align: left;",
+        "    vertical-align: top;",
+        "  }",
+        "  .book-table th {",
+        "    background-color: #f3f4f6;",
+        "    font-weight: 600;",
+        "  }",
+        "",
         "  /* Textbook typographic styling */",
     ]
     if s.get("css_justify_body", True):

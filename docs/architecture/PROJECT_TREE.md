@@ -80,7 +80,8 @@ literature-parser/
 │   │   ├── TASK-016-markdownconversionservice-css.json
 │   │   ├── TASK-017-markdown.json
 │   │   ├── TASK-018-markdown.json
-│   │   └── TASK-019-optimize-literature-and-textbook.json
+│   │   ├── TASK-019-optimize-literature-and-textbook.json
+│   │   └── TASK-020-implement-marker-style-layout-fr.json
 │   ├── framework.lock                      # [框架鎖定檔] 框架版本與檔案雜湊，供 update_framework 判斷是否被修改
 │   └── project.toml                        # [專案設定・各專案自訂] 語言、分層、品質門檻、指令、業務規則
 ├── .cursor/                                # [Agent 轉接] Cursor 規則 (自動產生)
@@ -256,6 +257,7 @@ literature-parser/
 │       │   │   │   └── literature_strategy.py
 │       │   │   ├── __init__.py
 │       │   │   ├── element_cropper.py
+│       │   │   ├── layout_frame.py
 │       │   │   ├── markdown_converter.py
 │       │   │   └── models.py
 │       │   ├── core/
@@ -370,7 +372,8 @@ literature-parser/
 │   ├── test_v43_input_segregation_and_naming.py
 │   ├── test_v44_profile_schema_and_inheritance.py
 │   ├── test_v45_front_matter_and_pure_chapter1.py
-│   └── test_v46_speed_and_quality_optimization.py
+│   ├── test_v46_speed_and_quality_optimization.py
+│   └── test_v47_marker_layout_framing_and_anchoring.py
 ├── web/
 │   ├── app.js
 │   ├── dashboard.html

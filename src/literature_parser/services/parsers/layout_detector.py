@@ -625,11 +625,11 @@ def fonts_is_bold(t) -> bool:
         return False
 
 
-def generate_markdown_toc(markdown_text: str, toc_mode: str = "open") -> str:
+def generate_markdown_toc(markdown_text: str, toc_mode: str = "close") -> str:
     """
     Extracts h2 (##) and h3 (###) headers from chapter markdown and
     generates a clean, clickable Table of Contents block.
-    Supports toc_mode: 'open' (<details open>), 'close' (<details>), or 'none' ("").
+    Supports toc_mode: 'close' (<details>, default hidden), 'open' (<details open>), or 'none' ("").
     """
     if toc_mode == "none":
         return ""

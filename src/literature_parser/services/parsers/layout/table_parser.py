@@ -526,6 +526,87 @@ class TableParser:
                     'markdown': '\n'.join(md_table)
                 })
 
-
         return tables, consumed
+
+    @classmethod
+    def format_matrix_to_table(cls, matrix: list) -> str:
+        """Formats a 2D string matrix into a clean standard GFM Markdown pipe table.
+
+        Args:
+            matrix: 2D list of cell strings [row][col].
+
+        Returns:
+            Formatted Markdown table string.
+        """
+        if not matrix:
+            return ""
+        header = matrix[0]
+        col_count = len(header)
+        sep = ["---"] * col_count
+        lines = [
+            "| " + " | ".join(str(c) for c in header) + " |",
+            "| " + " | ".join(sep) + " |",
+        ]
+        for row in matrix[1:]:
+            padded = (list(row) + [""] * col_count)[:col_count]
+            lines.append("| " + " | ".join(str(c) for c in padded) + " |")
+        return "\n".join(lines)
+
+    @classmethod
+    def format_spanned_matrix_to_html(
+        cls,
+        cell_spans: dict,
+        num_rows: int,
+        num_cols: int,
+        table_class: str = "book-table",
+        caption: str = "",
+    ) -> str:
+        """Formats a cell matrix containing colspan or rowspan into semantic HTML.
+
+        Args:
+            cell_spans: Mapping of (row_idx, col_idx) to {'text': ..., 'colspan': int, 'rowspan': int}.
+            num_rows: Total rows in the table.
+            num_cols: Total columns in the table.
+            table_class: CSS class for the table (default: 'book-table').
+            caption: Optional table caption.
+
+        Returns:
+            Semantic HTML <table> string.
+        """
+        lines = [f'<table class="{table_class}">']
+        if caption:
+            lines.append(f"  <caption>{caption}</caption>")
+
+        covered: set = set()
+        for r in range(num_rows):
+            row_cells = []
+            for c in range(num_cols):
+                if (r, c) in covered:
+                    continue
+                info = cell_spans.get((r, c), {"text": "", "colspan": 1, "rowspan": 1})
+                text = str(info.get("text", "")).strip()
+                colspan = info.get("colspan", 1)
+                rowspan = info.get("rowspan", 1)
+
+                # Mark covered coordinates
+                for dr in range(rowspan):
+                    for dc in range(colspan):
+                        if dr != 0 or dc != 0:
+                            covered.add((r + dr, c + dc))
+
+                tag = "th" if r == 0 else "td"
+                attrs = []
+                if colspan > 1:
+                    attrs.append(f'colspan="{colspan}"')
+                if rowspan > 1:
+                    attrs.append(f'rowspan="{rowspan}"')
+                attr_str = (" " + " ".join(attrs)) if attrs else ""
+                row_cells.append(f"<{tag}{attr_str}>{text}</{tag}>")
+
+            if row_cells:
+                lines.append(f"  <tr>{''.join(row_cells)}</tr>")
+
+        lines.append("</table>")
+        return "\n".join(lines)
+
 

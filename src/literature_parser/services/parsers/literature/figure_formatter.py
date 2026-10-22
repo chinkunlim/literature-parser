@@ -75,146 +75,82 @@ class FigureFormatter:
 
     @classmethod
     def reposition_figures(cls, markdown_text: str) -> str:
-        """
-        Lifts all <figure>...</figure> blocks from the markdown text, heals any
-        prose sentences bisected by page cuts or image placements, and re-inserts
-        each figure immediately after the paragraph of its first in-text mention.
+        """Lifts all <figure> and <table> blocks, heals severed sentences, and anchors them after complete paragraphs."""
+        return cls.reposition_figures_and_tables(markdown_text)
 
-        If a figure is not cited in the text (fallback), places the figure at the
-        end of the section before the next heading.
+    @classmethod
+    def reposition_figures_and_tables(cls, markdown_text: str) -> str:
+        """
+        Lifts all <figure>...</figure> and <table...>...</table> blocks from the markdown text,
+        heals any prose sentences bisected by page cuts or image placements, and re-inserts
+        each figure/table strictly after the complete logical paragraph or list block of its first mention.
+
+        If an artifact is not cited in the text (fallback), places it at the end of the section
+        before the next heading.
         """
         if not markdown_text or ("<figure" not in markdown_text and "<table" not in markdown_text):
             return markdown_text
 
-        # 0. Pre-split paragraphs where (see Figure N). or (Figure N). is immediately followed by a new sentence
-        markdown_text = re.sub(
-            r'(\((?:see\s+)?Figure\s+\d+\)\.)\s+([A-Z])',
-            r'\1\n\n\2',
-            markdown_text
-        )
-
+        # 1. Extract Figures
         fig_pattern = re.compile(r'<figure[\s\S]*?</figure>')
-        matches = list(fig_pattern.finditer(markdown_text))
-
+        fig_matches = list(fig_pattern.finditer(markdown_text))
         figs = []
         text = markdown_text
+
         # Cut figures in reverse order to preserve string indices
-        for m in reversed(matches):
+        for m in reversed(fig_matches):
             fig_html = m.group(0)
             start, end = m.start(), m.end()
 
             # Extract Figure number (e.g. '1', '2', '1.1')
-            num_m = re.search(r'<strong>Figure\s+(\d+(?:\.\d+)*[a-zA-Z]?)[\.:]?', fig_html, re.IGNORECASE)
+            num_m = re.search(r'<strong>Figure\s+([0-9IVXLCDM]+(?:\.[0-9]+)*[a-zA-Z]?)[\.:]?', fig_html, re.IGNORECASE)
             if not num_m:
-                num_m = re.search(r'Figure\s+(\d+(?:\.\d+)*[a-zA-Z]?)', fig_html, re.IGNORECASE)
+                num_m = re.search(r'Figure\s+([0-9IVXLCDM]+(?:\.[0-9]+)*[a-zA-Z]?)', fig_html, re.IGNORECASE)
             fig_id = num_m.group(1) if num_m else ''
 
-            pre = text[:start]
-            post = text[end:]
-
-            pre_stripped = pre.rstrip()
-            post_stripped = post.lstrip()
+            pre = text[:start].rstrip()
+            post = text[end:].lstrip()
 
             # Check for page comment in post
-            pg_m = re.match(r'^(<!--\s*Page\s+\d+\s*-->\s*)', post_stripped)
+            pg_m = re.match(r'^(<!--\s*Page\s+\d+\s*-->\s*)', post)
             pg_tag = ''
             if pg_m:
                 pg_tag = pg_m.group(1).strip()
-                post_content = post_stripped[pg_m.end():].lstrip()
+                post_content = post[pg_m.end():].lstrip()
             else:
-                post_content = post_stripped
+                post_content = post
 
-            is_broken_sentence = False
-            if pre_stripped and post_content:
-                last_char = pre_stripped[-1]
-                first_char = post_content[0]
-                if last_char not in {'.', '?', '!', ':', '”', '\"', ')'} and (first_char.islower() or first_char in {'(', '['}):
-                    is_broken_sentence = True
+            is_broken = False
+            if pre and post_content:
+                if pre[-1] not in ('.', '?', '!', ':', '\"', '”', ')') and (post_content[0].islower() or post_content[0] in ('(', '[')):
+                    is_broken = True
 
-            if is_broken_sentence:
-                text = pre_stripped + ' ' + post_content
+            if is_broken:
+                text = pre + ' ' + post_content
             else:
                 if pg_tag:
-                    text = pre_stripped + '\n\n' + pg_tag + '\n\n' + post_content
+                    text = pre + '\n\n' + pg_tag + '\n\n' + post_content
                 else:
-                    text = pre_stripped + '\n\n' + post_content
+                    text = pre + '\n\n' + post_content
 
             figs.append((fig_id, fig_html))
 
         figs.reverse()
 
-        # Re-insert each figure after the paragraph containing its first in-text mention
-        for fig_id, fig_html in figs:
-            inserted = False
-            if fig_id:
-                mention_pat = re.compile(rf'(?i)\b(?:Figure|Fig\.)\s+{re.escape(fig_id)}\b')
-                for m in mention_pat.finditer(text):
-                    m_start = m.start()
-                    open_fig = text.rfind('<figure', 0, m_start)
-                    close_fig = text.rfind('</figure>', 0, m_start)
-                    if open_fig != -1 and (close_fig == -1 or close_fig < open_fig):
-                        # Inside an already placed figure block, skip
-                        continue
-
-                    # Locate paragraph boundary after this citation
-                    p_end = text.find('\n\n', m.end())
-                    h_end = re.search(r'\n(?=[#])', text[m.end():])
-                    candidate_ends = []
-                    if p_end != -1:
-                        candidate_ends.append(p_end)
-                    if h_end:
-                        candidate_ends.append(m.end() + h_end.start())
-
-                    target_end = min(candidate_ends) if candidate_ends else len(text)
-                    text = text[:target_end] + '\n\n' + fig_html + '\n\n' + text[target_end:].lstrip()
-                    inserted = True
-                    break
-
-            if not inserted:
-                # Fallback: check if image filename has page info (e.g. diagram_p03_01 or 003_001)
-                pg_match = re.search(r'(?:_p|/)(\d+)_', fig_html)
-                pg_num = int(pg_match.group(1)) if pg_match else None
-                if pg_num:
-                    next_pg_tag = f"<!-- Page {pg_num + 1} -->"
-                    cur_pg_tag = f"<!-- Page {pg_num} -->"
-                    next_pos = text.find(next_pg_tag)
-                    if next_pos != -1:
-                        text = text[:next_pos] + fig_html + '\n\n' + text[next_pos:]
-                        inserted = True
-                    else:
-                        cur_pos = text.find(cur_pg_tag)
-                        if cur_pos != -1:
-                            next_h = re.search(r'(?m)^(?=##|\#\#\#)', text[cur_pos + len(cur_pg_tag):])
-                            if next_h:
-                                ins_pos = cur_pos + len(cur_pg_tag) + next_h.start()
-                                text = text[:ins_pos] + fig_html + '\n\n' + text[ins_pos:]
-                                inserted = True
-                if not inserted:
-                    # Place before next major heading after Introduction (e.g. Discussion, Method, References)
-                    headings = list(re.finditer(r'(?m)^##\s+([^\n]+)', text))
-                    cand_h = None
-                    for h in headings:
-                        h_name = h.group(1).lower()
-                        if "introduction" not in h_name and "abstract" not in h_name:
-                            cand_h = h
-                            break
-                    if cand_h:
-                        text = text[:cand_h.start()] + fig_html + '\n\n' + text[cand_h.start():]
-                    else:
-                        text = text + '\n\n' + fig_html + '\n\n'
-
-        # Re-position Tables after the paragraph containing their first in-text mention
+        # 2. Extract Tables
         p_tbl = re.compile(
             r'((?:(?:\*\*Table\s+\d+[\.\d]*\*\*|<p\s+class="table-caption">Table\s+\d+[\.\d]*</p>|Table\s+\d+[\.\d]*[^\n]*)\s*\n+)?<table\b[^>]*>.*?</table>(?:\s*\n+<p\s+class="table-notes">.*?</p>)?)',
             re.DOTALL | re.IGNORECASE
         )
         tbl_matches = list(p_tbl.finditer(text))
+        tbls = []
         if tbl_matches:
-            tbls = []
+            # Cut tables in reverse order to preserve string indices
             for m in reversed(tbl_matches):
                 start, end = m.span()
                 tbl_html = m.group(1).strip()
-                num_m = re.search(r'Table\s+(\d+(?:\.\d+)*)', tbl_html, re.IGNORECASE)
+                # Extract Table number
+                num_m = re.search(r'(?<!<)\bTable\s+(\d+(?:\.\d+)*[a-zA-Z]?)', tbl_html, re.IGNORECASE)
                 tbl_id = num_m.group(1) if num_m else ''
 
                 pre = text[:start].rstrip()
@@ -234,21 +170,87 @@ class FigureFormatter:
 
             tbls.reverse()
 
-            for tbl_id, tbl_html in tbls:
-                if tbl_id:
-                    mention_pat = re.compile(rf'(?i)\bTable\s+{re.escape(tbl_id)}\b')
-                    m = mention_pat.search(text)
-                    if m:
-                        p_end = text.find('\n\n', m.end())
-                        if p_end != -1:
-                            text = text[:p_end] + '\n\n' + tbl_html + '\n\n' + text[p_end:].lstrip()
-                        else:
-                            text = text + '\n\n' + tbl_html + '\n\n'
-                else:
-                    text = text + '\n\n' + tbl_html + '\n\n'
+        # 3. Unified Paragraph-Based Anchoring
+        # Identify which figures and tables are actually cited in the narrative text
+        fig_dict = {f_id: html for f_id, html in figs if f_id}
+        tbl_dict = {t_id: html for t_id, html in tbls if t_id}
 
-        text = re.sub(r'\n{3,}', '\n\n', text)
-        return text.strip()
+        cited_fig_ids = set()
+        for f_id in fig_dict:
+            norm_id = re.sub(r'[a-zA-Z]+$', '', f_id) or f_id
+            if re.search(rf'\b(?:Figure|Fig\.)\s+{re.escape(norm_id)}[a-zA-Z]?\b', text):
+                cited_fig_ids.add(f_id)
+
+        cited_tbl_ids = set()
+        for t_id in tbl_dict:
+            norm_id = re.sub(r'[a-zA-Z]+$', '', t_id) or t_id
+            if re.search(rf'(?<!<)\bTable\s+{re.escape(norm_id)}[a-zA-Z]?\b', text):
+                cited_tbl_ids.add(t_id)
+
+        blocks = re.split(r'\n\n+', text.strip())
+        output_blocks = []
+        mounted_figs = set()
+        mounted_tbls = set()
+
+        for idx, block in enumerate(blocks):
+            b_clean = block.strip()
+            if not b_clean:
+                continue
+
+            # If block is a heading (## ...) after the start of document, flush uncited orphans before it
+            if b_clean.startswith('##') and idx > 0:
+                for f_id, f_html in figs:
+                    if f_id not in cited_fig_ids and f_id not in mounted_figs:
+                        output_blocks.append(f_html)
+                        mounted_figs.add(f_id)
+                for t_id, t_html in tbls:
+                    if t_id not in cited_tbl_ids and t_id not in mounted_tbls:
+                        output_blocks.append(t_html)
+                        mounted_tbls.add(t_id)
+
+            output_blocks.append(b_clean)
+
+            # Find all figure and table mentions inside this block
+            found_artifacts = []
+
+            # Figure mentions
+            fig_mention_pat = re.compile(r'\b(?:Figure|Fig\.)\s+([0-9IVXLCDM]+(?:\.[0-9]+)*[a-zA-Z]?)\b')
+            for m in fig_mention_pat.finditer(b_clean):
+                raw_id = m.group(1)
+                norm_id = re.sub(r'[a-zA-Z]+$', '', raw_id) or raw_id
+                target_id = raw_id if raw_id in fig_dict else (norm_id if norm_id in fig_dict else None)
+                if target_id and target_id not in mounted_figs:
+                    found_artifacts.append((m.start(), fig_dict[target_id], 'fig', target_id))
+                    mounted_figs.add(target_id)
+
+            # Table mentions
+            tbl_mention_pat = re.compile(r'(?<!<)\bTable\s+([0-9IVXLCDM]+(?:\.[0-9]+)*[a-zA-Z]?)\b')
+            for m in tbl_mention_pat.finditer(b_clean):
+                raw_id = m.group(1)
+                norm_id = re.sub(r'[a-zA-Z]+$', '', raw_id) or raw_id
+                target_id = raw_id if raw_id in tbl_dict else (norm_id if norm_id in tbl_dict else None)
+                if target_id and target_id not in mounted_tbls:
+                    found_artifacts.append((m.start(), tbl_dict[target_id], 'tbl', target_id))
+                    mounted_tbls.add(target_id)
+
+            # Sort artifacts by their mention position inside this block
+            found_artifacts.sort(key=lambda x: x[0])
+            for _, artifact_html, _, _ in found_artifacts:
+                output_blocks.append(artifact_html)
+
+        # Flush any remaining unmounted artifacts at end of document
+        for f_id, f_html in figs:
+            if f_id not in mounted_figs:
+                output_blocks.append(f_html)
+                mounted_figs.add(f_id)
+        for t_id, t_html in tbls:
+            if t_id not in mounted_tbls:
+                output_blocks.append(t_html)
+                mounted_tbls.add(t_id)
+
+        result = '\n\n'.join(output_blocks)
+        result = re.sub(r'\n{3,}', '\n\n', result)
+        return result.strip()
 
 
 __all__ = ["FigureFormatter"]

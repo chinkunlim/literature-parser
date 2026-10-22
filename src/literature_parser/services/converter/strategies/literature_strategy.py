@@ -82,4 +82,11 @@ class LiteraturePostProcessor(PostProcessorStrategy):
                     idx = match.start()
                     md = md[:idx] + img_tag + "\n" + md[idx:]
 
+        # 5. Semantic Anchoring for Figures & Tables (Marker-Style Paragraph Boundary Placement)
+        try:
+            from literature_parser.services.parsers.literature.figure_formatter import FigureFormatter
+            md = FigureFormatter.reposition_figures_and_tables(md)
+        except Exception as e:
+            logger.debug("FigureFormatter repositioning skipped: %s", e)
+
         return md.strip()

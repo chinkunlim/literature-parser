@@ -86,6 +86,13 @@ class BookPostProcessor(PostProcessorStrategy):
         except Exception as e:
             logger.debug("stitch_cross_page_continuity skipped: %s", e)
 
+        # 4.5. Semantic Anchoring for Figures & Tables (Marker-Style Paragraph Boundary Placement)
+        try:
+            from literature_parser.services.parsers.literature.figure_formatter import FigureFormatter
+            md = FigureFormatter.reposition_figures_and_tables(md)
+        except Exception as e:
+            logger.debug("Figure/Table repositioning skipped in textbook: %s", e)
+
         # 5. Append Chapter-End Key Terms / Flashcards if present
         is_scanned = (profile.meta.mode == "scanned")
         if not is_scanned and not is_front_matter:

@@ -205,3 +205,7 @@
 ### [2026-10-22 03:36 UTC] 認領任務 `TASK-016` (實作獨立 MarkdownConversionService 與圖表裁切/CSS 輸出模組) (by `antigravity`)
 - **相關範圍**: `-`
 - **接棒自**: `antigravity`
+
+### [2026-10-22 03:44 UTC] 完成任務 `TASK-016` — 實作獨立 MarkdownConversionService 與圖表裁切/CSS 輸出模組 (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: 實作獨立 MarkdownConversionService、CSS 雙出、Figure/Table 獨立裁切（含 Caption/Notes/等寬 16pt Margin）與 Orchestrator/Pipeline 整合

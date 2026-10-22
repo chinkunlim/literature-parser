@@ -5,10 +5,10 @@
 <!-- LIVE_STATE_START -->
 ## 📊 即時狀態看板 (Live Snapshot)
 
-- **最後更新時間**: `2026-10-22 08:39 UTC`
+- **最後更新時間**: `2026-10-22 08:40 UTC`
 - **最近操作 Agent**: `antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `b28c0d1 docs: update and synchronize all project markdown documentation, ADR-007, and architecture (TASK-022) [agent:antigravity]`
+- **最新 Git Commit**: `babd851 docs: mark TASK-022 done [agent:antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
@@ -17,6 +17,14 @@
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-10-22 08:40 UTC] Session Closeout (結束對話收尾) (by `antigravity`)
+- **檢查結果**: 測試與 Code Review Guard 通過
+- **目標**: 全專案流程優化：原生 PyMuPDF 解析、流水線並行、Marker 式版面輪廓與段落首提錨定、8大分區集中外部化設定檔 (config/theme.json)、即時重刷 CLI 與全專案 Markdown 同步更新
+- **錯誤與根因**: 表格提取 Regex 容易誤匹配 table class 中的 class 羅馬數字 -> 改用反向否定預查；未引用圖表不應在段落掃描前被提前 flush -> 建立 cited_fig_ids 全文預檢集合確保標題與正文順序正確
+- **下一步**: 接續實測大型數位教科書或期刊論文批次轉檔，檢驗新版樣式與即時重刷工具，或對接本地 Web 視覺化看板
+- **交接備註**: 全套 297 項測試 100% 通過，排版規則已集中至 config/theme.json，支援一鍵重刷
+- **本機對話紀錄**: `.agents/conversations/2026-10-22-1640-antigravity-summary.md`（只在這台電腦）
 
 ### [2026-10-22 08:39 UTC] 完成任務 `TASK-022` — Update all project documentation and architecture records (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
@@ -97,7 +105,3 @@
 ### [2026-10-22 03:50 UTC] 建立任務 `TASK-017`: 實作三層 Markdown 轉檔檢驗與品質評估體系（排版、詞語、語意） (by `antigravity`)
 - **狀態**: `in_progress`
 - **相關範圍**: `-`
-
-### [2026-10-22 03:44 UTC] 完成任務 `TASK-016` — 實作獨立 MarkdownConversionService 與圖表裁切/CSS 輸出模組 (by `antigravity`)
-- **狀態**: ✅ 已完成 (`done`)
-- **完成摘要**: 實作獨立 MarkdownConversionService、CSS 雙出、Figure/Table 獨立裁切（含 Caption/Notes/等寬 16pt Margin）與 Orchestrator/Pipeline 整合

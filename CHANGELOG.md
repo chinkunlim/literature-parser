@@ -6,11 +6,15 @@ All notable changes to **literature-parser** are documented here
 ## [Unreleased]
 
 ### Added
+- docs(adr): record ADR-004 on hierarchical profile inheritance, front matter isolation, and pure chapter 1 (by `@antigravity`)
+- docs(specs): add SPEC-005 on unified DocumentProfile schema, shared knowledge taxonomies, and front matter classification (by `@antigravity`)
+- docs(known-issues): document ISSUE-004 on Chapter 1 bookmark misattribution on page 1 and front matter pollution (by `@antigravity`)
 - docs(specs): add SPEC-003 (EPUB 3 Exporter) and SPEC-004 (Fix Playbook & Recipe Synthesizer) specifications (by `@antigravity`)
 - docs(known-issues): document ISSUE-003 on external PDF tools fallback and graceful degradation (by `@antigravity`)
-- feat(pipeline): implement convention-based input segregation and hyphen-delimited naming (by `@antigravity`)
+- feat(pipeline): implement convention-based input segregation and hyphen-delimited naming (TASK-012) (by `@antigravity`)
 - feat(profiler): implement DocumentProfile schema, publisher-first inheritance, and unified profile.json (TASK-013) (by `@antigravity`)
 - feat(profiler): implement front matter splitting, pure chapter 1, and layout taxonomy (TASK-014) (by `@antigravity`)
+- feat(shared-knowledge): add front_matter_taxonomy.json and pedagogical_blocks.json repositories (by `@antigravity`)
 
 ### Changed
 - docs(migration): mark all migration acceptance criteria as completed (by `@antigravity`)
@@ -22,6 +26,7 @@ All notable changes to **literature-parser** are documented here
 
 ### Documentation
 - docs: update and synchronize all project markdown documentation (by `@antigravity`)
+- docs: synchronize all project markdown documentation (TASK-015) (by `@antigravity`)
 
 ### Testing
 - test(workflows): verify all CLI workflows, fix pathing and pure-python fallbacks (by `@antigravity`)

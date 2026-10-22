@@ -1,13 +1,23 @@
 # 001. 教科書解析管線規格 (Textbook Pipeline Specification)
 
 ## 1. 概述
-`TextbookPipeline` 專門負責多章節大型教科書之解析，具備目錄（TOC）導航抽取、章節物理切分、學習目標識別與 Anki 卡片匯出功能。
+`TextbookPipeline` 專門負責多章節大型教科書之解析，具備前置頁面（Front Matter）獨立切分、純淨 Chapter 1 校驗、全章節 Markdown 轉換、目錄（TOC）導航抽取、章節物理切分、學習目標識別、奇偶頁非對稱邊欄、雙欄跨欄橫幅保護與 Obsidian 雙鏈導航。
 
-## 2. 核心功能
-- **目錄剖析與章節拆分**：利用 PDF Outline 或正文特徵自動識別 Chapter 範圍，執行無損切分。
-- **邊欄與專有名詞提取**：自動辨識 Margin Glossaries，轉換為側欄卡片。
-- **學習目標與章末總結**：抽取 Learning Objectives (LO) 與 End of Chapter (EOC) 練習題。
-- **EPUB 與 Obsidian 整合**：生成雙向導航標籤與出版商特化 CSS 樣式。
+## 2. 核心功能與處理階段
+- **階段 1：大綱剖析與前言獨立切分**：
+  - 載入全域共享知識庫 `front_matter_taxonomy.json`，精準匹配 Cover、Publish/Copyright、TOC、About-Authors、Preface、Dedication 等。
+  - **純淨 Chapter 1 保護**：自動校驗 Chapter 1 真實起始頁；若書籤誤標在第 1 頁，自動向後探測真實章節正文，前方頁面全數獨立切出為 Front Matter。
+  - 所有前置頁切分出獨立 PDF 存於 `chapters/00-01-Cover/` 等，以 `00-` 編號前綴維護目錄順序。
+- **階段 2：正文多章抽樣與獨立 Profile 建立**：
+  - 在章節切分完成後、Markdown 轉換前，主進程單執行緒執行 `ensure_book_profile()`。
+  - **嚴格排除 `00-*` 前置頁面**，只取真正的正文章節（`Ch01`, `Ch02`）跳過封面頁取第 2~5 頁正文計算版心邊界、字級中位數與教學特殊區塊。
+  - 寫入全書標準 `profile.json`（並相容 `book_profile.json` 鏡像）。
+- **階段 3：全章節（含 Front Matter）Markdown 轉換**：
+  - Front Matter 與正文章節全部轉為 `.md` 檔案。
+  - 支援奇偶頁非對稱邊欄提取（偶數頁在左、奇數頁在右）、雙欄跨欄橫幅（`has_spanning_boxes`）與首字下沉（`has_drop_caps`）。
+- **階段 4：雙鏈圖譜與 EPUB 3 匯出**：
+  - 生成 `00-01-Cover` ➔ `00-07-TOC` ➔ `00-09-Preface` ➔ `Ch01` 完整順序雙向導航。
+  - 生成全書目錄索引 `index.md`，並可打包為標準 EPUB 3 電子書。
 
 ## 3. 輸入與輸出目錄規範
 - **輸入來源 (Convention over Configuration)**：

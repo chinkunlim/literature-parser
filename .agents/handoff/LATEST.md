@@ -5,10 +5,10 @@
 <!-- LIVE_STATE_START -->
 ## 📊 即時狀態看板 (Live Snapshot)
 
-- **最後更新時間**: `2026-10-22 03:01 UTC`
+- **最後更新時間**: `2026-10-22 03:06 UTC`
 - **最近操作 Agent**: `antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `49cde46 feat(profiler): implement DocumentProfile schema, publisher-first inheritance, and unified profile.json (TASK-013) [agent:antigravity]`
+- **最新 Git Commit**: `183f7bb feat(profiler): implement front matter splitting, pure chapter 1, and layout taxonomy (TASK-014) [agent:antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
@@ -17,6 +17,18 @@
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-10-22 03:06 UTC] 完成任務 `TASK-015` — 更新全專案 Markdown 文件：架構、規格、變更日誌與使用說明 (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: Synchronized all project markdown documentation: README.md, PROJECT_RULES.md, SPECS.md, SPEC-001, SPEC-005, DECISIONS.md, ADR-004, KNOWN_ISSUES.md, ISSUE-004, CHANGELOG.md, and synchronized agent entrypoints.
+
+### [2026-10-22 03:03 UTC] 認領任務 `TASK-015` (更新全專案 Markdown 文件：架構、規格、變更日誌與使用說明) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`
+
+### [2026-10-22 03:03 UTC] 建立任務 `TASK-015`: 更新全專案 Markdown 文件：架構、規格、變更日誌與使用說明 (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
 
 ### [2026-10-22 03:01 UTC] 完成任務 `TASK-014` — Front Matter 獨立切分、全章節 Markdown 轉換與排版細節知識庫 (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
@@ -92,13 +104,3 @@
 ### [2026-10-21 16:09 UTC] 完成任務 `TASK-006` — 遷移批次 6：entrypoints 層（CLI、HTTP、排程入口） (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
 - **完成摘要**: entrypoints 層遷移完成，run.py, doc_cli.py 與 project_cli 系列功能完備且通過 CLI 測試，0 critical issues
-
-### [2026-10-21 16:08 UTC] 認領任務 `TASK-006` (遷移批次 6：entrypoints 層（CLI、HTTP、排程入口）) (by `antigravity`)
-- **相關範圍**: `src/literature_parser/entrypoints/, legacy`
-
-### [2026-10-21 16:08 UTC] 完成任務 `TASK-005` — 遷移批次 5：services 層（業務流程） (by `antigravity`)
-- **狀態**: ✅ 已完成 (`done`)
-- **完成摘要**: services 層遷移完成，70 個模組全數通過單元測試與程式碼審查，0 critical issues
-
-### [2026-10-21 16:07 UTC] 認領任務 `TASK-005` (遷移批次 5：services 層（業務流程）) (by `antigravity`)
-- **相關範圍**: `src/literature_parser/services/, legacy`

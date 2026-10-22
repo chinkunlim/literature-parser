@@ -7,3 +7,4 @@
 | [ISSUE-001](001-two-column-and-math-shattering.md) | 雙欄學術論文排版與粉碎數學公式修復 | Open (Mitigated) | Medium | 2026-09-20 |
 | [ISSUE-002](002-table-banner-and-styling.md) | 複雜色塊條幅表格撕裂與 CSS 空白 | Open (Mitigated) | Medium | 2026-09-20 |
 | [ISSUE-003](003-external-pdf-tools-fallback.md) | 外部 PDF 工具 (poppler/pdfinfo/pdfimages) 缺失時之優雅降級 | Resolved | Medium | 2026-10-21 |
+| [ISSUE-004](004-chapter1-bookmark-misattribution-and-front-matter-pollution.md) | Chapter 1 書籤誤標在封面導致前置頁面污染正文 | Resolved | Medium | 2026-10-22 |

@@ -92,3 +92,13 @@
 ### [2026-10-21 16:07 UTC] 完成任務 `TASK-004` — 遷移批次 4：adapters 層（外部 API、資料庫、檔案 I/O） (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
 - **完成摘要**: adapters 層遷移完成，8 個適配器模組通過靜態檢查與單元測試，0 critical issues
+
+### [2026-10-21 16:07 UTC] 認領任務 `TASK-005` (遷移批次 5：services 層（業務流程）) (by `antigravity`)
+- **相關範圍**: `src/literature_parser/services/, legacy`
+
+### [2026-10-21 16:08 UTC] 完成任務 `TASK-005` — 遷移批次 5：services 層（業務流程） (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: services 層遷移完成，70 個模組全數通過單元測試與程式碼審查，0 critical issues
+
+### [2026-10-21 16:08 UTC] 認領任務 `TASK-006` (遷移批次 6：entrypoints 層（CLI、HTTP、排程入口）) (by `antigravity`)
+- **相關範圍**: `src/literature_parser/entrypoints/, legacy`

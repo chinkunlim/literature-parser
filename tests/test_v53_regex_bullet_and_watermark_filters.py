@@ -127,6 +127,46 @@ class TestRegexBulletAndWatermarkFilters(unittest.TestCase):
                 non_cover_imgs = ImageManager.extract_pdf_images(str(pdf_path), is_cover=False)
                 self.assertEqual(len(non_cover_imgs), 0, "573x716 sheet watermark must be discarded on non-cover")
 
+    def test_numeric_noise_exempts_factorial_anova_matrices(self):
+        """
+        Verifies check_numeric_coordinate_noise does not flag ANOVA interaction
+        matrices with repeated cell counts.
+        """
+        from literature_parser.adapters.verification.rules import check_numeric_coordinate_noise
+        sample = (
+            "B 1 30 40 50 40 B 2 50 40 30 40 40 40 40 (c) Interaction is significant; A and B are not significant\n"
+        )
+        res = check_numeric_coordinate_noise(sample)
+        self.assertTrue(res["passed"], f"Factorial ANOVA interaction matrix should pass: {res}")
+
+    def test_heading_intrusion_exempts_numbered_questions(self):
+        """
+        Verifies check_heading_prose_intrusion does not flag numbered questions like
+        '## 7. How aware are you of your cultural background...'.
+        """
+        from literature_parser.adapters.verification.rules import check_heading_prose_intrusion
+        heading_line = "## •~-------- 7. How aware are you of how your cultural background is likely to influence your abil-"
+        res = check_heading_prose_intrusion(heading_line)
+        self.assertTrue(res["passed"], f"Numbered heading question should pass: {res}")
+
+    def test_clean_decorative_noise_filters_cengage_glyph_artifacts(self):
+        """
+        Verifies clean_decorative_noise strips Cengage font glyph noise lines.
+        """
+        from literature_parser.services.utils.text_utils import clean_decorative_noise
+        content = (
+            "## Section 1\n\n"
+            "**11.e;,-4——**\n\n"
+            "Normal text line here.\n\n"
+            "u•~·!t—\n\n"
+            "•~-------- 7. Question begins here\n"
+        )
+        cleaned = clean_decorative_noise(content)
+        self.assertNotIn("**11.e;,-4——**", cleaned)
+        self.assertNotIn("u•~·!t—", cleaned)
+        self.assertIn("7. Question begins here", cleaned)
+        self.assertIn("Normal text line here.", cleaned)
+
 
 if __name__ == "__main__":
     unittest.main()

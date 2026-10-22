@@ -1188,6 +1188,8 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             placed_img_blocks.append('\n'.join(footnotes))
 
         full_md = '\n\n'.join(placed_img_blocks).strip()
+        # Clean typography artifacts and decorative dingbats
+        full_md = clean_typography_artifacts(full_md)
         # Detect and format lists
         full_md = LayoutDetector.detect_and_format_lists(full_md)
         # Detect code blocks

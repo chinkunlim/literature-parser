@@ -413,3 +413,15 @@
 ### [2026-10-22 13:04 UTC] 完成任務 `TASK-031` — Fix baseline clustering cross-split, LO multiline continuation, duplicate chapter slug header, and study questions callout list spacing (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
 - **完成摘要**: (無)
+
+### [2026-10-22 13:07 UTC] 建立任務 `TASK-032`: Fix Ch15 layout collapse: Exhibit internal tables, Table 15.4 detection, formula shattering, and vector divider noise (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
+
+### [2026-10-22 13:07 UTC] 認領任務 `TASK-032` (Fix Ch15 layout collapse: Exhibit internal tables, Table 15.4 detection, formula shattering, and vector divider noise) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`
+
+### [2026-10-22 13:44 UTC] 完成任務 `TASK-032` — Fix Ch15 layout collapse: Exhibit internal tables, Table 15.4 detection, formula shattering, and vector divider noise (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: (無)

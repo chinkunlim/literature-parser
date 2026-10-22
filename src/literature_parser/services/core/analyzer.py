@@ -277,6 +277,12 @@ class PDFAnalyzer:
         if not top_items:
             return None
 
+        # If outline is wrapped under a single root node (e.g. book title bookmark)
+        if len(top_items) == 1 and top_items[0][2] is not None:
+            sub_children = cls.parse_node(top_items[0][2], depth=top_items[0][3] + 1)
+            if sub_children:
+                top_items = sub_children
+
         flattened = []
         for page, title, sub, depth in top_items:
             t_clean = title.strip()

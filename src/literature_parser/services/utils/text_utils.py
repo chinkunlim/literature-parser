@@ -99,9 +99,13 @@ def clean_decorative_noise(text: str) -> str:
     - 'm@' / '@' dingbats -> clean bullets
     - Stray 'Continued' or 'Table X Continued'
     - Lone Roman numerals
+    - Cengage / font-glyph decorative symbol lines (e.g. '**11.e;,-4——**', '•~--------')
     """
     if not text:
         return ""
+
+    # Strip leading decorative divider bullets (e.g. '•~-------- 7. How aware...' -> '7. How aware...')
+    text = re.sub(r'(?m)^[ \t]*[•~·—\-_]{2,}[ \t]*', '', text)
 
     # Dingbats in Book 2 (Group Counseling)
     text = re.sub(r'(?m)^[ \t]*m?@\s*EXAMPLES?\s*$', '### Examples', text, flags=re.IGNORECASE)
@@ -119,6 +123,17 @@ def clean_decorative_noise(text: str) -> str:
 
     # Isolated decorative Roman numerals (e.g. solitary 'I', 'II', 'IV' on a line surrounded by empty lines)
     text = re.sub(r'(?m)(?<=\n\n)[ \t]*(?:I|II|III|IV|V|VI|VII|VIII|IX|X)[ \t]*(?=\n\n)', '', text)
+
+    # Filter out standalone decorative font glyph noise lines (e.g. '**11.e;,-4——**', 'u•~·!t—')
+    cleaned_lines = []
+    for line in text.splitlines():
+        s = line.strip()
+        if re.match(r'^\*{0,2}[-•~·!@#$%^&*_=+:;,.<>\/|\\—–\d\w]{3,30}\*{0,2}$', s):
+            letters = re.sub(r'[^a-zA-Z]', '', s)
+            if len(letters) <= 1 or (re.search(r'[-•~·—–_]{2,}', s) and len(letters) <= 2):
+                continue
+        cleaned_lines.append(line)
+    text = '\n'.join(cleaned_lines)
 
     return text
 

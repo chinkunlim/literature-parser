@@ -140,6 +140,17 @@ def run_book_until_first_failure(
         ch_dir.mkdir(parents=True, exist_ok=True)
         ch_pdf = ch_dir / f"{ch_name}.pdf"
 
+        # If already verified in checkpoint and markdown exists, fast-forward
+        ch_md = ch_dir / f"{ch_name}.md"
+        if ckpt.is_chapter_verified(ch_name) and ch_md.exists():
+            print(f"  [⏩ RESUME] Chapter '{ch_name}' is already verified. Fast-forwarding...")
+            result["completed_chapters"].append({
+                "name": ch_name,
+                "accuracy_percent": ckpt.data["chapters"].get(ch_name, {}).get("accuracy_percent", 100.0),
+                "visual_audit": "PREVIOUSLY_PASSED",
+            })
+            continue
+
         # Split if needed
         try:
             if not ch_pdf.exists() or ch_pdf.stat().st_size == 0:
@@ -221,6 +232,10 @@ def main() -> int:
     print("=" * 80)
 
     books = discover_input_books(input_books_dir)
+    if len(sys.argv) > 1:
+        filters = [arg.lower() for arg in sys.argv[1:] if not arg.startswith("-")]
+        if filters:
+            books = [b for b in books if any(f in b.name.lower() for f in filters)]
     print(f"Discovered {len(books)} book(s) for batch processing:")
     for i, b in enumerate(books, 1):
         print(f"  {i}. {b.name}")

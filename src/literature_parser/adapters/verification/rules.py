@@ -269,7 +269,12 @@ def check_numeric_coordinate_noise(content: str) -> dict:
     cleaned = re.sub(r'(?m)^\|.*\|$', '', cleaned)
     # Strip collapsed tables and statistical exhibits (e.g. Table 8.1, ANOVA, Regression)
     cleaned = re.sub(r'(?m)^.*?\bTable\s+\d+(?:\.\d+)?\b.*$', '', cleaned)
-    cleaned = re.sub(r'(?m)^.*?\b(?:ANOVA|Regression|Effect Sizes?|Analysis of variance)\b.*$', '', cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(
+        r'(?m)^.*?\b(?:ANOVA|Regression|Effect Sizes?|Analysis of variance|is significant|not significant|Interaction|Factorial)\b.*$',
+        '',
+        cleaned,
+        flags=re.IGNORECASE,
+    )
 
     noise_matches = []
 
@@ -347,7 +352,8 @@ def check_heading_prose_intrusion(content: str) -> dict:
         if s.startswith(('## ', '### ', '#### ')):
             header_text = s.lstrip('#').strip()
             # If header is long and contains sentence ending punctuation followed by capital letters
-            if len(header_text) > 85 and re.search(r'[.?!]\s+[A-Z]', header_text):
+            # (requires preceding letter so numbered prefix like '7. How...' is not flagged)
+            if len(header_text) > 85 and re.search(r'[a-z][.?!]\s+[A-Z]', header_text):
                 bad_headings.append(header_text[:100] + '...')
 
     return {

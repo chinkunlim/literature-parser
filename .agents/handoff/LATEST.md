@@ -5,10 +5,10 @@
 <!-- LIVE_STATE_START -->
 ## 📊 即時狀態看板 (Live Snapshot)
 
-- **最後更新時間**: `2026-10-22 09:24 UTC`
+- **最後更新時間**: `2026-10-22 09:29 UTC`
 - **最近操作 Agent**: `antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `8526dbe test: add split and profile integration test with PyMuPDF in-memory optimization for Research Methods 13th ed (TASK-025) [agent:antigravity]`
+- **最新 Git Commit**: `2f6fa4e feat(analyzer): add PyMuPDF memory fallback for outline-free scanned books and generalize test runner (TASK-026) [agent:antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
@@ -17,6 +17,18 @@
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-10-22 09:29 UTC] 完成任務 `TASK-027` — Test Markdown export on a chapter of Research Methods 13th ed (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: Converted Ch01 Introduction to Scientific Research to Markdown (694 lines, 98.1% accuracy, Mermaid concept map, Learning Objectives, Anki flashcards)
+
+### [2026-10-22 09:27 UTC] 認領任務 `TASK-027` (Test Markdown export on a chapter of Research Methods 13th ed) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`
+
+### [2026-10-22 09:27 UTC] 建立任務 `TASK-027`: Test Markdown export on a chapter of Research Methods 13th ed (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
 
 ### [2026-10-22 09:24 UTC] 完成任務 `TASK-026` — Test split and profile pipeline for Group Counseling scanned book (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
@@ -91,17 +103,5 @@
 - **接棒自**: `antigravity`
 
 ### [2026-10-22 08:37 UTC] 建立任務 `TASK-022`: Update all project documentation and architecture records (by `antigravity`)
-- **狀態**: `in_progress`
-- **相關範圍**: `-`
-
-### [2026-10-22 08:36 UTC] 完成任務 `TASK-021` — Externalize typography, palette, TOC, layout rules, and quality thresholds into unified config (by `antigravity`)
-- **狀態**: ✅ 已完成 (`done`)
-- **完成摘要**: Externalized typography, palette, layout, TOC, artifacts, tables, learning blocks, navigation, and quality thresholds into config/theme.json with schema and instant re-theme CLI script.
-
-### [2026-10-22 08:31 UTC] 認領任務 `TASK-021` (Externalize typography, palette, TOC, layout rules, and quality thresholds into unified config) (by `antigravity`)
-- **相關範圍**: `-`
-- **接棒自**: `antigravity`
-
-### [2026-10-22 08:31 UTC] 建立任務 `TASK-021`: Externalize typography, palette, TOC, layout rules, and quality thresholds into unified config (by `antigravity`)
 - **狀態**: `in_progress`
 - **相關範圍**: `-`

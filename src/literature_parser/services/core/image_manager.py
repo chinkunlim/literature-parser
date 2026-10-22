@@ -123,8 +123,7 @@ class ImageManager:
                     except Exception as exc:
                         logger.debug("Failed extracting image xref %d on page %d: %s", xref, p_num, exc)
             doc.close()
-            if native_images:
-                return native_images
+            return native_images
         except ImportError:
             pass
         except Exception as e:

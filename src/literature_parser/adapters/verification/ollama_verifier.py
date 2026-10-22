@@ -26,9 +26,26 @@ logger = logging.getLogger(__name__)
 class OllamaVerifier:
     """Dispatches verification and LaTeX refinement tasks to local Ollama models."""
 
-    def __init__(self, semantic_model: str = None, healer_model: str = None, api_base: str = OLLAMA_API_BASE, auto_start: bool = True) -> None:
+    def __init__(
+        self,
+        semantic_model: str = None,
+        healer_model: str = None,
+        vision_model: str = None,
+        api_base: str = OLLAMA_API_BASE,
+        auto_start: bool = True,
+    ) -> None:
+        """Initialize local Ollama AI verifier.
+
+        Args:
+            semantic_model: Preferred model for semantic and reading flow audit.
+            healer_model: Preferred model for code/LaTeX/table reconstruction.
+            vision_model: Preferred multimodal model for layout and image verification.
+            api_base: Base URL of local Ollama daemon (127.0.0.1:11434).
+            auto_start: Whether to auto-wake Ollama daemon if offline.
+        """
         self.semantic_model = semantic_model or DEFAULT_OLLAMA_SEMANTIC_MODEL
         self.healer_model = healer_model or DEFAULT_OLLAMA_HEALER_MODEL
+        self.vision_model = vision_model or DEFAULT_OLLAMA_VISION_MODEL
         self.api_base = api_base
         if auto_start:
             self.is_available = ensure_ollama_running(self.api_base)
@@ -80,10 +97,20 @@ class OllamaVerifier:
             "deepseek-r1:8b", "deepseek-r1:14b",
             "gemma4:12b", "llama3.1:8b"
         ]
+        vision_candidates = [
+            "minicpm-v:latest", "minicpm-v", "llama3.2-vision:latest", "llama3.2-vision",
+            "qwen2-vl:latest", "qwen2-vl", "llava:latest"
+        ]
 
         self.semantic_model = select_best(self.semantic_model, semantic_candidates)
         self.healer_model = select_best(self.healer_model, healer_candidates)
-        logger.info("OllamaVerifier: selected semantic_model='%s', healer_model='%s'", self.semantic_model, self.healer_model)
+        self.vision_model = select_best(self.vision_model, vision_candidates)
+        logger.info(
+            "OllamaVerifier: selected semantic_model='%s', healer_model='%s', vision_model='%s'",
+            self.semantic_model,
+            self.healer_model,
+            self.vision_model,
+        )
 
     def verify_chapter_semantics(self, chapter_title: str, markdown_sample: str) -> dict:
         """
@@ -328,14 +355,26 @@ class OllamaVerifier:
         crop_image_path: str,
         markdown_snippet: str,
         element_type: str = "table",
-        vision_model: str = DEFAULT_OLLAMA_VISION_MODEL,
+        vision_model: str = None,
     ) -> dict:
-        """
-        Dispatches targeted base64 crop image + Markdown snippet to local Ollama Vision
-        for fine-grained multimodal layout verification with ZERO token cost.
+        """Dispatches targeted base64 crop image + Markdown snippet to local Ollama Vision.
+
+        Performs fine-grained multimodal layout verification with ZERO cloud token cost.
+
+        Args:
+            crop_image_path: Absolute or relative path to the rendered PDF page PNG.
+            markdown_snippet: Extracted Markdown segment corresponding to this page/element.
+            element_type: Type of element being audited (e.g. 'table', 'exhibit', 'concept_map').
+            vision_model: Optional model override; defaults to self.vision_model.
+
+        Returns:
+            Dict containing 'available', 'passed', 'defect', 'confidence', and 'model'.
         """
         import base64
         import os
+        import re
+
+        model_to_use = vision_model or self.vision_model or DEFAULT_OLLAMA_VISION_MODEL
 
         if not self.is_available or not os.path.exists(crop_image_path):
             return {
@@ -343,6 +382,7 @@ class OllamaVerifier:
                 "passed": True,
                 "verdict": "SKIPPED",
                 "defect": None,
+                "model": model_to_use,
             }
 
         try:
@@ -352,7 +392,7 @@ class OllamaVerifier:
             prompt = PromptRegistry.get_multimodal_layout_audit(element_type, markdown_snippet)
 
             payload = {
-                "model": vision_model,
+                "model": model_to_use,
                 "prompt": prompt,
                 "images": [img_b64],
                 "format": "json",
@@ -367,12 +407,15 @@ class OllamaVerifier:
             )
             with urllib.request.urlopen(req, timeout=OLLAMA_GENERATE_TIMEOUT) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
-                res_obj = json.loads(data.get("response", "{}"))
+                resp_text = data.get("response", "{}")
+                match = re.search(r'\{.*\}', resp_text, re.DOTALL)
+                res_obj = json.loads(match.group(0)) if match else json.loads(resp_text)
                 return {
                     "available": True,
                     "passed": res_obj.get("passed", True),
                     "defect": res_obj.get("defect"),
                     "confidence": res_obj.get("confidence", 0.9),
+                    "model": model_to_use,
                 }
         except Exception as e:
             logger.debug("ROI Vision verification skipped – %s", e)
@@ -381,4 +424,5 @@ class OllamaVerifier:
                 "passed": True,
                 "verdict": "ERROR_FALLBACK",
                 "defect": None,
+                "model": model_to_use,
             }

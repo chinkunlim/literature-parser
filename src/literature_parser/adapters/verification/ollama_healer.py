@@ -192,8 +192,61 @@ class OllamaHealer:
         modified = (healed != md_text)
         return healed, modified
 
+    def heal_table_block_with_llm(self, table_block: str, issue_hint: str = "") -> Tuple[str, bool]:
+        """Surgically repairs broken Markdown table using local Ollama model (Qwen2.5).
+
+        Enforces numerical invariance AST check so that no numbers are accidentally omitted.
+
+        Args:
+            table_block: Broken or misaligned Markdown table text.
+            issue_hint: Description of formatting defect or column mismatch.
+
+        Returns:
+            Tuple of (repaired_table_block, was_modified).
+        """
+        if not self.is_available:
+            return table_block, False
+
+        prompt = (
+            "You are a precise Markdown repair engine. The following Markdown table has formatting issues:\n"
+            f"Issue: {issue_hint or 'Mismatched column counts, uneven pipe delimiters, or malformed rows'}\n\n"
+            f"```markdown\n{table_block.strip()}\n```\n\n"
+            "Instructions:\n"
+            "1. Output ONLY the clean, valid Markdown table with consistent column counts across all rows.\n"
+            "2. Preserve all numeric values, text, and statistical symbols without omission or alteration.\n"
+            "3. Do not include chat explanations or commentary."
+        )
+
+        response = self._query_ollama_raw(prompt)
+        if not response:
+            return table_block, False
+
+        m = re.search(r'```(?:markdown)?\s*([\s\S]*?)```', response)
+        candidate = m.group(1).strip() if m else response.strip()
+
+        if "|" not in candidate or "---" not in candidate:
+            return table_block, False
+
+        # Numerical invariance check: verify no numbers were dropped
+        orig_nums = set(re.findall(r'\b\d+(?:\.\d+)?\b', table_block))
+        fixed_nums = set(re.findall(r'\b\d+(?:\.\d+)?\b', candidate))
+        if orig_nums and not orig_nums.issubset(fixed_nums):
+            missing = orig_nums - fixed_nums
+            logger.warning("OllamaHealer table repair rejected: dropped numbers %s", missing)
+            return table_block, False
+
+        return candidate, True
+
     def _heal_tables(self, md_text: str, details: str) -> Tuple[str, bool]:
-        """Normalizes table separator rows and column alignment."""
+        """Normalizes table separator rows and column alignment.
+
+        Args:
+            md_text: Raw Markdown document text.
+            details: Error or warning message describing the table issue.
+
+        Returns:
+            Tuple of (healed_markdown, was_modified).
+        """
         lines = md_text.split('\n')
         new_lines = []
         modified = False
@@ -214,7 +267,19 @@ class OllamaHealer:
             else:
                 new_lines.append(line)
 
-        return '\n'.join(new_lines), modified
+        res_text = '\n'.join(new_lines)
+
+        # If details report column mismatch or severe misalignment, attempt LLM block repair
+        if self.is_available and ("column" in details.lower() or "mismatch" in details.lower() or "pipe" in details.lower()):
+            tbl_pat = re.compile(r'(\|[^\n]+\|\n\|(?:\s*[-:]+\s*\|)+(?:\n\|[^\n]+\|)+)')
+            for m in tbl_pat.finditer(res_text):
+                block = m.group(1)
+                fixed_block, was_fixed = self.heal_table_block_with_llm(block, details)
+                if was_fixed and fixed_block != block:
+                    res_text = res_text.replace(block, fixed_block, 1)
+                    modified = True
+
+        return res_text, modified
 
     def _heal_headings(self, md_text: str, details: str) -> Tuple[str, bool]:
         """Fixes orphan headers that have no body content or broken hash syntax."""

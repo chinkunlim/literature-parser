@@ -354,6 +354,25 @@ class AccuracyVerifier:
             else:
                 print(f"  • Local Ollama: [WARN] {ai_res['feedback']}")
 
+        # 9. Multimodal Visual Quality & Fidelity Audit
+        ch_pdf_candidates = list(ch_path.glob("*.pdf"))
+        if ch_pdf_candidates:
+            from literature_parser.adapters.verification.visual_auditor import VisualAuditor
+            vis_res = VisualAuditor.audit_chapter(
+                ch_pdf=ch_pdf_candidates[0],
+                ch_md=md_file,
+                output_dir=ch_path,
+                use_vision_model=self.use_ollama,
+            )
+            results['checks']['visual_audit'] = vis_res
+            v_status = vis_res['status']
+            v_score = vis_res['quality_score']
+            v_model = vis_res.get('vision_model') or 'Heuristics'
+            print(f"  • Multimodal Visual Fidelity: [{v_status}] (Score: {v_score}/10, Model: {v_model})")
+            for ap in vis_res.get('audited_pages', []):
+                if not ap.get('verified', True) and ap.get('vision_defect'):
+                    print(f"      - [p.{ap['page']} {ap['feature']}] {ap['vision_defect']}")
+
         overall_str = "SUCCESS (PASS)" if results['passed'] else "FAILED (CHECK ISSUES)"
         print(f"{'-'*70}\nChapter Overall Accuracy: [{overall_str}]\n{'='*70}\n")
         return results

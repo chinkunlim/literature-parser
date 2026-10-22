@@ -93,7 +93,8 @@ literature-parser/
 │   │   ├── TASK-029-e2e-markdown-conversion-workflow.json
 │   │   ├── TASK-030-fix-runaway-blockquotes-h4-headi.json
 │   │   ├── TASK-031-fix-baseline-clustering-cross-sp.json
-│   │   └── TASK-032-fix-ch15-layout-collapse-exhibit.json
+│   │   ├── TASK-032-fix-ch15-layout-collapse-exhibit.json
+│   │   └── TASK-033-integrate-minicpm-v-visual-audit.json
 │   ├── framework.lock                      # [框架鎖定檔] 框架版本與檔案雜湊，供 update_framework 判斷是否被修改
 │   └── project.toml                        # [專案設定・各專案自訂] 語言、分層、品質門檻、指令、業務規則
 ├── .cursor/                                # [Agent 轉接] Cursor 規則 (自動產生)
@@ -395,7 +396,8 @@ literature-parser/
 │   ├── test_v45_front_matter_and_pure_chapter1.py
 │   ├── test_v46_speed_and_quality_optimization.py
 │   ├── test_v47_marker_layout_framing_and_anchoring.py
-│   └── test_v48_theme_configuration_and_override.py
+│   ├── test_v48_theme_configuration_and_override.py
+│   └── test_v50_minicpm_visual_audit_and_surgical_healing.py
 ├── web/
 │   ├── app.js
 │   ├── dashboard.html

@@ -336,18 +336,27 @@ class PromptRegistry:
     # --------------------------------------------------------------------------
     @staticmethod
     def get_multimodal_layout_audit(element_type: str, markdown_snippet: str) -> str:
-        """Returns user prompt for visual comparison between crop image and extracted Markdown."""
+        """Returns user prompt for visual comparison between crop image and extracted Markdown.
+
+        Args:
+            element_type: Description of the element (e.g. 'table', 'exhibit', 'concept map').
+            markdown_snippet: The extracted markdown string to evaluate.
+
+        Returns:
+            Formatted prompt string instructing strict visual layout comparison.
+        """
         return (
-            f"You are an expert textbook layout auditor. Compare the attached original textbook {element_type} image "
-            f"with the following extracted Markdown representation:\n\n"
-            f"```markdown\n{markdown_snippet[:1500]}\n```\n\n"
-            f"Audit criteria:\n"
-            f"1. Are all key headers/nodes present without omissions?\n"
-            f"2. Is the structure faithful to the original image?\n"
-            f"Respond ONLY in valid JSON format:\n"
-            f'{{"passed": true, "defect": null, "confidence": 0.95}}\n'
-            f'If flawed, return:\n'
-            f'{{"passed": false, "defect": "brief description of defect", "confidence": 0.95}}'
+            f"You are a rigorous textbook layout auditor. Compare the attached original textbook page image ({element_type}) "
+            f"against the provided extracted Markdown snippet:\n\n"
+            f"```markdown\n{markdown_snippet[:2000]}\n```\n\n"
+            "Audit Checklist:\n"
+            "1. Are key table data rows, columns, or numeric values from the image missing or collapsed?\n"
+            "2. Are headings or box callouts fragmented or truncated?\n"
+            "3. Is the extracted representation faithful to the visual layout?\n\n"
+            "Respond ONLY in valid JSON format:\n"
+            '{"passed": true, "defect": null, "confidence": 0.95}\n'
+            "If data rows/columns are missing or layout is severely collapsed, return:\n"
+            '{"passed": false, "defect": "<concise description of missing or collapsed content>", "confidence": 0.90}'
         )
 
     # --------------------------------------------------------------------------

@@ -345,3 +345,15 @@
 ### [2026-10-22 09:22 UTC] 建立任務 `TASK-026`: Test split and profile pipeline for Group Counseling scanned book (by `antigravity`)
 - **狀態**: `in_progress`
 - **相關範圍**: `-`
+
+### [2026-10-22 09:22 UTC] 認領任務 `TASK-026` (Test split and profile pipeline for Group Counseling scanned book) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`
+
+### [2026-10-22 09:24 UTC] 完成任務 `TASK-026` — Test split and profile pipeline for Group Counseling scanned book (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: Verified split and profile pipeline on Group Counseling scanned book without outline (22 sections, 500 pages in 0.34s)
+
+### [2026-10-22 09:27 UTC] 建立任務 `TASK-027`: Test Markdown export on a chapter of Research Methods 13th ed (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`

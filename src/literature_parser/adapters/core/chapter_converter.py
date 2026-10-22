@@ -32,6 +32,7 @@ from literature_parser.services.utils.anki_exporter import AnkiExporter
 from literature_parser.services.utils.text_utils import stitch_cross_page_continuity
 from literature_parser.adapters.verification.layout_healer import LayoutAutoHealer
 from literature_parser.adapters.verification.review_manager import ReviewManager
+from literature_parser.adapters.verification.visual_auditor import VisualAuditor
 
 logger = logging.getLogger(__name__)
 
@@ -406,6 +407,18 @@ def write_chapter_outputs(
             )
             if count > 0:
                 logger.info("Exported %d Anki flashcard(s) to %s", count, anki_path.name)
+
+    # Multimodal Visual Quality Audit
+    try:
+        VisualAuditor.audit_chapter(
+            ch_pdf=ch_pdf,
+            ch_md=md_file,
+            output_dir=ch_dir,
+            use_vision_model=True,
+        )
+    except Exception as vis_err:
+        logger.debug("VisualAuditor execution skipped for %s: %s", ch_name, vis_err)
+
     return md_file
 
 

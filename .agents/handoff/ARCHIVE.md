@@ -185,3 +185,7 @@
 ### [2026-10-22 03:03 UTC] 認領任務 `TASK-015` (更新全專案 Markdown 文件：架構、規格、變更日誌與使用說明) (by `antigravity`)
 - **相關範圍**: `-`
 - **接棒自**: `antigravity`
+
+### [2026-10-22 03:06 UTC] 完成任務 `TASK-015` — 更新全專案 Markdown 文件：架構、規格、變更日誌與使用說明 (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: Synchronized all project markdown documentation: README.md, PROJECT_RULES.md, SPECS.md, SPEC-001, SPEC-005, DECISIONS.md, ADR-004, KNOWN_ISSUES.md, ISSUE-004, CHANGELOG.md, and synchronized agent entrypoints.

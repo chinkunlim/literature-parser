@@ -172,16 +172,21 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
     def _is_running_footer(top: float, ph: float, txt: str, footer_ratio: float = 0.08, is_journal: bool = False) -> bool:
         """Determines if a text element is part of the bottom running footer."""
         clean = txt.strip()
-        cut_ratio = max(footer_ratio, 0.08)
-        if top > ph * (1.0 - cut_ratio):
-            return bool(re.match(r'^\d+$', clean) or 'copyright' in clean.lower() or re.match(r'^\d{1,4}\s*-\s*\d{1,4}$', clean) or re.search(r'\b(?:pubs\.aip\.org|Downloaded from|doi\.org|\b\d{6}-\d+\b)\b', clean, re.IGNORECASE))
+        cut_ratio = max(footer_ratio, 0.12)
         # Also drop standalone page numbers or article IDs in bottom 10%
         # Also drop running copyright notices or standalone page numbers in bottom 12%
-        if top > ph * 0.88:
-            if re.search(r'\b(?:Copyright|All Rights Reserved|Cengage Learning|May not be|WCN\s*02)\b', clean, re.IGNORECASE):
-                return True
+        if top > ph * (1.0 - cut_ratio):
+            # Standalone page numbers
             if re.match(r'^\d{1,4}$', clean) or re.search(r'^\d+,\s*\d+-\d+$', clean):
                 return True
+            # Running copyright, publisher, and permission notices
+            if re.search(
+                r'\b(?:copyright|all rights reserved|cengage learning|may not be|wcn\s*02|duplicated|reproduced with permission)\b',
+                clean,
+                re.IGNORECASE,
+            ):
+                return True
+            # DOI & repository notices
             if re.search(r'\b(?:pubs\.aip\.org|Downloaded from|doi\.org|\b\d{6}-\d+\b)\b', clean, re.IGNORECASE):
                 return True
         return False

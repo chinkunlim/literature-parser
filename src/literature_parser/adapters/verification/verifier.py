@@ -91,6 +91,7 @@ class AccuracyVerifier:
 
         # Check if chapter is front matter (cover, publisher imprint, copyright page)
         is_front_matter = ch_name.lower().startswith(('00-', 'cover', 'publish'))
+        is_back_matter = any(bm in ch_name.lower() for bm in ('glossary', 'references', 'index', 'author-index', 'subject-index'))
         is_journal = False
         candidates = [
             ch_path / "document_profile.json",
@@ -275,7 +276,7 @@ class AccuracyVerifier:
         infix_sym_res = check_infix_math_in_words(md_content)
         head_int_res  = check_heading_prose_intrusion(md_content)
         tbl_ban_res   = check_table_banner_integrity(md_content)
-        head_den_res  = check_heading_density(md_content, total_tokens, is_front_matter, is_journal)
+        head_den_res  = check_heading_density(md_content, total_tokens, is_front_matter, is_journal, is_back_matter)
         hard_wrap_res = check_excessive_hard_wraps(md_content)
 
         semantic_pass = (

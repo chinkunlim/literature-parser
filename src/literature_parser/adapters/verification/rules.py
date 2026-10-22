@@ -222,8 +222,8 @@ def check_sentence_completeness(content: str) -> dict:
     incomplete_openings = []
 
     for para in paragraphs:
-        # Skip headings, bullet items, image references, HTML tags
-        if para.startswith(('#', '-', '*', '!', '|', '<')):
+        # Skip headings, bullet items, blockquotes, image references, HTML tags
+        if para.startswith(('#', '-', '*', '!', '|', '<', '>')):
             continue
         # Skip lettered choices like 'a. ', 'b. ', '(a) ', '1. '
         if re.match(r'^(?:\([a-zA-Z0-9]+\)|[a-zA-Z0-9][\.\)])\s+', para):
@@ -385,11 +385,11 @@ def check_table_banner_integrity(content: str) -> dict:
     }
 
 
-def check_heading_density(content: str, word_count: int, is_front_matter: bool = False, is_journal: bool = False) -> dict:
+def check_heading_density(content: str, word_count: int, is_front_matter: bool = False, is_journal: bool = False, is_back_matter: bool = False) -> dict:
     """
     Validates that substantial textbook chapters have sufficient heading hierarchy.
     """
-    if is_front_matter or is_journal or word_count < 1000:
+    if is_front_matter or is_back_matter or is_journal or word_count < 1000:
         return {'passed': True, 'heading_count': len([l for l in content.splitlines() if l.strip().startswith(('## ', '### '))]), 'word_count': word_count}
 
     headings = [l for l in content.splitlines() if l.strip().startswith(('## ', '### '))]

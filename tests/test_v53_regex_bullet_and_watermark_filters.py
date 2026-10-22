@@ -167,6 +167,31 @@ class TestRegexBulletAndWatermarkFilters(unittest.TestCase):
         self.assertIn("7. Question begins here", cleaned)
         self.assertIn("Normal text line here.", cleaned)
 
+    def test_back_matter_heading_density_exemption(self):
+        """
+        Verifies check_heading_density exempts back matter reference sections like Glossary.
+        """
+        from literature_parser.adapters.verification.rules import check_heading_density
+        glossary_md = "# Glossary\n\nDefinition 1: A very long glossary text..." * 100
+        res = check_heading_density(glossary_md, word_count=8000, is_back_matter=True)
+        self.assertTrue(res["passed"], f"Back matter Glossary should pass heading density: {res}")
+
+    def test_running_footer_filters_wcn_and_permissions(self):
+        """
+        Verifies _is_running_footer catches WCN codes and permission lines in bottom margin.
+        """
+        ph = 687.0
+        wcn_line = "be copied, scanned, or duplicated, in whole or in part. WCN 02-200-202"
+        self.assertTrue(
+            DigitalPDFParser._is_running_footer(top=ph * 0.95, ph=ph, txt=wcn_line),
+            "WCN line in bottom margin must be detected as running footer"
+        )
+        perm_line = "*This material is reproduced with permission of John Wiley & Sons, Inc.*"
+        self.assertTrue(
+            DigitalPDFParser._is_running_footer(top=ph * 0.95, ph=ph, txt=perm_line),
+            "Permission note in bottom margin must be detected as running footer"
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

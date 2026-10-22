@@ -91,7 +91,8 @@ literature-parser/
 │   │   ├── TASK-027-test-markdown-export-on-a-chapte.json
 │   │   ├── TASK-028-test-output-verification-and-aud.json
 │   │   ├── TASK-029-e2e-markdown-conversion-workflow.json
-│   │   └── TASK-030-fix-runaway-blockquotes-h4-headi.json
+│   │   ├── TASK-030-fix-runaway-blockquotes-h4-headi.json
+│   │   └── TASK-031-fix-baseline-clustering-cross-sp.json
 │   ├── framework.lock                      # [框架鎖定檔] 框架版本與檔案雜湊，供 update_framework 判斷是否被修改
 │   └── project.toml                        # [專案設定・各專案自訂] 語言、分層、品質門檻、指令、業務規則
 ├── .cursor/                                # [Agent 轉接] Cursor 規則 (自動產生)

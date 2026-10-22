@@ -601,12 +601,18 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 if abs(c_top - item[0]) <= max_v:
                     # In multi-column layouts, don't mix left-column and right-column items into the same baseline cluster
                     if not treat_as_single_col:
-                        c_has_left = any(x[1] < split_x and (x[1] + x[2]) < split_x for x in c)
-                        c_has_right = any(x[1] >= split_x for x in c)
-                        if item_is_left and c_has_right:
-                            continue
-                        if item_is_right and c_has_left:
-                            continue
+                        # If item is adjacent horizontally to an existing item in this cluster (gap < 20), it's part of the same line!
+                        is_horizontally_adjacent = any(
+                            abs(item[1] - (x[1] + x[2])) < 20 or abs(x[1] - (item[1] + item[2])) < 20
+                            for x in c
+                        )
+                        if not is_horizontally_adjacent:
+                            c_has_left = any(x[1] < split_x and (x[1] + x[2]) < split_x for x in c)
+                            c_has_right = any(x[1] >= split_x for x in c)
+                            if item_is_left and c_has_right:
+                                continue
+                            if item_is_right and c_has_left:
+                                continue
                     matched_c = c
                     break
             if matched_c is not None:
@@ -802,7 +808,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             is_obj = not is_journal and bool(re.match(r'^(?:\*\*)?\d+\.\d+(?:\*\*)?(?:\s+|$)', text.strip()))
 
             # Check if continuation of previous objective banner
-            if blocks and re.search(r'[-*>] 🎯', blocks[-1]) and (last_top is not None and top - last_top < 30):
+            if blocks and re.search(r'🎯', blocks[-1]) and (last_top is not None and top - last_top < 30):
                 if not re.search(r'[.?!:]$', blocks[-1].strip()):
                     flush_p()
                     blocks[-1] = blocks[-1] + " " + clean_t
@@ -1070,7 +1076,10 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                     sq_parts.append(clean_nxt)
                     sq_idx += 1
 
-                sq_text = '\n\n'.join(sq_parts).strip()
+                if all(re.match(r'^\s*[-*•]\s+', p.strip()) for p in sq_parts if p.strip()):
+                    sq_text = '\n'.join(sq_parts).strip()
+                else:
+                    sq_text = '\n\n'.join(sq_parts).strip()
                 quoted = [f"> {l}" if l.strip() else ">" for l in sq_text.splitlines()]
                 callout = f"> {sq_callout_type} **{sq_title}**\n" + '\n'.join(quoted)
                 formatted_sq.append(callout)

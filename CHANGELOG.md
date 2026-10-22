@@ -41,6 +41,7 @@ All notable changes to **literature-parser** are documented here
 - fix(config): standardize DATA_DIR hierarchy and route all data paths through AppConfig (by `@antigravity`)
 - fix(verification): refine layout auditor TOC scope and adapt cli_audit for book chapters (TASK-028) (by `@antigravity`)
 - fix(parser): eliminate runaway blockquotes, isolate H4 headings, suppress duplicate table images, and enhance Ollama multi-window verification (TASK-030) (by `@antigravity`)
+- fix(parser): resolve cross-column baseline fragment split, multiline LO continuations, duplicate chapter slug heading, and study questions callout list spacing (TASK-031) (by `@antigravity`)
 
 ### Documentation
 - docs: update and synchronize all project markdown documentation (by `@antigravity`)

@@ -5,10 +5,10 @@
 <!-- LIVE_STATE_START -->
 ## 📊 即時狀態看板 (Live Snapshot)
 
-- **最後更新時間**: `2026-10-22 12:50 UTC`
+- **最後更新時間**: `2026-10-22 13:04 UTC`
 - **最近操作 Agent**: `antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `c8e862f feat(orchestrator): support comma-separated chapter filtering and fix outline hierarchy tree (TASK-029) [agent:antigravity]`
+- **最新 Git Commit**: `26023a2 fix(parser): eliminate runaway blockquotes, isolate H4 headings, suppress duplicate table images, and enhance Ollama multi-window verification (TASK-030) [agent:antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
@@ -17,6 +17,18 @@
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-10-22 13:04 UTC] 完成任務 `TASK-031` — Fix baseline clustering cross-split, LO multiline continuation, duplicate chapter slug header, and study questions callout list spacing (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: (無)
+
+### [2026-10-22 13:01 UTC] 認領任務 `TASK-031` (Fix baseline clustering cross-split, LO multiline continuation, duplicate chapter slug header, and study questions callout list spacing) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`
+
+### [2026-10-22 13:00 UTC] 建立任務 `TASK-031`: Fix baseline clustering cross-split, LO multiline continuation, duplicate chapter slug header, and study questions callout list spacing (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
 
 ### [2026-10-22 12:50 UTC] 完成任務 `TASK-030` — Fix runaway blockquotes, H4 headings, table duplication, and Ollama sample blindspots (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
@@ -85,19 +97,3 @@
 ### [2026-10-22 09:05 UTC] 認領任務 `TASK-025` (Test split and profile pipeline for Research Methods 13th ed) (by `antigravity`)
 - **相關範圍**: `-`
 - **接棒自**: `antigravity`
-
-### [2026-10-22 09:05 UTC] 建立任務 `TASK-025`: Test split and profile pipeline for Research Methods 13th ed (by `antigravity`)
-- **狀態**: `in_progress`
-- **相關範圍**: `-`
-
-### [2026-10-22 08:58 UTC] Session Closeout (結束對話收尾) (by `antigravity`)
-- **檢查結果**: 測試與 Code Review Guard 通過
-- **目標**: 整理 DATA_DIR 之 input 與 output 目錄結構，修正全域狀態路徑誤判 bug，並更新全專案 Markdown 文件
-- **錯誤與根因**: GlobalStateManager 在 sync_from_output_dir 時使用 'literature' in str(status_json) 比對，因專案路徑含 literature-parser 導致所有書籍被誤歸類為論文 -> 根本原因為字串包含判斷過寬 -> 改為 status_json.rela
-- **下一步**: 接續實測大型數位教科書或期刊論文批次轉檔，檢驗新版輸入路由與連字號目錄命名
-- **交接備註**: DATA_DIR 目錄重整完成，297 項測試全數通過，ADR-008 與 ISSUE-005 已收錄
-- **本機對話紀錄**: `.agents/conversations/2026-10-22-1658-antigravity-summary.md`（只在這台電腦）
-
-### [2026-10-22 08:58 UTC] 完成任務 `TASK-024` — 更新專案所有 Markdown 文件以反映最新目錄結構與架構規範 (by `antigravity`)
-- **狀態**: ✅ 已完成 (`done`)
-- **完成摘要**: 更新專案所有 Markdown 文件（README、PROJECT_RULES、ARCHITECTURE、SPECS、EVALS、CHANGELOG、DECISIONS、KNOWN_ISSUES），新增 ADR-008 與 ISSUE-005

@@ -146,6 +146,28 @@ class ConfigManager:
             "shared_symbols": symbols_data.get("unicode_to_latex", {}),
         }
 
+    @classmethod
+    def load_front_matter_taxonomy(cls) -> list:
+        """Loads canonical Front Matter taxonomy and keyword patterns from shared knowledge.
+
+        Returns:
+            List of Front Matter category dictionaries ordered by priority.
+        """
+        config_dir = cls.get_config_root() / "shared_knowledge"
+        data = cls.load_json(config_dir / "front_matter_taxonomy.json")
+        return data.get("front_matter_categories", [])
+
+    @classmethod
+    def load_pedagogical_blocks(cls) -> dict:
+        """Loads standard textbook pedagogical blocks repository from shared knowledge.
+
+        Returns:
+            Dictionary mapping block identifiers to their definition schemas.
+        """
+        config_dir = cls.get_config_root() / "shared_knowledge"
+        data = cls.load_json(config_dir / "pedagogical_blocks.json")
+        return data.get("pedagogical_blocks", {})
+
     # -------------------------------------------------------------------------
     # Tier 4: Instance Profile
     # -------------------------------------------------------------------------

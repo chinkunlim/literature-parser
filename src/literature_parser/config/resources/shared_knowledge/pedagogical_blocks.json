@@ -1,0 +1,75 @@
+{
+  "description": "Standard repository of textbook pedagogical special blocks across STEM, Humanities, Business, and Medicine.",
+  "pedagogical_blocks": {
+    "margin_glossary": {
+      "category": "sidebar",
+      "display_name": "Margin Glossary & Key Terms",
+      "position": "outer_margin",
+      "title_regex": "(?i)^(?:Key\\s+Term|Glossary|Definition|Concept\\s+Check)\\b",
+      "render_style": "sidebar_note"
+    },
+    "dialogue": {
+      "category": "conversational",
+      "display_name": "Dialogue & Conversational Scenario",
+      "position": "in_flow",
+      "title_regex": "(?i)^(?:Dialogue|Conversation|Script|Scene|Case\\s+Interview)\\b",
+      "render_style": "blockquote"
+    },
+    "worked_example": {
+      "category": "example",
+      "display_name": "Worked Example & Step-by-Step Problem",
+      "position": "in_flow",
+      "title_regex": "(?i)^(?:Worked\\s+Example|Example\\s+\\d+|Problem\\s+\\d+|Sample\\s+Problem)\\b",
+      "render_style": "callout_box"
+    },
+    "case_study": {
+      "category": "case",
+      "display_name": "Case Study & Real-World Vignette",
+      "position": "in_flow",
+      "title_regex": "(?i)^(?:Case\\s+Study|Case\\s+in\\s+Point|Clinical\\s+Vignette|Real[\\-\\s]World\\s+Case|Field\\s+Report)\\b",
+      "render_style": "callout_box"
+    },
+    "concept_map": {
+      "category": "visual",
+      "display_name": "Concept Map & Visual Synthesis",
+      "position": "full_width",
+      "title_regex": "(?i)^(?:Concept\\s+Map|Mind\\s+Map|Visual\\s+Summary|Concept\\s+Matrix)\\b",
+      "render_style": "diagram"
+    },
+    "ethical_dilemma": {
+      "category": "discussion",
+      "display_name": "Ethical Dilemma & Critical Debate",
+      "position": "in_flow",
+      "title_regex": "(?i)^(?:Ethics\\s+in\\s+Practice|Ethical\\s+Dilemma|Debate\\s+Box|Point[\\s\\/]Counterpoint|Critical\\s+Issue)\\b",
+      "render_style": "callout_box"
+    },
+    "learning_objectives": {
+      "category": "pedagogy",
+      "display_name": "Learning Objectives",
+      "position": "in_flow",
+      "title_regex": "(?i)^(?:Learning\\s+Objectives|Chapter\\s+Goals|After\\s+reading\\s+this\\s+chapter|Core\\s+Competencies)\\b",
+      "render_style": "list"
+    },
+    "chapter_summary": {
+      "category": "eoc",
+      "display_name": "Chapter Summary & Takeaways",
+      "position": "in_flow",
+      "title_regex": "(?i)^(?:Chapter\\s+Summary|Summary|Key\\s+Takeaways|Review\\s+Summary)\\b",
+      "render_style": "section"
+    },
+    "review_questions": {
+      "category": "eoc",
+      "display_name": "Review & Critical Thinking Questions",
+      "position": "in_flow",
+      "title_regex": "(?i)^(?:Review\\s+Questions|Discussion\\s+Questions|Critical\\s+Thinking\\s+Exercises|Chapter\\s+Problems)\\b",
+      "render_style": "section"
+    },
+    "formula_box": {
+      "category": "math",
+      "display_name": "Key Formula & Equation Panel",
+      "position": "in_flow",
+      "title_regex": "(?i)^(?:Key\\s+Formulas?|Important\\s+Equations?|Formula\\s+Summary)\\b",
+      "render_style": "math_block"
+    }
+  }
+}

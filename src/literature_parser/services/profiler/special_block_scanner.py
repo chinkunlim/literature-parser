@@ -122,6 +122,10 @@ class SpecialBlockScanner:
             logger.info("SpecialBlockScanner: journal profile initialized with clean academic defaults.")
             return profile
 
+        from literature_parser.services.config_manager import ConfigManager
+        ped_repo = ConfigManager.load_pedagogical_blocks()
+        detected_ped_blocks = set(profile.get("special_blocks", {}).get("active_blocks", []))
+
         discovered_blocks: List[Dict] = list(profile.get("discovered_blocks", []))
         existing_keywords = {b["keyword"] for b in discovered_blocks if b.get("keyword")}
         existing_types    = {b["type"] for b in discovered_blocks}
@@ -178,6 +182,16 @@ class SpecialBlockScanner:
                 if not has_margin_glossary and self._has_margin_glossary(texts, pw, ph, pg):
                     has_margin_glossary = True
 
+                # Match against shared pedagogical blocks taxonomy
+                for b_key, b_def in ped_repo.items():
+                    pat = b_def.get("title_regex")
+                    if not pat:
+                        continue
+                    for _, _, _, _, t_txt in texts:
+                        if re.search(pat, t_txt.strip()):
+                            detected_ped_blocks.add(b_key)
+                            break
+
                 # Column role detection
                 role_dict = self._classify_column_roles(texts, pw, ph, pg)
                 if role_dict:
@@ -220,9 +234,22 @@ class SpecialBlockScanner:
         column_roles = self._finalise_column_roles(column_role_votes)
 
         # Write back to profile
+        if has_margin_glossary:
+            detected_ped_blocks.add("margin_glossary")
+        if has_concept_map:
+            detected_ped_blocks.add("concept_map")
+        if lo_formats:
+            detected_ped_blocks.add("learning_objectives")
+        if eoc_headings:
+            detected_ped_blocks.add("chapter_summary")
+
         profile.setdefault("special_blocks", {})
         profile["special_blocks"]["has_concept_map"]    = has_concept_map
         profile["special_blocks"]["has_margin_glossary"] = has_margin_glossary
+        profile["special_blocks"]["active_blocks"] = sorted(list(detected_ped_blocks))
+        profile["special_blocks"]["block_rules"] = {
+            k: ped_repo[k] for k in detected_ped_blocks if k in ped_repo
+        }
         if lo_formats:
             best_fmt, _ = lo_formats.most_common(1)[0]
             lo_regex = next((r for _, n, r in _LO_FORMAT_PATTERNS if n == best_fmt), r"^\d+\.\d+")

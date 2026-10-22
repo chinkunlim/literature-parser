@@ -154,12 +154,12 @@ flowchart TD
 flowchart TD
     L1["階層 1：全局原形基準 (Archetype Defaults)<br>config/resources/archetypes/{textbook,literature}.json"]
     L2["階層 2：出版社模板與噪音規則 (Publisher Rules)<br>config/resources/publishers/{pub}.json + profiles/literature_{pub}.json"]
-    L3["階層 3：跨文件共享知識 (Shared Knowledge Repository)<br>config/resources/shared_knowledge/{literature_sections,symbol_mappings}.json"]
+    L3["階層 3：跨文件共享知識 (Shared Knowledge Repository)<br>config/resources/shared_knowledge/{literature_sections,front_matter_taxonomy,pedagogical_blocks,symbol_mappings}.json"]
     L4["階層 4：個別文件實例 Profile (Instance Canonical Profile)<br>DATA_DIR/output/.../profile.json (鏡像相容 book_profile.json / document_profile.json)"]
 
     L1 -->|基礎排版參數| L2
     L2 -->|合併覆寫樣式| L3
-    L3 -->|累積全域規則| L4
+    L3 -->|累積全域規則與結構分類| L4
     Auditor["格式品質稽核器 (Format Auditor)"] -.->|閉環幾何修正 (Closed-Loop Healing)<br>LEAKED_HEADER / LEAKED_FOOTER| L4
 ```
 
@@ -168,12 +168,17 @@ flowchart TD
    - `ConfigManager` 與各 Parser 具備自動向後相容，讀取時優先查找 `profile.json`，缺失時自動降級讀取 `document_profile.json` 或 `book_profile.json`。
    - 寫入時同時儲存規範之 `profile.json`，並為舊有工具維護相容之鏡像檔案。
 
-2. **強型別領域模型 (`DocumentProfile`)**：
-   - `meta` (`ProfileMetadata`)：文件分類 (`book` / `literature`)、模式 (`digital` / `scanned`)、標題與出版社。
-   - `geometry` (`ProfileGeometry`)：頁面尺寸、`header_cutoff_y`、`footer_cutoff_y`、欄數與中縫 (`gutter_split_x`)。
-   - `typography` (`ProfileTypography`)：H1/H2/H3 字級晉升閾值、內文字級與 Unicode-LaTeX 對照表。
-   - `special_blocks` (`ProfileSpecialBlocks`)：概念圖、邊欄名詞、學習目標 (LO) 與章末問題 (EOC) 正則規則。
+2. **強型別領域模型與排版細節 (`DocumentProfile`)**：
+   - `meta` (`ProfileMetadata`)：文件分類 (`book` / `literature`)、模式 (`digital` / `scanned`)、標題、出版社與前置頁結構清單 (`front_matter_sections`)。
+   - `geometry` (`ProfileGeometry`)：頁面尺寸、`header_cutoff_y`、`footer_cutoff_y`、雙欄中縫 (`gutter_split_x`)、奇偶頁非對稱結構（`PageAsymmetry`，左頁偶數頁邊欄在左、右頁奇數頁邊欄在右）與雙欄跨欄橫幅（`has_spanning_boxes`）。
+   - `typography` (`ProfileTypography`)：H1/H2/H3 字級閾值、內文字級、Unicode-LaTeX 對照、首字下沉（`has_drop_caps`）與圖表標題正則（`caption_patterns`）。
+   - `special_blocks` (`ProfileSpecialBlocks`)：動態教學區塊清單（`active_blocks`，如 `margin_glossary`, `dialogue`, `worked_example`, `case_study`）與對應樣式正則規則（`block_rules`）。
 
-3. **閉環自我修復 (Closed-Loop Layout Healing)**：
+3. **Front Matter 獨立切分與純淨 Chapter 1 保證**：
+   - 書籍大綱自動將 Cover、Title-Page、Publish/Copyright、Dedication、TOC、About-Authors、Preface 等切分出獨立 PDF（`00-01-Cover`、`00-02-Publish`、`00-07-TOC` 等）。
+   - 自動向後探測並校驗真實 Chapter 1 起始頁，徹底杜絕 Chapter 1 吸收前置頁面；所有 Front Matter 均會產出獨立 `.md` 並無縫接入 Obsidian 雙鏈與 EPUB 3 目錄。
+   - 全書 `profile.json` 在切分後由主進程單執行緒建立（`ensure_book_profile`），嚴格排除 `00-*` 前置頁面作為幾何樣本，消除多核心並發爭用。
+
+4. **閉環自我修復 (Closed-Loop Layout Healing)**：
    - 當後期 Format Auditor 或本地 AI 驗證器偵測到頁首殘留 (`LEAKED_HEADER`) 或頁尾殘留 (`LEAKED_FOOTER`) 時，呼叫 `CoordinateCalibrator.adjust_geometry_from_feedback()`。
    - 動態計算並修正幾何截止線，同步重寫本機之 `profile.json` 與鏡像檔案，實現「偵測到一次排版雜訊，即全本自動校正」之閉環自我修復。

@@ -81,3 +81,14 @@
 
 ### [2026-10-21 16:05 UTC] 認領任務 `TASK-010` (遷移批次 10：其他（資料、資源、需人工判斷）) (by `antigravity`)
 - **相關範圍**: `docs/standards/PROJECT_RULES.md, legacy`
+
+### [2026-10-21 16:07 UTC] 完成任務 `TASK-010` — 遷移批次 10：其他（資料、資源、需人工判斷） (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: 其他批次資源遷移完成，JSON 規範檔、LICENSE、資料隔離與環境變數對照全數完成
+
+### [2026-10-21 16:07 UTC] 認領任務 `TASK-004` (遷移批次 4：adapters 層（外部 API、資料庫、檔案 I/O）) (by `antigravity`)
+- **相關範圍**: `src/literature_parser/adapters/, legacy`
+
+### [2026-10-21 16:07 UTC] 完成任務 `TASK-004` — 遷移批次 4：adapters 層（外部 API、資料庫、檔案 I/O） (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: adapters 層遷移完成，8 個適配器模組通過靜態檢查與單元測試，0 critical issues

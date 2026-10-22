@@ -2,6 +2,7 @@
 
 from literature_parser.domain.profiler.profile_schema import (
     DocumentProfile,
+    PageAsymmetry,
     ProfileGeometry,
     ProfileMetadata,
     ProfileSpecialBlocks,
@@ -10,6 +11,7 @@ from literature_parser.domain.profiler.profile_schema import (
 
 __all__ = [
     "DocumentProfile",
+    "PageAsymmetry",
     "ProfileMetadata",
     "ProfileGeometry",
     "ProfileTypography",

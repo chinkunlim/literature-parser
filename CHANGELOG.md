@@ -10,6 +10,7 @@ All notable changes to **literature-parser** are documented here
 - docs(known-issues): document ISSUE-003 on external PDF tools fallback and graceful degradation (by `@antigravity`)
 - feat(pipeline): implement convention-based input segregation and hyphen-delimited naming (by `@antigravity`)
 - feat(profiler): implement DocumentProfile schema, publisher-first inheritance, and unified profile.json (TASK-013) (by `@antigravity`)
+- feat(profiler): implement front matter splitting, pure chapter 1, and layout taxonomy (TASK-014) (by `@antigravity`)
 
 ### Changed
 - docs(migration): mark all migration acceptance criteria as completed (by `@antigravity`)

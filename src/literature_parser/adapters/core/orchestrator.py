@@ -264,9 +264,10 @@ class BookProcessorOrchestrator:
         is_journal_doc = DocumentClassifier.is_journal_article(str(ch_pdf)) or (book_source_pdf and DocumentClassifier.is_journal_article(str(book_source_pdf)))
 
         # Auto-calibrate geometry and scan special blocks on first chapter run if profile missing
+        # (Strictly skipped for 00-* front matter sections)
         cand_canon = book_dir / "profile.json"
         cand_legacy = book_dir / "book_profile.json"
-        if not cand_canon.exists() and not cand_legacy.exists():
+        if not cand_canon.exists() and not cand_legacy.exists() and not ch_name.startswith("00-"):
             try:
                 CoordinateCalibrator.calibrate_and_save_profile(book_dir, ch_pdf)
                 if is_journal_doc:
@@ -290,6 +291,10 @@ class BookProcessorOrchestrator:
         _style = load_style(str(book_dir))
         if is_journal_doc:
             _style["is_journal_article"] = True
+            _style["generate_toc"] = False
+            _style["gloss_placement"] = "none"
+            _style["prepend_chapter_title_if_missing"] = False
+        elif ch_name.startswith("00-"):
             _style["generate_toc"] = False
             _style["gloss_placement"] = "none"
             _style["prepend_chapter_title_if_missing"] = False
@@ -532,6 +537,52 @@ class BookProcessorOrchestrator:
 
         return v_res
 
+    def ensure_book_profile(
+        self,
+        book_dir: Path,
+        sections: list,
+        chapters_root: str,
+        pdf_path: str,
+    ) -> None:
+        """Pre-flight profiling: establishes canonical profile.json using pure body sample.
+
+        Strictly excludes all Front Matter sections ('00-*') to ensure geometry, headers,
+        and typography are calibrated purely from genuine body chapter content.
+
+        Args:
+            book_dir: Output root directory of the book.
+            sections: Discovered section definitions.
+            chapters_root: Path string to chapters subfolder.
+            pdf_path: Full book source PDF filepath.
+        """
+        cand_canon = book_dir / "profile.json"
+        cand_legacy = book_dir / "book_profile.json"
+        if cand_canon.exists() or cand_legacy.exists():
+            return
+
+        body_sections = [s for s in sections if not s['name'].startswith('00-')]
+        if not body_sections:
+            return
+
+        sample_sec = body_sections[0]
+        s_name = sample_sec['name']
+        s_start = sample_sec['start']
+        s_end = sample_sec['end']
+        s_ch_dir = os.path.join(chapters_root, s_name)
+        os.makedirs(s_ch_dir, exist_ok=True)
+        s_ch_pdf = os.path.join(s_ch_dir, f"{s_name}.pdf")
+
+        if not os.path.exists(s_ch_pdf) or os.path.getsize(s_ch_pdf) == 0:
+            PDFSplitter.split_chapter(pdf_path, s_start, s_end, s_ch_pdf)
+
+        try:
+            CoordinateCalibrator.calibrate_and_save_profile(book_dir, Path(s_ch_pdf))
+            scanner = SpecialBlockScanner(book_dir)
+            scanner.scan_and_update([Path(s_ch_pdf)], max_pages_per_chapter=8)
+            logger.info("Pre-flight calibrated book profile from pure body sample %s", s_name)
+        except Exception as e:
+            logger.debug("Automatic pre-flight book calibration skipped: %s", e)
+
     # =========================================================================
     # STAGE 3 & ALL: Full Book / Smart Resume Engine
     # =========================================================================
@@ -589,6 +640,9 @@ class BookProcessorOrchestrator:
 
         ckpt = CheckpointManager(book_out, book_name)
         ckpt.init_chapters(sections)
+
+        # Pre-flight: establish pure body profile before launching workers
+        self.ensure_book_profile(Path(book_out), sections, chapters_root, pdf_path)
 
         if target_chapter:
             clean_q = target_chapter.strip().lower()

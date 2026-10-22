@@ -5,10 +5,10 @@
 <!-- LIVE_STATE_START -->
 ## 📊 即時狀態看板 (Live Snapshot)
 
-- **最後更新時間**: `2026-10-22 02:29 UTC`
+- **最後更新時間**: `2026-10-22 03:01 UTC`
 - **最近操作 Agent**: `antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `b0733a6 feat(pipeline): implement convention-based input segregation and hyphen-delimited naming [agent:antigravity]`
+- **最新 Git Commit**: `49cde46 feat(profiler): implement DocumentProfile schema, publisher-first inheritance, and unified profile.json (TASK-013) [agent:antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
@@ -17,6 +17,18 @@
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-10-22 03:01 UTC] 完成任務 `TASK-014` — Front Matter 獨立切分、全章節 Markdown 轉換與排版細節知識庫 (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: Implemented Front Matter independent PDF splitting, pure Chapter 1 validation, shared knowledge taxonomies (front matter and pedagogical blocks), odd-even asymmetric layout schema, and full sequential Markdown conversion.
+
+### [2026-10-22 02:53 UTC] 認領任務 `TASK-014` (Front Matter 獨立切分、全章節 Markdown 轉換與排版細節知識庫) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`
+
+### [2026-10-22 02:53 UTC] 建立任務 `TASK-014`: Front Matter 獨立切分、全章節 Markdown 轉換與排版細節知識庫 (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
 
 ### [2026-10-22 02:29 UTC] 完成任務 `TASK-013` — 統一 profile.json 規格、出版社階層繼承與強型別 Schema (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
@@ -90,14 +102,3 @@
 
 ### [2026-10-21 16:07 UTC] 認領任務 `TASK-005` (遷移批次 5：services 層（業務流程）) (by `antigravity`)
 - **相關範圍**: `src/literature_parser/services/, legacy`
-
-### [2026-10-21 16:07 UTC] 完成任務 `TASK-004` — 遷移批次 4：adapters 層（外部 API、資料庫、檔案 I/O） (by `antigravity`)
-- **狀態**: ✅ 已完成 (`done`)
-- **完成摘要**: adapters 層遷移完成，8 個適配器模組通過靜態檢查與單元測試，0 critical issues
-
-### [2026-10-21 16:07 UTC] 認領任務 `TASK-004` (遷移批次 4：adapters 層（外部 API、資料庫、檔案 I/O）) (by `antigravity`)
-- **相關範圍**: `src/literature_parser/adapters/, legacy`
-
-### [2026-10-21 16:07 UTC] 完成任務 `TASK-010` — 遷移批次 10：其他（資料、資源、需人工判斷） (by `antigravity`)
-- **狀態**: ✅ 已完成 (`done`)
-- **完成摘要**: 其他批次資源遷移完成，JSON 規範檔、LICENSE、資料隔離與環境變數對照全數完成

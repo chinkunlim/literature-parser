@@ -86,6 +86,130 @@ class PDFAnalyzer:
         return res
 
     @classmethod
+    def match_front_matter_slug(cls, title: str, taxonomy: list) -> str:
+        """Matches a section title against the front matter taxonomy to return its canonical slug.
+
+        Args:
+            title: Section title or page header text.
+            taxonomy: List of front matter category definitions.
+
+        Returns:
+            Canonical slug (e.g. '00-01-Cover', '00-07-TOC') or empty string if unmatched.
+        """
+        if not title:
+            return ""
+        t_clean = title.strip()
+        for cat in taxonomy:
+            patterns = cat.get("regex_patterns", [])
+            for pat in patterns:
+                if re.search(pat, t_clean):
+                    return str(cat.get("canonical_slug", ""))
+        return ""
+
+    @classmethod
+    def detect_front_matter_from_text(cls, pdf_path: str, end_page: int) -> list:
+        """Scans pages 1 to end_page of a PDF to identify standard Front Matter sections.
+
+        Args:
+            pdf_path: Path to PDF file.
+            end_page: Upper page boundary (typically start of Chapter 1 minus 1).
+
+        Returns:
+            List of (page_number, canonical_slug) tuples.
+        """
+        if end_page < 1:
+            return []
+
+        from literature_parser.services.config_manager import ConfigManager
+        taxonomy = ConfigManager.load_front_matter_taxonomy()
+
+        results = [(1, "00-01-Cover")]
+        seen_slugs = {"00-01-Cover"}
+
+        scan_limit = min(end_page, 35)
+        for p in range(1, scan_limit + 1):
+            try:
+                proc = subprocess.run(
+                    ['pdftotext', '-f', str(p), '-l', str(p), pdf_path, '-'],
+                    capture_output=True, timeout=10, check=False
+                )
+                text = proc.stdout.decode('utf-8', errors='ignore').strip()
+            except Exception:
+                text = ""
+
+            if not text:
+                continue
+
+            first_lines = text[:400]
+            matched_slug = cls.match_front_matter_slug(first_lines, taxonomy)
+            if matched_slug and matched_slug not in seen_slugs and p > results[-1][0]:
+                results.append((p, matched_slug))
+                seen_slugs.add(matched_slug)
+
+        return results
+
+    @classmethod
+    def verify_and_isolate_chapter1(
+        cls,
+        pdf_path: str,
+        targets: list,
+        total_pages: int
+    ) -> list:
+        """Ensures Chapter 1 does not start at Cover/TOC and prepends missing Front Matter.
+
+        Args:
+            pdf_path: Path to the target PDF file.
+            targets: List of (page_number, section_name) candidate tuples.
+            total_pages: Total page count of the PDF document.
+
+        Returns:
+            Adjusted and complete list of (page_number, section_name) targets.
+        """
+        if not targets:
+            return targets
+
+        targets.sort(key=lambda x: x[0])
+        first_target_page, first_target_name = targets[0]
+
+        # 1. Check if first target is Chapter 1 but placed at page <= 3
+        is_ch1 = bool(re.search(r'^(?:00-.*)?Ch(?:apter)?\s*0?1\b', first_target_name, re.IGNORECASE))
+        if is_ch1 and first_target_page <= 3:
+            real_ch1_page = None
+            scan_max = min(40, total_pages)
+            for p in range(first_target_page, scan_max + 1):
+                try:
+                    proc = subprocess.run(
+                        ['pdftotext', '-f', str(p), '-l', str(p), pdf_path, '-'],
+                        capture_output=True, timeout=10, check=False
+                    )
+                    text = proc.stdout.decode('utf-8', errors='ignore').strip()
+                except Exception:
+                    text = ""
+                if re.search(r'(?i)\bChapter\s+(?:1|One)\b', text[:300]):
+                    real_ch1_page = p
+                    break
+
+            if real_ch1_page and real_ch1_page > first_target_page:
+                logger.info(
+                    "Chapter 1 bookmark was at p.%d; relocated to genuine start at p.%d",
+                    first_target_page,
+                    real_ch1_page
+                )
+                targets = [t for t in targets if not re.search(r'^(?:00-.*)?Ch(?:apter)?\s*0?1\b', t[1], re.IGNORECASE)]
+                targets.append((real_ch1_page, first_target_name))
+                targets.sort(key=lambda x: x[0])
+                first_target_page = targets[0][0]
+
+        # 2. If the first target starts at page > 1, fill in Front Matter
+        if first_target_page > 1:
+            fm_targets = cls.detect_front_matter_from_text(pdf_path, first_target_page - 1)
+            fm_targets = [t for t in fm_targets if t[0] < first_target_page]
+            targets = fm_targets + targets
+            targets.sort(key=lambda x: x[0])
+
+        return targets
+
+    @classmethod
     def get_sections_from_outline(cls, pdf_path: str, total_pages: int):
         root = cls.get_outline_xml(pdf_path)
         if root is None:
@@ -114,38 +238,31 @@ class PDFAnalyzer:
             else:
                 flattened.append((page, t_clean, sub))
 
+        # Match front matter against canonical shared taxonomy
+        from literature_parser.services.config_manager import ConfigManager
+        taxonomy = ConfigManager.load_front_matter_taxonomy()
+
         fm_candidates = []
         body_items = []
 
         for page, title, sub in flattened:
-            tl = title.lower()
-            if re.search(r'\bcover\b', tl):
-                fm_candidates.append((page, 'Cover'))
-            elif re.search(r'\b(title|copyright|publish)\b', tl):
-                fm_candidates.append((page, 'Publish'))
-            elif re.search(r'\babout (?:the )?authors?\b', tl):
-                fm_candidates.append((page, 'About Authors'))
-            elif re.search(r'\b(content|contents|brief contents)\b', tl):
-                fm_candidates.append((page, 'Content'))
-            elif re.search(r'\bcritical incident', tl):
-                fm_candidates.append((page, 'Critical Incidents'))
-            elif re.search(r'\b(preface|to the student|acknowledg|foreword|dedication)\b', tl):
-                fm_candidates.append((page, 'Preface'))
+            matched_slug = cls.match_front_matter_slug(title, taxonomy)
+            if matched_slug:
+                fm_candidates.append((page, matched_slug))
             else:
                 body_items.append((page, title))
 
         fm_candidates.sort(key=lambda x: x[0])
         unique_fm = []
         seen_fm_names = set()
-        for p, name in fm_candidates:
-            if name not in seen_fm_names:
-                unique_fm.append((p, name))
-                seen_fm_names.add(name)
+        for p, slug in fm_candidates:
+            if slug not in seen_fm_names:
+                unique_fm.append((p, slug))
+                seen_fm_names.add(slug)
 
         all_targets = []
-        for fm_idx, (p, name) in enumerate(unique_fm):
-            prefix = f"00-{fm_idx}"
-            all_targets.append((p, f"{prefix}{name}"))
+        for p, slug in unique_fm:
+            all_targets.append((p, slug))
 
         for p, title in body_items:
             m = re.search(r'^(?:Chapter\s+)?(\d+)[\.\s:\-]+(.*)', title, re.IGNORECASE)
@@ -162,6 +279,9 @@ class PDFAnalyzer:
                 all_targets.append((p, c_name))
 
         all_targets.sort(key=lambda x: x[0])
+
+        # Verify Chapter 1 start and isolate Front Matter if missing or misattributed
+        all_targets = cls.verify_and_isolate_chapter1(pdf_path, all_targets, total_pages)
 
         unique_targets = []
         for p, name in all_targets:
@@ -226,7 +346,7 @@ class PDFAnalyzer:
                         toc_titles[c_num] = c_t.strip()
 
         sections = []
-        sections.append((1, '00-0Cover'))
+        sections.append((1, '00-01-Cover'))
 
         found_publish = False
         found_content = False
@@ -240,17 +360,17 @@ class PDFAnalyzer:
 
             if not found_publish and 1 < idx <= 6:
                 if any('copyright' in l.lower() or 'all rights reserved' in l.lower() or 'cengage' in l.lower() or 'isbn' in l.lower() for l in lines):
-                    sections.append((idx, '00-1Publish'))
+                    sections.append((idx, '00-04-Publish'))
                     found_publish = True
 
             if not found_content and idx <= 15:
                 if re.search(r'^(contents|brief contents)\b', lines[0], re.IGNORECASE):
-                    sections.append((idx, '00-2 Content'))
+                    sections.append((idx, '00-07-TOC'))
                     found_content = True
 
             if not found_preface and idx <= 25:
                 if re.search(r'^preface\b', lines[0], re.IGNORECASE):
-                    sections.append((idx, '00-3 Preface'))
+                    sections.append((idx, '00-09-Preface'))
                     found_preface = True
 
             m_ch = re.match(r'^Chapter\s+(\d+)', lines[0], re.IGNORECASE)
@@ -262,7 +382,7 @@ class PDFAnalyzer:
                     if not title:
                         title = lines[1] if len(lines) > 1 else ''
                     title = sanitize_filename(title)
-                    name = f"Ch{ch_num:02d} {title}".strip()
+                    name = f"Ch{ch_num:02d}-{title}".strip('-') if title and title != "untitled" else f"Ch{ch_num:02d}"
                     sections.append((idx, name))
 
             if idx > total_pages * 0.8:
@@ -277,6 +397,7 @@ class PDFAnalyzer:
             doc_name = sanitize_filename(Path(pdf_path).stem)
             return [{'start': 1, 'end': total_pages, 'name': doc_name}]
 
+        sections = cls.verify_and_isolate_chapter1(pdf_path, sections, total_pages)
         sections.sort(key=lambda x: x[0])
 
         unique_sections = []

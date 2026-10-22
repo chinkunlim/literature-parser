@@ -74,7 +74,8 @@ literature-parser/
 │   │   ├── TASK-010-10.json
 │   │   ├── TASK-011-md.json
 │   │   ├── TASK-012-task.json
-│   │   └── TASK-013-profile-json-schema.json
+│   │   ├── TASK-013-profile-json-schema.json
+│   │   └── TASK-014-front-matter-markdown.json
 │   ├── framework.lock                      # [框架鎖定檔] 框架版本與檔案雜湊，供 update_framework 判斷是否被修改
 │   └── project.toml                        # [專案設定・各專案自訂] 語言、分層、品質門檻、指令、業務規則
 ├── .cursor/                                # [Agent 轉接] Cursor 規則 (自動產生)
@@ -202,7 +203,9 @@ literature-parser/
 │       │   │   │   ├── springer.json
 │       │   │   │   └── wiley.json
 │       │   │   └── shared_knowledge/
+│       │   │       ├── front_matter_taxonomy.json
 │       │   │       ├── literature_sections.json
+│       │   │       ├── pedagogical_blocks.json
 │       │   │       └── symbol_mappings.json
 │       │   ├── __init__.py
 │       │   ├── env.py
@@ -332,7 +335,8 @@ literature-parser/
 │   ├── test_v41_ollama_synthesizer.py
 │   ├── test_v42_epub_exporter.py
 │   ├── test_v43_input_segregation_and_naming.py
-│   └── test_v44_profile_schema_and_inheritance.py
+│   ├── test_v44_profile_schema_and_inheritance.py
+│   └── test_v45_front_matter_and_pure_chapter1.py
 ├── web/
 │   ├── app.js
 │   ├── dashboard.html

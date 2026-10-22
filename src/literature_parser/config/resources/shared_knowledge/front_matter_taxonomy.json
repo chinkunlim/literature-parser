@@ -1,0 +1,92 @@
+{
+  "description": "Canonical taxonomy of standard textbook front matter structures, identification keywords, and sequence ordering.",
+  "front_matter_categories": [
+    {
+      "key": "cover",
+      "canonical_slug": "00-01-Cover",
+      "display_name": "Cover",
+      "priority": 1,
+      "keywords": ["cover", "front cover", "book cover"],
+      "regex_patterns": ["(?i)(?:^|\\b)cover\\b", "(?i)front\\s+cover\\b"],
+      "is_image_dominant": true
+    },
+    {
+      "key": "half_title",
+      "canonical_slug": "00-02-Half-Title",
+      "display_name": "Half Title",
+      "priority": 2,
+      "keywords": ["half title", "half-title"],
+      "regex_patterns": ["(?i)^half[\\s\\-]+title\\b"],
+      "is_image_dominant": false
+    },
+    {
+      "key": "title_page",
+      "canonical_slug": "00-03-Title-Page",
+      "display_name": "Title Page",
+      "priority": 3,
+      "keywords": ["title page", "title"],
+      "regex_patterns": ["(?i)^title\\s+page\\b"],
+      "is_image_dominant": false
+    },
+    {
+      "key": "publish",
+      "canonical_slug": "00-04-Publish",
+      "display_name": "Publishing & Copyright",
+      "priority": 4,
+      "keywords": ["copyright", "isbn", "all rights reserved", "cataloging-in-publication", "imprint", "publisher"],
+      "regex_patterns": ["(?i)(?:copyright|all\\s+rights\\s+reserved|isbn|cataloging[\\-\\s]in[\\-\\s]publication)"],
+      "is_image_dominant": false
+    },
+    {
+      "key": "dedication",
+      "canonical_slug": "00-05-Dedication",
+      "display_name": "Dedication",
+      "priority": 5,
+      "keywords": ["dedication", "dedicated to"],
+      "regex_patterns": ["(?i)^dedicat(?:ion|ed)\\b"],
+      "is_image_dominant": false
+    },
+    {
+      "key": "brief_contents",
+      "canonical_slug": "00-06-Brief-Contents",
+      "display_name": "Brief Contents",
+      "priority": 6,
+      "keywords": ["brief contents", "contents at a glance", "overview of contents"],
+      "regex_patterns": ["(?i)^brief\\s+contents\\b", "(?i)^contents\\s+at\\s+a\\s+glance\\b"],
+      "is_image_dominant": false
+    },
+    {
+      "key": "toc",
+      "canonical_slug": "00-07-TOC",
+      "display_name": "Table of Contents",
+      "priority": 7,
+      "keywords": ["contents", "table of contents", "detailed contents"],
+      "regex_patterns": ["(?i)^(?:table\\s+of\\s+)?contents\\b", "(?i)^detailed\\s+contents\\b"],
+      "is_image_dominant": false
+    },
+    {
+      "key": "about_authors",
+      "canonical_slug": "00-08-About-Authors",
+      "display_name": "About the Authors",
+      "priority": 8,
+      "keywords": ["about the authors", "about the author", "meet the authors", "contributor", "contributors"],
+      "regex_patterns": ["(?i)^about\\s+(?:the\\s+)?authors?\\b", "(?i)^contributors?\\b"],
+      "is_image_dominant": false
+    },
+    {
+      "key": "preface",
+      "canonical_slug": "00-09-Preface",
+      "display_name": "Preface",
+      "priority": 9,
+      "keywords": ["preface", "to the student", "to the instructor", "foreword", "acknowledgments", "guided tour", "walkthrough"],
+      "regex_patterns": [
+        "(?i)^preface\\b",
+        "(?i)^foreword\\b",
+        "(?i)^acknowledg(?:e)?ments?\\b",
+        "(?i)^to\\s+the\\s+(?:student|instructor|reader)\\b",
+        "(?i)^guided\\s+tour\\b"
+      ],
+      "is_image_dominant": false
+    }
+  ]
+}

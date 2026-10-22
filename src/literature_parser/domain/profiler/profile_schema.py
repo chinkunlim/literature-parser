@@ -29,6 +29,7 @@ class ProfileMetadata:
         title: Document or book title string.
         publisher: Identified publisher identifier or None.
         version: Profile schema version string.
+        front_matter_sections: List of detected Front Matter sections and page ranges.
     """
 
     doc_type: str = "book"
@@ -36,6 +37,7 @@ class ProfileMetadata:
     title: str = "untitled"
     publisher: Optional[str] = None
     version: str = "2.0"
+    front_matter_sections: List[Dict[str, Any]] = field(default_factory=list)
 
     def to_dict(self) -> Dict[str, Any]:
         """Converts metadata to dictionary representation.
@@ -43,13 +45,16 @@ class ProfileMetadata:
         Returns:
             Dictionary with metadata attributes.
         """
-        return {
+        res: Dict[str, Any] = {
             "doc_type": self.doc_type,
             "mode": self.mode,
             "title": self.title,
             "publisher": self.publisher,
             "version": self.version,
         }
+        if self.front_matter_sections:
+            res["front_matter_sections"] = list(self.front_matter_sections)
+        return res
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> ProfileMetadata:
@@ -61,12 +66,61 @@ class ProfileMetadata:
         Returns:
             Validated ProfileMetadata instance.
         """
+        fm_secs = data.get("front_matter_sections", [])
         return cls(
             doc_type=data.get("doc_type") or ("literature" if data.get("is_journal") else "book"),
             mode="scanned" if data.get("is_scanned") else data.get("mode", "digital"),
             title=data.get("title") or data.get("book_name", "untitled"),
             publisher=data.get("publisher"),
             version=data.get("version", "2.0"),
+            front_matter_sections=list(fm_secs),
+        )
+
+
+@dataclass
+class PageAsymmetry:
+    """Odd or even page asymmetric boundary definitions.
+
+    Attributes:
+        outer_margin_x: Ratio range [min_x, max_x] of page width where outer notes/glossary lie.
+        binding_margin_x: Ratio range [min_x, max_x] of page width adjacent to book spine binding.
+        header_align: Running header text alignment ('left', 'center', 'right').
+        page_number_pos: Location of page number ('bottom_left', 'bottom_right', 'top_left', 'top_right').
+    """
+
+    outer_margin_x: List[float] = field(default_factory=lambda: [0.72, 1.0])
+    binding_margin_x: List[float] = field(default_factory=lambda: [0.0, 0.28])
+    header_align: str = "right"
+    page_number_pos: str = "bottom_right"
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Converts asymmetric page settings to dictionary representation.
+
+        Returns:
+            Dictionary with asymmetric parameters.
+        """
+        return {
+            "outer_margin_x": list(self.outer_margin_x),
+            "binding_margin_x": list(self.binding_margin_x),
+            "header_align": self.header_align,
+            "page_number_pos": self.page_number_pos,
+        }
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> PageAsymmetry:
+        """Constructs PageAsymmetry from dictionary data.
+
+        Args:
+            data: Raw dictionary containing asymmetric page fields.
+
+        Returns:
+            Validated PageAsymmetry instance.
+        """
+        return cls(
+            outer_margin_x=list(data.get("outer_margin_x", [0.72, 1.0])),
+            binding_margin_x=list(data.get("binding_margin_x", [0.0, 0.28])),
+            header_align=str(data.get("header_align", "right")),
+            page_number_pos=str(data.get("page_number_pos", "bottom_right")),
         )
 
 
@@ -84,6 +138,10 @@ class ProfileGeometry:
         gutter_split_x: Central X coordinate separating left and right columns.
         even_margin_bound: Outer margin boundary ratio for even pages (textbooks).
         odd_margin_bound: Outer margin boundary ratio for odd pages (textbooks).
+        has_odd_even_asymmetry: Whether textbook uses distinct verso (left) and recto (right) layouts.
+        even_page: Verso (left page) layout boundaries.
+        odd_page: Recto (right page) layout boundaries.
+        has_spanning_boxes: Whether textbook contains full-width boxes that cross both columns.
     """
 
     page_width: float = 612.0
@@ -95,6 +153,14 @@ class ProfileGeometry:
     gutter_split_x: Optional[float] = None
     even_margin_bound: float = 0.30
     odd_margin_bound: float = 0.70
+    has_odd_even_asymmetry: bool = True
+    even_page: PageAsymmetry = field(default_factory=lambda: PageAsymmetry(
+        outer_margin_x=[0.0, 0.28], binding_margin_x=[0.72, 1.0], header_align="left", page_number_pos="bottom_left"
+    ))
+    odd_page: PageAsymmetry = field(default_factory=lambda: PageAsymmetry(
+        outer_margin_x=[0.72, 1.0], binding_margin_x=[0.0, 0.28], header_align="right", page_number_pos="bottom_right"
+    ))
+    has_spanning_boxes: bool = True
 
     def to_dict(self) -> Dict[str, Any]:
         """Converts geometry to dictionary representation.
@@ -111,6 +177,10 @@ class ProfileGeometry:
             "gutter_split_x": self.gutter_split_x,
             "even_margin_bound": self.even_margin_bound,
             "odd_margin_bound": self.odd_margin_bound,
+            "has_odd_even_asymmetry": self.has_odd_even_asymmetry,
+            "even_page": self.even_page.to_dict(),
+            "odd_page": self.odd_page.to_dict(),
+            "has_spanning_boxes": self.has_spanning_boxes,
         }
 
     @classmethod
@@ -138,6 +208,15 @@ class ProfileGeometry:
         if split_x is not None:
             split_x = float(split_x)
 
+        even_data = data.get("even_page", {})
+        odd_data = data.get("odd_page", {})
+        even_page = PageAsymmetry.from_dict(even_data) if even_data else PageAsymmetry(
+            outer_margin_x=[0.0, 0.28], binding_margin_x=[0.72, 1.0], header_align="left", page_number_pos="bottom_left"
+        )
+        odd_page = PageAsymmetry.from_dict(odd_data) if odd_data else PageAsymmetry(
+            outer_margin_x=[0.72, 1.0], binding_margin_x=[0.0, 0.28], header_align="right", page_number_pos="bottom_right"
+        )
+
         return cls(
             page_width=pw,
             page_height=ph,
@@ -148,6 +227,10 @@ class ProfileGeometry:
             gutter_split_x=split_x,
             even_margin_bound=float(margins.get("even_page_margin_bound", data.get("even_margin_bound", 0.30))),
             odd_margin_bound=float(margins.get("odd_page_margin_bound", data.get("odd_margin_bound", 0.70))),
+            has_odd_even_asymmetry=bool(data.get("has_odd_even_asymmetry", True)),
+            even_page=even_page,
+            odd_page=odd_page,
+            has_spanning_boxes=bool(data.get("has_spanning_boxes", True)),
         )
 
 
@@ -161,6 +244,9 @@ class ProfileTypography:
         h3_min_size: Minimum font size in points to promote text to H3 (###).
         body_font_size: Standard body text font size in points.
         symbol_mappings: Dictionary of custom Unicode-to-LaTeX mappings.
+        has_drop_caps: Whether chapter opening paragraphs use drop caps.
+        drop_cap_lines: Height in lines of drop caps.
+        caption_patterns: Regex patterns matching figure, table, and box captions.
     """
 
     h1_min_size: float = 18.0
@@ -168,6 +254,14 @@ class ProfileTypography:
     h3_min_size: float = 12.0
     body_font_size: float = 10.0
     symbol_mappings: Dict[str, str] = field(default_factory=dict)
+    has_drop_caps: bool = False
+    drop_cap_lines: int = 2
+    caption_patterns: List[str] = field(default_factory=lambda: [
+        r"^Figure\s+\d+[\.\-]\d+",
+        r"^Table\s+\d+[\.\-]\d+",
+        r"^Box\s+\d+[\.\-]\d+",
+        r"^Exhibit\s+\d+[\.\-]\d+",
+    ])
 
     def to_dict(self) -> Dict[str, Any]:
         """Converts typography settings to dictionary representation.
@@ -181,6 +275,9 @@ class ProfileTypography:
             "h3_min_size": self.h3_min_size,
             "body_font_size": self.body_font_size,
             "symbol_mappings": dict(self.symbol_mappings),
+            "has_drop_caps": self.has_drop_caps,
+            "drop_cap_lines": self.drop_cap_lines,
+            "caption_patterns": list(self.caption_patterns),
         }
 
     @classmethod
@@ -193,12 +290,21 @@ class ProfileTypography:
         Returns:
             Validated ProfileTypography instance.
         """
+        caps = data.get("caption_patterns")
         return cls(
             h1_min_size=float(data.get("h1_min_size", 18.0)),
             h2_min_size=float(data.get("h2_min_size", 14.0)),
             h3_min_size=float(data.get("h3_min_size", 12.0)),
             body_font_size=float(data.get("body_font_size", 10.0)),
             symbol_mappings=dict(data.get("symbol_mappings", {})),
+            has_drop_caps=bool(data.get("has_drop_caps", False)),
+            drop_cap_lines=int(data.get("drop_cap_lines", 2)),
+            caption_patterns=list(caps) if caps is not None else [
+                r"^Figure\s+\d+[\.\-]\d+",
+                r"^Table\s+\d+[\.\-]\d+",
+                r"^Box\s+\d+[\.\-]\d+",
+                r"^Exhibit\s+\d+[\.\-]\d+",
+            ],
         )
 
 
@@ -211,6 +317,8 @@ class ProfileSpecialBlocks:
         has_margin_glossary: Whether textbook has key terms in margins.
         lo_pattern: Regex pattern identifying Learning Objectives.
         eoc_heading_patterns: Regex patterns identifying End-of-Chapter sections.
+        active_blocks: List of active pedagogical block keys identified in this book.
+        block_rules: Detailed rules and styles for each active block.
     """
 
     has_concept_map: bool = False
@@ -222,6 +330,8 @@ class ProfileSpecialBlocks:
         r"^Summary\b",
         r"^Review Questions\b",
     ])
+    active_blocks: List[str] = field(default_factory=list)
+    block_rules: Dict[str, Dict[str, Any]] = field(default_factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
         """Converts special blocks settings to dictionary representation.
@@ -234,6 +344,8 @@ class ProfileSpecialBlocks:
             "has_margin_glossary": self.has_margin_glossary,
             "lo_pattern": self.lo_pattern,
             "eoc_heading_patterns": list(self.eoc_heading_patterns),
+            "active_blocks": list(self.active_blocks),
+            "block_rules": {k: dict(v) for k, v in self.block_rules.items()},
         }
 
     @classmethod
@@ -247,6 +359,8 @@ class ProfileSpecialBlocks:
             Validated ProfileSpecialBlocks instance.
         """
         patterns = data.get("eoc_heading_patterns")
+        active = data.get("active_blocks", [])
+        rules = data.get("block_rules", {})
         return cls(
             has_concept_map=bool(data.get("has_concept_map", False)),
             has_margin_glossary=bool(data.get("has_margin_glossary", False)),
@@ -257,6 +371,8 @@ class ProfileSpecialBlocks:
                 r"^Summary\b",
                 r"^Review Questions\b",
             ],
+            active_blocks=list(active),
+            block_rules={k: dict(v) for k, v in rules.items()} if isinstance(rules, dict) else {},
         )
 
 

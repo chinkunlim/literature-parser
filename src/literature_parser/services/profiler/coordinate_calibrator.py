@@ -104,10 +104,26 @@ class CoordinateCalibrator:
         geometry = {
             "page_width": median_w,
             "page_height": median_h,
+            "header_cutoff_y": round(median_h * 0.04, 1),
+            "footer_cutoff_y": round(median_h * 0.94, 1),
             "header_cut_ratio": 0.04,
-            "footer_cut_ratio": 0.04,
+            "footer_cut_ratio": 0.06,
             "odd_page_margin_x": [odd_margin_bound, 1.0],
-            "even_page_margin_x": [0.0, even_margin_bound]
+            "even_page_margin_x": [0.0, even_margin_bound],
+            "has_odd_even_asymmetry": True,
+            "even_page": {
+                "outer_margin_x": [0.0, even_margin_bound],
+                "binding_margin_x": [round(1.0 - even_margin_bound, 2), 1.0],
+                "header_align": "left",
+                "page_number_pos": "bottom_left",
+            },
+            "odd_page": {
+                "outer_margin_x": [odd_margin_bound, 1.0],
+                "binding_margin_x": [0.0, round(1.0 - odd_margin_bound, 2)],
+                "header_align": "right",
+                "page_number_pos": "bottom_right",
+            },
+            "has_spanning_boxes": True,
         }
         return geometry
 

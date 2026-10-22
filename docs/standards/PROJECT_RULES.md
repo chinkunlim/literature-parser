@@ -19,7 +19,7 @@
 ### 2.1 輸入目錄「約定優於配置」 (Convention over Configuration)
 - **數位教科書**：必須放入 `DATA_DIR/input/books/digital-pdf/`。管線直接調用向量 XML 解析，**嚴禁耗費算力呼叫 Vision 或 OCR**。
 - **掃描教科書**：必須放入 `DATA_DIR/input/books/scanned-pdf/`。管線直接調用神經視覺 OCR 進行影像切分與文字識別。
-- **學術文獻**：放入 `DATA_DIR/input/literature/`，直接走雙欄中縫重組與 IMRAD 解析管線。
+- **學術文獻**：放入 `DATA_DIR/input/literature/`（支援 `digital-pdf/` 與 `scanned-pdf/` 子目錄），直接走雙欄中縫重組與 IMRAD 解析管線。
 
 ### 2.2 輸出命名衛生 (Folder & File Naming Hygiene)
 - **禁用底線**：所有產出目錄與檔案名稱**一律禁用底線 `_`**，所有空格、標點符號統一轉換為連字號 `-`（例如 `output/books/Cognitive-Psychology-8th-ed/`）。
@@ -55,6 +55,19 @@
 - **三維度權重**：轉換完成後依序執行排版檢查（`LayoutAuditor`, 35%）、詞語與公式檢查（`LexicalAuditor`, 35%）、語意與閱讀流檢查（`SemanticAuditor`, 30%）。
 - **處置原則**：確定性瑕疵執行 Safe Auto-Fix（自動過濾洩漏頁首、清理孤立頁碼、閉合標籤、連字號斷詞黏合、統計符號標準化）；整體品質未達門檻（預設 85%）或排版破損時，隔離至 `DATA_DIR/needs_review/`。
 - **報告雙輸出與 CLI**：同目錄產出視覺化 `AUDIT.md` 與結構化 `audit_report.json`，並提供獨立 CLI 指令 `book-processor verify -f path/to/chapter.md` 供隨時體檢。
+
+### 2.9 樣式排版集中外部化與即時重刷 (Unified Theming & Instant Re-Theming)
+- **8 大樣式分區全數外部化**：所有全域字型堆疊、60-30-10 出版調色盤、目錄開闔與深度（`toc_mode: close`）、圖表邊距、表格轉譯、教學模組、Obsidian 雙鏈導航與品質門檻一律集中收納於 `config/theme.json`（受 `theme.schema.json` 強型別校驗）。
+- **全域母版與單書覆寫**：各書籍目錄可放置獨立 `theme.json` 實現零破壞性專用樣式覆寫；並可透過 `python3 scripts/apply_theme.py <book_dir>` 於毫秒級內對已轉出 Markdown 原地更新 `<style>` 區塊與 `style.css`。
+
+### 2.10 Marker 式版面輪廓分析與段落邊界首提錨定 (Marker-Style Layout Framing & Paragraph-Boundary Anchoring)
+- **段落邊界完整性**：內文提及圖表時**嚴禁在段落句子中插斷**，圖表必須在整段正文段落結束（`\n\n`）後才依序掛載輸出。
+- **清單與多圖保護**：清單塊（List Block）內文提及圖表不應切斷清單連續性；同段多圖依序平鋪排列；子圖統一歸一為母圖（Figure 1A ➔ 1）；未引用孤立圖表於章末章節標題前安全釋放。
+- **複雜表格轉譯**：遇跨欄、跨行或巢狀表頭表格時自動轉譯為結構化語意 HTML 表格（`<table class="book-table">`，支援 `colspan`/`rowspan`）。
+
+### 2.11 原生 PyMuPDF 解析核心與流水線重疊並行 (Native Dual Engine & Concurrency)
+- **記憶體直讀架構**：採用 PyMuPDF (fitz) 原生 API 一次性載入文檔至記憶體，直接抽取文字 span 樣式、向量路徑與高解析圖片，徹底消滅逐頁呼叫外部子進程的行程負擔；保留 Poppler 作為備援 fallback。
+- **CPU-GPU 流水線並行**：實作 `PipelinedChapterProcessor`，在 CPU 正在解析下一章節的同時，由 GPU/Metal 本地 Ollama 對上一章節進行非同步背景語意驗證，達到資源最大化利用。
 
 ---
 

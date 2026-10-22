@@ -64,7 +64,7 @@ flowchart TD
     subgraph S1 ["階段 1：目錄結構約定與前置安全檢查 (Convention Ingestion & Pre-flight)"]
         InBooksDigital["書籍數位版 (Digital PDF)<br>DATA_DIR/input/books/digital-pdf/"] --> Ingest["目錄約定解析<br>(Convention over Config)"]
         InBooksScanned["書籍掃描版 (Scanned PDF)<br>DATA_DIR/input/books/scanned-pdf/"] --> Ingest
-        InLit["期刊論文 (Literature)<br>DATA_DIR/input/literature/"] --> Ingest
+        InLit["期刊論文 (Literature)<br>DATA_DIR/input/literature/<br>(digital-pdf / scanned-pdf)"] --> Ingest
         Ingest --> CLI["CLI 入口 / Watchdog<br>(run.py / doc_cli.py)"]
         CLI --> HWGuard{"硬體安全檢查<br>adapters.guards.hardware<br>(RAM ≥ 2GB, 電池/電源)"}
         HWGuard -- 資源不足 --> Abort["終止處理並記錄警告"]
@@ -137,7 +137,7 @@ flowchart TD
   - `books/digital-pdf/`：數位向量教科書（直接調用 XML 樣式提取，不跑 OCR）。
   - `books/scanned-pdf/`：掃描版教科書（直接調用 Vision 神經 OCR 解析）。
   - `books/`（根目錄）：未分流時相容備援（自動執行抽樣檢測）。
-  - `literature/`：期刊文獻論文（預設雙欄數位論文，亦相容 `scanned-pdf/` 子目錄）。
+  - `literature/`：期刊文獻論文（預設雙欄數位論文，亦支援 `digital-pdf/` 與 `scanned-pdf/` 子目錄）。
 - `output/`：轉換產物（資料夾一律禁用底線 `_`，統一以連字號 `-` 取代空格）：
   - `books/<Book-Title-With-Hyphens>/`：章節 Markdown、抽像影像、EPUB 3 與 Obsidian 雙鏈。
   - `literature/<Paper-Title-With-Hyphens>/`：結構化論文 Markdown、圖表與 EPUB 3。

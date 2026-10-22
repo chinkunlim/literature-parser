@@ -84,7 +84,8 @@ literature-parser/
 │   │   ├── TASK-020-implement-marker-style-layout-fr.json
 │   │   ├── TASK-021-externalize-typography-palette-t.json
 │   │   ├── TASK-022-update-all-project-documentation.json
-│   │   └── TASK-023-data-dir-input-output.json
+│   │   ├── TASK-023-data-dir-input-output.json
+│   │   └── TASK-024-markdown.json
 │   ├── framework.lock                      # [框架鎖定檔] 框架版本與檔案雜湊，供 update_framework 判斷是否被修改
 │   └── project.toml                        # [專案設定・各專案自訂] 語言、分層、品質門檻、指令、業務規則
 ├── .cursor/                                # [Agent 轉接] Cursor 規則 (自動產生)
@@ -113,6 +114,7 @@ literature-parser/
 │   │   ├── 005-modular-conversion-and-three-tier-verification.md
 │   │   ├── 006-dual-engine-and-pipelined-concurrency.md
 │   │   ├── 007-unified-theme-and-pipeline-configuration.md
+│   │   ├── 008-convention-input-routing-and-naming-hygiene.md
 │   │   ├── _TEMPLATE.md                    # ADR 範本 (tracker_cli 會套用)
 │   │   └── DECISIONS.md                    # 架構決策總表
 │   ├── architecture/                       # [系統架構與資料模型]
@@ -123,6 +125,7 @@ literature-parser/
 │   │   ├── 002-table-banner-and-styling.md
 │   │   ├── 003-external-pdf-tools-fallback.md
 │   │   ├── 004-chapter1-bookmark-misattribution-and-front-matter-pollution.md
+│   │   ├── 005-global-state-path-substring-doc-type-misattribution.md
 │   │   ├── _TEMPLATE.md                    # 已知問題範本 (tracker_cli 會套用)
 │   │   └── KNOWN_ISSUES.md                 # 已知問題總表 (🔴/🟡/🟢)
 │   ├── migration/                          # [遷移紀錄] 舊專案搬移清單、批次與完成標準

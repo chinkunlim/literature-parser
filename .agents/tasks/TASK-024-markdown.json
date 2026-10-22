@@ -1,0 +1,34 @@
+{
+  "id": "TASK-024",
+  "title": "更新專案所有 Markdown 文件以反映最新目錄結構與架構規範",
+  "status": "done",
+  "agent": "antigravity",
+  "handed_off_from": "",
+  "handed_off_to": "",
+  "paths": [],
+  "done_items": "更新專案所有 Markdown 文件（README、PROJECT_RULES、ARCHITECTURE、SPECS、EVALS、CHANGELOG、DECISIONS、KNOWN_ISSUES），新增 ADR-008 與 ISSUE-005",
+  "todo_items": "",
+  "blockers": "",
+  "created_at": "2026-10-22 08:54 UTC",
+  "updated_at": "2026-10-22 08:58 UTC",
+  "history": [
+    {
+      "timestamp": "2026-10-22 08:54 UTC",
+      "action": "created_and_claimed",
+      "agent": "antigravity"
+    },
+    {
+      "timestamp": "2026-10-22 08:54 UTC",
+      "action": "claimed",
+      "agent": "antigravity",
+      "previous_agent": "antigravity"
+    },
+    {
+      "timestamp": "2026-10-22 08:58 UTC",
+      "action": "done",
+      "agent": "antigravity",
+      "summary": "更新專案所有 Markdown 文件（README、PROJECT_RULES、ARCHITECTURE、SPECS、EVALS、CHANGELOG、DECISIONS、KNOWN_ISSUES），新增 ADR-008 與 ISSUE-005"
+    }
+  ],
+  "summary": "更新專案所有 Markdown 文件（README、PROJECT_RULES、ARCHITECTURE、SPECS、EVALS、CHANGELOG、DECISIONS、KNOWN_ISSUES），新增 ADR-008 與 ISSUE-005"
+}

@@ -34,16 +34,20 @@ flowchart LR
 
 所有資料集均存放於 `DATA_DIR/input/`（依 `.env` 之 `DATA_DIR` 配置）：
 
-### 3.1 學術文獻基準組 (`DATA_DIR/input/literature/`)
+### 3.1 學術文獻基準組 (`DATA_DIR/input/literature/digital-pdf/`)
 - `2002-01194-001.pdf`：APA 標準雙欄期刊論文（含大量統計公式、三線表格）
 - `2008-17521-013.pdf`：APA 標準雙欄期刊論文（含複雜實驗流程與跨欄圖表）
 - `Journal of Adolescence...pdf`：Elsevier 雙欄期刊論文（含自定義頁首浮水印）
 - 其餘涵蓋 IEEE、Springer 與 SpringerOpen 之不同排版樣本。
 
 ### 3.2 專書基準組 (`DATA_DIR/input/books/`)
-- `Research Methods, Design, and Analysis 13th ed.pdf`：數位原生 PDF，長篇教科書基準（840+ 頁）
-- `Group Counseling- Strategies and Skills...pdf`：掃描版書籍 (Scanned PDF)，神經 OCR 與首字下沉基準
-- `Research-Methods-in-Psychology-1641401901.epub`：EPUB 參考組，多章節結構對比
+- **`books/digital-pdf/` 原生數位教科書**：
+  - `Research Methods, Design, and Analysis 13th ed.pdf`：數位原生 PDF，長篇教科書基準（840+ 頁）
+  - `Groups- Process and Practice, Loose-Leaf Version...pdf`：數位原生長篇教科書（460+ 頁）
+- **`books/scanned-pdf/` 掃描版教科書**：
+  - `Group Counseling- Strategies and Skills...pdf`：掃描版書籍 (Scanned PDF)，神經 OCR 與首字下沉基準
+- **參考對照組**：
+  - `Research-Methods-in-Psychology-1641401901.epub`：EPUB 參考組，多章節結構對比
 
 ---
 

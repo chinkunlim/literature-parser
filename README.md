@@ -11,7 +11,7 @@
 1. **約定優於配置的輸入分流 (Convention-Based Input Routing)**：
    - `DATA_DIR/input/books/digital-pdf/`：原生數位教科書，直接利用向量 XML 提取樣式與幾何邊界，**速度極快、零額外 OCR 負擔**。
    - `DATA_DIR/input/books/scanned-pdf/`：掃描版教科書，直接調用神經視覺 / OCR 進行影像切分與文字識別。
-   - `DATA_DIR/input/literature/`：期刊論文，直接走雙欄中縫重組與 IMRAD 標題晉升管線。
+   - `DATA_DIR/input/literature/`：期刊論文，直接走雙欄中縫重組與 IMRAD 標題晉升管線（支援 `digital-pdf/` 與 `scanned-pdf/` 子目錄）。
 2. **目錄衛生規範 (Folder Naming Hygiene)**：
    - 產出資料夾一律**禁用底線 `_`**，空格統一以連字號 `-` 取代（例如 `output/books/Research-Methods-13th-ed/`）。
    - 章節目錄與檔案統一遵循標準命名格式：`Ch01-Title`、`Appendix-A-Title`。
@@ -150,7 +150,7 @@ python3 scripts/agentctl.py check
 - `DATA_DIR/input/`：原始書籍與論文（唯讀，結構即配置）：
   - `books/digital-pdf/`：原生數位版 PDF 教科書
   - `books/scanned-pdf/`：掃描版 PDF 教科書
-  - `literature/`：期刊文獻論文
+  - `literature/`：期刊文獻論文（預設雙欄數位論文，亦支援 `digital-pdf/` 與 `scanned-pdf/` 子目錄）
 - `DATA_DIR/output/`：轉換產出之 Markdown 與圖像（目錄一律使用連字號 `-`，禁用底線）：
   - `books/<Book-Title>/`：各章節 Markdown、獨立 PDF、`profile.json`、圖像與 EPUB 3
   - `literature/<Paper-Title>/`：論文 Markdown、圖表與 EPUB 3

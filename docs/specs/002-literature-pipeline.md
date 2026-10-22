@@ -11,7 +11,9 @@
 
 ## 3. 輸入與輸出目錄規範
 - **輸入來源 (Convention over Configuration)**：
-  - `DATA_DIR/input/literature/`：預設為雙欄數位期刊論文（亦支援 `scanned-pdf/` 與 `digital-pdf/` 子目錄）。
+  - `DATA_DIR/input/literature/digital-pdf/`：原生數位雙欄期刊論文（直接進行文字流提取與圖表裁切，不跑 OCR）。
+  - `DATA_DIR/input/literature/scanned-pdf/`：掃描版期刊論文（調用 Apple Vision / 神經 OCR 識別）。
+  - `DATA_DIR/input/literature/`（根目錄）：相容預設目錄，預設走雙欄數位期刊解析管線。
 - **輸出規格 (Folder Naming Hygiene)**：
   - 目標路徑：`DATA_DIR/output/literature/<Paper-Title>/`。
-  - 命名衛生：資料夾與產出檔案全面禁用底線 `_`，統一以連字號 `-` 取代空格。
+  - 命名衛生：資料夾與產出檔案全面禁用底線 `_`，統一以連字號 `-` 取代空格（例如 `04-Bialystok-Reshaping-the-mind`）。

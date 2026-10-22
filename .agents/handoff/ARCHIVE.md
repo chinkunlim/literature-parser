@@ -221,3 +221,15 @@
 ### [2026-10-22 03:53 UTC] 完成任務 `TASK-017` — 實作三層 Markdown 轉檔檢驗與品質評估體系（排版、詞語、語意） (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
 - **完成摘要**: 實作三層 Markdown 轉檔檢驗與品質評估體系（排版、詞語、語意）、評分引擎與獨立 CLI 整合
+
+### [2026-10-22 03:55 UTC] 建立任務 `TASK-018`: 更新並同步全專案 Markdown 文件 (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
+
+### [2026-10-22 03:55 UTC] 認領任務 `TASK-018` (更新並同步全專案 Markdown 文件) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`
+
+### [2026-10-22 03:58 UTC] 完成任務 `TASK-018` — 更新並同步全專案 Markdown 文件 (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: 更新並同步全專案 Markdown 文件（README, ARCHITECTURE, SPECS, ADR, PROJECT_RULES, CHANGELOG）

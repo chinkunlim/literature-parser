@@ -5,10 +5,10 @@
 <!-- LIVE_STATE_START -->
 ## 📊 即時狀態看板 (Live Snapshot)
 
-- **最後更新時間**: `2026-10-22 08:53 UTC`
+- **最後更新時間**: `2026-10-22 08:58 UTC`
 - **最近操作 Agent**: `antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `c2b5a5f chore(tooling): update tooling tooling and config (ADR-007, TASK-016, TASK-017, TASK-022) [agent:antigravity]`
+- **最新 Git Commit**: `414f8fb refactor(data): reorganize DATA_DIR input and output directory structures with convention routing and hyphen hygiene [agent:antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
@@ -17,6 +17,18 @@
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-10-22 08:58 UTC] 完成任務 `TASK-024` — 更新專案所有 Markdown 文件以反映最新目錄結構與架構規範 (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: 更新專案所有 Markdown 文件（README、PROJECT_RULES、ARCHITECTURE、SPECS、EVALS、CHANGELOG、DECISIONS、KNOWN_ISSUES），新增 ADR-008 與 ISSUE-005
+
+### [2026-10-22 08:54 UTC] 認領任務 `TASK-024` (更新專案所有 Markdown 文件以反映最新目錄結構與架構規範) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`
+
+### [2026-10-22 08:54 UTC] 建立任務 `TASK-024`: 更新專案所有 Markdown 文件以反映最新目錄結構與架構規範 (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
 
 ### [2026-10-22 08:53 UTC] 完成任務 `TASK-023` — 整理 DATA_DIR 之 input 與 output 目錄結構 (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
@@ -93,15 +105,3 @@
 - **下一步**: 核心轉換與三層檢驗已全部就緒（270 測試通過）；下一步可接續實測大型教科書批次轉檔，或對接本地 AI / Web 視覺化看板
 - **交接備註**: 獨立轉換引擎、CSS 雙出、圖表裁切與三層檢驗體系已完整落地，全專案文檔與規格已 100% 同步
 - **本機對話紀錄**: `.agents/conversations/2026-10-22-1159-antigravity-summary.md`（只在這台電腦）
-
-### [2026-10-22 03:58 UTC] 完成任務 `TASK-018` — 更新並同步全專案 Markdown 文件 (by `antigravity`)
-- **狀態**: ✅ 已完成 (`done`)
-- **完成摘要**: 更新並同步全專案 Markdown 文件（README, ARCHITECTURE, SPECS, ADR, PROJECT_RULES, CHANGELOG）
-
-### [2026-10-22 03:55 UTC] 認領任務 `TASK-018` (更新並同步全專案 Markdown 文件) (by `antigravity`)
-- **相關範圍**: `-`
-- **接棒自**: `antigravity`
-
-### [2026-10-22 03:55 UTC] 建立任務 `TASK-018`: 更新並同步全專案 Markdown 文件 (by `antigravity`)
-- **狀態**: `in_progress`
-- **相關範圍**: `-`

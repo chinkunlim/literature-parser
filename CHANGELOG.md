@@ -6,6 +6,8 @@ All notable changes to **literature-parser** are documented here
 ## [Unreleased]
 
 ### Added
+- docs(adr): record ADR-008 on convention-based input routing and hyphen-delimited naming hygiene (TASK-023) (by `@antigravity`)
+- docs(known-issues): record ISSUE-005 on global state path substring matching causing doc_type misattribution (TASK-023) (by `@antigravity`)
 - docs(adr): record ADR-007 on unified theme and pipeline configuration (TASK-021) (by `@antigravity`)
 - docs(specs): add SPEC-007 on theme, typography, and pipeline configuration (TASK-021) (by `@antigravity`)
 - docs(adr): record ADR-006 on PyMuPDF dual-engine parsing and pipelined CPU-GPU concurrency (TASK-019) (by `@antigravity`)
@@ -40,6 +42,7 @@ All notable changes to **literature-parser** are documented here
 - docs: synchronize all project markdown documentation (TASK-015) (by `@antigravity`)
 - docs: synchronize all project markdown documentation for conversion and verification systems (TASK-018) (by `@antigravity`)
 - docs: update and synchronize all project markdown documentation, ADR-007, and architecture (TASK-022) (by `@antigravity`)
+- docs: synchronize all project markdown documentation for input/output convention routing, ADR-008, and ISSUE-005 (by `@antigravity`)
 
 ### Testing
 - test(workflows): verify all CLI workflows, fix pathing and pure-python fallbacks (by `@antigravity`)

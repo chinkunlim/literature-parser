@@ -5,10 +5,10 @@
 <!-- LIVE_STATE_START -->
 ## 📊 即時狀態看板 (Live Snapshot)
 
-- **最後更新時間**: `2026-10-22 03:58 UTC`
+- **最後更新時間**: `2026-10-22 03:59 UTC`
 - **最近操作 Agent**: `antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `2588752 feat: implement three-tier quality verification system across layout, lexical, and semantic dimensions (TASK-017) [agent:antigravity]`
+- **最新 Git Commit**: `ec05198 docs: synchronize all project markdown documentation for conversion and verification systems (TASK-018) [agent:antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
@@ -17,6 +17,14 @@
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-10-22 03:59 UTC] Session Closeout (結束對話收尾) (by `antigravity`)
+- **檢查結果**: 測試與 Code Review Guard 通過
+- **目標**: 實作獨立 MarkdownConversionService、CSS 雙出、圖表獨立裁切（含 Caption/Notes/等寬 16pt Margin）、三層漸進檢驗體系（排版/詞語/語意）與全專案 Markdown 同步
+- **錯誤與根因**: 統計檢定數字間空格導致正規化漏配（F ( 2 , 4 0 )）➔ 允許 \d\s+ 數字內空白並於替換時去空格；單一引註遺失門檻過高 ➔ 移除 len > 2 限制只要有未比對引註即發出警告
+- **下一步**: 核心轉換與三層檢驗已全部就緒（270 測試通過）；下一步可接續實測大型教科書批次轉檔，或對接本地 AI / Web 視覺化看板
+- **交接備註**: 獨立轉換引擎、CSS 雙出、圖表裁切與三層檢驗體系已完整落地，全專案文檔與規格已 100% 同步
+- **本機對話紀錄**: `.agents/conversations/2026-10-22-1159-antigravity-summary.md`（只在這台電腦）
 
 ### [2026-10-22 03:58 UTC] 完成任務 `TASK-018` — 更新並同步全專案 Markdown 文件 (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
@@ -97,7 +105,3 @@
 ### [2026-10-22 02:20 UTC] 建立任務 `TASK-013`: 統一 profile.json 規格、出版社階層繼承與強型別 Schema (by `antigravity`)
 - **狀態**: `in_progress`
 - **相關範圍**: `-`
-
-### [2026-10-22 01:59 UTC] 完成任務 `TASK-012` — 輸入目錄結構分流與資料夾連字號命名規範 (by `antigravity`)
-- **狀態**: ✅ 已完成 (`done`)
-- **完成摘要**: 完成輸入目錄分流結構（books/digital-pdf/ 與 scanned-pdf/、literature/）與輸出資料夾連字號命名規範

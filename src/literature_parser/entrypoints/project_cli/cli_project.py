@@ -149,26 +149,51 @@ def cmd_watchdog(args):
     from literature_parser.config.settings import load_config as _load_config
     app_cfg = _load_config()
     books_in = app_cfg.input_dir / "books"
+    books_digital_in = books_in / "digital-pdf"
+    books_scanned_in = books_in / "scanned-pdf"
     lit_in = app_cfg.input_dir / "literature"
-    books_in.mkdir(parents=True, exist_ok=True)
+    lit_digital_in = lit_in / "digital-pdf"
+    lit_scanned_in = lit_in / "scanned-pdf"
+
+    books_digital_in.mkdir(parents=True, exist_ok=True)
+    books_scanned_in.mkdir(parents=True, exist_ok=True)
     lit_in.mkdir(parents=True, exist_ok=True)
+    lit_digital_in.mkdir(parents=True, exist_ok=True)
+    lit_scanned_in.mkdir(parents=True, exist_ok=True)
 
     print("\n" + "=" * 65)
     print("👁️ [WATCHDOG] 軟硬體一體化智慧看門狗 (Hardware & Input Monitor)")
     print("=" * 65)
-    print(f"• 監控目錄 (Books)     : {books_in}")
-    print(f"• 監控目錄 (Literature): {lit_in}")
-    print("• 守衛防線             : RAM ≥ 4GB | SSD ≥ 10GB | 非低電量電池模式")
+    print(f"• 監控目錄 (Books Digital)   : {books_digital_in}")
+    print(f"• 監控目錄 (Books Scanned)   : {books_scanned_in}")
+    print(f"• 監控目錄 (Literature)      : {lit_in}")
+    print("• 守衛防線                   : RAM ≥ 4GB | SSD ≥ 10GB | 非低電量電池模式")
     print("=" * 65 + "\n")
 
     def scan_files():
         found = {}
+        # 1. Books subdirectories
+        for p in books_digital_in.iterdir():
+            if p.is_file() and p.suffix.lower() in (".pdf", ".epub") and not p.name.startswith("."):
+                found[p] = ("book", False)
+        for p in books_scanned_in.iterdir():
+            if p.is_file() and p.suffix.lower() in (".pdf", ".epub") and not p.name.startswith("."):
+                found[p] = ("book", True)
+        # 2. Books root fallback
         for p in books_in.iterdir():
             if p.is_file() and p.suffix.lower() in (".pdf", ".epub") and not p.name.startswith("."):
-                found[p] = "book"
+                found[p] = ("book", None)
+        # 3. Literature subdirectories
+        for p in lit_digital_in.iterdir():
+            if p.is_file() and p.suffix.lower() in (".pdf", ".epub") and not p.name.startswith("."):
+                found[p] = ("literature", False)
+        for p in lit_scanned_in.iterdir():
+            if p.is_file() and p.suffix.lower() in (".pdf", ".epub") and not p.name.startswith("."):
+                found[p] = ("literature", True)
+        # 4. Literature root
         for p in lit_in.iterdir():
             if p.is_file() and p.suffix.lower() in (".pdf", ".epub") and not p.name.startswith("."):
-                found[p] = "literature"
+                found[p] = ("literature", False)
         return found
 
     known = scan_files()
@@ -192,8 +217,9 @@ def cmd_watchdog(args):
                   f"電源: {m['power_status']}")
 
         for nfile in new_files:
-            doc_type = current[nfile]
-            print(f"\n📥 [新檔案偵測] 發現待處理文件: [{doc_type.upper()}] {nfile.name}")
+            doc_type, is_scanned_val = current[nfile]
+            scan_hint = " (SCANNED OCR)" if is_scanned_val is True else (" (DIGITAL VECTOR)" if is_scanned_val is False else "")
+            print(f"\n📥 [新檔案偵測] 發現待處理文件: [{doc_type.upper()}{scan_hint}] {nfile.name}")
             try:
                 s1 = nfile.stat().st_size
                 time.sleep(0.3)
@@ -208,13 +234,15 @@ def cmd_watchdog(args):
                 print(f"  🛑 硬體資源不足，暫停自動處理: {'; '.join(hw['reasons'])}")
                 break
 
-            print(f"  🚀 自動啟動轉檔: {doc_type} 管線...")
-            class DummyArgs:
-                file = str(nfile)
-                type = doc_type
-                ignore_battery = getattr(args, "ignore_battery", False)
-            cmd_process(DummyArgs())
-            known[nfile] = doc_type
+            print(f"  🚀 自動啟動轉檔: {doc_type}{scan_hint} 管線...")
+            from literature_parser.entrypoints.project_cli.cli_process import _run_process_pipeline
+            _run_process_pipeline(
+                nfile,
+                doc_type=doc_type,
+                is_scanned=is_scanned_val,
+                ignore_battery=getattr(args, "ignore_battery", False)
+            )
+            known[nfile] = (doc_type, is_scanned_val)
 
         time.sleep(3)
 

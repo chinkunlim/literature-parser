@@ -56,6 +56,58 @@ flowchart TD
 
 ## 2. 核心處理管道與數據流向
 
+```mermaid
+flowchart TD
+    %% 階段 1：輸入與安全前檢
+    subgraph S1 ["階段 1：目錄結構約定與前置安全檢查 (Convention Ingestion & Pre-flight)"]
+        InBooksDigital["書籍數位版 (Digital PDF)<br>DATA_DIR/input/books/digital-pdf/"] --> Ingest["目錄約定解析<br>(Convention over Config)"]
+        InBooksScanned["書籍掃描版 (Scanned PDF)<br>DATA_DIR/input/books/scanned-pdf/"] --> Ingest
+        InLit["期刊論文 (Literature)<br>DATA_DIR/input/literature/"] --> Ingest
+        Ingest --> CLI["CLI 入口 / Watchdog<br>(run.py / doc_cli.py)"]
+        CLI --> HWGuard{"硬體安全檢查<br>adapters.guards.hardware<br>(RAM ≥ 2GB, 電池/電源)"}
+        HWGuard -- 資源不足 --> Abort["終止處理並記錄警告"]
+        HWGuard -- 通過 --> Router{"目錄標籤直接分流<br>(無須啟發式猜測)"}
+    end
+
+    %% 階段 2：雙軌專門解析管線
+    subgraph S2A ["階段 2A：教科書處理管線 (TextbookPipeline)"]
+        Router -- 書籍 (Book) --> Splitter["目錄剖析與章節無損切分<br>core.splitter.PDFSplitter"]
+        Splitter --> ChapterPDF["章節獨立 PDF"]
+        ChapterPDF --> BookParser["版面解析<br>digital-pdf: 向量結構提取<br>scanned-pdf: Vision 神經 OCR"]
+        BookParser --> BookFeatures["邊欄術語 (Glossary)<br>學習目標 (LO) / 章末總結 (EOC)<br>數學公式 (math_latex)"]
+        BookFeatures --> AnkiGen["Anki 抽認卡生成<br>utils.anki_exporter"]
+    end
+
+    subgraph S2B ["階段 2B：期刊文獻處理管線 (LiteraturePipeline)"]
+        Router -- 期刊/論文 (Literature) --> GutterDetect["雙欄幾何間距偵測<br>(Two-Column Gutter Detection)"]
+        GutterDetect --> OrderStitch["跨欄文字流序重組<br>(Left-to-Right Column Stitch)"]
+        OrderStitch --> IMRAD["IMRAD 標題晉升與作者註記"]
+        IMRAD --> BibParse["參考文獻懸掛縮排解析<br>(APA / IEEE References)"]
+    end
+
+    %% 階段 3：品質檢驗與本地 AI 自我修復
+    subgraph S3 ["階段 3：品質檢驗與本地 AI 自我修復 (Verification & Self-Healing)"]
+        BookFeatures --> Auditor["確定性規則稽核<br>format_auditor & rules.py<br>(連續性、表格邊界、LaTeX 語法)"]
+        BibParse --> Auditor
+        Auditor --> ScoreCheck{"稽核評分與不變量守衛<br>QualityInvariantGuard"}
+        ScoreCheck -- 驗證通過 --> OutStage
+        ScoreCheck -- 格式破損 / 低信心度 --> Circuit{"斷路器檢查<br>CircuitBreaker"}
+        Circuit -- 達到上限 --> Quarantine["隔離至 DATA_DIR/needs_review/<br>(附失敗原因，繼續後續批次)"]
+        Circuit -- 容許修復 --> LLMGuard{"本地 AI 守衛<br>(RAM ≥ 4GB & Ollama 運行)"}
+        LLMGuard -- 硬體受限 --> Quarantine
+        LLMGuard -- 硬體允許 --> Healer["本地 AI 自我修復<br>adapters.verification.layout_healer<br>(Ollama 127.0.0.1:11434)"]
+        Healer --> Auditor
+    end
+
+    %% 階段 4：知識匯出與多格式發布
+    subgraph OutStage ["階段 4：知識匯出與多格式發布 (Export & Delivery)"]
+        MarkdownOut["標準結構化 Markdown<br>DATA_DIR/output/"]
+        MarkdownOut --> Obsidian["Obsidian 雙向筆記鏈結<br>utils.obsidian_linker (index.md)"]
+        MarkdownOut --> EPUB["EPUB 3 封裝匯出<br>services.exporter.epub_exporter"]
+        MarkdownOut --> Checkpoint["更新斷點 Manifest<br>core.checkpoint.CheckpointManager"]
+    end
+```
+
 1. **實體路由與前置檢查 (Pre-flight & Routing)**：
    - 使用者透過 CLI 輸入 PDF/EPUB 檔案。
    - `adapters.guards.hardware` 進行記憶體 (RAM)、電源 (AC/Battery) 與硬碟空間檢查。
@@ -79,8 +131,14 @@ flowchart TD
 
 ## 3. 資料與程式碼分離 (Data Isolation)
 專案所有運算資料均存放在專案外的 `DATA_DIR`：
-- `input/`：原始輸入檔案（只讀）
-- `output/`：轉換產物（Markdown、影像、EPUB）
-- `needs_review/`：隔離待覆核內容
+- `input/`：原始輸入檔案（只讀，目錄結構即配置）：
+  - `books/digital-pdf/`：數位向量教科書（直接調用 XML 樣式提取，不跑 OCR）。
+  - `books/scanned-pdf/`：掃描版教科書（直接調用 Vision 神經 OCR 解析）。
+  - `books/`（根目錄）：未分流時相容備援（自動執行抽樣檢測）。
+  - `literature/`：期刊文獻論文（預設雙欄數位論文，亦相容 `scanned-pdf/` 子目錄）。
+- `output/`：轉換產物（資料夾一律禁用底線 `_`，統一以連字號 `-` 取代空格）：
+  - `books/<Book-Title-With-Hyphens>/`：章節 Markdown、抽像影像、EPUB 3 與 Obsidian 雙鏈。
+  - `literature/<Paper-Title-With-Hyphens>/`：結構化論文 Markdown、圖表與 EPUB 3。
+- `needs_review/`：隔離待覆核內容（格式損壞且無法自我修復之頁面）
 - `state/`：斷點清單與進度快照
 - `logs/`：結構化日誌（`process.log`）

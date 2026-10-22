@@ -72,7 +72,8 @@ literature-parser/
 │   │   ├── TASK-008-8.json
 │   │   ├── TASK-009-9-readme.json
 │   │   ├── TASK-010-10.json
-│   │   └── TASK-011-md.json
+│   │   ├── TASK-011-md.json
+│   │   └── TASK-012-task.json
 │   ├── framework.lock                      # [框架鎖定檔] 框架版本與檔案雜湊，供 update_framework 判斷是否被修改
 │   └── project.toml                        # [專案設定・各專案自訂] 語言、分層、品質門檻、指令、業務規則
 ├── .cursor/                                # [Agent 轉接] Cursor 規則 (自動產生)
@@ -327,7 +328,8 @@ literature-parser/
 │   ├── test_v39_format_auditor.py
 │   ├── test_v40_fix_playbook_and_invariants.py
 │   ├── test_v41_ollama_synthesizer.py
-│   └── test_v42_epub_exporter.py
+│   ├── test_v42_epub_exporter.py
+│   └── test_v43_input_segregation_and_naming.py
 ├── web/
 │   ├── app.js
 │   ├── dashboard.html

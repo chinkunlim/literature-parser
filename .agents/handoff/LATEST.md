@@ -5,10 +5,10 @@
 <!-- LIVE_STATE_START -->
 ## 📊 即時狀態看板 (Live Snapshot)
 
-- **最後更新時間**: `2026-10-21 17:56 UTC`
+- **最後更新時間**: `2026-10-22 01:59 UTC`
 - **最近操作 Agent**: `antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `e609eac docs: update and synchronize all project markdown documentation [agent:antigravity]`
+- **最新 Git Commit**: `555304c chore(tooling): update tooling tooling and config (ISSUE-003, TASK-001, TASK-002, TASK-003, TASK-009, TASK-010, TASK-011) [agent:antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
@@ -17,6 +17,18 @@
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-10-22 01:59 UTC] 完成任務 `TASK-012` — 輸入目錄結構分流與資料夾連字號命名規範 (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: 完成輸入目錄分流結構（books/digital-pdf/ 與 scanned-pdf/、literature/）與輸出資料夾連字號命名規範
+
+### [2026-10-22 01:51 UTC] 認領任務 `TASK-012` (輸入目錄結構分流與資料夾連字號命名規範) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`
+
+### [2026-10-22 01:51 UTC] 建立任務 `TASK-012`: 輸入目錄結構分流與資料夾連字號命名規範 (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
 
 ### [2026-10-21 17:56 UTC] Session Closeout (結束對話收尾) (by `antigravity`)
 - **檢查結果**: 測試與 Code Review Guard 通過
@@ -87,14 +99,3 @@
 
 ### [2026-10-21 16:05 UTC] 認領任務 `TASK-008` (遷移批次 8：測試) (by `antigravity`)
 - **相關範圍**: `tests/, legacy`
-
-### [2026-10-21 16:04 UTC] 完成任務 `TASK-007` — 遷移批次 7：web 前端（HTML / CSS / JS） (by `antigravity`)
-- **狀態**: ✅ 已完成 (`done`)
-- **完成摘要**: web 前端遷移完成，dashboard.html 搬遷並加上用途註解，0 critical issues
-
-### [2026-10-21 16:03 UTC] 認領任務 `TASK-007` (遷移批次 7：web 前端（HTML / CSS / JS）) (by `antigravity`)
-- **相關範圍**: `web/, legacy`
-
-### [2026-10-21 16:03 UTC] 完成任務 `TASK-003` — 遷移批次 3：domain 層（資料模型、純邏輯） (by `antigravity`)
-- **狀態**: ✅ 已完成 (`done`)
-- **完成摘要**: domain 層遷移完成，model_advisor.py 搬遷與型別註解通過，0 critical issues

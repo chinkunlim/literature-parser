@@ -14,6 +14,7 @@ import signal
 import subprocess
 import tempfile
 from pathlib import Path
+from typing import Optional
 
 from literature_parser.services.book_style import build_textbook_css
 from literature_parser.services.concurrency import M5WorkerPool
@@ -239,7 +240,7 @@ class BookProcessorOrchestrator:
     # =========================================================================
     # STAGE 2: Convert Single Chapter (with Automatic Verification)
     # =========================================================================
-    def convert_single_chapter(self, chapter_pdf_path: str, book_source_pdf: str = None, retry_count: int = 0):
+    def convert_single_chapter(self, chapter_pdf_path: str, book_source_pdf: str = None, retry_count: int = 0, is_scanned: Optional[bool] = None):
         """
         Converts a single chapter PDF into Markdown, extracts images, enforces quality invariants,
         runs automatic verification, generates AI review diffs, and auto-retries on failure.
@@ -293,8 +294,15 @@ class BookProcessorOrchestrator:
         _digital_pdf_mod._STYLE = _style
 
 
-        is_scanned = self.is_scanned_pdf(str(ch_pdf))
-
+        if is_scanned is None:
+            check_path = book_source_pdf or chapter_pdf_path
+            p_names = [p.name.lower() for p in Path(check_path).resolve().parents]
+            if any(name in ("scanned-pdf", "scanned_pdf", "scanned") for name in p_names):
+                is_scanned = True
+            elif any(name in ("digital-pdf", "digital_pdf", "digital") for name in p_names):
+                is_scanned = False
+            else:
+                is_scanned = self.is_scanned_pdf(str(ch_pdf))
 
         print(f"\n{'='*70}\n[STAGE 2: CONVERT CHAPTER] {ch_name} ({total_pages} page(s))\n{'='*70}")
         print(f"  Mode: {'SCANNED BOOK (Neural Layout + LaTeX)' if is_scanned else 'BORN-DIGITAL VECTOR (XML Styles + LaTeX)'}")
@@ -524,8 +532,23 @@ class BookProcessorOrchestrator:
     # =========================================================================
     # STAGE 3 & ALL: Full Book / Smart Resume Engine
     # =========================================================================
-    def process_pdf_book(self, pdf_path: str, target_chapter: str = None, resume: bool = False, parallel: bool = False):
+    def process_pdf_book(
+        self,
+        pdf_path: str,
+        target_chapter: str = None,
+        resume: bool = False,
+        parallel: bool = False,
+        is_scanned: Optional[bool] = None,
+        export_epub: bool = False
+    ):
         QualityInvariantGuard.check_pdf_pre_split(pdf_path)
+
+        if is_scanned is None:
+            p_names = [p.name.lower() for p in Path(pdf_path).resolve().parents]
+            if any(name in ("scanned-pdf", "scanned_pdf", "scanned") for name in p_names):
+                is_scanned = True
+            elif any(name in ("digital-pdf", "digital_pdf", "digital") for name in p_names):
+                is_scanned = False
 
         # Check document archetype: dispatch directly to LiteraturePipeline if academic literature
         from literature_parser.services.config_manager import ConfigManager
@@ -538,7 +561,17 @@ class BookProcessorOrchestrator:
                 use_ollama=self.use_ollama,
                 ollama_model=self.ollama_model,
             )
-            return pipeline.process(pdf_path, is_scanned=self.is_scanned_pdf(pdf_path))
+            scanned_flag = self.is_scanned_pdf(pdf_path) if is_scanned is None else is_scanned
+            res = pipeline.process(pdf_path, is_scanned=scanned_flag)
+            if export_epub:
+                from literature_parser.services.exporter.epub_exporter import EpubExporter
+                from literature_parser.services.utils.text_utils import sanitize_filename
+                doc_name = sanitize_filename(Path(pdf_path).stem)
+                try:
+                    EpubExporter.export_literature(Path(self.output_dir) / doc_name)
+                except Exception as e:
+                    logger.debug("EPUB export error: %s", e)
+            return res
 
         book_name = Path(pdf_path).stem
         book_out = os.path.join(self.output_dir, sanitize_filename(book_name))
@@ -588,7 +621,7 @@ class BookProcessorOrchestrator:
                 if not os.path.exists(s_ch_pdf) or os.path.getsize(s_ch_pdf) == 0:
                     PDFSplitter.split_chapter(pdf_path, s_start, s_end, s_ch_pdf)
                 ckpt.update_status(s_name, split_pdf=True, status='SPLIT')
-                return self.convert_single_chapter(s_ch_pdf, book_source_pdf=pdf_path)
+                return self.convert_single_chapter(s_ch_pdf, book_source_pdf=pdf_path, is_scanned=is_scanned)
 
             pool.execute_parallel(pending_sections, _process_task, desc="M5 Parallel Chapters")
         else:
@@ -618,7 +651,7 @@ class BookProcessorOrchestrator:
                 ckpt.update_status(name, split_pdf=True, status='SPLIT')
 
                 # 2. Convert & Auto-Verify (with auto-retry feedback loop)
-                self.convert_single_chapter(ch_pdf, book_source_pdf=pdf_path)
+                self.convert_single_chapter(ch_pdf, book_source_pdf=pdf_path, is_scanned=is_scanned)
 
         # Mirror chapter markdown to root directory if single section or journal article
         if len(sections) == 1:
@@ -651,6 +684,13 @@ class BookProcessorOrchestrator:
                 print(f"  [🔗 Obsidian] 已生成 {idx_file.name}，並為 {nav_count} 個章節加入導航雙鏈。")
         except Exception as _obs_err:
             logger.debug("Obsidian linker skipped: %s", _obs_err)
+
+        if export_epub:
+            from literature_parser.services.exporter.epub_exporter import EpubExporter
+            try:
+                EpubExporter.export_book(Path(book_out))
+            except Exception as e:
+                logger.debug("EPUB export error: %s", e)
 
         print(f"\n{'='*70}\nBOOK RUN COMPLETE! Progress saved in: {ckpt.md_path}\n{'='*70}\n")
 

@@ -60,3 +60,14 @@
 
 ### [2026-10-21 16:03 UTC] 認領任務 `TASK-003` (遷移批次 3：domain 層（資料模型、純邏輯）) (by `antigravity`)
 - **相關範圍**: `src/literature_parser/domain/, legacy`
+
+### [2026-10-21 16:03 UTC] 完成任務 `TASK-003` — 遷移批次 3：domain 層（資料模型、純邏輯） (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: domain 層遷移完成，model_advisor.py 搬遷與型別註解通過，0 critical issues
+
+### [2026-10-21 16:03 UTC] 認領任務 `TASK-007` (遷移批次 7：web 前端（HTML / CSS / JS）) (by `antigravity`)
+- **相關範圍**: `web/, legacy`
+
+### [2026-10-21 16:04 UTC] 完成任務 `TASK-007` — 遷移批次 7：web 前端（HTML / CSS / JS） (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: web 前端遷移完成，dashboard.html 搬遷並加上用途註解，0 critical issues

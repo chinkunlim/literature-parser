@@ -17,6 +17,7 @@ from typing import Optional
 from literature_parser.entrypoints.project_cli.common import ROOT
 from literature_parser.adapters.guards.hardware import check_hardware_safety
 from literature_parser.services.utils.app_logger import get_diagnostic_logger
+from literature_parser.services.utils.text_utils import sanitize_filename
 
 logger = get_diagnostic_logger("CommandCenter")
 
@@ -24,36 +25,48 @@ logger = get_diagnostic_logger("CommandCenter")
 def _run_process_pipeline(
     filepath: Path,
     doc_type: Optional[str] = None,
+    is_scanned: Optional[bool] = None,
     ignore_battery: bool = False,
     export_epub: bool = False
 ) -> bool:
-    """Executes the conversion pipeline for a single file. Returns True on success, False on failure."""
+    """Executes the conversion pipeline for a single file.
+
+    Args:
+        filepath: Path to the target PDF or EPUB document.
+        doc_type: Optional document type override ('book' or 'literature').
+        is_scanned: Optional scan mode override (True for scanned OCR, False for digital vector).
+        ignore_battery: Whether to bypass low-battery safety checks.
+        export_epub: Whether to build EPUB 3 archive upon completion.
+
+    Returns:
+        True on successful processing, False on error or rejection.
+    """
     if not filepath.exists():
         print(f"🛑 錯誤：找不到指定的輸入檔案: {filepath}")
         return False
 
+    resolved = filepath.resolve()
+    parent_names = [p.name.lower() for p in resolved.parents]
+
+    # Detect scan mode from directory structure if not explicitly provided
+    if is_scanned is None:
+        if any(name in ("scanned-pdf", "scanned_pdf", "scanned") for name in parent_names):
+            is_scanned = True
+        elif any(name in ("digital-pdf", "digital_pdf", "digital") for name in parent_names):
+            is_scanned = False
+
     if not doc_type:
-        try:
-            rel = filepath.resolve().relative_to(ROOT)
-            parts = rel.parts
-            if len(parts) >= 3 and parts[0] == "data" and parts[1] == "input":
-                subdir = parts[2]
-                if subdir in ("literature", "journals", "papers"):
-                    doc_type = "literature"
-                elif subdir == "books":
-                    doc_type = "book"
-        except ValueError:
-            pass
-        if not doc_type:
-            parent_lower = filepath.parent.name.lower()
-            if parent_lower in ("literature", "journals", "papers"):
-                doc_type = "literature"
-            else:
-                doc_type = "book"
+        if any(name in ("literature", "journals", "papers") for name in parent_names):
+            doc_type = "literature"
+        elif any(name in ("books", "book") for name in parent_names):
+            doc_type = "book"
+        else:
+            doc_type = "book"
     elif doc_type == "journal":
         doc_type = "literature"
 
-    print(f"\n🚀 啟動處理管線: [{doc_type.upper()}] 檔案: {filepath.name}")
+    scan_label = " (SCANNED OCR)" if is_scanned is True else (" (DIGITAL VECTOR)" if is_scanned is False else "")
+    print(f"\n🚀 啟動處理管線: [{doc_type.upper()}{scan_label}] 檔案: {filepath.name}")
 
     hw = check_hardware_safety(ignore_battery=ignore_battery)
     if not hw["safe_for_batch_ocr"]:
@@ -73,6 +86,12 @@ def _run_process_pipeline(
         "--file", str(filepath),
         "--output-dir", str(output_base),
     ]
+    if is_scanned is True:
+        cli_cmd.append("--scanned")
+    elif is_scanned is False:
+        cli_cmd.append("--digital")
+    if export_epub:
+        cli_cmd.append("--epub")
     if hw["safe_for_heavy_llm"]:
         cli_cmd.append("--ollama")
 
@@ -87,7 +106,7 @@ def _run_process_pipeline(
         print(f"\n✅ 處理完成！結果已儲存至 {output_base}")
         if export_epub:
             from literature_parser.services.exporter.epub_exporter import EpubExporter
-            doc_name = filepath.stem
+            doc_name = sanitize_filename(filepath.stem)
             target_out = output_base / doc_name
             try:
                 if doc_type == "literature":
@@ -158,9 +177,10 @@ def cmd_batch(args):
         print(f"🛑 錯誤：目錄不存在: {input_dir}")
         sys.exit(1)
 
+    # Use rglob to recursively discover documents inside digital-pdf/ and scanned-pdf/ subdirectories
     all_files = sorted(set(
         f for pat in ["*.pdf", "*.epub", "*.PDF", "*.EPUB"]
-        for f in input_dir.glob(pat)
+        for f in input_dir.rglob(pat)
     ))
 
     if not all_files:

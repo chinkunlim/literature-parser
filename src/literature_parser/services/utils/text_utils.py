@@ -10,14 +10,29 @@ from literature_parser.config.processor_config import MAX_FILENAME_LEN
 
 
 def sanitize_filename(name: str, max_len: int = MAX_FILENAME_LEN) -> str:
-    """Sanitize string to be safe for filenames across OS platforms."""
+    """Sanitize string to be safe for filenames and folder names across OS platforms.
+
+    Replaces illegal filesystem characters, slashes, whitespace, and underscores with hyphens.
+    Collapses multiple hyphens and trims leading/trailing hyphens and periods.
+
+    Args:
+        name: Raw filename or folder title string.
+        max_len: Maximum length limit for the sanitized string.
+
+    Returns:
+        Hyphen-delimited, clean filename/folder name, or 'untitled' if empty.
+    """
     if not name:
         return "untitled"
-    name = re.sub(r'[/\\\\:*?\"<>|]', ' - ', name)
-    name = re.sub(r'\s+', ' ', name).strip()
+    # Replace illegal filesystem characters, slashes, commas, and punctuation with hyphens
+    name = re.sub(r'[/\\\\:*?\"<>|_,;&]+', '-', name)
+    # Replace all whitespace sequences with hyphens
+    name = re.sub(r'\s+', '-', name)
+    # Collapse multiple hyphens into a single hyphen
+    name = re.sub(r'-+', '-', name).strip('-')
     name = name.rstrip('. ')
     if len(name) > max_len:
-        name = name[:max_len].rstrip('. ')
+        name = name[:max_len].rstrip('- ')
     return name or 'untitled'
 
 
@@ -478,19 +493,33 @@ def clean_page_text_artifacts(raw: str, page_num: Optional[int] = None) -> str:
 
 
 def format_chapter_title(title: str) -> str:
-    """Standardizes chapter titles into 'Ch01 Title' format."""
+    """Standardizes chapter titles into 'Ch01-Title' format.
+
+    Args:
+        title: Raw chapter title string from outline or text.
+
+    Returns:
+        Standardized chapter title string with hyphen-separated components.
+    """
     if not title:
         return "untitled"
     m = re.search(r'^(?:Chapter\s+)?(\d+)[\.\s:\-]+(.*)', title, re.IGNORECASE)
     if m:
         ch_num = int(m.group(1))
         rest = sanitize_filename(m.group(2).strip())
-        return f"Ch{ch_num:02d} {rest}".strip()
+        return f"Ch{ch_num:02d}-{rest}".strip('-') if rest and rest != "untitled" else f"Ch{ch_num:02d}"
     return sanitize_filename(title)
 
 
 def format_appendix_title(title: str) -> str:
-    """Standardizes appendix titles into 'Appendix A Title' format."""
+    """Standardizes appendix titles into 'Appendix-A-Title' format.
+
+    Args:
+        title: Raw appendix title string from outline or text.
+
+    Returns:
+        Standardized appendix title string with hyphen-separated components.
+    """
     if not title:
         return "Appendix"
     clean = title.strip()
@@ -503,11 +532,11 @@ def format_appendix_title(title: str) -> str:
         letter = m.group(1)
         rest = sanitize_filename(m.group(2).strip())
         if 'solution' in rest.lower():
-            return f"Appendix {letter} Solutions"
+            return f"Appendix-{letter}-Solutions"
         elif rest and rest.lower() != 'untitled':
-            return f"Appendix {letter} {rest}".strip()
-        return f"Appendix {letter}"
+            return f"Appendix-{letter}-{rest}".strip('-')
+        return f"Appendix-{letter}"
     cleaned_rest = re.sub(r'^Appendix\s*', '', clean, flags=re.IGNORECASE).strip()
     if not cleaned_rest:
         return "Appendix"
-    return f"Appendix {sanitize_filename(cleaned_rest)}".strip()
+    return f"Appendix-{sanitize_filename(cleaned_rest)}".strip('-')

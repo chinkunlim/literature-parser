@@ -55,6 +55,9 @@ def main():
     p_run.add_argument("--output-dir", "-o", default=DEFAULT_OUTPUT_DIR, help="Output directory")
     add_ollama_args(p_run)
     p_run.add_argument("--parallel", action="store_true", help="Process chapters concurrently utilizing Apple M5 P-Cores")
+    p_run.add_argument("--scanned", dest="is_scanned", action="store_true", default=None, help="Force scanned PDF mode (OCR layout)")
+    p_run.add_argument("--digital", dest="is_scanned", action="store_false", help="Force born-digital PDF mode (vector extraction)")
+    p_run.add_argument("--epub", action="store_true", help="Export as EPUB 3 upon completion")
 
     # 4. RESUME Subcommand
     p_resume = subparsers.add_parser("resume", help="Resume interrupted processing, skipping verified chapters")
@@ -148,7 +151,9 @@ def main():
                     bpath,
                     target_chapter=getattr(args, 'chapter', None),
                     resume=False,
-                    parallel=getattr(args, 'parallel', False)
+                    parallel=getattr(args, 'parallel', False),
+                    is_scanned=getattr(args, 'is_scanned', None),
+                    export_epub=getattr(args, 'epub', False)
                 )
             elif ext == '.epub':
                 orchestrator.process_epub_book(bpath)

@@ -56,6 +56,27 @@ class EndOfChapterParser:
         for t in text_elements:
             txt = ''.join(t.itertext()).strip()
             top = float(t.attrib.get('top', 0))
+            left = float(t.attrib.get('left', 0))
+            if not txt or txt.islower() or txt.endswith(('.', ',', ';')):
+                continue
+
+            fid = t.attrib.get('font', '')
+            finfo = fonts.get(fid, {'size': 10, 'is_bold': False, 'family': ''})
+            raw_xml = ET.tostring(t, encoding='utf-8', method='xml').decode('utf-8')
+            is_bold = finfo.get('is_bold', False) or '<b>' in raw_xml or 'bold' in finfo.get('family', '').lower()
+            is_large = finfo.get('size', 10.0) >= 12.0
+            is_all_caps = txt.isupper() and len(txt) >= 4
+            if not (is_bold or is_large or is_all_caps):
+                continue
+
+            # Ensure heading is not preceded by text on the same baseline
+            has_preceding = any(
+                o != t and abs(float(o.attrib.get('top', 0)) - top) <= 4.0 and float(o.attrib.get('left', 0)) < left - 10.0
+                for o in text_elements
+            )
+            if has_preceding:
+                continue
+
             for pat in eoc_patterns:
                 if re.match(pat, txt, re.IGNORECASE):
                     eoc_headings.append({'elem': t, 'top': top, 'text': txt, 'pattern': pat})
@@ -259,6 +280,8 @@ class EndOfChapterParser:
                 inner = re.sub(r'<i>\s*(.*?)\s*</i>', r'*\1*', inner)
                 txt = inner.strip()
                 if not txt:
+                    continue
+                if re.search(r'WCN\s*\d+-\d+|all rights reserved|cengage learning|may not be copied|in whole or in part', txt, re.IGNORECASE):
                     continue
 
                 txt = re.sub(r'^(\*\*\d+\.\*\*|\*\*[a-e]\.\*\*)(\S)', r'\1 \2', txt)

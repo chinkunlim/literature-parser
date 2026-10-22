@@ -74,7 +74,8 @@ class ListParser:
             if is_code_line(line, in_chunk=bool(code_chunk)):
                 code_chunk.append(line)
             else:
-                if len(code_chunk) >= 2:
+                non_empty = [c for c in code_chunk if c.strip()]
+                if len(non_empty) >= 2:
                     result.append("```python\n" + '\n'.join(code_chunk) + "\n```")
                     code_chunk = []
                 elif code_chunk:
@@ -82,7 +83,8 @@ class ListParser:
                     code_chunk = []
                 result.append(line)
 
-        if len(code_chunk) >= 2:
+        non_empty = [c for c in code_chunk if c.strip()]
+        if len(non_empty) >= 2:
             result.append("```python\n" + '\n'.join(code_chunk) + "\n```")
         elif code_chunk:
             result.extend(code_chunk)

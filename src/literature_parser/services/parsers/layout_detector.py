@@ -48,13 +48,13 @@ class LayoutDetector:
 
     CODE_INDICATORS = [
         r'\bdef\s+\w+\s*\(',
-        r'\bclass\s+\w+\b',
-        r'\bimport\s+[\w\.]+',
-        r'\bfrom\s+[\w\.]+\s+import\b',
+        r'\bclass\s+[A-Za-z_]\w*\s*(?:\([^)]*\))?\s*:',
+        r'^\s*import\s+[a-zA-Z_]\w*',
+        r'^\s*from\s+[\w\.]+\s+import\b',
         r'\bconsole\.log\(',
         r'\bfunction\s*\w*\s*\(',
         r'^\s*(?:for|while|if)\s*\(.*?\)\s*\{',
-        r'^\s*>\s*[a-zA-Z0-9_\.]+\s*<-\s*'  # R language assignment
+        r'^\s*>\s*[a-zA-Z0-9_\.]+\s*<-\s*',  # R language assignment
     ]
 
     @classmethod
@@ -221,7 +221,8 @@ class LayoutDetector:
             if is_code_line(line, in_chunk=bool(code_chunk)):
                 code_chunk.append(line)
             else:
-                if len(code_chunk) >= 2:
+                non_empty = [c for c in code_chunk if c.strip()]
+                if len(non_empty) >= 2:
                     result.append("```python\n" + '\n'.join(code_chunk) + "\n```")
                     code_chunk = []
                 elif code_chunk:
@@ -229,7 +230,8 @@ class LayoutDetector:
                     code_chunk = []
                 result.append(line)
 
-        if len(code_chunk) >= 2:
+        non_empty = [c for c in code_chunk if c.strip()]
+        if len(non_empty) >= 2:
             result.append("```python\n" + '\n'.join(code_chunk) + "\n```")
         elif code_chunk:
             result.extend(code_chunk)

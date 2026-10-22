@@ -370,7 +370,7 @@ def stitch_cross_page_continuity(text: str) -> str:
         return f"{p1} {p2}\n\n{page_tag}\n\n{intervening}"
 
     text = re.sub(
-        r'(?m)^(?P<p1>(?!(?:[#>`|!]|[-*+][ \t]+))[^\n]+[^.\?!:;\n#`>|\*\-|])\n{2,}'
+        r'(?m)^(?P<p1>(?!(?:[#>`|!]|[-*+][ \t]+))[^\n]+[^.\?!:;\n#`>|\-])\n{2,}'
         r'(?P<intervening>(?:(?:\*\*|#|>|\[\^|[-*•]|<table|\|)[^\n]*\n|[ \t]*\n)+)'
         r'\s*(?P<page><!--\s*Page\s+\d+\s*-->)\s*\n+(?P<p2>[a-z](?:[^\n]|\n(?!\n))*)',
         _join_sentence_with_intervening,
@@ -394,7 +394,7 @@ def stitch_cross_page_continuity(text: str) -> str:
         return f"{preceding_text} <!-- {page_tag[4:-3].strip()} -->\n{following_char}"
 
     text = re.sub(
-        r'(?m)^((?!(?:[#>`|!]|[-*+][ \t]+))[^\n]+[^.\?!:;\n#`>|\*\-|])\n{2,}\s*(<!--\s*Page\s+\d+\s*-->)\s*\n+([a-z])',
+        r'(?m)^((?!(?:[#>`|!]|[-*+][ \t]+))[^\n]+[^.\?!:;\n#`>|\-])\n{2,}\s*(<!--\s*Page\s+\d+\s*-->)\s*\n+([a-z])',
         _join_direct_sentence,
         text,
     )

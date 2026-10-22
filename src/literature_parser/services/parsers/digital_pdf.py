@@ -1202,6 +1202,13 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
         # Normalise math notation to LaTeX
         result_md = MathLaTeXConverter.process_text(full_md)
 
+        # Remove any lingering WCN/Cengage or publisher disclaimer lines that might have escaped
+        result_md = re.sub(
+            r'(?m)^.*?\b(?:WCN\s*\d+-\d+|may not be copied, scanned, or duplicated|in whole or in part\.\s*WCN)\b.*$\n?',
+            '',
+            result_md
+        )
+
         # Collect inline bold terms for chapter-end Flashcard deck (deduped against margin glossaries)
         if _STYLE.get("gloss_placement") == "chapter_end" and _STYLE.get("collect_inline_bold", False):
             cls.collect_inline_bold_terms(result_md, page_num)

@@ -53,7 +53,11 @@ class MarginParser:
     @classmethod
     def extract_margin_glossaries(cls, page_elem, fonts, pw: float, ph: float, page_num: int = 0, already_consumed: set = None, style_config: dict = None) -> tuple:
         style = style_config if style_config is not None else _DEFAULT_STYLE
-        if style.get("gloss_placement") == "none" or style.get("is_literature"):
+        if (
+            style.get("gloss_placement") not in ("margin", None)
+            or style.get("special_blocks", {}).get("has_margin_glossary") is False
+            or style.get("is_literature")
+        ):
             return [], set()
         """
         Extracts margin glossary definitions on odd (right margin) or even (left margin) pages.
@@ -94,10 +98,12 @@ class MarginParser:
             even_margin = geom.get('even_page_margin_x', [0.0, 0.30])
             odd_margin = geom.get('odd_page_margin_x', [0.70, 1.0])
 
+            width = float(t.attrib.get('width', 0))
+            right = left + width
             if margin_side == 'left':
-                in_margin = (even_margin[0] * pw <= left <= even_margin[1] * pw)
+                in_margin = (even_margin[0] * pw <= left <= even_margin[1] * pw) and (right <= (even_margin[1] * pw + 40))
             else:
-                in_margin = (odd_margin[0] * pw <= left <= odd_margin[1] * pw)
+                in_margin = (odd_margin[0] * pw - 20 <= left <= odd_margin[1] * pw)
 
             if in_margin:
                 fid = t.attrib.get('font', '')

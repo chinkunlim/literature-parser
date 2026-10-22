@@ -267,10 +267,10 @@ def check_numeric_coordinate_noise(content: str) -> dict:
     cleaned = re.sub(r'<!--.*?-->', '', cleaned, flags=re.DOTALL)
     # Strip Markdown pipe tables
     cleaned = re.sub(r'(?m)^\|.*\|$', '', cleaned)
-    # Strip collapsed tables and statistical exhibits (e.g. Table 8.1, ANOVA, Regression)
+    # Strip collapsed tables and statistical exhibits (e.g. Table 8.1, ANOVA, Regression, RIASEC scores)
     cleaned = re.sub(r'(?m)^.*?\bTable\s+\d+(?:\.\d+)?\b.*$', '', cleaned)
     cleaned = re.sub(
-        r'(?m)^.*?\b(?:ANOVA|Regression|Effect Sizes?|Analysis of variance|is significant|not significant|Interaction|Factorial)\b.*$',
+        r'(?m)^.*?\b(?:ANOVA|Regression|Effect Sizes?|Analysis of variance|is significant|not significant|Interaction|Factorial|Self-Directed Search|R I A S E C|RIASEC|Self-Estimates|Total Scores|Occupations|Competencies|Activities)\b.*$',
         '',
         cleaned,
         flags=re.IGNORECASE,
@@ -451,14 +451,19 @@ def check_latex_and_symbol_integrity(content: str) -> dict:
 
     # 2. Strip code fences to avoid false positives in code blocks
     cleaned = re.sub(r'```.*?```', '', content, flags=re.DOTALL)
+    no_escaped_dollars = cleaned.replace(r'\$', '')
 
     # 3. Check for unescaped percent sign inside LaTeX math
-    for math_block in re.findall(r'\$(.+?)\$', cleaned):
+    for d_block in re.findall(r'\$\$(.+?)\$\$', no_escaped_dollars, flags=re.DOTALL):
+        if re.search(r'(?<!\\)%', d_block):
+            issues.append(f"Unescaped percent sign % inside LaTeX math: $${d_block[:40]}$$ (comments out closing $$)")
+    no_display = re.sub(r'\$\$.*?\$\$', '', no_escaped_dollars, flags=re.DOTALL)
+    for math_block in re.findall(r'(?<!\$)\$(?!\$)([^\$\n]+?)(?<!\$)\$(?!\$)', no_display):
         if re.search(r'(?<!\\)%', math_block):
             issues.append(f"Unescaped percent sign % inside LaTeX math: ${math_block[:40]}$ (comments out closing $)")
 
     # 4. Check display math $$ parity
-    double_dollars = cleaned.count("$$")
+    double_dollars = no_escaped_dollars.count("$$")
     if double_dollars % 2 != 0:
         issues.append(f"Unpaired display math delimiter '$$' (count: {double_dollars})")
 

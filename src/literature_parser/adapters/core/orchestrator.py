@@ -16,8 +16,10 @@ import tempfile
 from pathlib import Path
 from typing import Optional
 
+from literature_parser.domain.profiler.profile_schema import DocumentProfile
 from literature_parser.services.book_style import build_textbook_css
 from literature_parser.services.concurrency import M5WorkerPool
+from literature_parser.services.converter import ConversionOptions, MarkdownConversionService
 from literature_parser.config.processor_config import (
     CIRCUIT_BREAKER_MAX_FAILURES,
     DEFAULT_INBOX_DIR,
@@ -315,133 +317,45 @@ class BookProcessorOrchestrator:
         print(f"\n{'='*70}\n[STAGE 2: CONVERT CHAPTER] {ch_name} ({total_pages} page(s))\n{'='*70}")
         print(f"  Mode: {'SCANNED BOOK (Neural Layout + LaTeX)' if is_scanned else 'BORN-DIGITAL VECTOR (XML Styles + LaTeX)'}")
 
-        # 1. Extract Images (discards background sheets)
-        raw_images = ImageManager.extract_pdf_images(str(ch_pdf), is_scanned=is_scanned)
-        saved_images = []
-        if raw_images:
-            os.makedirs(ch_images_dir, exist_ok=True)
-            for seq, img in enumerate(raw_images, 1):
-                p = img['page']
-                ext = img['ext']
-                fname = f"{p:03d}_{seq:03d}.{ext}"
-                dest = ch_images_dir / fname
-                with open(dest, 'wb') as f_out:
-                    f_out.write(img['data'])
-                img['filename'] = fname
-                saved_images.append(img)
+        # Delegate Markdown conversion to MarkdownConversionService
+        conv_service = MarkdownConversionService()
+        prof_obj = None
+        target_prof_path = cand_canon if cand_canon.exists() else (cand_legacy if cand_legacy.exists() else None)
+        if target_prof_path:
+            try:
+                with open(target_prof_path, 'r', encoding='utf-8') as f:
+                    prof_obj = DocumentProfile.from_dict(json.load(f))
+            except Exception:
+                pass
+        if prof_obj is None:
+            prof_obj = DocumentProfile.from_dict(_style)
+
+        prof_obj.meta.mode = "scanned" if is_scanned else "digital"
+        prof_obj.meta.doc_type = "literature" if is_journal_doc else "book"
+
+        conv_opts = ConversionOptions(
+            extract_images=True,
+            crop_figures_and_tables=True,
+            uniform_crop_margin_pt=getattr(prof_obj.geometry, "uniform_crop_margin_pt", 16.0),
+            generate_toc=_style.get("generate_toc", True),
+            toc_mode=_style.get("toc_mode", "open"),
+            prepend_title_if_missing=_style.get("prepend_chapter_title_if_missing", True),
+            embed_css=True,
+            output_standalone_css=True,
+            is_front_matter=ch_name.startswith("00-"),
+            custom_title=ch_name,
+        )
+
+        conv_res = conv_service.convert(
+            pdf_path=ch_pdf,
+            profile=prof_obj,
+            output_dir=ch_dir,
+            options=conv_opts,
+            context={"chapter_name": ch_name, "is_journal_doc": is_journal_doc},
+        )
+        saved_images = conv_res.images
+        full_md = conv_res.markdown
         print(f"  [✓] Genuine figures/photos extracted: {len(saved_images)}")
-
-        md_parts = []
-        if not is_scanned:
-            DigitalPDFParser.reset_chapter_state()
-        with tempfile.TemporaryDirectory() as work_tmp:
-            for p in range(1, total_pages + 1):
-                p_imgs = [img for img in saved_images if img['page'] == p]
-                if is_scanned:
-                    p_md = ScannedPDFParser.parse_page_to_markdown(str(ch_pdf), p, work_tmp)
-                else:
-
-                    p_md = DigitalPDFParser.parse_page_to_markdown(str(ch_pdf), p, p_imgs)
-                if p_md:
-                    md_parts.append(f"<!-- Page {p} -->\n{p_md}")
-
-        full_md = '\n\n'.join(md_parts).strip()
-        if is_journal_doc:
-            # Promote the main article title to # (H1) if only ### was assigned
-            if not re.search(r'^\s*#\s+[^\n]+', full_md):
-                m_first_h = re.search(r'###\s+([^\n]+)(?:\n+###\s+([^\n]+))?', full_md)
-                if m_first_h:
-                    t1 = m_first_h.group(1).strip()
-                    t2 = m_first_h.group(2).strip() if m_first_h.group(2) else ""
-                    combined_title = f"{t1} {t2}".strip()
-                    full_md = full_md[:m_first_h.start()] + f"# {combined_title}" + full_md[m_first_h.end():]
-        elif _style.get("prepend_chapter_title_if_missing", True):
-            if not re.search(r'^\s*#+\s*(?:PART|CHAPTER|\d+|Introduction)', full_md, re.IGNORECASE) and not re.search(r'^\s*<!--.*?-->\s*#+\s*', full_md, re.IGNORECASE):
-                full_md = f"# {ch_name}\n\n{full_md}"
-
-        # Insert clickable Table of Contents if configured
-        toc_mode = _style.get("toc_mode", "open")
-        if not is_journal_doc and _style.get("generate_toc", True) and toc_mode != "none":
-            toc_block = generate_markdown_toc(full_md, toc_mode=toc_mode)
-            if toc_block and "<summary>📑 <b>Table of Contents</b>" not in full_md:
-                # Place TOC after the first top-level # heading
-                m_h1 = re.search(r'^(#[^\n]+\n+)', full_md)
-                if m_h1:
-                    full_md = full_md[:m_h1.end()] + toc_block + "\n\n" + full_md[m_h1.end():]
-                else:
-                    full_md = toc_block + "\n\n" + full_md
-
-        full_md = stitch_cross_page_continuity(full_md)
-
-
-        # Append chapter-end flashcards if configured
-        if not is_scanned and _style.get("gloss_placement") == "chapter_end":
-            ch_gloss = DigitalPDFParser.get_chapter_all_terms()
-            if ch_gloss:
-                if _style.get("gloss_format") == "bullet":
-                    fc_lines = [
-                        "## 📖 Chapter Key Terms",
-                        "",
-                    ]
-                    for g in ch_gloss:
-                        t   = g['term']
-                        d   = (g.get('definition') or '').strip()
-                        pg  = g.get('page')
-                        pg_str = f" *(p. {pg})*" if pg else ""
-                        if d:
-                            fc_lines.append(f"- **{t}**{pg_str}: {d}")
-                        else:
-                            fc_lines.append(f"- **{t}**{pg_str}")
-                    fc_lines.append("")
-                else:
-                    fc_lines = [
-                        "## 🗂️ Chapter Key Terms & Active Recall",
-                        "",
-                        "> 💡 **Learning tip:** Try to recall the definition of each term *before* clicking to reveal it.",
-                        "> This active retrieval practice strengthens long-term memory far more than re-reading.",
-                        "",
-                    ]
-                    for g in ch_gloss:
-                        t   = g['term']
-                        d   = (g.get('definition') or '').strip()
-                        pg  = g.get('page')
-                        src = g.get('source')
-                        pg_str = f" *(p. {pg})*" if pg else ""
-                        slug   = re.sub(r'[^a-zA-Z0-9]+', '-', t.lower()).strip('-')
-
-                        # All cards use <b>{t}</b> inside summary so bolding works in standard HTML
-                        fc_lines.append(f"<details id=\"flashcard-{slug}\">")
-                        fc_lines.append(f"<summary>📇 <b>{t}</b>{pg_str}</summary>")
-                        fc_lines.append("")
-
-                        if d:
-                            # Margin-defined term: clean definition without unwanted notes
-                            fc_lines.append(f"> **Definition:** {d}")
-                        else:
-                            # Inline bold term: guide to self-generate
-                            loc = f"on p. {pg}" if pg else "in the chapter"
-                            fc_lines.append(f"> *This term appears in bold {loc}.*")
-                            fc_lines.append("> *Write your own definition from context, then re-read that passage to check.*")
-
-                        fc_lines.append("")
-                        fc_lines.append("</details>")
-                        fc_lines.append("")
-
-                fc_text = '\n'.join(fc_lines)
-                m_eoc = re.search(
-                    r'(?:<a id="key-terms-and-concepts"></a>|###\s*Key Terms and Concepts)',
-                    full_md
-                )
-                if m_eoc:
-                    pos = m_eoc.start()
-                    full_md = full_md[:pos] + fc_text + "\n\n" + full_md[pos:]
-                else:
-                    full_md = full_md + "\n\n" + fc_text
-
-
-        # Build CSS block from STYLE (only inject once — guard against retry duplication)
-        if '<style>' not in full_md:
-            full_md = build_textbook_css(_style) + full_md
 
         # ──────────────────────────────────────────────────────────────────────
         # Global Learning Pre-Application:

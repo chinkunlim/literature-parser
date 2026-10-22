@@ -106,3 +106,18 @@
 ### [2026-10-21 16:09 UTC] 完成任務 `TASK-006` — 遷移批次 6：entrypoints 層（CLI、HTTP、排程入口） (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
 - **完成摘要**: entrypoints 層遷移完成，run.py, doc_cli.py 與 project_cli 系列功能完備且通過 CLI 測試，0 critical issues
+
+### [2026-10-21 16:09 UTC] 認領任務 `TASK-009` (遷移批次 9：文件（README、規格、決策、已知問題）) (by `antigravity`)
+- **相關範圍**: `docs/PROMPT_TEMPLATES.md, docs/adr/, docs/architecture/ARCHITECTURE.md, docs/known-issues/, docs/specs/, docs/standards/PROJECT_RULES.md, evals/EVALS.md, legacy`
+
+### [2026-10-21 16:12 UTC] 完成任務 `TASK-009` — 遷移批次 9：文件（README、規格、決策、已知問題） (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: 文件批次遷移完成，README、ARCHITECTURE、ADR、Known Issues、PROJECT_RULES、SPECS 與歷史對話已全數轉換至標準路徑
+
+### [2026-10-21 17:46 UTC] Session Closeout (結束對話收尾) (by `antigravity`)
+- **檢查結果**: 測試與 Code Review Guard 通過
+- **目標**: 驗證所有專案工作流正常運作，清理 repo 內產生的暫存，並確認 240 測試與門禁 100% 通過
+- **錯誤與根因**: 1. poppler/pdfinfo 缺失導致頁數解析失敗 → 增加純 Python PDF Page Count 正則 Fallback; 2. image_manager.extract_pdf_images 缺失 pdfimages 時崩潰 → 增加 FileNotFoundError 捕獲與優雅降級; 3. a
+- **下一步**: 所有 16 個 CLI 工作流與 240 項單元測試皆已實測通過，後續可依需求串接 FastAPI 或新增解析規則
+- **交接備註**: 所有工作流實測完畢，純 Python fallback 與 DATA_DIR 結構健全
+- **本機對話紀錄**: `.agents/conversations/2026-10-22-0146-antigravity-summary.md`（只在這台電腦）

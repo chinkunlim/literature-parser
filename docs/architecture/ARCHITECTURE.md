@@ -25,6 +25,7 @@ flowchart TD
 
     subgraph Services ["3. services 層 (業務流程與排版解析)"]
         TextbookPipe["services.pipelines.textbook_pipeline"]
+        Converter["services.converter.*<br>(MarkdownConversionService, Cropper, Strategies)"]
         Parsers["services.parsers.*<br>(digital_pdf, layout, math, epub)"]
         CfgMgr["services.config_manager<br>(Hierarchical Config)"]
         Exporter["services.exporter.epub_exporter<br>(EPUB 3 Builder)"]

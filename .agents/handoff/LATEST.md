@@ -5,10 +5,10 @@
 <!-- LIVE_STATE_START -->
 ## 📊 即時狀態看板 (Live Snapshot)
 
-- **最後更新時間**: `2026-10-22 03:07 UTC`
+- **最後更新時間**: `2026-10-22 03:44 UTC`
 - **最近操作 Agent**: `antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `b748c1f docs: synchronize all project markdown documentation (TASK-015) [agent:antigravity]`
+- **最新 Git Commit**: `dbdf44d chore(tooling): update tooling tooling and config (ADR-004, ISSUE-004, TASK-006, TASK-009, TASK-014, TASK-015) [agent:antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
@@ -17,6 +17,18 @@
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-10-22 03:44 UTC] 完成任務 `TASK-016` — 實作獨立 MarkdownConversionService 與圖表裁切/CSS 輸出模組 (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: 實作獨立 MarkdownConversionService、CSS 雙出、Figure/Table 獨立裁切（含 Caption/Notes/等寬 16pt Margin）與 Orchestrator/Pipeline 整合
+
+### [2026-10-22 03:36 UTC] 認領任務 `TASK-016` (實作獨立 MarkdownConversionService 與圖表裁切/CSS 輸出模組) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`
+
+### [2026-10-22 03:36 UTC] 建立任務 `TASK-016`: 實作獨立 MarkdownConversionService 與圖表裁切/CSS 輸出模組 (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
 
 ### [2026-10-22 03:07 UTC] Session Closeout (結束對話收尾) (by `antigravity`)
 - **檢查結果**: 測試與 Code Review Guard 通過
@@ -93,18 +105,3 @@
 ### [2026-10-21 17:48 UTC] 建立任務 `TASK-011`: 更新所有 md 檔案與專案文件 (by `antigravity`)
 - **狀態**: `in_progress`
 - **相關範圍**: `-`
-
-### [2026-10-21 17:46 UTC] Session Closeout (結束對話收尾) (by `antigravity`)
-- **檢查結果**: 測試與 Code Review Guard 通過
-- **目標**: 驗證所有專案工作流正常運作，清理 repo 內產生的暫存，並確認 240 測試與門禁 100% 通過
-- **錯誤與根因**: 1. poppler/pdfinfo 缺失導致頁數解析失敗 → 增加純 Python PDF Page Count 正則 Fallback; 2. image_manager.extract_pdf_images 缺失 pdfimages 時崩潰 → 增加 FileNotFoundError 捕獲與優雅降級; 3. a
-- **下一步**: 所有 16 個 CLI 工作流與 240 項單元測試皆已實測通過，後續可依需求串接 FastAPI 或新增解析規則
-- **交接備註**: 所有工作流實測完畢，純 Python fallback 與 DATA_DIR 結構健全
-- **本機對話紀錄**: `.agents/conversations/2026-10-22-0146-antigravity-summary.md`（只在這台電腦）
-
-### [2026-10-21 16:12 UTC] 完成任務 `TASK-009` — 遷移批次 9：文件（README、規格、決策、已知問題） (by `antigravity`)
-- **狀態**: ✅ 已完成 (`done`)
-- **完成摘要**: 文件批次遷移完成，README、ARCHITECTURE、ADR、Known Issues、PROJECT_RULES、SPECS 與歷史對話已全數轉換至標準路徑
-
-### [2026-10-21 16:09 UTC] 認領任務 `TASK-009` (遷移批次 9：文件（README、規格、決策、已知問題）) (by `antigravity`)
-- **相關範圍**: `docs/PROMPT_TEMPLATES.md, docs/adr/, docs/architecture/ARCHITECTURE.md, docs/known-issues/, docs/specs/, docs/standards/PROJECT_RULES.md, evals/EVALS.md, legacy`

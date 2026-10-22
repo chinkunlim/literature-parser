@@ -23,7 +23,9 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 import literature_parser.services.parsers.digital_pdf as _digital_pdf_mod
+from literature_parser.domain.profiler.profile_schema import DocumentProfile
 from literature_parser.services.config_manager import ConfigManager
+from literature_parser.services.converter import ConversionOptions, MarkdownConversionService
 from literature_parser.services.core.analyzer import PDFAnalyzer
 from literature_parser.services.core.image_manager import ImageManager
 from literature_parser.services.core.invariants import QualityInvariantGuard
@@ -311,43 +313,33 @@ class LiteraturePipeline(BasePipeline):
 
         # ---------------------------------------------------------------------
         # Stage 2: Extract & Deduplicate Genuine Figures/Photos
-        # -------------------------------------------------------------------------
-        raw_images = ImageManager.extract_pdf_images(str(p_path), is_scanned=is_scanned)
-        saved_images = []
-        if raw_images:
-            doc_images_dir.mkdir(parents=True, exist_ok=True)
-            for seq, img in enumerate(raw_images, 1):
-                p = img['page']
-                ext = img['ext']
-                fname = f"{p:03d}_{seq:03d}.{ext}"
-                dest = doc_images_dir / fname
-                with open(dest, 'wb') as f_out:
-                    f_out.write(img['data'])
-                img['filename'] = fname
-                saved_images.append(img)
-
-        # Deduplicate images on same page to prevent vector-crop duplication
-        saved_images = FigureFormatter.deduplicate_page_images(saved_images)
-        print(f"  [✓] Genuine figures/charts extracted: {len(saved_images)}")
-
-        # ---------------------------------------------------------------------
         # Stage 3: Page Extraction & Two-Column Reading Flow
+        # (Delegated to unified MarkdownConversionService)
         # ---------------------------------------------------------------------
-        md_parts = []
-        if not is_scanned:
-            DigitalPDFParser.reset_chapter_state()
-
-        with tempfile.TemporaryDirectory() as work_tmp:
-            for p in range(1, total_pages + 1):
-                p_imgs = [img for img in saved_images if img['page'] == p]
-                if is_scanned:
-                    p_md = ScannedPDFParser.process_scanned_page(str(p_path), p, work_tmp)
-                else:
-                    p_md = DigitalPDFParser.parse_page_to_markdown(str(p_path), p, p_imgs)
-                if p_md:
-                    md_parts.append(f"<!-- Page {p} -->\n{p_md}")
-
-        full_md = '\n\n'.join(md_parts).strip()
+        conv_service = MarkdownConversionService()
+        prof_obj = DocumentProfile.from_dict(config)
+        prof_obj.meta.doc_type = "literature"
+        prof_obj.meta.mode = "scanned" if is_scanned else "digital"
+        conv_opts = ConversionOptions(
+            extract_images=True,
+            crop_figures_and_tables=True,
+            uniform_crop_margin_pt=getattr(prof_obj.geometry, "uniform_crop_margin_pt", 16.0),
+            generate_toc=False,
+            prepend_title_if_missing=True,
+            embed_css=False,  # LiteraturePipeline handles academic CSS packaging downstream
+            output_standalone_css=True,
+            custom_title=clean_title,
+        )
+        conv_res = conv_service.convert(
+            pdf_path=p_path,
+            profile=prof_obj,
+            output_dir=doc_out_dir,
+            options=conv_opts,
+            context={"publisher": publisher},
+        )
+        saved_images = FigureFormatter.deduplicate_page_images(conv_res.images)
+        print(f"  [✓] Genuine figures/charts extracted: {len(saved_images)}")
+        full_md = conv_res.markdown
 
         # ---------------------------------------------------------------------
         # Stage 4: Structure Resolution & Typography

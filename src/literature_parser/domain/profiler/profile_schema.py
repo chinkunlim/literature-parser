@@ -142,6 +142,7 @@ class ProfileGeometry:
         even_page: Verso (left page) layout boundaries.
         odd_page: Recto (right page) layout boundaries.
         has_spanning_boxes: Whether textbook contains full-width boxes that cross both columns.
+        uniform_crop_margin_pt: Uniform margin in points added to all four sides when cropping figures and tables.
     """
 
     page_width: float = 612.0
@@ -161,6 +162,7 @@ class ProfileGeometry:
         outer_margin_x=[0.72, 1.0], binding_margin_x=[0.0, 0.28], header_align="right", page_number_pos="bottom_right"
     ))
     has_spanning_boxes: bool = True
+    uniform_crop_margin_pt: float = 16.0
 
     def to_dict(self) -> Dict[str, Any]:
         """Converts geometry to dictionary representation.
@@ -181,6 +183,7 @@ class ProfileGeometry:
             "even_page": self.even_page.to_dict(),
             "odd_page": self.odd_page.to_dict(),
             "has_spanning_boxes": self.has_spanning_boxes,
+            "uniform_crop_margin_pt": self.uniform_crop_margin_pt,
         }
 
     @classmethod
@@ -231,6 +234,7 @@ class ProfileGeometry:
             even_page=even_page,
             odd_page=odd_page,
             has_spanning_boxes=bool(data.get("has_spanning_boxes", True)),
+            uniform_crop_margin_pt=float(data.get("uniform_crop_margin_pt", 16.0)),
         )
 
 

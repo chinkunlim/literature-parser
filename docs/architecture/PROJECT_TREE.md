@@ -76,7 +76,8 @@ literature-parser/
 │   │   ├── TASK-012-task.json
 │   │   ├── TASK-013-profile-json-schema.json
 │   │   ├── TASK-014-front-matter-markdown.json
-│   │   └── TASK-015-markdown.json
+│   │   ├── TASK-015-markdown.json
+│   │   └── TASK-016-markdownconversionservice-css.json
 │   ├── framework.lock                      # [框架鎖定檔] 框架版本與檔案雜湊，供 update_framework 判斷是否被修改
 │   └── project.toml                        # [專案設定・各專案自訂] 語言、分層、品質門檻、指令、業務規則
 ├── .cursor/                                # [Agent 轉接] Cursor 規則 (自動產生)
@@ -239,6 +240,16 @@ literature-parser/
 │       │   ├── concurrency/
 │       │   │   ├── __init__.py
 │       │   │   └── m5_worker_pool.py
+│       │   ├── converter/
+│       │   │   ├── strategies/
+│       │   │   │   ├── __init__.py
+│       │   │   │   ├── base_strategy.py
+│       │   │   │   ├── book_strategy.py
+│       │   │   │   └── literature_strategy.py
+│       │   │   ├── __init__.py
+│       │   │   ├── element_cropper.py
+│       │   │   ├── markdown_converter.py
+│       │   │   └── models.py
 │       │   ├── core/
 │       │   │   ├── __init__.py
 │       │   │   ├── analyzer.py
@@ -312,10 +323,12 @@ literature-parser/
 │   ├── __init__.py
 │   ├── test_apa_stats_normalizer.py
 │   ├── test_archetype_pipeline_and_knowledge.py
+│   ├── test_element_cropper.py
 │   ├── test_fingerprinting.py
 │   ├── test_journal_conversion.py
 │   ├── test_layout_submodules.py
 │   ├── test_m5_concurrency.py
+│   ├── test_markdown_converter.py
 │   ├── test_v21_features.py
 │   ├── test_v22_features.py
 │   ├── test_v23_layout_features.py

@@ -5,10 +5,10 @@
 <!-- LIVE_STATE_START -->
 ## 📊 即時狀態看板 (Live Snapshot)
 
-- **最後更新時間**: `2026-10-22 09:29 UTC`
+- **最後更新時間**: `2026-10-22 10:25 UTC`
 - **最近操作 Agent**: `antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `2f6fa4e feat(analyzer): add PyMuPDF memory fallback for outline-free scanned books and generalize test runner (TASK-026) [agent:antigravity]`
+- **最新 Git Commit**: `6fd6b3e feat(converter): optimize image extraction fallback for vector chapters and verify Ch01 Markdown export (TASK-027) [agent:antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
@@ -17,6 +17,18 @@
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-10-22 10:25 UTC] 完成任務 `TASK-028` — Test output verification and auditing features on Research Methods Ch01 (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: Tested QualityInspectionEngine (97.86% PASS), AccuracyVerifier (98.1% PASS), and FormatAuditor (100% PASS with Ollama qwen2.5) on Research Methods Ch01. Fixed LayoutAuditor TOC false positives and cli_audit book chapter literature flag.
+
+### [2026-10-22 10:20 UTC] 認領任務 `TASK-028` (Test output verification and auditing features on Research Methods Ch01) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`
+
+### [2026-10-22 10:20 UTC] 建立任務 `TASK-028`: Test output verification and auditing features on Research Methods Ch01 (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
 
 ### [2026-10-22 09:29 UTC] 完成任務 `TASK-027` — Test Markdown export on a chapter of Research Methods 13th ed (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
@@ -93,15 +105,3 @@
 - **下一步**: 接續實測大型數位教科書或期刊論文批次轉檔，檢驗新版樣式與即時重刷工具，或對接本地 Web 視覺化看板
 - **交接備註**: 全套 297 項測試 100% 通過，排版規則已集中至 config/theme.json，支援一鍵重刷
 - **本機對話紀錄**: `.agents/conversations/2026-10-22-1640-antigravity-summary.md`（只在這台電腦）
-
-### [2026-10-22 08:39 UTC] 完成任務 `TASK-022` — Update all project documentation and architecture records (by `antigravity`)
-- **狀態**: ✅ 已完成 (`done`)
-- **完成摘要**: Updated and synchronized all project documentation including README.md, ARCHITECTURE.md, DECISIONS.md, ADR-007, and CHANGELOG.md.
-
-### [2026-10-22 08:37 UTC] 認領任務 `TASK-022` (Update all project documentation and architecture records) (by `antigravity`)
-- **相關範圍**: `-`
-- **接棒自**: `antigravity`
-
-### [2026-10-22 08:37 UTC] 建立任務 `TASK-022`: Update all project documentation and architecture records (by `antigravity`)
-- **狀態**: `in_progress`
-- **相關範圍**: `-`

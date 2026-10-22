@@ -277,3 +277,15 @@
 ### [2026-10-22 08:36 UTC] 完成任務 `TASK-021` — Externalize typography, palette, TOC, layout rules, and quality thresholds into unified config (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
 - **完成摘要**: Externalized typography, palette, layout, TOC, artifacts, tables, learning blocks, navigation, and quality thresholds into config/theme.json with schema and instant re-theme CLI script.
+
+### [2026-10-22 08:37 UTC] 建立任務 `TASK-022`: Update all project documentation and architecture records (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
+
+### [2026-10-22 08:37 UTC] 認領任務 `TASK-022` (Update all project documentation and architecture records) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`
+
+### [2026-10-22 08:39 UTC] 完成任務 `TASK-022` — Update all project documentation and architecture records (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: Updated and synchronized all project documentation including README.md, ARCHITECTURE.md, DECISIONS.md, ADR-007, and CHANGELOG.md.

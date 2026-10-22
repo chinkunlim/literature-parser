@@ -74,7 +74,6 @@ def cmd_audit(args):
 
     print(f"🔍 掃描目標: 共有 {len(md_files)} 篇文獻待稽核\n")
 
-    auditor = FormatAuditor(is_literature=True)
     all_passed = True
     total_errors = 0
     total_warnings = 0
@@ -82,6 +81,8 @@ def cmd_audit(args):
     for idx, md_path in enumerate(md_files, 1):
         doc_dir = md_path.parent
         doc_name = md_path.stem
+        is_lit = not any(p.lower() in ("books", "chapters", "book", "chapter") for p in md_path.parts)
+        auditor = FormatAuditor(is_literature=is_lit)
 
         if getattr(args, "fix", False):
             with open(md_path, "r", encoding="utf-8", errors="ignore") as f:

@@ -173,8 +173,19 @@ class LayoutAuditor:
                         auto_fixable=False,
                     ))
 
-        # 5. TOC Link Anchors Sanity
-        toc_links = re.findall(r'\[([^\]]+)\]\(#([^)]+)\)', repaired_md)
+        # Collect explicit HTML anchors (<a id="...">, <span id="...">, etc.)
+        for m in re.finditer(r'<[a-zA-Z0-9]+\b[^>]*(?:id|name)=["\']([^"\']+)["\']', repaired_md):
+            slugs.add(m.group(1))
+
+        # 5. TOC Link Anchors Sanity (Extract links only from genuine TOC block)
+        toc_blocks = re.findall(
+            r'<details\b[^>]*>\s*<summary>[^<]*Table of Contents[^<]*</summary>(.*?)</details>',
+            repaired_md,
+            re.DOTALL | re.IGNORECASE,
+        )
+        toc_text = "\n".join(toc_blocks) if toc_blocks else ""
+        toc_links = re.findall(r'\[([^\]]+)\]\(#([^)]+)\)', toc_text) if toc_text else []
+
         for text, link_slug in toc_links:
             if slugs and link_slug not in slugs:
                 # Check for slight mismatch

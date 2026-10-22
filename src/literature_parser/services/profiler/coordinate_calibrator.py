@@ -11,7 +11,7 @@ import logging
 import subprocess
 import xml.etree.ElementTree as ET
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -113,8 +113,18 @@ class CoordinateCalibrator:
 
     @classmethod
     def calibrate_and_save_profile(cls, book_dir: Path, sample_pdf: Path) -> Dict[str, Any]:
-        """Runs calibration on sample PDF and saves updated geometry to book_profile.json."""
-        profile_path = book_dir / "book_profile.json"
+        """Runs calibration on sample PDF and saves updated geometry to profile.json and book_profile.json.
+
+        Args:
+            book_dir: Output directory path for the book.
+            sample_pdf: Path to sample PDF file for geometry extraction.
+
+        Returns:
+            Calibrated profile dictionary.
+        """
+        p_canon = book_dir / "profile.json"
+        p_legacy = book_dir / "book_profile.json"
+        profile_path = p_canon if p_canon.exists() else p_legacy
         profile = {}
         if profile_path.exists():
             try:
@@ -126,6 +136,7 @@ class CoordinateCalibrator:
         geom = cls.calibrate_book_geometry(str(sample_pdf))
         profile["geometry"] = geom
         profile["book_name"] = book_dir.name
+        profile["archetype"] = "textbook"
 
         # Auto-detect publisher from page 1 text
         if "publisher" not in profile or not profile["publisher"]:
@@ -144,10 +155,11 @@ class CoordinateCalibrator:
             except Exception as e:
                 logger.debug("Publisher auto-detection skipped: %s", e)
 
-        with open(profile_path, "w", encoding="utf-8") as f:
-            json.dump(profile, f, indent=2, ensure_ascii=False)
+        for path in (p_canon, p_legacy):
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(profile, f, indent=2, ensure_ascii=False)
 
-        logger.info("Saved calibrated geometry to %s: %s", profile_path, geom)
+        logger.info("Saved calibrated geometry to %s: %s", p_canon, geom)
         return profile
 
     @classmethod
@@ -236,8 +248,19 @@ class CoordinateCalibrator:
 
     @classmethod
     def calibrate_and_save_literature_profile(cls, doc_dir: Path, sample_pdf: Path, total_pages: int = 10) -> Dict[str, Any]:
-        """Calibrates coordinates for an academic literature document and saves document_profile.json."""
-        profile_path = doc_dir / "document_profile.json"
+        """Calibrates coordinates for an academic literature document and saves profile.json.
+
+        Args:
+            doc_dir: Target output directory for the literature document.
+            sample_pdf: Path to the literature PDF document.
+            total_pages: Total number of pages to sample from.
+
+        Returns:
+            Calibrated profile dictionary.
+        """
+        p_canon = doc_dir / "profile.json"
+        p_legacy = doc_dir / "document_profile.json"
+        profile_path = p_canon if p_canon.exists() else p_legacy
         profile = {
             "archetype": "literature",
             "doc_name": doc_dir.name
@@ -265,8 +288,72 @@ class CoordinateCalibrator:
         except Exception as e:
             logger.debug("Publisher detection skipped in literature profiler: %s", e)
 
-        with open(profile_path, "w", encoding="utf-8") as f:
-            json.dump(profile, f, indent=2, ensure_ascii=False)
+        for path in (p_canon, p_legacy):
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(profile, f, indent=2, ensure_ascii=False)
 
-        logger.info("Saved literature profile to %s", profile_path)
+        logger.info("Saved literature profile to %s", p_canon)
         return profile
+
+    @classmethod
+    def adjust_geometry_from_feedback(
+        cls,
+        target_dir: Optional[Path] = None,
+        anomaly_type: str = "",
+        details: Optional[Dict[str, Any]] = None,
+        *,
+        book_dir: Optional[Path] = None,
+    ) -> bool:
+        """Applies closed-loop feedback to dynamically adjust profile geometry boundaries.
+
+        Args:
+            target_dir: Book or literature output directory holding profile.json.
+            anomaly_type: Detected anomaly ('LEAKED_HEADER', 'LEAKED_FOOTER', 'GUTTER_OVERFLOW').
+            details: Optional dictionary containing specific delta adjustments.
+            book_dir: Alias for target_dir for backward compatibility.
+
+        Returns:
+            True if geometry was successfully adjusted and persisted, False otherwise.
+        """
+        from literature_parser.domain.profiler.profile_schema import DocumentProfile
+
+        actual_dir = target_dir or book_dir
+        if not actual_dir:
+            return False
+
+        p_canon = actual_dir / "profile.json"
+        p_doc = actual_dir / "document_profile.json"
+        p_book = actual_dir / "book_profile.json"
+
+        target_file = None
+        for cand in (p_canon, p_doc, p_book):
+            if cand.exists():
+                target_file = cand
+                break
+        if not target_file:
+            return False
+
+        try:
+            with open(target_file, "r", encoding="utf-8") as f:
+                raw_data = json.load(f)
+            doc_profile = DocumentProfile.from_dict(raw_data)
+            adjusted = doc_profile.apply_feedback(anomaly_type, details)
+            if not adjusted:
+                return False
+
+            updated_data = doc_profile.to_dict()
+            # Update canonical profile.json and whatever legacy mirror files exist
+            paths_to_update = {p_canon, target_file}
+            if p_book.exists() or (not p_doc.exists()):
+                paths_to_update.add(p_book)
+            if p_doc.exists():
+                paths_to_update.add(p_doc)
+
+            for path in paths_to_update:
+                with open(path, "w", encoding="utf-8") as f:
+                    json.dump(updated_data, f, indent=2, ensure_ascii=False)
+            logger.info("Closed-loop feedback applied (%s) to %s", anomaly_type, target_file)
+            return True
+        except Exception as e:
+            logger.warning("Failed applying closed-loop feedback to %s: %s", target_file, e)
+            return False

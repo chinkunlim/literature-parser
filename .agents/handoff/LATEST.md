@@ -5,10 +5,10 @@
 <!-- LIVE_STATE_START -->
 ## 📊 即時狀態看板 (Live Snapshot)
 
-- **最後更新時間**: `2026-10-22 01:59 UTC`
+- **最後更新時間**: `2026-10-22 02:29 UTC`
 - **最近操作 Agent**: `antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `555304c chore(tooling): update tooling tooling and config (ISSUE-003, TASK-001, TASK-002, TASK-003, TASK-009, TASK-010, TASK-011) [agent:antigravity]`
+- **最新 Git Commit**: `b0733a6 feat(pipeline): implement convention-based input segregation and hyphen-delimited naming [agent:antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
@@ -17,6 +17,18 @@
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-10-22 02:29 UTC] 完成任務 `TASK-013` — 統一 profile.json 規格、出版社階層繼承與強型別 Schema (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: Unified profile.json schema with DocumentProfile domain model, publisher-first hierarchical inheritance, closed-loop geometry healing, and full backward compatibility.
+
+### [2026-10-22 02:20 UTC] 認領任務 `TASK-013` (統一 profile.json 規格、出版社階層繼承與強型別 Schema) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`
+
+### [2026-10-22 02:20 UTC] 建立任務 `TASK-013`: 統一 profile.json 規格、出版社階層繼承與強型別 Schema (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
 
 ### [2026-10-22 01:59 UTC] 完成任務 `TASK-012` — 輸入目錄結構分流與資料夾連字號命名規範 (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
@@ -89,13 +101,3 @@
 ### [2026-10-21 16:07 UTC] 完成任務 `TASK-010` — 遷移批次 10：其他（資料、資源、需人工判斷） (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
 - **完成摘要**: 其他批次資源遷移完成，JSON 規範檔、LICENSE、資料隔離與環境變數對照全數完成
-
-### [2026-10-21 16:05 UTC] 認領任務 `TASK-010` (遷移批次 10：其他（資料、資源、需人工判斷）) (by `antigravity`)
-- **相關範圍**: `docs/standards/PROJECT_RULES.md, legacy`
-
-### [2026-10-21 16:05 UTC] 完成任務 `TASK-008` — 遷移批次 8：測試 (by `antigravity`)
-- **狀態**: ✅ 已完成 (`done`)
-- **完成摘要**: 測試層遷移完成，29 個測試檔案完成 import 重寫，240 個測試通過，0 critical issues
-
-### [2026-10-21 16:05 UTC] 認領任務 `TASK-008` (遷移批次 8：測試) (by `antigravity`)
-- **相關範圍**: `tests/, legacy`

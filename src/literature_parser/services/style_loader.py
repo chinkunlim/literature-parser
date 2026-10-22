@@ -77,8 +77,10 @@ def load_style(book_output_dir: str = None) -> dict:
 
     book_path = Path(book_output_dir)
 
-    # 2. Check book_profile.json
-    book_profile_path = book_path / "book_profile.json"
+    # 2. Check profile.json / book_profile.json
+    cand_canon = book_path / "profile.json"
+    cand_legacy = book_path / "book_profile.json"
+    book_profile_path = cand_canon if cand_canon.exists() else cand_legacy
     if book_profile_path.exists():
         try:
             with open(book_profile_path, "r", encoding="utf-8") as f:

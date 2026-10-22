@@ -264,17 +264,20 @@ class BookProcessorOrchestrator:
         is_journal_doc = DocumentClassifier.is_journal_article(str(ch_pdf)) or (book_source_pdf and DocumentClassifier.is_journal_article(str(book_source_pdf)))
 
         # Auto-calibrate geometry and scan special blocks on first chapter run if profile missing
-        book_profile_path = book_dir / "book_profile.json"
-        if not book_profile_path.exists():
+        cand_canon = book_dir / "profile.json"
+        cand_legacy = book_dir / "book_profile.json"
+        if not cand_canon.exists() and not cand_legacy.exists():
             try:
                 CoordinateCalibrator.calibrate_and_save_profile(book_dir, ch_pdf)
                 if is_journal_doc:
+                    target_prof = cand_canon if cand_canon.exists() else cand_legacy
                     try:
-                        with open(book_profile_path, 'r', encoding='utf-8') as f_prof:
+                        with open(target_prof, 'r', encoding='utf-8') as f_prof:
                             prof_data = json.load(f_prof)
                         prof_data["is_journal"] = True
-                        with open(book_profile_path, 'w', encoding='utf-8') as f_prof:
-                            json.dump(prof_data, f_prof, indent=2)
+                        for p in {cand_canon, cand_legacy}:
+                            with open(p, 'w', encoding='utf-8') as f_prof:
+                                json.dump(prof_data, f_prof, indent=2)
                     except Exception as e:
                         logger.debug("Failed updating is_journal in profile: %s", e)
 

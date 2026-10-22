@@ -28,19 +28,22 @@ def _detect_archetype_from_dir(path: Path) -> str:
     Falls back to 'textbook' if no profile is found.
     """
     for candidate in [path, *path.parents]:
-        profile = candidate / "book_profile.json"
-        if profile.exists():
-            try:
-                with open(profile, "r", encoding="utf-8") as fh:
-                    data = json.load(fh)
-                if (
-                    data.get("archetype") == "journal"
-                    or data.get("is_journal", False)
-                    or data.get("features", {}).get("is_journal_article", False)
-                ):
-                    return "journal"
-            except Exception:
-                pass
+        for fname in ("profile.json", "document_profile.json", "book_profile.json"):
+            profile = candidate / fname
+            if profile.exists():
+                try:
+                    with open(profile, "r", encoding="utf-8") as fh:
+                        data = json.load(fh)
+                    if (
+                        data.get("archetype") in ("journal", "literature")
+                        or data.get("is_journal", False)
+                        or data.get("is_literature", False)
+                        or data.get("features", {}).get("is_journal_article", False)
+                        or data.get("meta", {}).get("doc_type") == "literature"
+                    ):
+                        return "journal"
+                except Exception:
+                    pass
         if candidate == candidate.parent:
             break
     return "textbook"

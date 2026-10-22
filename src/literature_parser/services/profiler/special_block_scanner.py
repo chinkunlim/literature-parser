@@ -78,7 +78,9 @@ class SpecialBlockScanner:
 
     def __init__(self, book_dir: Path):
         self.book_dir = Path(book_dir)
-        self.profile_path = self.book_dir / "book_profile.json"
+        cand_canon = self.book_dir / "profile.json"
+        cand_legacy = self.book_dir / "book_profile.json"
+        self.profile_path = cand_canon if cand_canon.exists() or not cand_legacy.exists() else cand_legacy
 
     # ------------------------------------------------------------------
     # Public API
@@ -386,18 +388,26 @@ class SpecialBlockScanner:
     # ------------------------------------------------------------------
 
     def _load_profile(self) -> Dict[str, Any]:
-        if self.profile_path.exists():
-            try:
-                with open(self.profile_path, "r", encoding="utf-8") as f:
-                    return json.load(f)
-            except Exception as e:
-                logger.warning("Failed to read %s: %s", self.profile_path, e)
+        paths = [
+            self.profile_path,
+            self.book_dir / ("book_profile.json" if self.profile_path.name == "profile.json" else "profile.json"),
+        ]
+        for p in paths:
+            if p.exists():
+                try:
+                    with open(p, "r", encoding="utf-8") as f:
+                        return json.load(f)
+                except Exception as e:
+                    logger.warning("Failed to read %s: %s", p, e)
         return {}
 
     def _save_profile(self, profile: Dict[str, Any]) -> None:
         self.profile_path.parent.mkdir(parents=True, exist_ok=True)
         try:
             with open(self.profile_path, "w", encoding="utf-8") as f:
+                json.dump(profile, f, indent=2, ensure_ascii=False)
+            mirror = self.book_dir / ("book_profile.json" if self.profile_path.name == "profile.json" else "profile.json")
+            with open(mirror, "w", encoding="utf-8") as f:
                 json.dump(profile, f, indent=2, ensure_ascii=False)
         except Exception as e:
             logger.error("Failed to write %s: %s", self.profile_path, e)

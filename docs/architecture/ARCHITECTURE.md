@@ -33,6 +33,7 @@ flowchart TD
 
     subgraph Domain ["4. domain 層 (純邏輯與資料模型)"]
         Advisor["domain.profiler.model_advisor<br>(Model Selection & Advice)"]
+        ProfileSchema["domain.profiler.profile_schema<br>(Canonical DocumentProfile Schema)"]
     end
 
     subgraph Config ["5. config 層 (唯一可讀取環境變數之層級)"]
@@ -142,3 +143,37 @@ flowchart TD
 - `needs_review/`：隔離待覆核內容（格式損壞且無法自我修復之頁面）
 - `state/`：斷點清單與進度快照
 - `logs/`：結構化日誌（`process.log`）
+
+---
+
+## 4. 四階設定階層與統一 Profile 規格 (Hierarchical Profiles & Schema)
+
+本專案採四層式由粗至精的幾何與版面樣式繼承模型，並統一以強型別 `DocumentProfile` 作為領域層資料載體：
+
+```mermaid
+flowchart TD
+    L1["階層 1：全局原形基準 (Archetype Defaults)<br>config/resources/archetypes/{textbook,literature}.json"]
+    L2["階層 2：出版社模板與噪音規則 (Publisher Rules)<br>config/resources/publishers/{pub}.json + profiles/literature_{pub}.json"]
+    L3["階層 3：跨文件共享知識 (Shared Knowledge Repository)<br>config/resources/shared_knowledge/{literature_sections,symbol_mappings}.json"]
+    L4["階層 4：個別文件實例 Profile (Instance Canonical Profile)<br>DATA_DIR/output/.../profile.json (鏡像相容 book_profile.json / document_profile.json)"]
+
+    L1 -->|基礎排版參數| L2
+    L2 -->|合併覆寫樣式| L3
+    L3 -->|累積全域規則| L4
+    Auditor["格式品質稽核器 (Format Auditor)"] -.->|閉環幾何修正 (Closed-Loop Healing)<br>LEAKED_HEADER / LEAKED_FOOTER| L4
+```
+
+1. **統一檔名與向後相容**：
+   - 實例輸出目錄一律將主 Profile 命名為標準 `profile.json`。
+   - `ConfigManager` 與各 Parser 具備自動向後相容，讀取時優先查找 `profile.json`，缺失時自動降級讀取 `document_profile.json` 或 `book_profile.json`。
+   - 寫入時同時儲存規範之 `profile.json`，並為舊有工具維護相容之鏡像檔案。
+
+2. **強型別領域模型 (`DocumentProfile`)**：
+   - `meta` (`ProfileMetadata`)：文件分類 (`book` / `literature`)、模式 (`digital` / `scanned`)、標題與出版社。
+   - `geometry` (`ProfileGeometry`)：頁面尺寸、`header_cutoff_y`、`footer_cutoff_y`、欄數與中縫 (`gutter_split_x`)。
+   - `typography` (`ProfileTypography`)：H1/H2/H3 字級晉升閾值、內文字級與 Unicode-LaTeX 對照表。
+   - `special_blocks` (`ProfileSpecialBlocks`)：概念圖、邊欄名詞、學習目標 (LO) 與章末問題 (EOC) 正則規則。
+
+3. **閉環自我修復 (Closed-Loop Layout Healing)**：
+   - 當後期 Format Auditor 或本地 AI 驗證器偵測到頁首殘留 (`LEAKED_HEADER`) 或頁尾殘留 (`LEAKED_FOOTER`) 時，呼叫 `CoordinateCalibrator.adjust_geometry_from_feedback()`。
+   - 動態計算並修正幾何截止線，同步重寫本機之 `profile.json` 與鏡像檔案，實現「偵測到一次排版雜訊，即全本自動校正」之閉環自我修復。

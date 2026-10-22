@@ -49,13 +49,15 @@ def calibrate_book_profile_if_missing(
     Returns:
         None.
     """
-    book_profile_path = book_dir / "book_profile.json"
-    if book_profile_path.exists():
+    cand_canon = book_dir / "profile.json"
+    cand_legacy = book_dir / "book_profile.json"
+    if cand_canon.exists() or cand_legacy.exists():
         return
     try:
         CoordinateCalibrator.calibrate_and_save_profile(book_dir, ch_pdf)
         if is_journal_doc:
-            _mark_profile_as_journal(book_profile_path)
+            target_profile = cand_canon if cand_canon.exists() else cand_legacy
+            _mark_profile_as_journal(target_profile)
         scanner = SpecialBlockScanner(book_dir)
         scanner.scan_and_update([ch_pdf], max_pages_per_chapter=10)
     except Exception as exc:
@@ -76,6 +78,11 @@ def _mark_profile_as_journal(book_profile_path: Path) -> None:
             prof_data = json.load(f_prof)
         prof_data["is_journal"] = True
         with open(book_profile_path, "w", encoding="utf-8") as f_prof:
+            json.dump(prof_data, f_prof, indent=2)
+        # Also sync mirror profile.json / book_profile.json
+        mirror_name = "profile.json" if book_profile_path.name != "profile.json" else "book_profile.json"
+        mirror_path = book_profile_path.parent / mirror_name
+        with open(mirror_path, "w", encoding="utf-8") as f_prof:
             json.dump(prof_data, f_prof, indent=2)
     except Exception as exc:
         logger.debug("Failed updating is_journal in profile: %s", exc)

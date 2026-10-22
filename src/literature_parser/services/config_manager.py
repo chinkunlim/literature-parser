@@ -103,12 +103,30 @@ class ConfigManager:
     # -------------------------------------------------------------------------
     @classmethod
     def load_publisher(cls, publisher: str) -> dict:
-        """Loads Level 2 Publisher Specific configuration."""
+        """Loads Level 2 Publisher Specific configuration.
+
+        Combines publisher noise regex patterns with publisher layout and typography templates.
+
+        Args:
+            publisher: Publisher name or key (e.g. 'apa', 'elsevier', 'springer', 'pearson').
+
+        Returns:
+            Merged publisher configuration dictionary.
+        """
         if not publisher:
             return {}
-        config_dir = cls.get_config_root() / "publishers"
-        file_path = config_dir / f"{publisher.lower()}.json"
-        return cls.load_json(file_path)
+        pub_key = publisher.lower()
+        root = cls.get_config_root()
+
+        # 1. Base publisher patterns (publishers/<key>.json)
+        base_patterns = cls.load_json(root / "publishers" / f"{pub_key}.json")
+
+        # 2. Publisher layout profile if present (profiles/literature_<key>.json or profiles/publisher_<key>.json)
+        layout_cand1 = root / "profiles" / f"literature_{pub_key}.json"
+        layout_cand2 = root / "profiles" / f"publisher_{pub_key}.json"
+        layout_profile = cls.load_json(layout_cand1) if layout_cand1.exists() else cls.load_json(layout_cand2)
+
+        return deep_merge(layout_profile, base_patterns)
 
     # -------------------------------------------------------------------------
     # Tier 3: Shared Cross-Document Knowledge
@@ -134,16 +152,30 @@ class ConfigManager:
     @classmethod
     def load_instance_profile(cls, instance_path) -> dict:
         """Loads Level 4 local book/document profile JSON if exists.
-        
-        Prefers document_profile.json; falls back to legacy book_profile.json.
+
+        Prefers unified profile.json; falls back to document_profile.json and book_profile.json.
+
+        Args:
+            instance_path: Directory path or direct path to profile JSON.
+
+        Returns:
+            Loaded profile configuration dictionary.
         """
         if not instance_path:
             return {}
         p = Path(instance_path)
         if p.is_dir():
-            doc_profile = p / "document_profile.json"
-            book_profile = p / "book_profile.json"
-            p = doc_profile if doc_profile.exists() else book_profile
+            candidates = [
+                p / "profile.json",
+                p / "document_profile.json",
+                p / "book_profile.json",
+            ]
+            for cand in candidates:
+                if cand.exists():
+                    p = cand
+                    break
+            else:
+                p = p / "profile.json"
         return cls.load_json(p)
 
     # -------------------------------------------------------------------------
@@ -383,15 +415,38 @@ class ConfigManager:
         return True
 
     @classmethod
-    def save_instance_profile(cls, output_dir, profile_data: dict, archetype: str = ""):
+    def save_instance_profile(
+        cls,
+        output_dir,
+        profile_data: dict,
+        archetype: str = "",
+        mirror_legacy: bool = True,
+    ) -> Path:
         """Saves dynamic instance configuration to the output directory.
 
-        For literature/journal archetypes: writes ``document_profile.json``.
-        For textbook archetypes: writes ``book_profile.json`` (legacy name preserved
-        for backward compatibility with textbook pipeline components).
+        Writes unified canonical `profile.json` and optionally preserves legacy filename for backward compatibility.
+
+        Args:
+            output_dir: Directory where profile files should be saved.
+            profile_data: Raw profile dictionary data.
+            archetype: Document archetype identifier ('literature', 'textbook', etc.).
+            mirror_legacy: Whether to mirror configuration into legacy filename (book_profile.json or document_profile.json).
+
+        Returns:
+            Path to the canonical profile.json file.
         """
-        is_literature = archetype.lower() in ("journal", "literature") if archetype else False
-        filename = "document_profile.json" if is_literature else "book_profile.json"
-        out_path = Path(output_dir) / filename
-        cls.save_json(out_path, profile_data)
+        out_dir = Path(output_dir)
+        out_dir.mkdir(parents=True, exist_ok=True)
+        # 1. Canonical profile.json
+        canonical_path = out_dir / "profile.json"
+        cls.save_json(canonical_path, profile_data)
+
+        # 2. Legacy mirror file for backward compatibility
+        if mirror_legacy:
+            is_literature = archetype.lower() in ("journal", "literature") if archetype else False
+            legacy_name = "document_profile.json" if is_literature else "book_profile.json"
+            legacy_path = out_dir / legacy_name
+            cls.save_json(legacy_path, profile_data)
+
+        return canonical_path
 

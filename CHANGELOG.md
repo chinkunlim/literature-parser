@@ -9,6 +9,7 @@ All notable changes to **literature-parser** are documented here
 - docs(specs): add SPEC-003 (EPUB 3 Exporter) and SPEC-004 (Fix Playbook & Recipe Synthesizer) specifications (by `@antigravity`)
 - docs(known-issues): document ISSUE-003 on external PDF tools fallback and graceful degradation (by `@antigravity`)
 - feat(pipeline): implement convention-based input segregation and hyphen-delimited naming (by `@antigravity`)
+- feat(profiler): implement DocumentProfile schema, publisher-first inheritance, and unified profile.json (TASK-013) (by `@antigravity`)
 
 ### Changed
 - docs(migration): mark all migration acceptance criteria as completed (by `@antigravity`)

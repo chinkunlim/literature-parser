@@ -71,3 +71,13 @@
 ### [2026-10-21 16:04 UTC] 完成任務 `TASK-007` — 遷移批次 7：web 前端（HTML / CSS / JS） (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
 - **完成摘要**: web 前端遷移完成，dashboard.html 搬遷並加上用途註解，0 critical issues
+
+### [2026-10-21 16:05 UTC] 認領任務 `TASK-008` (遷移批次 8：測試) (by `antigravity`)
+- **相關範圍**: `tests/, legacy`
+
+### [2026-10-21 16:05 UTC] 完成任務 `TASK-008` — 遷移批次 8：測試 (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: 測試層遷移完成，29 個測試檔案完成 import 重寫，240 個測試通過，0 critical issues
+
+### [2026-10-21 16:05 UTC] 認領任務 `TASK-010` (遷移批次 10：其他（資料、資源、需人工判斷）) (by `antigravity`)
+- **相關範圍**: `docs/standards/PROJECT_RULES.md, legacy`

@@ -112,7 +112,22 @@ class ImageManager:
                             continue
                         w = extracted.get("width", 0)
                         h = extracted.get("height", 0)
-                        is_full_page = (is_scanned and w >= FULL_PAGE_MIN_PX and h >= FULL_PAGE_MIN_PX) or ((w >= 1100 and h >= 1400) or (w >= 2000 and h >= 3000))
+                        pw = getattr(getattr(page, "rect", None), "width", 0.0)
+                        ph = getattr(getattr(page, "rect", None), "height", 0.0)
+                        is_aspect_match = False
+                        try:
+                            pw_f = float(pw)
+                            ph_f = float(ph)
+                            if pw_f > 0 and ph_f > 0 and h > 0:
+                                is_aspect_match = abs((w / h) - (pw_f / ph_f)) < 0.12
+                        except (TypeError, ValueError):
+                            pass
+                        is_sheet_like = (w >= 500 and h >= 650 and is_aspect_match)
+                        is_full_page = (
+                            (is_scanned and w >= FULL_PAGE_MIN_PX and h >= FULL_PAGE_MIN_PX)
+                            or ((w >= 1100 and h >= 1400) or (w >= 2000 and h >= 3000))
+                            or is_sheet_like
+                        )
                         if is_full_page and not (is_cover and p_num == 1 and s_idx == 0):
                             continue
                         native_images.append({

@@ -79,7 +79,9 @@ class MarginParser:
             txt = ''.join(t.itertext()).strip()
             if not txt:
                 continue
-            if top < ph * 0.05 or top > ph * 0.95 or top >= eoc_top - 10:
+            if top < ph * 0.05 or top > ph * 0.90 or top >= eoc_top - 10:
+                continue
+            if re.search(r'\b(?:Copyright|All Rights Reserved|Cengage Learning|May not be|WCN\s*02)\b', txt, re.IGNORECASE):
                 continue
             if re.match(r'^(?:https?://|www\.)', txt, re.IGNORECASE):
                 continue

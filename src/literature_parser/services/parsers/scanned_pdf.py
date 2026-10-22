@@ -196,13 +196,14 @@ class ScannedPDFParser:
                     paras.append(" ".join(curr_p))
                     curr_p = []
                 paras.append(f"### {text}")
-            elif re.match(r"^[•\-\*°©e]\s*", text):
-                if curr_p:
-                    paras.append(" ".join(curr_p))
-                    curr_p = []
-                bullet_content = re.sub(r"^[•\-\*°©e\s]+", "", text)
-                paras.append(f"- {bullet_content}")
-            elif h > 45 and len(text) < 80 and not text.endswith("."):
+            elif re.match(r"^(?:[•\-\*°©]|e[ \t]+)\s*", text):
+                bullet_content = re.sub(r"^(?:[•\-\*°©]|e[ \t]+)\s*", "", text).strip()
+                if bullet_content:
+                    if curr_p:
+                        paras.append(" ".join(curr_p))
+                        curr_p = []
+                    paras.append(f"- {bullet_content}")
+            elif h > 45 and len(text.strip()) > 3 and not re.match(r"^\d+$", text.strip()) and not text.endswith("."):
                 if curr_p:
                     paras.append(" ".join(curr_p))
                     curr_p = []

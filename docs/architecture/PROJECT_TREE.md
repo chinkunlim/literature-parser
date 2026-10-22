@@ -98,7 +98,8 @@ literature-parser/
 │   │   ├── TASK-034-implement-book-profile-knowledge.json
 │   │   ├── TASK-035-batch-run-all-input-books-with-o.json
 │   │   ├── TASK-036-unify-pdf-engine-to-pymupdf-and-.json
-│   │   └── TASK-037-full-batch-re-run-of-all-3-books.json
+│   │   ├── TASK-037-full-batch-re-run-of-all-3-books.json
+│   │   └── TASK-038-fix-bullet-letter-e-truncation-5.json
 │   ├── framework.lock                      # [框架鎖定檔] 框架版本與檔案雜湊，供 update_framework 判斷是否被修改
 │   └── project.toml                        # [專案設定・各專案自訂] 語言、分層、品質門檻、指令、業務規則
 ├── .cursor/                                # [Agent 轉接] Cursor 規則 (自動產生)
@@ -404,7 +405,8 @@ literature-parser/
 │   ├── test_v48_theme_configuration_and_override.py
 │   ├── test_v50_minicpm_visual_audit_and_surgical_healing.py
 │   ├── test_v51_book_profile_adaptive_learning.py
-│   └── test_v52_unified_pymupdf_and_continuity_fixes.py
+│   ├── test_v52_unified_pymupdf_and_continuity_fixes.py
+│   └── test_v53_regex_bullet_and_watermark_filters.py
 ├── web/
 │   ├── app.js
 │   ├── dashboard.html

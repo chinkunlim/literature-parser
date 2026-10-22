@@ -176,7 +176,10 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
         if top > ph * (1.0 - cut_ratio):
             return bool(re.match(r'^\d+$', clean) or 'copyright' in clean.lower() or re.match(r'^\d{1,4}\s*-\s*\d{1,4}$', clean) or re.search(r'\b(?:pubs\.aip\.org|Downloaded from|doi\.org|\b\d{6}-\d+\b)\b', clean, re.IGNORECASE))
         # Also drop standalone page numbers or article IDs in bottom 10%
-        if top > ph * 0.90:
+        # Also drop running copyright notices or standalone page numbers in bottom 12%
+        if top > ph * 0.88:
+            if re.search(r'\b(?:Copyright|All Rights Reserved|Cengage Learning|May not be|WCN\s*02)\b', clean, re.IGNORECASE):
+                return True
             if re.match(r'^\d{1,4}$', clean) or re.search(r'^\d+,\s*\d+-\d+$', clean):
                 return True
             if re.search(r'\b(?:pubs\.aip\.org|Downloaded from|doi\.org|\b\d{6}-\d+\b)\b', clean, re.IGNORECASE):

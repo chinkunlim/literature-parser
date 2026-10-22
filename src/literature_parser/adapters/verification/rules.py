@@ -366,6 +366,9 @@ def check_table_banner_integrity(content: str) -> dict:
     # Pattern: a bullet item containing 'Weaknesses of' or 'Strengths of' mid-text
     for m in re.finditer(r'(?m)^[-*•]\s+.*?\b(Strengths|Weaknesses|Advantages|Disadvantages)\s+of\s+.*', content):
         line = m.group(0)
+        # Skip markdown links (e.g. Table of Contents navigation: - [Advantages of...](#...))
+        if re.search(r'\[.*?\]\(#.*?\)', line):
+            continue
         if not line.startswith(('- **Strengths', '- **Weaknesses', '- **Advantages', '- **Disadvantages')):
             collapsed_banners.append(line[:90] + '...')
 

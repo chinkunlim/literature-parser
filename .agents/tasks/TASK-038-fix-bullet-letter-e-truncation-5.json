@@ -1,0 +1,27 @@
+{
+  "id": "TASK-038",
+  "title": "Fix bullet letter e truncation, 573x716 watermark filter, and Cengage footer",
+  "status": "in_progress",
+  "agent": "antigravity",
+  "handed_off_from": "",
+  "handed_off_to": "",
+  "paths": [],
+  "done_items": "",
+  "todo_items": "",
+  "blockers": "",
+  "created_at": "2026-10-22 15:45 UTC",
+  "updated_at": "2026-10-22 15:45 UTC",
+  "history": [
+    {
+      "timestamp": "2026-10-22 15:45 UTC",
+      "action": "created_and_claimed",
+      "agent": "antigravity"
+    },
+    {
+      "timestamp": "2026-10-22 15:45 UTC",
+      "action": "claimed",
+      "agent": "antigravity",
+      "previous_agent": "antigravity"
+    }
+  ]
+}

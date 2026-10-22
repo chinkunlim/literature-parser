@@ -1,0 +1,132 @@
+"""
+test_v53_regex_bullet_and_watermark_filters.py - Unit tests for TASK-038 regex bullet fixes and watermark filters.
+
+Verifies:
+1. Bullet regex does not strip initial 'e' from words like 'encourage' or 'example'.
+2. Table banner integrity check does not misidentify TOC links as collapsed banners.
+3. Running footer filter drops Cengage copyright notices in lower margin.
+4. Full page sheet-like background filter drops proportional sheet scans on non-cover pages.
+"""
+
+import unittest
+from unittest.mock import MagicMock, patch
+from pathlib import Path
+import tempfile
+import pymupdf
+
+from literature_parser.services.parsers.scanned_pdf import ScannedPDFParser
+from literature_parser.adapters.verification.rules import check_table_banner_integrity
+from literature_parser.services.parsers.digital_pdf import DigitalPDFParser
+from literature_parser.services.parsers.layout.margin_parser import MarginParser
+from literature_parser.services.core.image_manager import ImageManager
+
+
+class TestRegexBulletAndWatermarkFilters(unittest.TestCase):
+    """
+    Test suite for verifying bullet letter preservation, TOC banner integrity,
+    and background watermark sheet filtering.
+    """
+
+    def test_scanned_pdf_preserves_initial_letter_e(self):
+        """
+        Verifies that words starting with 'e' (e.g., 'encourage', 'evaluate')
+        are not truncated to '- ncourage' by ScannedPDFParser.
+        """
+        lines = [
+            [{"text": "encourage", "height": 20, "x0": 50, "y0": 100}, {"text": "members", "height": 20, "x0": 120, "y0": 100}],
+            [{"text": "•", "height": 20, "x0": 50, "y0": 130}, {"text": "real bullet item here", "height": 20, "x0": 70, "y0": 130}],
+            [{"text": "e", "height": 20, "x0": 50, "y0": 160}, {"text": "bullet item with separate e", "height": 20, "x0": 70, "y0": 160}],
+        ]
+        page_md = "\n\n".join(ScannedPDFParser._lines_to_markdown(lines))
+        self.assertIn("encourage members", page_md)
+        self.assertNotIn("- ncourage", page_md)
+        self.assertIn("- real bullet item here", page_md)
+        self.assertIn("- bullet item with separate e", page_md)
+
+    def test_table_banner_integrity_ignores_toc_links(self):
+        """
+        Verifies check_table_banner_integrity does not flag TOC navigation links
+        such as '- [Advantages of Coleading](#advantages-of-coleading)'.
+        """
+        toc_content = (
+            "# Table of Contents\n\n"
+            "- [Overview of Groups](#overview-of-groups)\n"
+            "- [Advantages of Coleading](#advantages-of-coleading)\n"
+            "- [Disadvantages of Coleading](#disadvantages-of-coleading)\n"
+        )
+        res = check_table_banner_integrity(toc_content)
+        self.assertTrue(res["passed"], f"TOC links should pass banner integrity: {res}")
+        self.assertEqual(res["count"], 0)
+
+        # Genuine collapsed banner should still fail
+        collapsed_content = (
+            "- Some discussion here Advantages of Coleading without proper formatting\n"
+        )
+        res_fail = check_table_banner_integrity(collapsed_content)
+        self.assertFalse(res_fail["passed"])
+        self.assertEqual(res_fail["count"], 1)
+
+    def test_digital_pdf_drops_cengage_running_footer(self):
+        """
+        Verifies DigitalPDFParser._is_running_footer drops Cengage copyright notices
+        near the bottom margin.
+        """
+        ph = 792.0  # Standard letter height
+        footer_y = ph * 0.95  # in bottom 5%
+        notice = "Copyright 2017 Cengage Learning. All Rights Reserved. May not be copied."
+        is_hf = DigitalPDFParser._is_running_footer(footer_y, ph, notice, footer_ratio=0.1)
+        self.assertTrue(is_hf, "Cengage copyright footer notice must be identified as header/footer")
+
+    def test_margin_parser_drops_cengage_footer_text(self):
+        """
+        Verifies MarginParser skips bottom Cengage copyright notices in margins.
+        """
+        from xml.etree import ElementTree as ET
+        xml_data = """
+        <page id="1" width="500" height="700">
+            <text top="670" left="20" width="400" height="12" font="1">
+                Copyright 2017 Cengage Learning. All Rights Reserved.
+            </text>
+        </page>
+        """
+        page_elem = ET.fromstring(xml_data)
+        glossaries, consumed = MarginParser.extract_margin_glossaries(
+            page_elem=page_elem, fonts={}, pw=500.0, ph=700.0, page_num=1
+        )
+        self.assertEqual(len(glossaries), 0, "Cengage footer in margin must not create glossaries")
+        self.assertEqual(len(consumed), 0, "Cengage footer in margin must not be consumed as glossaries")
+
+    def test_image_manager_filters_sheet_like_background_watermark(self):
+        """
+        Verifies ImageManager drops full-page sheet-like bitmaps matching page ratio
+        when is_cover is False.
+        """
+        with tempfile.TemporaryDirectory() as tmpdir:
+            pdf_path = Path(tmpdir) / "test_watermark.pdf"
+            doc = pymupdf.open()
+            page = doc.new_page(width=458.4, height=572.8)  # Cengage loose-leaf page
+            doc.save(str(pdf_path))
+            doc.close()
+
+            with patch("pymupdf.open") as mock_open:
+                mock_doc = MagicMock()
+                mock_open.return_value = mock_doc
+                mock_page = MagicMock()
+                mock_page.rect.width = 458.4
+                mock_page.rect.height = 572.8
+                mock_doc.__iter__.return_value = [mock_page]
+                mock_page.get_images.return_value = [(1, 0, 0, 0, 0, 0)]
+                # 573x716 watermark image (w/h = 0.8002 ~= 458.4/572.8 = 0.8002)
+                mock_doc.extract_image.return_value = {
+                    "image": b"fake_png_data" * 500,
+                    "ext": "png",
+                    "width": 573,
+                    "height": 716,
+                }
+                # When is_cover is False: should be filtered
+                non_cover_imgs = ImageManager.extract_pdf_images(str(pdf_path), is_cover=False)
+                self.assertEqual(len(non_cover_imgs), 0, "573x716 sheet watermark must be discarded on non-cover")
+
+
+if __name__ == "__main__":
+    unittest.main()

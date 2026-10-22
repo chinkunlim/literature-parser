@@ -47,6 +47,7 @@ All notable changes to **literature-parser** are documented here
 - fix(parser): resolve exhibit column splits, table 15.4 grid row capture, margin glossary baseline clustering, and currency escaping (TASK-032) (by `@antigravity`)
 - fix(engine): unify PDF engine to PyMuPDF, strip style in verifier, and repair cross-page bold stitching (TASK-036) (by `@antigravity`)
 - fix(layout): define left_b bounds in fallback branch of vector figure parser (TASK-037) (by `@antigravity`)
+- fix(parser): resolve bullet e-truncation, 573x716 watermark, and TOC banner false-positive (TASK-038) (by `@antigravity`)
 
 ### Documentation
 - docs: update and synchronize all project markdown documentation (by `@antigravity`)

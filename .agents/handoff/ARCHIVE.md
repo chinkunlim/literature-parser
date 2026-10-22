@@ -369,3 +369,15 @@
 ### [2026-10-22 10:20 UTC] 建立任務 `TASK-028`: Test output verification and auditing features on Research Methods Ch01 (by `antigravity`)
 - **狀態**: `in_progress`
 - **相關範圍**: `-`
+
+### [2026-10-22 10:20 UTC] 認領任務 `TASK-028` (Test output verification and auditing features on Research Methods Ch01) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`
+
+### [2026-10-22 10:25 UTC] 完成任務 `TASK-028` — Test output verification and auditing features on Research Methods Ch01 (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: Tested QualityInspectionEngine (97.86% PASS), AccuracyVerifier (98.1% PASS), and FormatAuditor (100% PASS with Ollama qwen2.5) on Research Methods Ch01. Fixed LayoutAuditor TOC false positives and cli_audit book chapter literature flag.
+
+### [2026-10-22 10:45 UTC] 建立任務 `TASK-029`: E2E Markdown conversion workflow test for Research Methods 13th ed Ch01 and Ch15 (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`

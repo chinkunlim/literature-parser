@@ -56,6 +56,7 @@ All notable changes to **literature-parser** are documented here
 ### Testing
 - test(workflows): verify all CLI workflows, fix pathing and pure-python fallbacks (by `@antigravity`)
 - test: add split and profile integration test with PyMuPDF in-memory optimization for Research Methods 13th ed (TASK-025) (by `@antigravity`)
+- test: run batch audit runner across all input books without code change (TASK-035) (by `@antigravity`)
 
 ### Chore
 - chore(project): update project tooling and config (TASK-001, TASK-009, TASK-010, TASK-011) (by `@antigravity`)

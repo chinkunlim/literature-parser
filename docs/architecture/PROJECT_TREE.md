@@ -95,7 +95,8 @@ literature-parser/
 │   │   ├── TASK-031-fix-baseline-clustering-cross-sp.json
 │   │   ├── TASK-032-fix-ch15-layout-collapse-exhibit.json
 │   │   ├── TASK-033-integrate-minicpm-v-visual-audit.json
-│   │   └── TASK-034-implement-book-profile-knowledge.json
+│   │   ├── TASK-034-implement-book-profile-knowledge.json
+│   │   └── TASK-035-batch-run-all-input-books-with-o.json
 │   ├── framework.lock                      # [框架鎖定檔] 框架版本與檔案雜湊，供 update_framework 判斷是否被修改
 │   └── project.toml                        # [專案設定・各專案自訂] 語言、分層、品質門檻、指令、業務規則
 ├── .cursor/                                # [Agent 轉接] Cursor 規則 (自動產生)
@@ -166,6 +167,7 @@ literature-parser/
 ├── scripts/                                # 【專案腳本】agentctl.py 是框架的單一入口；其餘放本專案自己的腳本
 │   ├── agentctl.py                         # [單一入口] 轉呼叫 .agents/bin/agentctl.py
 │   ├── apply_theme.py
+│   ├── batch_audit_runner.py
 │   └── test_split_and_profile.py
 ├── src/                                    # 【核心原始碼層】分層與依賴方向定義於 .agents/project.toml
 │   └── literature_parser/

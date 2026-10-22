@@ -97,7 +97,8 @@ literature-parser/
 │   │   ├── TASK-033-integrate-minicpm-v-visual-audit.json
 │   │   ├── TASK-034-implement-book-profile-knowledge.json
 │   │   ├── TASK-035-batch-run-all-input-books-with-o.json
-│   │   └── TASK-036-unify-pdf-engine-to-pymupdf-and-.json
+│   │   ├── TASK-036-unify-pdf-engine-to-pymupdf-and-.json
+│   │   └── TASK-037-full-batch-re-run-of-all-3-books.json
 │   ├── framework.lock                      # [框架鎖定檔] 框架版本與檔案雜湊，供 update_framework 判斷是否被修改
 │   └── project.toml                        # [專案設定・各專案自訂] 語言、分層、品質門檻、指令、業務規則
 ├── .cursor/                                # [Agent 轉接] Cursor 規則 (自動產生)

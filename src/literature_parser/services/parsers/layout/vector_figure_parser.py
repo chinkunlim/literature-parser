@@ -153,15 +153,20 @@ class VectorFigureParser:
                     max_x = max(float(t.attrib.get('left', 0)) + float(t.attrib.get('width', 0)) for t in diag_elems)
                     min_y = min(float(t.attrib.get('top', 0)) for t in diag_elems)
                     max_y = max(float(t.attrib.get('top', 0)) + float(t.attrib.get('height', 0)) for t in diag_elems)
-                    crop_x = int(max(0.0, min_x - 15) * scale)
-                    crop_y = int(max(cap_bottom + 10.0, min_y - 15) * scale)
-                    crop_w = int((max_x + 15 - max(0.0, min_x - 15)) * scale)
-                    crop_h = int((max_y + 15 - max(cap_bottom + 10.0, min_y - 15)) * scale)
+                    left_b = max(0.0, min_x - 15)
+                    top_b = max(cap_bottom + 10.0, min_y - 15)
+                    right_b = max_x + 15
+                    bottom_b = max_y + 15
                 else:
-                    crop_x = 0 if f_left < pw * 0.40 else int(max(0.0, f_left - 30) * scale)
-                    crop_y = int((f_top + 10) * scale)
-                    crop_w = int(350.0 * scale)
-                    crop_h = int(220.0 * scale)
+                    left_b = 0.0 if f_left < pw * 0.40 else max(0.0, f_left - 30)
+                    top_b = f_top + 10.0
+                    right_b = left_b + 350.0
+                    bottom_b = top_b + 220.0
+
+                crop_x = int(left_b * scale)
+                crop_y = int(top_b * scale)
+                crop_w = int((right_b - left_b) * scale)
+                crop_h = int((bottom_b - top_b) * scale)
 
             img_fname = f"figure_{fig_sanitized}.png"
             target_img_path = img_dir / img_fname

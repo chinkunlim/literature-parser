@@ -1,16 +1,16 @@
 {
   "id": "TASK-020",
   "title": "Implement Marker-style layout framing, paragraph boundary anchoring, and typography colors",
-  "status": "in_progress",
+  "status": "done",
   "agent": "antigravity",
   "handed_off_from": "",
   "handed_off_to": "",
   "paths": [],
-  "done_items": "",
+  "done_items": "Implemented Marker-style layout framing, paragraph boundary anchoring, complex table HTML adaptation, collapsed TOC by default, and Google Fonts with 60-30-10 palette.",
   "todo_items": "",
   "blockers": "",
   "created_at": "2026-10-22 08:09 UTC",
-  "updated_at": "2026-10-22 08:09 UTC",
+  "updated_at": "2026-10-22 08:18 UTC",
   "history": [
     {
       "timestamp": "2026-10-22 08:09 UTC",
@@ -22,6 +22,13 @@
       "action": "claimed",
       "agent": "antigravity",
       "previous_agent": "antigravity"
+    },
+    {
+      "timestamp": "2026-10-22 08:18 UTC",
+      "action": "done",
+      "agent": "antigravity",
+      "summary": "Implemented Marker-style layout framing, paragraph boundary anchoring, complex table HTML adaptation, collapsed TOC by default, and Google Fonts with 60-30-10 palette."
     }
-  ]
+  ],
+  "summary": "Implemented Marker-style layout framing, paragraph boundary anchoring, complex table HTML adaptation, collapsed TOC by default, and Google Fonts with 60-30-10 palette."
 }

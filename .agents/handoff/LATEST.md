@@ -5,10 +5,10 @@
 <!-- LIVE_STATE_START -->
 ## 📊 即時狀態看板 (Live Snapshot)
 
-- **最後更新時間**: `2026-10-22 03:06 UTC`
+- **最後更新時間**: `2026-10-22 03:07 UTC`
 - **最近操作 Agent**: `antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `183f7bb feat(profiler): implement front matter splitting, pure chapter 1, and layout taxonomy (TASK-014) [agent:antigravity]`
+- **最新 Git Commit**: `b748c1f docs: synchronize all project markdown documentation (TASK-015) [agent:antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
@@ -17,6 +17,14 @@
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-10-22 03:07 UTC] Session Closeout (結束對話收尾) (by `antigravity`)
+- **檢查結果**: 測試與 Code Review Guard 通過
+- **目標**: 規劃並實作 Front Matter 獨立切分、純淨 Chapter 1 起始頁校驗、四層級 Profile 與共享知識庫架構，並同步更新全專案 Markdown 文件
+- **錯誤與根因**: 第一章書籤起始頁若誤包前言，透過 Pre-flight Profile 的純淨 Chapter 1 校驗自動修正（ISSUE-004）。259 個單元測試全數通過。
+- **下一步**: 四層 Profile 與 Front Matter 切分已就緒且文件完備；下一步可接續實測真實大部頭教科書或擴充外部 API / 批次轉檔作業。
+- **交接備註**: Front Matter 獨立切分與純淨 Chapter 1 規格及四層 Profile 已全部落地並完成文件同步。
+- **本機對話紀錄**: `.agents/conversations/2026-10-22-1107-antigravity-summary.md`（只在這台電腦）
 
 ### [2026-10-22 03:06 UTC] 完成任務 `TASK-015` — 更新全專案 Markdown 文件：架構、規格、變更日誌與使用說明 (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
@@ -100,7 +108,3 @@
 
 ### [2026-10-21 16:09 UTC] 認領任務 `TASK-009` (遷移批次 9：文件（README、規格、決策、已知問題）) (by `antigravity`)
 - **相關範圍**: `docs/PROMPT_TEMPLATES.md, docs/adr/, docs/architecture/ARCHITECTURE.md, docs/known-issues/, docs/specs/, docs/standards/PROJECT_RULES.md, evals/EVALS.md, legacy`
-
-### [2026-10-21 16:09 UTC] 完成任務 `TASK-006` — 遷移批次 6：entrypoints 層（CLI、HTTP、排程入口） (by `antigravity`)
-- **狀態**: ✅ 已完成 (`done`)
-- **完成摘要**: entrypoints 層遷移完成，run.py, doc_cli.py 與 project_cli 系列功能完備且通過 CLI 測試，0 critical issues

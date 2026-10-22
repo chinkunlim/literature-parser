@@ -31,6 +31,7 @@ All notable changes to **literature-parser** are documented here
 - feat(converter): optimize image extraction fallback for vector chapters and verify Ch01 Markdown export (TASK-027) (by `@antigravity`)
 - feat(orchestrator): support comma-separated chapter filtering and fix outline hierarchy tree (TASK-029) (by `@antigravity`)
 - feat(verifier): integrate MiniCPM-V visual audit, PyMuPDF page rendering, and numerical-invariance surgical table healing (TASK-033) (by `@antigravity`)
+- feat(profiler): persist chapter audits and visual defects into book profile, and enhance Cengage cross-book filters (TASK-034) (by `@antigravity`)
 
 ### Changed
 - docs(migration): mark all migration acceptance criteria as completed (by `@antigravity`)

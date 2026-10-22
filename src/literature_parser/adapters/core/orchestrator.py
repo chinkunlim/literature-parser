@@ -429,6 +429,28 @@ class BookProcessorOrchestrator:
         verifier = AccuracyVerifier(use_ollama=self.use_ollama, ollama_model=self.ollama_model)
         v_res = verifier.verify_chapter(str(ch_dir), expected_pages=total_pages)
 
+        # 3.1 Persist chapter audit & visual defects into book_profile.json
+        try:
+            cand_canon = book_dir / "profile.json"
+            cand_legacy = book_dir / "book_profile.json"
+            prof_file = cand_canon if cand_canon.exists() else cand_legacy
+            if prof_file.exists():
+                with open(prof_file, "r", encoding="utf-8") as pf:
+                    raw_prof = json.load(pf)
+                doc_prof = DocumentProfile.from_dict(raw_prof)
+                doc_prof.record_chapter_audit(
+                    chapter_name=ch_name,
+                    audit_data=v_res,
+                    visual_data=v_res.get("checks", {}).get("visual_audit"),
+                )
+                prof_dict = doc_prof.to_dict()
+                for target_p in {cand_canon, cand_legacy}:
+                    with open(target_p, "w", encoding="utf-8") as pf:
+                        json.dump(prof_dict, pf, indent=2, ensure_ascii=False)
+                print(f"  [🧠 Profile Sync] Recorded chapter audit and visual fidelity into {prof_file.name}")
+        except Exception as prof_err:
+            logger.debug("Failed to record chapter audit into profile.json: %s", prof_err)
+
         # 4. Local AI Review & Diff Generation
         if self.use_ollama:
             ollama = OllamaVerifier(healer_model=self.ollama_model) if self.ollama_model else OllamaVerifier()

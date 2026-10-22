@@ -520,7 +520,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 continue
             if re.search(r'\b(?:8GTDCN|1RGTCVKQ|5JGKUCIQQF|UCNGURGTUQP|UGNNUOCP|CUUKUVUYKVJ|1DUGTXCVKQPU|6JGQT|TGGCTEJ|&CVCFTKXGP)\b', txt_raw):
                 continue
-            if re.search(r'This document is copyrighted|intended solely for the personal use|text and data mining|AI training|allied publishers|disseminated broadly|All rights, including for text|American Psychological Association|American Psychological|reserved\.?', txt_raw, re.IGNORECASE):
+            if re.search(r'This document is copyrighted|intended solely for the personal use|text and data mining|AI training|allied publishers|disseminated broadly|All rights, including for text|American Psychological Association|American Psychological|reserved\.?|WCN\s*\d+-\d+|may not be copied, scanned, or duplicated|in whole or in part', txt_raw, re.IGNORECASE):
                 continue
 
             # Filter decorative rule divider artifacts (e.g. repeated symbols like '- * -', '▪', '= = = =')

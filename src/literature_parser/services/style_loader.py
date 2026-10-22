@@ -251,7 +251,7 @@ def load_style(book_output_dir: Optional[str | Path] = None) -> Dict[str, Any]:
                 bp = json.load(f)
 
                 # If publisher is declared or fingerprinted, merge publisher template first
-                pub = bp.get("publisher", "").lower()
+                pub = (bp.get("publisher") or "").lower()
                 if "pearson" in pub:
                     pub_path = profiles_dir / "publisher_pearson.json"
                 elif "cengage" in pub:

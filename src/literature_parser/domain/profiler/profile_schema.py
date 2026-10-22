@@ -397,6 +397,9 @@ class DocumentProfile:
     typography: ProfileTypography = field(default_factory=ProfileTypography)
     special_blocks: ProfileSpecialBlocks = field(default_factory=ProfileSpecialBlocks)
     publisher_rules: Dict[str, Any] = field(default_factory=dict)
+    anomalies: List[Dict[str, Any]] = field(default_factory=list)
+    learned_fixes: Dict[str, Any] = field(default_factory=dict)
+    chapter_history: Dict[str, Dict[str, Any]] = field(default_factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serializes the complete profile to a nested dictionary for JSON export.
@@ -412,6 +415,12 @@ class DocumentProfile:
         }
         if self.publisher_rules:
             res["publisher_rules"] = dict(self.publisher_rules)
+        if self.anomalies:
+            res["anomalies"] = list(self.anomalies)
+        if self.learned_fixes:
+            res["learned_fixes"] = dict(self.learned_fixes)
+        if self.chapter_history:
+            res["chapter_history"] = dict(self.chapter_history)
 
         # Flat top-level convenience aliases for backward compatibility
         res["publisher"] = self.meta.publisher
@@ -444,7 +453,62 @@ class DocumentProfile:
             typography=ProfileTypography.from_dict(typo_data),
             special_blocks=ProfileSpecialBlocks.from_dict(blocks_data),
             publisher_rules=dict(pub_rules),
+            anomalies=list(data.get("anomalies", [])),
+            learned_fixes=dict(data.get("learned_fixes", {})),
+            chapter_history=dict(data.get("chapter_history", {})),
         )
+
+    def record_chapter_audit(
+        self,
+        chapter_name: str,
+        audit_data: Dict[str, Any],
+        visual_data: Optional[Dict[str, Any]] = None,
+    ) -> None:
+        """Records chapter verification results, visual scores, and discovered layout anomalies.
+
+        Args:
+            chapter_name: Name or slug of the processed chapter.
+            audit_data: Result dictionary from AccuracyVerifier.
+            visual_data: Optional visual audit result from VisualAuditor / MiniCPM-V.
+
+        Returns:
+            None.
+        """
+        import time
+
+        checks = audit_data.get("checks", {})
+        passed = audit_data.get("passed", True)
+        accuracy = audit_data.get("accuracy_percent", 0.0)
+
+        history_entry: Dict[str, Any] = {
+            "timestamp": time.strftime("%Y-%m-%d %H:%M:%SZ", time.gmtime()),
+            "passed": passed,
+            "accuracy_percent": accuracy,
+            "checks_summary": {k: (v.get("passed") if isinstance(v, dict) else v) for k, v in checks.items()},
+        }
+
+        if visual_data:
+            history_entry["visual_audit"] = {
+                "status": visual_data.get("status"),
+                "quality_score": visual_data.get("quality_score"),
+                "vision_model": visual_data.get("vision_model"),
+                "audited_pages_count": len(visual_data.get("audited_pages", [])),
+            }
+
+            # Extract any visual defects as book anomalies
+            for ap in visual_data.get("audited_pages", []):
+                if not ap.get("verified", True) and ap.get("vision_defect"):
+                    anomaly = {
+                        "chapter": chapter_name,
+                        "page": ap.get("page"),
+                        "feature": ap.get("feature"),
+                        "defect": ap.get("vision_defect"),
+                        "confidence": ap.get("confidence"),
+                    }
+                    if anomaly not in self.anomalies:
+                        self.anomalies.append(anomaly)
+
+        self.chapter_history[chapter_name] = history_entry
 
     def validate(self) -> List[str]:
         """Validates internal consistency and boundary ranges of profile parameters.

@@ -109,10 +109,10 @@ class ImageManager:
                             continue
                         if img_ext in ("jb2e", "jbig2"):
                             continue
-                        if is_scanned and p_num > 1:
+                        if p_num > 1:
                             w = extracted.get("width", 0)
                             h = extracted.get("height", 0)
-                            if w >= FULL_PAGE_MIN_PX and h >= FULL_PAGE_MIN_PX:
+                            if (is_scanned and w >= FULL_PAGE_MIN_PX and h >= FULL_PAGE_MIN_PX) or ((w >= 1100 and h >= 1400) or (w >= 2000 and h >= 3000)):
                                 continue
                         native_images.append({
                             'page': p_num,

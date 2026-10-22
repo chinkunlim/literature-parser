@@ -357,3 +357,15 @@
 ### [2026-10-22 09:27 UTC] 建立任務 `TASK-027`: Test Markdown export on a chapter of Research Methods 13th ed (by `antigravity`)
 - **狀態**: `in_progress`
 - **相關範圍**: `-`
+
+### [2026-10-22 09:27 UTC] 認領任務 `TASK-027` (Test Markdown export on a chapter of Research Methods 13th ed) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`
+
+### [2026-10-22 09:29 UTC] 完成任務 `TASK-027` — Test Markdown export on a chapter of Research Methods 13th ed (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: Converted Ch01 Introduction to Scientific Research to Markdown (694 lines, 98.1% accuracy, Mermaid concept map, Learning Objectives, Anki flashcards)
+
+### [2026-10-22 10:20 UTC] 建立任務 `TASK-028`: Test output verification and auditing features on Research Methods Ch01 (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`

@@ -283,7 +283,17 @@ class ConfigManager:
 
     @classmethod
     def get_page_count(cls, pdf_path: str) -> int:
-        """Retrieves page count using pdfinfo or pure Python fallback."""
+        """Retrieves page count using PyMuPDF, pdfinfo, or pure Python fallback."""
+        try:
+            import pymupdf  # type: ignore
+            doc = pymupdf.open(pdf_path)
+            cnt = len(doc)
+            doc.close()
+            if cnt > 0:
+                return cnt
+        except Exception:
+            pass
+
         try:
             out = subprocess.check_output(
                 ['pdfinfo', pdf_path],
@@ -308,7 +318,19 @@ class ConfigManager:
 
     @classmethod
     def extract_sample_text(cls, pdf_path: str, max_pages: int = 2) -> str:
-        """Extracts text from the first N pages."""
+        """Extracts text from the first N pages using PyMuPDF or pdftotext."""
+        try:
+            import pymupdf  # type: ignore
+            doc = pymupdf.open(pdf_path)
+            sample_p = min(max_pages, len(doc))
+            texts = [doc[i].get_text() for i in range(sample_p)]
+            doc.close()
+            txt = "\n".join(texts).strip()
+            if txt:
+                return txt
+        except Exception:
+            pass
+
         try:
             out = subprocess.check_output(
                 ['pdftotext', '-f', '1', '-l', str(max_pages), pdf_path, '-'],

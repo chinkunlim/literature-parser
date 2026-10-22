@@ -14,7 +14,19 @@ from literature_parser.config.processor_config import OLLAMA_API_BASE
 
 
 def get_pdf_page_count(pdf_path: str | Path) -> int:
-    """Gets total page count from a PDF, trying pdfinfo first then pure-Python fallback."""
+    """Gets total page count from a PDF, trying PyMuPDF, then pdfinfo, then binary regex."""
+    # 1. Native PyMuPDF fast path
+    try:
+        import pymupdf  # type: ignore
+        doc = pymupdf.open(str(pdf_path))
+        cnt = len(doc)
+        doc.close()
+        if cnt > 0:
+            return cnt
+    except Exception:
+        pass
+
+    # 2. External CLI pdfinfo fallback
     if check_command("pdfinfo"):
         try:
             out = subprocess.check_output(
@@ -28,7 +40,7 @@ def get_pdf_page_count(pdf_path: str | Path) -> int:
         except Exception:
             pass
 
-    # Pure Python fallback
+    # 3. Pure Python binary regex fallback
     try:
         with open(pdf_path, "rb") as f:
             content = f.read()

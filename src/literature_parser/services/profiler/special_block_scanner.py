@@ -377,16 +377,51 @@ class SpecialBlockScanner:
 
     @staticmethod
     def _extract_page_xml(pdf_path: str, page_num: int) -> str:
+        import shutil
+
+        # 1. External CLI pdftohtml if available
+        if shutil.which("pdftohtml"):
+            try:
+                res = subprocess.run(
+                    ["pdftohtml", "-xml", "-nodrm", "-i", "-stdout",
+                     "-f", str(page_num), "-l", str(page_num), pdf_path],
+                    capture_output=True, timeout=20,
+                )
+                out = res.stdout.decode("utf-8", errors="ignore")
+                if out and "<page" in out:
+                    return out
+            except Exception as e:
+                logger.debug("XML extraction failed for page %d: %s", page_num, e)
+
+        # 2. PyMuPDF in-memory fallback producing pdftohtml-compatible XML
         try:
-            res = subprocess.run(
-                ["pdftohtml", "-xml", "-nodrm", "-i", "-stdout",
-                 "-f", str(page_num), "-l", str(page_num), pdf_path],
-                capture_output=True, timeout=20,
-            )
-            return res.stdout.decode("utf-8", errors="ignore")
+            import pymupdf  # type: ignore
+            from xml.sax.saxutils import escape
+
+            doc = pymupdf.open(str(pdf_path))
+            idx = page_num - 1
+            if 0 <= idx < len(doc):
+                page = doc[idx]
+                d = page.get_text("dict")
+                pw = d.get("width", page.rect.width)
+                ph = d.get("height", page.rect.height)
+                lines_xml = []
+                for b in d.get("blocks", []):
+                    for line in b.get("lines", []):
+                        for span in line.get("spans", []):
+                            x0, y0, x1, y1 = span["bbox"]
+                            txt = escape(span["text"].strip())
+                            if txt:
+                                lines_xml.append(
+                                    f'<text top="{y0:.2f}" left="{x0:.2f}" width="{x1 - x0:.2f}" height="{y1 - y0:.2f}">{txt}</text>'
+                                )
+                doc.close()
+                return f'<page width="{pw:.2f}" height="{ph:.2f}">\n' + "\n".join(lines_xml) + "\n</page>"
+            doc.close()
         except Exception as e:
-            logger.debug("XML extraction failed for page %d: %s", page_num, e)
-            return ""
+            logger.debug("PyMuPDF fallback failed for page %d: %s", page_num, e)
+
+        return ""
 
     @staticmethod
     def _parse_page_xml(xml: str) -> ET.Element:

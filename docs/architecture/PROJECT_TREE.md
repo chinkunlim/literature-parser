@@ -85,7 +85,8 @@ literature-parser/
 │   │   ├── TASK-021-externalize-typography-palette-t.json
 │   │   ├── TASK-022-update-all-project-documentation.json
 │   │   ├── TASK-023-data-dir-input-output.json
-│   │   └── TASK-024-markdown.json
+│   │   ├── TASK-024-markdown.json
+│   │   └── TASK-025-test-split-and-profile-pipeline-.json
 │   ├── framework.lock                      # [框架鎖定檔] 框架版本與檔案雜湊，供 update_framework 判斷是否被修改
 │   └── project.toml                        # [專案設定・各專案自訂] 語言、分層、品質門檻、指令、業務規則
 ├── .cursor/                                # [Agent 轉接] Cursor 規則 (自動產生)
@@ -155,7 +156,8 @@ literature-parser/
 │   └── EVALS.md
 ├── scripts/                                # 【專案腳本】agentctl.py 是框架的單一入口；其餘放本專案自己的腳本
 │   ├── agentctl.py                         # [單一入口] 轉呼叫 .agents/bin/agentctl.py
-│   └── apply_theme.py
+│   ├── apply_theme.py
+│   └── test_split_and_profile.py
 ├── src/                                    # 【核心原始碼層】分層與依賴方向定義於 .agents/project.toml
 │   └── literature_parser/
 │       ├── adapters/

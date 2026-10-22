@@ -29,12 +29,29 @@ class QualityInvariantGuard:
             raise InvariantViolationError(f"Pre-split failure: Source file '{p.name}' is completely empty (0 bytes).")
 
         pages = 0
+        # 1. Native PyMuPDF fast path (in-memory, highly reliable)
         try:
-            out = subprocess.check_output(['pdfinfo', str(p)], stderr=subprocess.DEVNULL, timeout=15).decode('utf-8', errors='ignore')
-            for line in out.splitlines():
-                if line.startswith('Pages:'):
-                    pages = int(line.split(':')[1].strip())
+            import pymupdf  # type: ignore
+            doc = pymupdf.open(str(p))
+            pages = len(doc)
+            doc.close()
         except Exception:
+            pass
+
+        # 2. External CLI pdfinfo fallback
+        if pages <= 0:
+            try:
+                out = subprocess.check_output(
+                    ['pdfinfo', str(p)], stderr=subprocess.DEVNULL, timeout=15
+                ).decode('utf-8', errors='ignore')
+                for line in out.splitlines():
+                    if line.startswith('Pages:'):
+                        pages = int(line.split(':')[1].strip())
+            except Exception:
+                pass
+
+        # 3. Pure Python binary header regex fallback
+        if pages <= 0:
             try:
                 with open(p, 'rb') as f:
                     content = f.read()
@@ -43,6 +60,7 @@ class QualityInvariantGuard:
                     pages = max(int(m) for m in matches)
             except Exception as e:
                 raise InvariantViolationError(f"Pre-split failure: Unable to read PDF header of '{p.name}': {e}")
+
         if pages <= 0:
             raise InvariantViolationError(f"Pre-split failure: '{p.name}' contains 0 readable pages.")
         return {'valid': True, 'pages': pages}
@@ -55,12 +73,29 @@ class QualityInvariantGuard:
             raise InvariantViolationError(f"Post-split failure: Chapter PDF '{p.name}' was not created or is 0 bytes.")
 
         actual_pages = 0
+        # 1. Native PyMuPDF fast path
         try:
-            out = subprocess.check_output(['pdfinfo', str(p)], stderr=subprocess.DEVNULL, timeout=15).decode('utf-8', errors='ignore')
-            for line in out.splitlines():
-                if line.startswith('Pages:'):
-                    actual_pages = int(line.split(':')[1].strip())
+            import pymupdf  # type: ignore
+            doc = pymupdf.open(str(p))
+            actual_pages = len(doc)
+            doc.close()
         except Exception:
+            pass
+
+        # 2. External CLI pdfinfo fallback
+        if actual_pages <= 0:
+            try:
+                out = subprocess.check_output(
+                    ['pdfinfo', str(p)], stderr=subprocess.DEVNULL, timeout=15
+                ).decode('utf-8', errors='ignore')
+                for line in out.splitlines():
+                    if line.startswith('Pages:'):
+                        actual_pages = int(line.split(':')[1].strip())
+            except Exception:
+                pass
+
+        # 3. Pure Python binary header regex fallback
+        if actual_pages <= 0:
             try:
                 with open(p, 'rb') as f:
                     content = f.read()
@@ -70,15 +105,14 @@ class QualityInvariantGuard:
             except Exception as e:
                 raise InvariantViolationError(f"Post-split failure: Unable to read PDF header of '{p.name}': {e}")
 
-            if expected_pages is not None and actual_pages != expected_pages:
-                raise InvariantViolationError(
-                    f"Post-split failure: Chapter '{p.name}' page count mismatch. Expected: {expected_pages}, Found: {actual_pages}."
-                )
-            return {'valid': True, 'pages': actual_pages}
-        except Exception as e:
-            if isinstance(e, InvariantViolationError):
-                raise
-            raise InvariantViolationError(f"Post-split failure: Error checking chapter '{p.name}': {e}")
+        if actual_pages <= 0:
+            raise InvariantViolationError(f"Post-split failure: Chapter '{p.name}' contains 0 readable pages.")
+
+        if expected_pages is not None and actual_pages != expected_pages:
+            raise InvariantViolationError(
+                f"Post-split failure: Chapter '{p.name}' page count mismatch. Expected: {expected_pages}, Found: {actual_pages}."
+            )
+        return {'valid': True, 'pages': actual_pages}
 
     @staticmethod
     def check_page_density(page_text: str, page_images: list, page_num: int) -> dict:

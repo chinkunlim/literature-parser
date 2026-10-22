@@ -5,10 +5,10 @@
 <!-- LIVE_STATE_START -->
 ## 📊 即時狀態看板 (Live Snapshot)
 
-- **最後更新時間**: `2026-10-22 08:58 UTC`
+- **最後更新時間**: `2026-10-22 09:19 UTC`
 - **最近操作 Agent**: `antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `3877b54 docs: synchronize all project markdown documentation for input/output convention routing, ADR-008, and ISSUE-005 [agent:antigravity]`
+- **最新 Git Commit**: `70de7b0 chore(tooling): update tooling tooling and config (ADR-008, ISSUE-005, TASK-018, TASK-019, TASK-024) [agent:antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
@@ -17,6 +17,18 @@
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-10-22 09:19 UTC] 完成任務 `TASK-025` — Test split and profile pipeline for Research Methods 13th ed (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: Completed split and profile pipeline integration test with uv and PyMuPDF optimizations
+
+### [2026-10-22 09:05 UTC] 認領任務 `TASK-025` (Test split and profile pipeline for Research Methods 13th ed) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`
+
+### [2026-10-22 09:05 UTC] 建立任務 `TASK-025`: Test split and profile pipeline for Research Methods 13th ed (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
 
 ### [2026-10-22 08:58 UTC] Session Closeout (結束對話收尾) (by `antigravity`)
 - **檢查結果**: 測試與 Code Review Guard 通過
@@ -91,17 +103,5 @@
 - **接棒自**: `antigravity`
 
 ### [2026-10-22 08:09 UTC] 建立任務 `TASK-020`: Implement Marker-style layout framing, paragraph boundary anchoring, and typography colors (by `antigravity`)
-- **狀態**: `in_progress`
-- **相關範圍**: `-`
-
-### [2026-10-22 07:45 UTC] 完成任務 `TASK-019` — Optimize literature and textbook pipeline for speed and quality (by `antigravity`)
-- **狀態**: ✅ 已完成 (`done`)
-- **完成摘要**: (無)
-
-### [2026-10-22 07:35 UTC] 認領任務 `TASK-019` (Optimize literature and textbook pipeline for speed and quality) (by `antigravity`)
-- **相關範圍**: `-`
-- **接棒自**: `antigravity`
-
-### [2026-10-22 07:35 UTC] 建立任務 `TASK-019`: Optimize literature and textbook pipeline for speed and quality (by `antigravity`)
 - **狀態**: `in_progress`
 - **相關範圍**: `-`

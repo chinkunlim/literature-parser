@@ -30,6 +30,7 @@ All notable changes to **literature-parser** are documented here
 - docs(migration): mark all migration acceptance criteria as completed (by `@antigravity`)
 - docs(evals,web,readme): update eval commands, dashboard guide, CLI command references, and offline test instructions (by `@antigravity`)
 - refactor(migration): complete legacy codebase migration to structured layout (by `@antigravity`)
+- refactor(data): reorganize DATA_DIR input and output directory structures with convention routing and hyphen hygiene (by `@antigravity`)
 
 ### Fixed
 - fix(config): standardize DATA_DIR hierarchy and route all data paths through AppConfig (by `@antigravity`)

@@ -5,10 +5,10 @@
 <!-- LIVE_STATE_START -->
 ## 📊 即時狀態看板 (Live Snapshot)
 
-- **最後更新時間**: `2026-10-22 08:40 UTC`
+- **最後更新時間**: `2026-10-22 08:53 UTC`
 - **最近操作 Agent**: `antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `babd851 docs: mark TASK-022 done [agent:antigravity]`
+- **最新 Git Commit**: `c2b5a5f chore(tooling): update tooling tooling and config (ADR-007, TASK-016, TASK-017, TASK-022) [agent:antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
@@ -17,6 +17,18 @@
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-10-22 08:53 UTC] 完成任務 `TASK-023` — 整理 DATA_DIR 之 input 與 output 目錄結構 (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: 完成 DATA_DIR 之 input 與 output 目錄結構重組（建立 books/literature 之 digital-pdf 與 scanned-pdf 子目錄，全面以連字號 - 重新命名 output 資料夾與文件）
+
+### [2026-10-22 08:48 UTC] 認領任務 `TASK-023` (整理 DATA_DIR 之 input 與 output 目錄結構) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`
+
+### [2026-10-22 08:48 UTC] 建立任務 `TASK-023`: 整理 DATA_DIR 之 input 與 output 目錄結構 (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
 
 ### [2026-10-22 08:40 UTC] Session Closeout (結束對話收尾) (by `antigravity`)
 - **檢查結果**: 測試與 Code Review Guard 通過
@@ -91,17 +103,5 @@
 - **接棒自**: `antigravity`
 
 ### [2026-10-22 03:55 UTC] 建立任務 `TASK-018`: 更新並同步全專案 Markdown 文件 (by `antigravity`)
-- **狀態**: `in_progress`
-- **相關範圍**: `-`
-
-### [2026-10-22 03:53 UTC] 完成任務 `TASK-017` — 實作三層 Markdown 轉檔檢驗與品質評估體系（排版、詞語、語意） (by `antigravity`)
-- **狀態**: ✅ 已完成 (`done`)
-- **完成摘要**: 實作三層 Markdown 轉檔檢驗與品質評估體系（排版、詞語、語意）、評分引擎與獨立 CLI 整合
-
-### [2026-10-22 03:50 UTC] 認領任務 `TASK-017` (實作三層 Markdown 轉檔檢驗與品質評估體系（排版、詞語、語意）) (by `antigravity`)
-- **相關範圍**: `-`
-- **接棒自**: `antigravity`
-
-### [2026-10-22 03:50 UTC] 建立任務 `TASK-017`: 實作三層 Markdown 轉檔檢驗與品質評估體系（排版、詞語、語意） (by `antigravity`)
 - **狀態**: `in_progress`
 - **相關範圍**: `-`

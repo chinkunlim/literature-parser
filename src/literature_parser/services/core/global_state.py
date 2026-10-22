@@ -130,7 +130,15 @@ class GlobalStateManager:
                 with open(status_json, "r", encoding="utf-8") as f:
                     book_data = json.load(f)
                 title = book_data.get("book_title") or book_data.get("doc_name") or status_json.parent.name
-                doc_type = "literature" if ("literature" in str(status_json) or book_data.get("archetype") == "journal") else "book"
+                rel_parts = status_json.relative_to(out_path).parts
+                if len(rel_parts) > 0 and rel_parts[0] == "literature":
+                    doc_type = "literature"
+                elif len(rel_parts) > 0 and rel_parts[0] == "books":
+                    doc_type = "book"
+                elif book_data.get("archetype") in ("journal", "literature"):
+                    doc_type = "literature"
+                else:
+                    doc_type = "book"
                 if book_data.get("chapters"):
                     chapters = book_data["chapters"]
                 else:

@@ -523,6 +523,11 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             if re.search(r'This document is copyrighted|intended solely for the personal use|text and data mining|AI training|allied publishers|disseminated broadly|All rights, including for text|American Psychological Association|American Psychological|reserved\.?', txt_raw, re.IGNORECASE):
                 continue
 
+            # Filter decorative rule divider artifacts (e.g. repeated symbols like '- * -', '▪', '= = = =')
+            clean_sym = re.sub(r'[\s\*_`=\-▪•·\.,]', '', txt_raw)
+            if not clean_sym and len(txt_raw) >= 3 and any(c in txt_raw for c in ('=', '-', '▪', '•')):
+                continue
+
             # Convert inner XML tags <b> and <i> to Markdown
             raw_inner = ET.tostring(text_el, encoding='utf-8', method='xml').decode('utf-8')
             m = re.search(r'^<text[^>]*>(.*)</text>$', raw_inner, re.DOTALL)
@@ -916,8 +921,9 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 last_top = top
                 continue
 
-            # Paragraph splitting on indentation or spacing (never split if continuing with lowercase letter)
-            is_lowercase = bool(clean_t and clean_t[0].islower())
+            # Paragraph splitting on indentation or spacing (never split if continuing with lowercase letter, unless previous sentence was complete)
+            is_prev_complete = bool(curr_p and re.search(r'[.?!]\s*$', curr_p[-1].strip()))
+            is_lowercase = bool(clean_t and clean_t[0].islower()) and not is_prev_complete
             cur_base = col2_base_left if (col2_base_left and left >= gutter_left - 20) else col1_base_left
             is_indent = (left - cur_base >= 18) and abs(size - body_size) < 1.5 and not is_lowercase
             # If current line has the same left indentation as previous line (e.g. blockquote), don't split

@@ -147,7 +147,7 @@ class TableParser:
                     title_candidates.append((top, left, txt, t))
                 # Line 2+: wrapped immediately below (within 28pt) and not a bullet or row
                 elif (0 < top - h_top <= 28) and (abs(left - h_left) <= 50 or left > h_left):
-                    if not re.match(r'^(?:[•\-\*]|\d+[\.\)])\s*', txt):
+                    if not re.match(r'^(?:[•\-\*]|\(?\d+[\.\)])\s*', txt):
                         title_candidates.append((top, left, txt, t))
 
             title_candidates.sort(key=lambda x: (x[0], x[1]))
@@ -246,6 +246,9 @@ class TableParser:
                     # Stop if gap between consecutive table rows exceeds 35pt
                     if d_top - curr_row_top > 35.0:
                         break
+                    # Stop if encountering instruction steps outside the table (e.g. 'Steps:' in Table 15.4)
+                    if re.match(r'^(?:Steps?:?|\(?\d+\)?\s*Insert|\(?\d+\)?\s*Calculate)\b', d_txt, re.IGNORECASE):
+                        break
                     # Footnotes must start after table header/content rows
                     is_fn_start = (d_top > first_top + 40) and bool(re.match(r'^(?:\*+|Note\b|\.?\s*BART indicates\b)', d_txt, re.IGNORECASE))
                     if is_fn_start and fn_start_top is None:
@@ -258,23 +261,33 @@ class TableParser:
                     grid_data.append(d)
                     curr_row_top = max(curr_row_top, d_top)
 
-                row_starts = sorted(set(
-                    float(d.attrib.get('top', 0)) for d in grid_data
-                    if get_col_idx(float(d.attrib.get('left', 0))) == 0
-                    and (fn_start_top is None or float(d.attrib.get('top', 0)) < fn_start_top)
-                    and not re.match(r'^(?:\*+|Note\b|\.?\s*BART indicates\b)', ''.join(d.itertext()).strip(), re.IGNORECASE)
-                ))
+                row_lines = []
+                for d in sorted(grid_data, key=lambda t: (float(t.attrib.get('top', 0)), float(t.attrib.get('left', 0)))):
+                    d_top = float(d.attrib.get('top', 0))
+                    d_txt = ''.join(d.itertext()).strip()
+                    if fn_start_top is not None and d_top >= fn_start_top:
+                        continue
+                    if re.match(r'^(?:\*+|Note\b|\.?\s*BART indicates\b)', d_txt, re.IGNORECASE):
+                        continue
+                    matched = False
+                    for r in row_lines:
+                        if abs(r['top'] - d_top) <= 5.0:
+                            r['elements'].append(d)
+                            matched = True
+                            break
+                    if not matched:
+                        row_lines.append({'top': d_top, 'elements': [d]})
+
                 if not header_titles:
                     header_titles = [''.join(c.itertext()).strip() for c in header_cells]
 
-                grid_consumed = list(table_consumed) + header_cells
+                grid_consumed = list(table_consumed) + header_cells + list(grid_data)
                 fn_texts = []
                 parsed_rows = []
 
-                for i, r_top in enumerate(row_starts):
-                    next_top = row_starts[i+1] if i + 1 < len(row_starts) else (fn_start_top if fn_start_top else r_top + 70)
+                for r in row_lines:
                     row_cells = [[] for _ in range(len(header_titles))]
-                    for d in grid_data:
+                    for d in r['elements']:
                         d_top = float(d.attrib.get('top', 0))
                         d_left = float(d.attrib.get('left', 0))
                         d_txt = ''.join(d.itertext()).strip()
@@ -285,13 +298,18 @@ class TableParser:
                                 fn_texts.append(d_txt)
                                 grid_consumed.append(d)
                             continue
-                        if r_top - 3 <= d_top < next_top - 3:
-                            c_idx = get_col_idx(d_left)
-                            row_cells[c_idx].append(d_txt)
+                        c_idx = get_col_idx(d_left)
+                        row_cells[c_idx].append(d_txt)
+                        if d not in grid_consumed:
                             grid_consumed.append(d)
 
                     cell_strs = [' '.join(c).strip() for c in row_cells]
-                    parsed_rows.append(cell_strs)
+                    # Filter out isolated ghost math symbol debris rows (e.g. standalone 'a', 'c')
+                    joined_row = ''.join(cell_strs).strip()
+                    if re.fullmatch(r'^[ac\s\.\,\-]+$', joined_row) and len(joined_row) <= 4:
+                        continue
+                    if any(cell_strs):
+                        parsed_rows.append(cell_strs)
 
                 # Collect all footnote elements at or below fn_start_top
                 if fn_start_top is not None:

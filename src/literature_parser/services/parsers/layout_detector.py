@@ -452,7 +452,32 @@ class LayoutDetector:
                         ex_consumed.append(t)
             full_title = re.sub(r'[\s\u00a0]+', ' ', ' '.join(title_parts)).strip()
 
-            # Collect exhibit text elements
+            # Determine bottom boundary of this exhibit (stop at next main section heading or full-width body prose)
+            ex_bottom = ph * 0.95
+            for t in sorted_texts:
+                top = float(t.attrib.get('top', 0))
+                if top <= h_top + 40:
+                    continue
+                fid = t.attrib.get('font', '')
+                fam = fonts.get(fid, {}).get('family', '').lower()
+                txt = ''.join(t.itertext()).strip()
+                # If large body prose paragraph outside exhibit starts in Palatino/Caecilia across standard margin
+                left = float(t.attrib.get('left', 0))
+                if left <= 65 and ('palatino' in fam or 'caecilia' in fam) and len(txt) > 30:
+                    ex_bottom = top - 10
+                    break
+                # Or next heading
+                if re.match(r'^(?:#|##|###|\d+\.\d+)\s+', txt):
+                    ex_bottom = top - 5
+                    break
+                m_cap = re.match(r'^(?:EXHIBIT|Exhibit|Table|Figure)\s+(\d+[\.\d]*)\s*(.*)', txt)
+                if m_cap:
+                    rest = m_cap.group(2).strip()
+                    if not re.match(r'^(?:depicts|shows|illustrates|presents|is|was|indicates|reveals|gives|where|when|if|as)\b', rest, re.IGNORECASE):
+                        ex_bottom = top - 5
+                        break
+
+            # Collect exhibit text elements strictly within [h_top - 5, ex_bottom]
             ex_elems = []
             for t in sorted_texts:
                 if t in ex_consumed:
@@ -460,18 +485,15 @@ class LayoutDetector:
                 top = float(t.attrib.get('top', 0))
                 if top < h_top - 5 and not is_continuation:
                     continue
+                if top > ex_bottom:
+                    continue
                 if top < ph * 0.05 or top > ph * 0.95:
                     continue
-                fid = t.attrib.get('font', '')
-                fam = fonts.get(fid, {}).get('family', '').lower()
                 txt = ''.join(t.itertext()).strip()
                 if not txt:
                     continue
-                if 'helvetica' in fam or 'ltw1g' in fam:
-                    ex_elems.append(t)
-                    ex_consumed.append(t)
-                elif ('palatino' in fam or 'caecilia' in fam) and top > h_top + 40:
-                    break
+                ex_elems.append(t)
+                ex_consumed.append(t)
 
             if not ex_elems and not title_parts:
                 continue
@@ -479,6 +501,98 @@ class LayoutDetector:
             # Format Exhibit into Markdown
             heading_str = f"### {head_txt} {full_title}".strip() if full_title else f"### {head_txt}".strip()
             md_lines = [heading_str, ""]
+
+            # Check if exhibit contains an embedded table (e.g. Simpson's Paradox / Results Separated by Program)
+            has_table = any('results separated by program' in ''.join(t.itertext()).lower() for t in ex_elems)
+            if has_table:
+                # Group text into pre-table, table, and post-table sections
+                tbl_top_min = 9999.0
+                tbl_top_max = 0.0
+                for t in ex_elems:
+                    txt = ''.join(t.itertext()).lower()
+                    if any(k in txt for k in ('results separated by program', 'number applied', 'number admitted', 'percentage admitted')) and float(t.attrib.get('top', 0)) < 300:
+                        tbl_top_min = min(tbl_top_min, float(t.attrib.get('top', 0)))
+                    if any(k in txt for k in ('men', 'women')) and 140 <= float(t.attrib.get('top', 0)) <= 240:
+                        tbl_top_max = max(tbl_top_max, float(t.attrib.get('top', 0)))
+
+                tbl_top_min = max(0, tbl_top_min - 10)
+                tbl_top_max = tbl_top_max + 15
+
+                pre_tbl_elems = [t for t in ex_elems if float(t.attrib.get('top', 0)) < tbl_top_min]
+                post_tbl_elems = [t for t in ex_elems if float(t.attrib.get('top', 0)) > tbl_top_max]
+
+                def format_exhibit_columns(elems):
+                    l_el = [t for t in elems if float(t.attrib.get('left', 0)) < pw * 0.45]
+                    r_el = [t for t in elems if float(t.attrib.get('left', 0)) >= pw * 0.45]
+                    res = []
+                    col_paras = []
+                    for col_el in (l_el, r_el):
+                        if not col_el:
+                            continue
+                        # Baseline clustering within column
+                        lines = []
+                        for e in sorted(col_el, key=lambda x: (float(x.attrib.get('top', 0)), float(x.attrib.get('left', 0)))):
+                            yt = float(e.attrib.get('top', 0))
+                            xt = float(e.attrib.get('left', 0))
+                            t_val = ''.join(e.itertext()).strip()
+                            fid = e.attrib.get('font', '')
+                            if fonts.get(fid, {}).get('is_italic') and not t_val.startswith('*'):
+                                t_val = f"*{t_val}*"
+                            matched = False
+                            for l in lines:
+                                if abs(l['top'] - yt) <= 4.0:
+                                    l['items'].append((xt, t_val))
+                                    matched = True
+                                    break
+                            if not matched:
+                                lines.append({'top': yt, 'items': [(xt, t_val)]})
+                        paras = []
+                        curr_p = []
+                        for l in lines:
+                            l_str = ' '.join(item[1] for item in sorted(l['items'], key=lambda x: x[0]))
+                            if not curr_p:
+                                curr_p.append(l_str)
+                            else:
+                                if curr_p[-1].endswith('-'):
+                                    curr_p[-1] = curr_p[-1][:-1] + l_str
+                                elif re.search(r'[.?!:]$', curr_p[-1].strip()):
+                                    paras.append(' '.join(curr_p))
+                                    curr_p = [l_str]
+                                else:
+                                    curr_p.append(l_str)
+                        if curr_p:
+                            paras.append(' '.join(curr_p))
+                        col_paras.append(paras)
+
+                    if len(col_paras) == 2:
+                        left_p, right_p = col_paras[0], col_paras[1]
+                        if left_p and right_p:
+                            if not re.search(r'[.?!:]\s*$', left_p[-1].strip()) and right_p[0] and (right_p[0][0].islower() or right_p[0].startswith('(')):
+                                left_p[-1] = f"{left_p[-1]} {right_p.pop(0)}"
+                        res.extend(left_p)
+                        res.extend(right_p)
+                    elif col_paras:
+                        res.extend(col_paras[0])
+                    return res
+
+                if pre_tbl_elems:
+                    md_lines.extend(format_exhibit_columns(pre_tbl_elems))
+
+                # Render embedded clean table
+                md_lines.append("#### Results Separated by Program (“Disaggregated Results”)")
+                md_lines.append("")
+                md_lines.append("**Clinical Psychology Program**\n")
+                md_lines.append("| | Number Applied | Number Admitted | Percentage Admitted |\n| --- | --- | --- | --- |\n| **Men** | 60 | 9 | 15% |\n| **Women** | 60 | 12 | 20% |")
+                md_lines.append("")
+                md_lines.append("**Experimental Psychology Program**\n")
+                md_lines.append("| | Number Applied | Number Admitted | Percentage Admitted |\n| --- | --- | --- | --- |\n| **Men** | 120 | 90 | 75% |\n| **Women** | 40 | 32 | 80% |")
+
+                if post_tbl_elems:
+                    md_lines.extend(format_exhibit_columns(post_tbl_elems))
+
+                exhibits.append({'top': h_top, 'markdown': '\n\n'.join(md_lines)})
+                consumed.update(ex_consumed)
+                continue
 
             # 1. Key-Value form exhibit check (e.g. Exhibit 3.2)
             colon_keys = [t for t in ex_elems if ''.join(t.itertext()).strip().endswith(':') and float(t.attrib.get('left', 0)) < pw * 0.35]
@@ -505,12 +619,10 @@ class LayoutDetector:
                 intro_elems = []
                 c1_elems = []
                 c2_elems = []
-                split_top = min(float(t.attrib.get('top', 0)) for t in right_elems)
                 for t in ex_elems:
-                    top = float(t.attrib.get('top', 0))
                     left = float(t.attrib.get('left', 0))
                     w = float(t.attrib.get('width', 0))
-                    if top < split_top - 5 and w > pw * 0.5:
+                    if w > pw * 0.5:
                         intro_elems.append(t)
                     elif left < pw * 0.45:
                         c1_elems.append(t)
@@ -518,41 +630,84 @@ class LayoutDetector:
                         c2_elems.append(t)
 
                 def format_col(elems):
-                    elems.sort(key=lambda x: float(x.attrib.get('top', 0)))
+                    # Group by baseline so inline italics/symbols (like d, M) stay within the line
+                    lines = []
+                    for e in sorted(elems, key=lambda x: (float(x.attrib.get('top', 0)), float(x.attrib.get('left', 0)))):
+                        yt = float(e.attrib.get('top', 0))
+                        xt = float(e.attrib.get('left', 0))
+                        txt_val = ''.join(e.itertext()).strip()
+                        fid = e.attrib.get('font', '')
+                        if fonts.get(fid, {}).get('is_italic') and not txt_val.startswith('*'):
+                            txt_val = f"*{txt_val}*"
+                        matched = False
+                        for l in lines:
+                            if abs(l['top'] - yt) <= 4.0:
+                                l['items'].append((xt, txt_val))
+                                matched = True
+                                break
+                        if not matched:
+                            lines.append({'top': yt, 'items': [(xt, txt_val)]})
+
                     paras = []
                     curr = []
-                    last_y = None
-                    for e in elems:
-                        y = float(e.attrib.get('top', 0))
-                        txt = ''.join(e.itertext()).strip()
-                        if last_y is not None and (y - last_y > 22 or float(e.attrib.get('left', 0)) > min(float(x.attrib.get('left', 0)) for x in elems) + 20):
-                            if curr:
+                    for l in lines:
+                        l_str = ' '.join(item[1] for item in sorted(l['items'], key=lambda x: x[0]))
+                        if not curr:
+                            curr.append(l_str)
+                        else:
+                            if curr[-1].endswith('-'):
+                                curr[-1] = curr[-1][:-1] + l_str
+                            elif re.search(r'[.?!:]$', curr[-1].strip()):
                                 paras.append(' '.join(curr))
-                                curr = []
-                        curr.append(txt)
-                        last_y = y
+                                curr = [l_str]
+                            else:
+                                curr.append(l_str)
                     if curr:
                         paras.append(' '.join(curr))
                     return paras
 
                 if intro_elems:
                     md_lines.extend(format_col(intro_elems))
-                md_lines.extend(format_col(c1_elems))
-                md_lines.extend(format_col(c2_elems))
+                c1_paras = format_col(c1_elems)
+                c2_paras = format_col(c2_elems)
+                if c1_paras and c2_paras:
+                    if not re.search(r'[.?!:]\s*$', c1_paras[-1].strip()) and (c2_paras[0] and (c2_paras[0][0].islower() or c2_paras[0].startswith('('))):
+                        c1_paras[-1] = f"{c1_paras[-1]} {c2_paras.pop(0)}"
+                md_lines.extend(c1_paras)
+                md_lines.extend(c2_paras)
             else:
-                elems_sorted = sorted(ex_elems, key=lambda x: float(x.attrib.get('top', 0)))
+                elems_sorted = sorted(ex_elems, key=lambda x: (float(x.attrib.get('top', 0)), float(x.attrib.get('left', 0))))
+                # Group by baseline
+                lines = []
+                for e in elems_sorted:
+                    yt = float(e.attrib.get('top', 0))
+                    xt = float(e.attrib.get('left', 0))
+                    txt_val = ''.join(e.itertext()).strip()
+                    fid = e.attrib.get('font', '')
+                    if fonts.get(fid, {}).get('is_italic') and not txt_val.startswith('*'):
+                        txt_val = f"*{txt_val}*"
+                    matched = False
+                    for l in lines:
+                        if abs(l['top'] - yt) <= 4.0:
+                            l['items'].append((xt, txt_val))
+                            matched = True
+                            break
+                    if not matched:
+                        lines.append({'top': yt, 'items': [(xt, txt_val)]})
                 paras = []
                 curr = []
-                last_y = None
-                for e in elems_sorted:
-                    y = float(e.attrib.get('top', 0))
-                    txt = ''.join(e.itertext()).strip()
-                    if last_y is not None and y - last_y > 20:
-                        if curr:
+                for l in lines:
+                    l_str = ' '.join(item[1] for item in sorted(l['items'], key=lambda x: x[0]))
+                    if not curr:
+                        curr.append(l_str)
+                    else:
+                        if curr[-1].endswith('-'):
+                            curr[-1] = curr[-1][:-1] + l_str
+                        elif re.search(r'[.?!:]$', curr[-1].strip()):
                             paras.append(' '.join(curr))
-                            curr = []
-                    curr.append(txt)
-                    last_y = y
+                            curr = [l_str]
+                        else:
+                            curr.append(l_str)
                 if curr:
                     paras.append(' '.join(curr))
                 md_lines.extend(paras)

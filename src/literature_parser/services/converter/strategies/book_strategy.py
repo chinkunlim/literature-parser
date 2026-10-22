@@ -123,6 +123,8 @@ class BookPostProcessor(PostProcessorStrategy):
                     for g in ch_gloss:
                         t = g.get('term', '')
                         d = (g.get('definition') or '').strip()
+                        if d:
+                            d = re.sub(r'(?<!\\)\$(?=\d+(?:,\d{3})*(?:\.\d+)?\b)', r'\$', d)
                         pg = g.get('page')
                         pg_str = f" *(p. {pg})*" if pg else ""
                         slug = re.sub(r'[^a-zA-Z0-9]+', '-', t.lower()).strip('-')
@@ -151,5 +153,9 @@ class BookPostProcessor(PostProcessorStrategy):
                         md = md + "\n\n" + fc_text
             except Exception as e:
                 logger.debug("Flashcards extraction skipped: %s", e)
+
+        # 6. Normalize currency formatting and HTML entity artifacts
+        md = re.sub(r'&#36;(\d+)', r'\\$\1', md)
+        md = re.sub(r'(?<!\\)\$(?=\d+(?:,\d{3})*(?:\.\d+)?\b)', r'\$', md)
 
         return md.strip()

@@ -123,7 +123,22 @@ class MarginParser:
         if not margin_elems:
             return [], set()
 
-        margin_elems.sort(key=lambda x: x['top'])
+        # Cluster margin elements by baseline and sort left-to-right within each line
+        lines = []
+        for item in sorted(margin_elems, key=lambda x: x['top']):
+            matched = False
+            for l in lines:
+                if abs(l[0]['top'] - item['top']) <= 3.5:
+                    l.append(item)
+                    matched = True
+                    break
+            if not matched:
+                lines.append([item])
+
+        sorted_margin_elems = []
+        for l in lines:
+            sorted_margin_elems.extend(sorted(l, key=lambda x: x['left']))
+        margin_elems = sorted_margin_elems
 
         glossaries = []
         consumed = set()

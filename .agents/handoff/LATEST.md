@@ -5,10 +5,10 @@
 <!-- LIVE_STATE_START -->
 ## 📊 即時狀態看板 (Live Snapshot)
 
-- **最後更新時間**: `2026-10-22 13:04 UTC`
+- **最後更新時間**: `2026-10-22 13:44 UTC`
 - **最近操作 Agent**: `antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `26023a2 fix(parser): eliminate runaway blockquotes, isolate H4 headings, suppress duplicate table images, and enhance Ollama multi-window verification (TASK-030) [agent:antigravity]`
+- **最新 Git Commit**: `ec6f5cf fix(parser): resolve cross-column baseline fragment split, multiline LO continuations, duplicate chapter slug heading, and study questions callout list spacing (TASK-031) [agent:antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
@@ -17,6 +17,18 @@
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-10-22 13:44 UTC] 完成任務 `TASK-032` — Fix Ch15 layout collapse: Exhibit internal tables, Table 15.4 detection, formula shattering, and vector divider noise (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: (無)
+
+### [2026-10-22 13:07 UTC] 認領任務 `TASK-032` (Fix Ch15 layout collapse: Exhibit internal tables, Table 15.4 detection, formula shattering, and vector divider noise) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`
+
+### [2026-10-22 13:07 UTC] 建立任務 `TASK-032`: Fix Ch15 layout collapse: Exhibit internal tables, Table 15.4 detection, formula shattering, and vector divider noise (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
 
 ### [2026-10-22 13:04 UTC] 完成任務 `TASK-031` — Fix baseline clustering cross-split, LO multiline continuation, duplicate chapter slug header, and study questions callout list spacing (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
@@ -83,17 +95,5 @@
 - **完成摘要**: Verified split and profile pipeline on Group Counseling scanned book without outline (22 sections, 500 pages in 0.34s)
 
 ### [2026-10-22 09:22 UTC] 認領任務 `TASK-026` (Test split and profile pipeline for Group Counseling scanned book) (by `antigravity`)
-- **相關範圍**: `-`
-- **接棒自**: `antigravity`
-
-### [2026-10-22 09:22 UTC] 建立任務 `TASK-026`: Test split and profile pipeline for Group Counseling scanned book (by `antigravity`)
-- **狀態**: `in_progress`
-- **相關範圍**: `-`
-
-### [2026-10-22 09:19 UTC] 完成任務 `TASK-025` — Test split and profile pipeline for Research Methods 13th ed (by `antigravity`)
-- **狀態**: ✅ 已完成 (`done`)
-- **完成摘要**: Completed split and profile pipeline integration test with uv and PyMuPDF optimizations
-
-### [2026-10-22 09:05 UTC] 認領任務 `TASK-025` (Test split and profile pipeline for Research Methods 13th ed) (by `antigravity`)
 - **相關範圍**: `-`
 - **接棒自**: `antigravity`

@@ -139,7 +139,7 @@ class FigureFormatter:
 
         # 2. Extract Tables
         p_tbl = re.compile(
-            r'((?:(?:\*\*Table\s+\d+[\.\d]*\*\*|<p\s+class="table-caption">Table\s+\d+[\.\d]*</p>|Table\s+\d+[\.\d]*[^\n]*)\s*\n+)?<table\b[^>]*>.*?</table>(?:\s*\n+<p\s+class="table-notes">.*?</p>)?)',
+            r'((?:(?:\*\*Table\s+\d+[\.\d]*\*\*.*?\n+|<p\s+class="table-caption">Table\s+\d+[\.\d]*</p>|###\s*Table\s+\d+[\.\d]*.*?\n+|Table\s+\d+[\.\d]*[^\n]*\n+)?\s*<table\b[^>]*>.*?</table>(?:\s*\n+<p\s+class="table-notes">.*?</p>)?))',
             re.DOTALL | re.IGNORECASE
         )
         tbl_matches = list(p_tbl.finditer(text))

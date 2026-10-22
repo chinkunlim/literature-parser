@@ -9,8 +9,11 @@ Humanities, Social Sciences, and Medicine:
 - Multi-Column Layout Segmentation
 """
 
+from __future__ import annotations
+
 import logging
 import re
+from typing import Any, Dict, List, Optional, Tuple
 
 from literature_parser.services.style_loader import load_style
 
@@ -653,5 +656,101 @@ def generate_markdown_toc(markdown_text: str, toc_mode: str = "open") -> str:
 
     details_tag = "<details open>" if toc_mode == "open" else "<details>"
     return f"{details_tag}\n<summary>📑 <b>Table of Contents</b></summary>\n\n" + '\n'.join(toc_entries) + "\n\n</details>\n"
+
+
+class TwoColumnFlowResolver:
+    """Resolves two-column reading flow by isolating gutters, footers, and full-width spanning elements."""
+
+    @classmethod
+    def order_blocks_by_flow(
+        cls,
+        blocks: list[dict[str, Any]],
+        page_width: float = 612.0,
+        gutter_center_ratio: float = 0.5,
+        spanning_threshold_ratio: float = 0.65,
+    ) -> list[dict[str, Any]]:
+        """Orders page text blocks strictly according to two-column reading flow.
+
+        Ensures full-width spanning elements (figures, tables, headers) remain at their
+        vertical locations, while text between spanning elements is strictly read down the
+        entire left column before beginning the right column.
+
+        Args:
+            blocks: List of block dictionaries, each containing 'bbox' and 'text'.
+            page_width: Page width in points (default: 612.0).
+            gutter_center_ratio: Relative X position of the column gutter center (default: 0.5).
+            spanning_threshold_ratio: Minimum width ratio to consider an element spanning (default: 0.65).
+
+        Returns:
+            List of blocks sorted in correct human reading order.
+        """
+        if not blocks:
+            return []
+
+        mid_x = page_width * gutter_center_ratio
+
+        def _is_spanning(b: dict[str, Any]) -> bool:
+            x0, y0, x1, y1 = b.get("bbox", (0, 0, 0, 0))
+            width = x1 - x0
+            if width >= page_width * spanning_threshold_ratio:
+                return True
+            if x0 < mid_x * 0.75 and x1 > mid_x * 1.25:
+                return True
+            return False
+
+        spanning_blocks: list[dict[str, Any]] = []
+        columnar_blocks: list[dict[str, Any]] = []
+
+        for b in blocks:
+            if _is_spanning(b):
+                spanning_blocks.append(b)
+            else:
+                columnar_blocks.append(b)
+
+        spanning_blocks.sort(key=lambda b: b.get("bbox", (0, 0, 0, 0))[1])
+
+        # If no spanning blocks, simple two-column split
+        if not spanning_blocks:
+            left_col = [b for b in columnar_blocks if (b.get("bbox", (0, 0, 0, 0))[0] + b.get("bbox", (0, 0, 0, 0))[2]) / 2.0 < mid_x]
+            right_col = [b for b in columnar_blocks if (b.get("bbox", (0, 0, 0, 0))[0] + b.get("bbox", (0, 0, 0, 0))[2]) / 2.0 >= mid_x]
+            left_col.sort(key=lambda b: b.get("bbox", (0, 0, 0, 0))[1])
+            right_col.sort(key=lambda b: b.get("bbox", (0, 0, 0, 0))[1])
+            return left_col + right_col
+
+        # Partition columnar blocks into vertical bands separated by spanning blocks
+        result: list[dict[str, Any]] = []
+        unallocated_columnar = list(columnar_blocks)
+
+        for span in spanning_blocks:
+            span_y0 = span.get("bbox", (0, 0, 0, 0))[1]
+
+            # All columnar blocks located above this spanning element
+            band_blocks = [
+                b for b in unallocated_columnar
+                if (b.get("bbox", (0, 0, 0, 0))[1] + b.get("bbox", (0, 0, 0, 0))[3]) / 2.0 < span_y0
+            ]
+            for b in band_blocks:
+                unallocated_columnar.remove(b)
+
+            left_col = [b for b in band_blocks if (b.get("bbox", (0, 0, 0, 0))[0] + b.get("bbox", (0, 0, 0, 0))[2]) / 2.0 < mid_x]
+            right_col = [b for b in band_blocks if (b.get("bbox", (0, 0, 0, 0))[0] + b.get("bbox", (0, 0, 0, 0))[2]) / 2.0 >= mid_x]
+            left_col.sort(key=lambda b: b.get("bbox", (0, 0, 0, 0))[1])
+            right_col.sort(key=lambda b: b.get("bbox", (0, 0, 0, 0))[1])
+
+            result.extend(left_col)
+            result.extend(right_col)
+            result.append(span)
+
+        # Remaining columnar blocks below the last spanning element
+        if unallocated_columnar:
+            left_col = [b for b in unallocated_columnar if (b.get("bbox", (0, 0, 0, 0))[0] + b.get("bbox", (0, 0, 0, 0))[2]) / 2.0 < mid_x]
+            right_col = [b for b in unallocated_columnar if (b.get("bbox", (0, 0, 0, 0))[0] + b.get("bbox", (0, 0, 0, 0))[2]) / 2.0 >= mid_x]
+            left_col.sort(key=lambda b: b.get("bbox", (0, 0, 0, 0))[1])
+            right_col.sort(key=lambda b: b.get("bbox", (0, 0, 0, 0))[1])
+            result.extend(left_col)
+            result.extend(right_col)
+
+        return result
+
 
 

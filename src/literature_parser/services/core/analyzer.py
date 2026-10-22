@@ -24,6 +24,17 @@ class PDFAnalyzer:
 
     @staticmethod
     def get_page_count(pdf_path: str) -> int:
+        # 1. Native PyMuPDF fast path
+        try:
+            import pymupdf  # type: ignore
+            doc = pymupdf.open(pdf_path)
+            cnt = len(doc)
+            doc.close()
+            return cnt
+        except Exception:
+            pass
+
+        # 2. External CLI pdfinfo fallback
         try:
             out = subprocess.check_output(
                 ['pdfinfo', pdf_path],
@@ -38,6 +49,7 @@ class PDFAnalyzer:
         except Exception as e:
             logger.debug("pdfinfo not available for %s: %s, falling back to pure Python", pdf_path, e)
 
+        # 3. Pure Python fallback
         try:
             with open(pdf_path, 'rb') as f:
                 content = f.read()
@@ -50,6 +62,24 @@ class PDFAnalyzer:
 
     @staticmethod
     def get_outline_xml(pdf_path: str):
+        # 1. Native PyMuPDF fast path
+        try:
+            import html
+            import pymupdf  # type: ignore
+            doc = pymupdf.open(pdf_path)
+            toc = doc.get_toc()
+            doc.close()
+            if toc:
+                xml_parts = ['<outline>']
+                for lvl, title, page in toc:
+                    esc_title = html.escape(str(title))
+                    xml_parts.append(f'<item page="{page}">{esc_title}</item>')
+                xml_parts.append('</outline>')
+                return ET.fromstring(''.join(xml_parts))
+        except Exception as e:
+            logger.debug("PyMuPDF get_outline_xml failed for %s: %s, falling back to pdftohtml", pdf_path, e)
+
+        # 2. External CLI pdftohtml fallback
         try:
             proc = subprocess.run(
                 ['pdftohtml', '-stdout', '-xml', '-nodrm', '-i', '-f', '1', '-l', '1', pdf_path],

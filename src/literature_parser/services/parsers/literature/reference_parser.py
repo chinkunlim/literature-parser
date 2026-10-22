@@ -142,6 +142,43 @@ class ReferenceParser:
         return "\n".join(f"- {entry}" for entry in entries)
 
     @classmethod
+    def stitch_broken_identifiers(cls, text: str) -> str:
+        """Stitches broken DOIs and URLs that were split across line wraps or hyphens.
+
+        Args:
+            text: Input text containing citations and references.
+
+        Returns:
+            Text with continuous, unbroken DOIs and URLs.
+        """
+        if not text:
+            return ""
+
+        # 1. Stitch broken DOIs: https://doi.org/... or doi:10.... followed by newline and continuation
+        # Matches https://doi.org/10.xxxx/\ncont or doi.org/10.xxxx/\ncont
+        doi_broken_pattern = re.compile(
+            r'((?:https?://(?:dx\.)?doi\.org/|doi:\s*)10\.\d{4,9}/[^\s\n]*?)\s*\n\s*([a-zA-Z0-9_\-\./]+)',
+            re.IGNORECASE
+        )
+        text = doi_broken_pattern.sub(r'\1\2', text)
+
+        # 2. Stitch URLs broken by trailing hyphen at line end: http://...-\ncont -> retain hyphen
+        url_hyphen_pattern = re.compile(
+            r'(https?://[^\s\n]+?)-\s*\n\s*([a-zA-Z0-9_\-\./]+)',
+            re.IGNORECASE
+        )
+        text = url_hyphen_pattern.sub(r'\1-\2', text)
+
+        # 3. Stitch URLs broken by newline after slash or punctuation: http://.../\ncont
+        url_slash_pattern = re.compile(
+            r'(https?://[^\s\n]+[/_])\s*\n\s*([a-zA-Z0-9_\-\./]+)',
+            re.IGNORECASE
+        )
+        text = url_slash_pattern.sub(r'\1\2', text)
+
+        return text
+
+    @classmethod
     def clean_document_references(cls, full_md: str) -> str:
         """
         Universal entry point: parses and reconstructs the references section of a document.

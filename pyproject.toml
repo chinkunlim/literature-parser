@@ -4,7 +4,9 @@ version = "0.1.0"
 description = "Enterprise-grade PDF & EPUB Structured Markdown & Image Extractor with Neural Layout OCR, LaTeX Math & Local Ollama AI Verification"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = []  # add with `uv add <package>` (never `pip install`)
+dependencies = [
+    "pymupdf>=2.0",
+]  # add with `uv add <package>` (never `pip install`)
 
 [project.scripts]
 literature-parser = "literature_parser.entrypoints.cli:main"

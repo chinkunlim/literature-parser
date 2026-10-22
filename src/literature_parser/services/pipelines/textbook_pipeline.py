@@ -83,27 +83,59 @@ class TextbookPipeline(BasePipeline):
 
         # Delegate execution of chapters to orchestrator's convert_single_chapter
         all_passed = True
-        for idx, sec in enumerate(sections, 1):
-            name = sec['name']
-            start = sec['start']
-            end = sec['end']
 
-            if resume and ckpt.is_chapter_verified(name):
-                print(f"  [{idx:02d}/{len(sections):02d}] Skipping already verified chapter: {name}")
-                continue
+        if parallel and len(sections) > 1 and not target_chapter:
+            logger.info("Executing %d chapters in parallel with M5 Worker Pool", len(sections))
+            from literature_parser.services.concurrency import M5WorkerPool
+            pool = M5WorkerPool()
 
-            print(f"\n  [{idx:02d}/{len(sections):02d}] Processing Chapter: {name} (pp. {start}-{end})...")
-            ch_dir = chapters_root / name
-            ch_dir.mkdir(parents=True, exist_ok=True)
-            ch_pdf = ch_dir / f"{name}.pdf"
+            def _process_sec(idx_sec):
+                idx, sec = idx_sec
+                name = sec['name']
+                start = sec['start']
+                end = sec['end']
+                if resume and ckpt.is_chapter_verified(name):
+                    print(f"  [{idx:02d}/{len(sections):02d}] Skipping already verified chapter: {name}")
+                    return True
 
-            if not ch_pdf.exists() or ch_pdf.stat().st_size == 0:
-                PDFSplitter.split_chapter(str(p_path), start, end, str(ch_pdf))
-            ckpt.update_status(name, split_pdf=True, status='SPLIT')
+                print(f"\n  [{idx:02d}/{len(sections):02d}] Processing Chapter: {name} (pp. {start}-{end})...")
+                ch_dir = chapters_root / name
+                ch_dir.mkdir(parents=True, exist_ok=True)
+                ch_pdf = ch_dir / f"{name}.pdf"
 
-            res = self.orchestrator.convert_single_chapter(str(ch_pdf), book_source_pdf=str(p_path))
-            if not res.get('passed', False):
-                all_passed = False
+                if not ch_pdf.exists() or ch_pdf.stat().st_size == 0:
+                    PDFSplitter.split_chapter(str(p_path), start, end, str(ch_pdf))
+                ckpt.update_status(name, split_pdf=True, status='SPLIT')
+
+                res = self.orchestrator.convert_single_chapter(str(ch_pdf), book_source_pdf=str(p_path))
+                return bool(res.get('passed', False))
+
+            sec_items = list(enumerate(sections, 1))
+            results = pool.execute_parallel(sec_items, _process_sec, desc="Textbook Chapters Parallel")
+            all_passed = all(results)
+        else:
+            # Delegate execution of chapters to orchestrator's convert_single_chapter sequentially
+            for idx, sec in enumerate(sections, 1):
+                name = sec['name']
+                start = sec['start']
+                end = sec['end']
+
+                if resume and ckpt.is_chapter_verified(name):
+                    print(f"  [{idx:02d}/{len(sections):02d}] Skipping already verified chapter: {name}")
+                    continue
+
+                print(f"\n  [{idx:02d}/{len(sections):02d}] Processing Chapter: {name} (pp. {start}-{end})...")
+                ch_dir = chapters_root / name
+                ch_dir.mkdir(parents=True, exist_ok=True)
+                ch_pdf = ch_dir / f"{name}.pdf"
+
+                if not ch_pdf.exists() or ch_pdf.stat().st_size == 0:
+                    PDFSplitter.split_chapter(str(p_path), start, end, str(ch_pdf))
+                ckpt.update_status(name, split_pdf=True, status='SPLIT')
+
+                res = self.orchestrator.convert_single_chapter(str(ch_pdf), book_source_pdf=str(p_path))
+                if not res.get('passed', False):
+                    all_passed = False
 
 
         if all_passed and not target_chapter:

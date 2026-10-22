@@ -82,6 +82,37 @@ class ElementCropper:
             logger.warning("Invalid crop dimensions for page %d: %s", page_num, padded_bbox)
             return False
 
+        output_image_path.parent.mkdir(parents=True, exist_ok=True)
+        target_png = output_image_path if output_image_path.suffix == '.png' else output_image_path.with_suffix('.png')
+
+        # 1. Native PyMuPDF fast path (in-memory C render, zero subprocesses)
+        try:
+            import pymupdf  # type: ignore
+            doc = pymupdf.open(str(pdf_path))
+            idx = page_num - 1
+            if 0 <= idx < len(doc):
+                page = doc[idx]
+                clip_rect = pymupdf.Rect(
+                    max(0.0, min(float(p_left), page.rect.width)),
+                    max(0.0, min(float(p_top), page.rect.height)),
+                    max(0.0, min(float(p_right), page.rect.width)),
+                    max(0.0, min(float(p_bottom), page.rect.height)),
+                )
+                if clip_rect.width > 1.0 and clip_rect.height > 1.0:
+                    zoom = dpi / 72.0
+                    mat = pymupdf.Matrix(zoom, zoom)
+                    pix = page.get_pixmap(matrix=mat, clip=clip_rect, alpha=False)
+                    pix.save(str(target_png))
+                    doc.close()
+                    if target_png.exists() and target_png.stat().st_size > 0:
+                        return True
+            doc.close()
+        except ImportError:
+            pass
+        except Exception as e:
+            logger.debug("PyMuPDF crop failed for page %d of %s, falling back to pdftoppm: %s", page_num, pdf_path, e)
+
+        # 2. External CLI pdftoppm fallback path
         # Scale from PDF points (1/72 in) to pixel coordinates at requested DPI
         scale = (dpi / 72.0)
         crop_x = int(p_left * scale)
@@ -89,7 +120,6 @@ class ElementCropper:
         crop_w = max(1, int((p_right - p_left) * scale))
         crop_h = max(1, int((p_bottom - p_top) * scale))
 
-        output_image_path.parent.mkdir(parents=True, exist_ok=True)
         # pdftoppm automatically appends .png when -singlefile is used if suffix not given,
         # but with -singlefile, prefix becomes prefix.png
         out_prefix = str(output_image_path.with_suffix(''))

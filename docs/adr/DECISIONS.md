@@ -9,3 +9,4 @@
 | [ADR-003](003-external-tools-in-adapters-layer.md) | 呼叫外部工具與模型之核心協調器收斂至 Adapters 分層 | Accepted | 2026-10-21 |
 | [ADR-004](004-hierarchical-profile-and-front-matter-isolation.md) | 四階層 Profile 繼承體系、前言獨立切分與純淨 Chapter 1 | Accepted | 2026-10-22 |
 | [ADR-005](005-modular-conversion-and-three-tier-verification.md) | 獨立 MarkdownConversionService、CSS 雙出與三層漸進檢驗體系 | Accepted | 2026-10-22 |
+| [ADR-006](006-dual-engine-and-pipelined-concurrency.md) | PyMuPDF 原生雙引擎解析與 CPU-GPU 流水線重疊並行架構 | Accepted | 2026-10-22 |

@@ -184,8 +184,84 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
         return False
 
     @staticmethod
+    def extract_page_text(pdf_path: str, page_num: int) -> str:
+        """Extracts plain text from a single page using PyMuPDF or pdftotext fallback."""
+        try:
+            import pymupdf  # type: ignore
+            doc = pymupdf.open(pdf_path)
+            idx = page_num - 1
+            if 0 <= idx < len(doc):
+                txt = doc[idx].get_text()
+                doc.close()
+                return txt
+            doc.close()
+        except ImportError:
+            pass
+        except Exception:
+            pass
+
+        try:
+            return subprocess.check_output(
+                ['pdftotext', '-f', str(page_num), '-l', str(page_num), pdf_path, '-'],
+                stderr=subprocess.DEVNULL, timeout=15
+            ).decode('utf-8', errors='ignore')
+        except Exception:
+            return ""
+
+    @staticmethod
     def extract_page_xml(pdf_path: str, page_num: int) -> str:
-        """Extracts pdftohtml XML representation of a single page."""
+        """Extracts pdftohtml-compatible XML representation of a single page using PyMuPDF or pdftohtml."""
+        # 1. High-speed native PyMuPDF path
+        try:
+            import html
+            import pymupdf  # type: ignore
+            doc = pymupdf.open(pdf_path)
+            idx = page_num - 1
+            if 0 <= idx < len(doc):
+                p = doc[idx]
+                d = p.get_text('dict')
+                pw, ph = p.rect.width, p.rect.height
+                xml_lines = [f'<page number="{page_num}" position="absolute" top="0" left="0" height="{ph}" width="{pw}">']
+                font_map: dict[tuple[str, float], str] = {}
+
+                for b in d.get('blocks', []):
+                    if b.get('type') == 0:
+                        for line in b.get('lines', []):
+                            for span in line.get('spans', []):
+                                font_name = span.get('font', 'default')
+                                font_size = round(float(span.get('size', 12.0)), 1)
+                                font_key = (font_name, font_size)
+                                if font_key not in font_map:
+                                    f_id = str(len(font_map))
+                                    font_map[font_key] = f_id
+                                    xml_lines.append(f'<fontspec id="{f_id}" size="{font_size}" family="{font_name}" color="#000000"/>')
+
+                                f_id = font_map[font_key]
+                                x0, y0, x1, y1 = span.get('bbox', (0, 0, 0, 0))
+                                left = round(x0, 2)
+                                top = round(y0, 2)
+                                width = round(max(0.0, x1 - x0), 2)
+                                height = round(max(0.0, y1 - y0), 2)
+                                s_text = span.get('text', '')
+                                if s_text:
+                                    txt = html.escape(s_text)
+                                    flags = span.get('flags', 0)
+                                    if (flags & 16) or 'bold' in font_name.lower():
+                                        txt = f'<b>{txt}</b>'
+                                    if (flags & 2) or 'italic' in font_name.lower():
+                                        txt = f'<i>{txt}</i>'
+                                    xml_lines.append(f'<text top="{top}" left="{left}" width="{width}" height="{height}" font="{f_id}">{txt}</text>')
+
+                xml_lines.append('</page>')
+                doc.close()
+                return '\n'.join(xml_lines)
+            doc.close()
+        except ImportError:
+            pass
+        except Exception as e:
+            logger.debug("PyMuPDF XML synthesis failed on page %d: %s, falling back to pdftohtml", page_num, e)
+
+        # 2. External CLI pdftohtml fallback
         try:
             proc = subprocess.run(
                 ['pdftohtml', '-xml', '-nodrm', '-i', '-stdout', '-f', str(page_num), '-l', str(page_num), pdf_path],

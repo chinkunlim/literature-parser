@@ -79,7 +79,8 @@ literature-parser/
 │   │   ├── TASK-015-markdown.json
 │   │   ├── TASK-016-markdownconversionservice-css.json
 │   │   ├── TASK-017-markdown.json
-│   │   └── TASK-018-markdown.json
+│   │   ├── TASK-018-markdown.json
+│   │   └── TASK-019-optimize-literature-and-textbook.json
 │   ├── framework.lock                      # [框架鎖定檔] 框架版本與檔案雜湊，供 update_framework 判斷是否被修改
 │   └── project.toml                        # [專案設定・各專案自訂] 語言、分層、品質門檻、指令、業務規則
 ├── .cursor/                                # [Agent 轉接] Cursor 規則 (自動產生)
@@ -103,6 +104,7 @@ literature-parser/
 │   │   ├── 003-external-tools-in-adapters-layer.md
 │   │   ├── 004-hierarchical-profile-and-front-matter-isolation.md
 │   │   ├── 005-modular-conversion-and-three-tier-verification.md
+│   │   ├── 006-dual-engine-and-pipelined-concurrency.md
 │   │   ├── _TEMPLATE.md                    # ADR 範本 (tracker_cli 會套用)
 │   │   └── DECISIONS.md                    # 架構決策總表
 │   ├── architecture/                       # [系統架構與資料模型]
@@ -165,9 +167,10 @@ literature-parser/
 │       │   │   ├── layout/
 │       │   │   │   ├── __init__.py
 │       │   │   │   └── table_llm_fixer.py
-│       │   │   └── literature/
-│       │   │       ├── __init__.py
-│       │   │       └── metadata_extractor.py
+│       │   │   ├── literature/
+│       │   │   │   ├── __init__.py
+│       │   │   │   └── metadata_extractor.py
+│       │   │   └── pdf_engine.py
 │       │   ├── pipelines/
 │       │   │   ├── __init__.py
 │       │   │   └── literature_pipeline.py
@@ -243,7 +246,8 @@ literature-parser/
 │       ├── services/
 │       │   ├── concurrency/
 │       │   │   ├── __init__.py
-│       │   │   └── m5_worker_pool.py
+│       │   │   ├── m5_worker_pool.py
+│       │   │   └── pipelined_processor.py
 │       │   ├── converter/
 │       │   │   ├── strategies/
 │       │   │   │   ├── __init__.py
@@ -365,7 +369,8 @@ literature-parser/
 │   ├── test_v42_epub_exporter.py
 │   ├── test_v43_input_segregation_and_naming.py
 │   ├── test_v44_profile_schema_and_inheritance.py
-│   └── test_v45_front_matter_and_pure_chapter1.py
+│   ├── test_v45_front_matter_and_pure_chapter1.py
+│   └── test_v46_speed_and_quality_optimization.py
 ├── web/
 │   ├── app.js
 │   ├── dashboard.html

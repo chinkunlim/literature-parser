@@ -153,3 +153,11 @@
 ### [2026-10-22 01:59 UTC] 完成任務 `TASK-012` — 輸入目錄結構分流與資料夾連字號命名規範 (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
 - **完成摘要**: 完成輸入目錄分流結構（books/digital-pdf/ 與 scanned-pdf/、literature/）與輸出資料夾連字號命名規範
+
+### [2026-10-22 02:20 UTC] 建立任務 `TASK-013`: 統一 profile.json 規格、出版社階層繼承與強型別 Schema (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
+
+### [2026-10-22 02:20 UTC] 認領任務 `TASK-013` (統一 profile.json 規格、出版社階層繼承與強型別 Schema) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`

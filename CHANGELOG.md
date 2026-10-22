@@ -19,6 +19,7 @@ All notable changes to **literature-parser** are documented here
 - feat(shared-knowledge): add front_matter_taxonomy.json and pedagogical_blocks.json repositories (by `@antigravity`)
 - feat: implement modular MarkdownConversionService, CSS dual output, and figure/table cropping with equal margins (TASK-016) (by `@antigravity`)
 - feat: implement three-tier quality verification system across layout, lexical, and semantic dimensions (TASK-017) (by `@antigravity`)
+- feat: optimize pipeline with native PyMuPDF engine, pipelined concurrency, and math/layout quality enhancements (TASK-019) (by `@antigravity`)
 
 ### Changed
 - docs(migration): mark all migration acceptance criteria as completed (by `@antigravity`)

@@ -165,6 +165,24 @@ class BookProcessorOrchestrator:
 
     @staticmethod
     def is_scanned_pdf(pdf_path: str, sample_count: int = 5) -> bool:
+        """Determines if PDF is a scanned book via PyMuPDF or pdfimages fallback."""
+        try:
+            import pymupdf  # type: ignore
+            doc = pymupdf.open(pdf_path)
+            sample_p = min(sample_count, len(doc))
+            scanned_pages = 0
+            for idx in range(sample_p):
+                page = doc[idx]
+                txt = page.get_text().strip()
+                imgs = page.get_images()
+                # If page has almost no vector text and contains images, likely scanned
+                if len(txt) < 50 and len(imgs) >= 1:
+                    scanned_pages += 1
+            doc.close()
+            return scanned_pages >= (sample_p * 0.5)
+        except Exception:
+            pass
+
         try:
             total_p = BookProcessorOrchestrator.get_pdf_page_count(pdf_path)
             sample_pages = min(sample_count, total_p)

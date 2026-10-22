@@ -80,13 +80,57 @@ class ImageManager:
         target_pages: set = None,
     ) -> list:
         """
-        Extracts embedded images from PDF using pdfimages.
+        Extracts embedded images from PDF using native PyMuPDF with pdfimages fallback.
 
-        - Converts .jp2/.tiff to high-res JPEG using macOS sips.
+        - Converts .jp2/.tiff to high-res JPEG using macOS sips when using CLI.
         - Discards .jb2e font masks.
         - If is_scanned is True, discards full-page background paper sheet scans.
         - Cover art (page 1, sub-index 0) is always kept even in scanned mode.
         """
+        # 1. High-speed native PyMuPDF extraction
+        try:
+            import pymupdf  # type: ignore
+            doc = pymupdf.open(pdf_path)
+            native_images = []
+            for p_idx, page in enumerate(doc):
+                p_num = p_idx + 1
+                if target_pages and p_num not in target_pages:
+                    continue
+                imgs = page.get_images(full=True)
+                for s_idx, img_info in enumerate(imgs):
+                    xref = img_info[0]
+                    try:
+                        extracted = doc.extract_image(xref)
+                        if not extracted:
+                            continue
+                        img_bytes = extracted.get("image", b"")
+                        img_ext = extracted.get("ext", "png").lower()
+                        if len(img_bytes) < MIN_IMAGE_SIZE_BYTES:
+                            continue
+                        if img_ext in ("jb2e", "jbig2"):
+                            continue
+                        if is_scanned and p_num > 1:
+                            w = extracted.get("width", 0)
+                            h = extracted.get("height", 0)
+                            if w >= FULL_PAGE_MIN_PX and h >= FULL_PAGE_MIN_PX:
+                                continue
+                        native_images.append({
+                            'page': p_num,
+                            'sub_idx': s_idx,
+                            'ext': img_ext,
+                            'data': img_bytes,
+                        })
+                    except Exception as exc:
+                        logger.debug("Failed extracting image xref %d on page %d: %s", xref, p_num, exc)
+            doc.close()
+            if native_images:
+                return native_images
+        except ImportError:
+            pass
+        except Exception as e:
+            logger.debug("PyMuPDF image extraction failed for '%s': %s, falling back to pdfimages", pdf_path, e)
+
+        # 2. External CLI pdfimages fallback
         raw_images = []
         with tempfile.TemporaryDirectory() as tmpdir:
             cmd = ["pdfimages", "-all", "-p"]

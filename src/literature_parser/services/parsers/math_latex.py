@@ -449,6 +449,92 @@ class MathLaTeXConverter:
         return text
 
     @classmethod
+    def detect_and_build_fraction(
+        cls,
+        numerator_span: dict[str, Any],
+        division_line: dict[str, Any],
+        denominator_span: dict[str, Any],
+    ) -> str:
+        """Constructs a LaTeX fraction from vertically stacked numerator, division line, and denominator spans.
+
+        Args:
+            numerator_span: Span dict containing 'text' and 'bbox'.
+            division_line: Drawing dict containing line coordinates.
+            denominator_span: Span dict containing 'text' and 'bbox'.
+
+        Returns:
+            Formatted LaTeX fraction string: r"\\frac{num}{den}".
+        """
+        num_text = numerator_span.get("text", "").strip()
+        den_text = denominator_span.get("text", "").strip()
+        if not num_text or not den_text:
+            return ""
+        return rf"\frac{{{num_text}}}{{{den_text}}}"
+
+    @classmethod
+    def normalize_sub_and_superscripts(cls, text: str) -> str:
+        """Normalizes broken sub/superscripts in raw OCR/XML text into standard LaTeX math notation.
+
+        Handles patterns such as 'R 2' -> '$R^2$', 'x 1' -> '$x_1$', and statistical subscripts.
+
+        Args:
+            text: Input text string.
+
+        Returns:
+            Normalized text with formatted math expressions.
+        """
+        if not text:
+            return ""
+
+        # Pattern: R 2 -> $R^2$ (variance explained)
+        text = re.sub(r'\b([Rr])\s*([2²])\b', r'$\1^\2$', text)
+        # Pattern: R^2 or r^2 -> ensure wrapped in math delimiters if not already
+        text = re.sub(r'(?<!\$)\b([Rr])\^2\b(?!\$)', r'$\1^2$', text)
+
+        # Pattern: x 1 -> $x_1$, y 2 -> $y_2$, t 1 -> $t_1$
+        text = re.sub(r'\b([xyzntp])\s+([0-9]+)\b', r'$\1_\2$', text)
+
+        # Pattern: beta 1, beta 2
+        text = re.sub(r'\\beta\s*([0-9]+)', r'\\beta_\1', text)
+
+        return text
+
+    @classmethod
+    def balance_and_sanitize_delimiters(cls, text: str) -> str:
+        """Sanitizes unbalanced math delimiters and escapes currency dollar signs without breaking math.
+
+        Args:
+            text: Input markdown text.
+
+        Returns:
+            Sanitized text with escaped currency dollars and balanced math.
+        """
+        if not text:
+            return ""
+
+        # Protect existing valid math pairs $...$ and $$...$$
+        math_tokens: list[str] = []
+
+        def _stash_math(m: re.Match[str]) -> str:
+            token = f"__MATH_STASH_{len(math_tokens)}__"
+            math_tokens.append(m.group(0))
+            return token
+
+        # Stash display math first
+        text = re.sub(r"\$\$.*?\$\$", _stash_math, text, flags=re.DOTALL)
+        # Stash inline math next: $ followed by non-space, non-digit, content ending in non-space $
+        text = re.sub(r"\$(?!\d)[^\$\n]+?\$(?!\d)", _stash_math, text)
+
+        # In the remaining text, escape any standalone dollar sign (like $500, $10, etc.)
+        text = re.sub(r"(?<!\\)\$", r"\$", text)
+
+        # Restore stashed valid math tokens
+        for idx, token_val in enumerate(math_tokens):
+            text = text.replace(f"__MATH_STASH_{idx}__", token_val)
+
+        return text
+
+    @classmethod
     def process_text(cls, text: str) -> str:
         """Runs the full pipeline for mathematical formula normalization with uniform font sizing.
 
@@ -468,3 +554,8 @@ class MathLaTeXConverter:
         text = cls.format_display_equations(text)
         text = cls.ensure_uniform_fraction_sizing(text)
         return text
+
+
+# Canonical alias for unified parser naming convention
+MathLaTeXParser = MathLaTeXConverter
+

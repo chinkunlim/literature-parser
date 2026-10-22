@@ -1,0 +1,27 @@
+{
+  "id": "TASK-021",
+  "title": "Externalize typography, palette, TOC, layout rules, and quality thresholds into unified config",
+  "status": "in_progress",
+  "agent": "antigravity",
+  "handed_off_from": "",
+  "handed_off_to": "",
+  "paths": [],
+  "done_items": "",
+  "todo_items": "",
+  "blockers": "",
+  "created_at": "2026-10-22 08:31 UTC",
+  "updated_at": "2026-10-22 08:31 UTC",
+  "history": [
+    {
+      "timestamp": "2026-10-22 08:31 UTC",
+      "action": "created_and_claimed",
+      "agent": "antigravity"
+    },
+    {
+      "timestamp": "2026-10-22 08:31 UTC",
+      "action": "claimed",
+      "agent": "antigravity",
+      "previous_agent": "antigravity"
+    }
+  ]
+}

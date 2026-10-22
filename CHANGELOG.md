@@ -21,6 +21,7 @@ All notable changes to **literature-parser** are documented here
 - feat: implement three-tier quality verification system across layout, lexical, and semantic dimensions (TASK-017) (by `@antigravity`)
 - feat: optimize pipeline with native PyMuPDF engine, pipelined concurrency, and math/layout quality enhancements (TASK-019) (by `@antigravity`)
 - feat: implement Marker-style layout framing, paragraph boundary anchoring, and typography colors (TASK-020) (by `@antigravity`)
+- feat: externalize typography, palette, layout rules, and quality thresholds into unified config/theme.json (TASK-021) (by `@antigravity`)
 
 ### Changed
 - docs(migration): mark all migration acceptance criteria as completed (by `@antigravity`)

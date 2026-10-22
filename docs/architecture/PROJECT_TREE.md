@@ -81,7 +81,8 @@ literature-parser/
 │   │   ├── TASK-017-markdown.json
 │   │   ├── TASK-018-markdown.json
 │   │   ├── TASK-019-optimize-literature-and-textbook.json
-│   │   └── TASK-020-implement-marker-style-layout-fr.json
+│   │   ├── TASK-020-implement-marker-style-layout-fr.json
+│   │   └── TASK-021-externalize-typography-palette-t.json
 │   ├── framework.lock                      # [框架鎖定檔] 框架版本與檔案雜湊，供 update_framework 判斷是否被修改
 │   └── project.toml                        # [專案設定・各專案自訂] 語言、分層、品質門檻、指令、業務規則
 ├── .cursor/                                # [Agent 轉接] Cursor 規則 (自動產生)
@@ -98,6 +99,9 @@ literature-parser/
 ├── .windsurf/                              # [Agent 轉接] Windsurf 規則 (自動產生)
 │   └── rules/
 │       └── 00-project-constitution.md
+├── config/
+│   ├── theme.json
+│   └── theme.schema.json
 ├── docs/                                   # 【工程知識庫】架構、規格、決策、已知問題、維運、規範
 │   ├── adr/                                # [架構決策庫] 一決定一檔案
 │   │   ├── 001-ollama-hardware-guard-and-auto-verify.md
@@ -127,6 +131,7 @@ literature-parser/
 │   │   ├── 004-fix-playbook-and-synthesizer.md
 │   │   ├── 005-unified-profile-and-front-matter.md
 │   │   ├── 006-conversion-service-and-three-tier-verification.md
+│   │   ├── 007-theme-and-pipeline-configuration.md
 │   │   ├── _TEMPLATE.md                    # 規格範本
 │   │   └── SPECS.md                        # 規格清單
 │   ├── standards/                          # [工程規範] 依任務載入 (Progressive Disclosure)
@@ -143,7 +148,8 @@ literature-parser/
 ├── evals/
 │   └── EVALS.md
 ├── scripts/                                # 【專案腳本】agentctl.py 是框架的單一入口；其餘放本專案自己的腳本
-│   └── agentctl.py                         # [單一入口] 轉呼叫 .agents/bin/agentctl.py
+│   ├── agentctl.py                         # [單一入口] 轉呼叫 .agents/bin/agentctl.py
+│   └── apply_theme.py
 ├── src/                                    # 【核心原始碼層】分層與依賴方向定義於 .agents/project.toml
 │   └── literature_parser/
 │       ├── adapters/
@@ -373,7 +379,8 @@ literature-parser/
 │   ├── test_v44_profile_schema_and_inheritance.py
 │   ├── test_v45_front_matter_and_pure_chapter1.py
 │   ├── test_v46_speed_and_quality_optimization.py
-│   └── test_v47_marker_layout_framing_and_anchoring.py
+│   ├── test_v47_marker_layout_framing_and_anchoring.py
+│   └── test_v48_theme_configuration_and_override.py
 ├── web/
 │   ├── app.js
 │   ├── dashboard.html

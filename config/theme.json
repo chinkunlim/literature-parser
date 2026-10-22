@@ -1,0 +1,88 @@
+{
+  "$schema": "./theme.schema.json",
+  "typography": {
+    "google_fonts_url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap",
+    "font_sans": "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang TC', 'Noto Sans TC', sans-serif",
+    "font_serif": "'Merriweather', 'Source Serif Pro', 'Georgia', 'Noto Serif TC', serif",
+    "font_mono": "'JetBrains Mono', 'Fira Code', 'Menlo', monospace",
+    "body_font_family": "var(--font-sans)",
+    "headings_font_family": "var(--font-serif)",
+    "code_font_family": "var(--font-mono)",
+    "base_font_size": "16px",
+    "line_height": "1.75",
+    "css_justify_body": true,
+    "css_heading_align": "left",
+    "css_blockquote_align": "left",
+    "embed_css": true,
+    "output_standalone_css": true
+  },
+  "palette": {
+    "color_text_main": "#1f2937",
+    "color_text_muted": "#4b5563",
+    "primary_theme_color": "#842959",
+    "category_bg_color": "#f7f0f4",
+    "card_bg_color": "#faf7f9",
+    "color_blue": "#2563eb",
+    "color_emerald": "#059669",
+    "color_amber": "#d97706",
+    "color_rose": "#e11d48",
+    "highlight_bg": "#fef08a",
+    "term_tag_bg": "#fef3c7",
+    "term_tag_color": "#92400e",
+    "table_border_color": "#d1d5db",
+    "table_header_bg": "#f3f4f6"
+  },
+  "layout": {
+    "generate_toc": true,
+    "toc_mode": "close",
+    "toc_title": "📑 Table of Contents",
+    "toc_depth": 3,
+    "toc_min_headings": 2,
+    "prepend_chapter_title_if_missing": true,
+    "front_matter_independent_split": true
+  },
+  "artifacts": {
+    "figure_render_mode": "html_figure",
+    "figure_max_width_px": 650,
+    "figure_uniform_pad_pt": 13.0,
+    "figure_caption_italic": true,
+    "orphan_flush_position": "section_end",
+    "sub_figure_normalization": true,
+    "extract_dpi": 300,
+    "coverage_threshold": 0.80
+  },
+  "tables": {
+    "table_html_semantic": true,
+    "table_heading_style": "bold-label",
+    "table_numbered_style": "ordered-list",
+    "table_bullet_style": "bullet-list"
+  },
+  "learning_blocks": {
+    "lo_emoji": "🎯",
+    "lo_use_bullets": false,
+    "lo_show_label": false,
+    "lo_number_format": "**{num}**",
+    "lo_colon_after_number": false,
+    "gloss_placement": "chapter_end",
+    "gloss_format": "anki",
+    "gloss_section_title": "## 🗂️ Chapter Key Terms & Active Recall",
+    "gloss_emoji": "📖",
+    "gloss_separator": "—",
+    "gloss_backlink": true,
+    "study_question_callout": "[!TIP]",
+    "dialogue_html_semantic": true,
+    "critical_incident_html_semantic": true
+  },
+  "navigation": {
+    "generate_obsidian_index": true,
+    "inject_chapter_navigation": true,
+    "navigation_style": "arrows"
+  },
+  "quality": {
+    "verification_pass_threshold": 85.0,
+    "enable_safe_autofix": true,
+    "enable_ollama_deep_dive": true,
+    "max_heading_chars_for_h3": 120,
+    "min_dictionary_coverage": 0.90
+  }
+}

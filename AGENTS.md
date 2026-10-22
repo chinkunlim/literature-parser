@@ -108,6 +108,7 @@ literature-parser/
 │   ├── lib/                                # 框架共用 Python 函式庫 (設定載入、目錄樹註解)
 │   ├── skills/                             # 按任務觸發的模組化 Agent Skills (SKILL.md + scripts/*.py)
 │   └── tasks/                              # [任務卡] 建立、接手、交接、完成 (agentctl task)
+├── config/
 ├── docs/                                   # 【工程知識庫】架構、規格、決策、已知問題、維運、規範
 │   ├── adr/                                # [架構決策庫] 一決定一檔案
 │   ├── architecture/                       # [系統架構與資料模型]

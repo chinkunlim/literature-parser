@@ -625,11 +625,25 @@ def fonts_is_bold(t) -> bool:
         return False
 
 
-def generate_markdown_toc(markdown_text: str, toc_mode: str = "close") -> str:
+def generate_markdown_toc(
+    markdown_text: str,
+    toc_mode: str = "close",
+    toc_depth: int = 3,
+    toc_title: str = "📑 Table of Contents",
+    toc_min_headings: int = 2,
+) -> str:
     """
-    Extracts h2 (##) and h3 (###) headers from chapter markdown and
-    generates a clean, clickable Table of Contents block.
-    Supports toc_mode: 'close' (<details>, default hidden), 'open' (<details open>), or 'none' ("").
+    Extracts headers from chapter markdown and generates a clean, clickable Table of Contents block.
+
+    Args:
+        markdown_text: Raw or processed chapter markdown.
+        toc_mode: 'close' (<details>), 'open' (<details open>), or 'none' ("").
+        toc_depth: Maximum heading level to include (2 for H2 only, 3 for H2+H3, 4 for H2..H4).
+        toc_title: Title string shown in <summary>.
+        toc_min_headings: Minimum number of headings required to generate TOC.
+
+    Returns:
+        Formatted Table of Contents markdown block or empty string.
     """
     if toc_mode == "none":
         return ""
@@ -639,23 +653,30 @@ def generate_markdown_toc(markdown_text: str, toc_mode: str = "close") -> str:
     for line in lines:
         m_h2 = re.match(r'^##\s+(?!🗂️|<!--)(.+)$', line)
         m_h3 = re.match(r'^###\s+(?!<!--)(.+)$', line)
-        if m_h2:
+        m_h4 = re.match(r'^####\s+(?!<!--)(.+)$', line)
+
+        if m_h2 and toc_depth >= 2:
             title = m_h2.group(1).strip()
-            # Clean title of markdown asterisks/formatting
             clean_title = re.sub(r'[*_`]', '', title)
             slug = re.sub(r'[^a-zA-Z0-9\u4e00-\u9fa5]+', '-', clean_title.lower()).strip('-')
             toc_entries.append(f"- [{clean_title}](#{slug})")
-        elif m_h3:
+        elif m_h3 and toc_depth >= 3:
             title = m_h3.group(1).strip()
             clean_title = re.sub(r'[*_`]', '', title)
             slug = re.sub(r'[^a-zA-Z0-9\u4e00-\u9fa5]+', '-', clean_title.lower()).strip('-')
             toc_entries.append(f"  - [{clean_title}](#{slug})")
+        elif m_h4 and toc_depth >= 4:
+            title = m_h4.group(1).strip()
+            clean_title = re.sub(r'[*_`]', '', title)
+            slug = re.sub(r'[^a-zA-Z0-9\u4e00-\u9fa5]+', '-', clean_title.lower()).strip('-')
+            toc_entries.append(f"    - [{clean_title}](#{slug})")
 
-    if len(toc_entries) < 2:
+    if len(toc_entries) < toc_min_headings:
         return ""
 
     details_tag = "<details open>" if toc_mode == "open" else "<details>"
-    return f"{details_tag}\n<summary>📑 <b>Table of Contents</b></summary>\n\n" + '\n'.join(toc_entries) + "\n\n</details>\n"
+    clean_summary_title = toc_title.lstrip("📑").strip()
+    return f"{details_tag}\n<summary>📑 <b>{clean_summary_title}</b></summary>\n\n" + '\n'.join(toc_entries) + "\n\n</details>\n"
 
 
 class TwoColumnFlowResolver:

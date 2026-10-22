@@ -1,0 +1,125 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "LiteratureParserThemeConfig",
+  "description": "Unified 8-division configuration schema for literature-parser typography, styling, and pipeline rules.",
+  "type": "object",
+  "properties": {
+    "typography": {
+      "type": "object",
+      "description": "Font families, Google Fonts imports, sizes, and line-heights",
+      "properties": {
+        "google_fonts_url": { "type": "string" },
+        "font_sans": { "type": "string" },
+        "font_serif": { "type": "string" },
+        "font_mono": { "type": "string" },
+        "body_font_family": { "type": "string" },
+        "headings_font_family": { "type": "string" },
+        "code_font_family": { "type": "string" },
+        "base_font_size": { "type": "string" },
+        "line_height": { "type": "string" },
+        "css_justify_body": { "type": "boolean" },
+        "css_heading_align": { "type": "string", "enum": ["left", "center", "right"] },
+        "css_blockquote_align": { "type": "string", "enum": ["left", "center", "right"] },
+        "embed_css": { "type": "boolean" },
+        "output_standalone_css": { "type": "boolean" }
+      }
+    },
+    "palette": {
+      "type": "object",
+      "description": "60-30-10 color tokens and semantic highlights",
+      "properties": {
+        "color_text_main": { "type": "string" },
+        "color_text_muted": { "type": "string" },
+        "primary_theme_color": { "type": "string" },
+        "category_bg_color": { "type": "string" },
+        "card_bg_color": { "type": "string" },
+        "color_blue": { "type": "string" },
+        "color_emerald": { "type": "string" },
+        "color_amber": { "type": "string" },
+        "color_rose": { "type": "string" },
+        "highlight_bg": { "type": "string" },
+        "term_tag_bg": { "type": "string" },
+        "term_tag_color": { "type": "string" },
+        "table_border_color": { "type": "string" },
+        "table_header_bg": { "type": "string" }
+      }
+    },
+    "layout": {
+      "type": "object",
+      "description": "Document TOC, chapter structure, and heading options",
+      "properties": {
+        "generate_toc": { "type": "boolean" },
+        "toc_mode": { "type": "string", "enum": ["close", "open", "none"] },
+        "toc_title": { "type": "string" },
+        "toc_depth": { "type": "integer", "minimum": 1, "maximum": 6 },
+        "toc_min_headings": { "type": "integer", "minimum": 1 },
+        "prepend_chapter_title_if_missing": { "type": "boolean" },
+        "front_matter_independent_split": { "type": "boolean" }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "description": "Figure/image cropping, dimensions, and anchoring rules",
+      "properties": {
+        "figure_render_mode": { "type": "string", "enum": ["html_figure", "markdown_image"] },
+        "figure_max_width_px": { "type": "integer" },
+        "figure_uniform_pad_pt": { "type": "number" },
+        "figure_caption_italic": { "type": "boolean" },
+        "orphan_flush_position": { "type": "string", "enum": ["section_end", "chapter_end"] },
+        "sub_figure_normalization": { "type": "boolean" },
+        "extract_dpi": { "type": "integer" },
+        "coverage_threshold": { "type": "number" }
+      }
+    },
+    "tables": {
+      "type": "object",
+      "description": "Table detection and formatting options",
+      "properties": {
+        "table_html_semantic": { "type": "boolean" },
+        "table_heading_style": { "type": "string", "enum": ["bold-label", "gfm-table", "html-table"] },
+        "table_numbered_style": { "type": "string", "enum": ["ordered-list", "gfm-table"] },
+        "table_bullet_style": { "type": "string", "enum": ["bullet-list", "gfm-table"] }
+      }
+    },
+    "learning_blocks": {
+      "type": "object",
+      "description": "Pedagogical callouts, learning objectives, and glossary formatting",
+      "properties": {
+        "lo_emoji": { "type": "string" },
+        "lo_use_bullets": { "type": "boolean" },
+        "lo_show_label": { "type": "boolean" },
+        "lo_number_format": { "type": "string" },
+        "lo_colon_after_number": { "type": "boolean" },
+        "gloss_placement": { "type": "string", "enum": ["chapter_end", "inline"] },
+        "gloss_format": { "type": "string", "enum": ["anki", "bullet"] },
+        "gloss_section_title": { "type": "string" },
+        "gloss_emoji": { "type": "string" },
+        "gloss_separator": { "type": "string" },
+        "gloss_backlink": { "type": "boolean" },
+        "study_question_callout": { "type": "string" },
+        "dialogue_html_semantic": { "type": "boolean" },
+        "critical_incident_html_semantic": { "type": "boolean" }
+      }
+    },
+    "navigation": {
+      "type": "object",
+      "description": "Obsidian wikilinks, indexes, and inter-chapter footers",
+      "properties": {
+        "generate_obsidian_index": { "type": "boolean" },
+        "inject_chapter_navigation": { "type": "boolean" },
+        "navigation_style": { "type": "string", "enum": ["arrows", "buttons", "minimal"] }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "description": "Verification engine thresholds and heuristics",
+      "properties": {
+        "verification_pass_threshold": { "type": "number", "minimum": 0.0, "maximum": 100.0 },
+        "enable_safe_autofix": { "type": "boolean" },
+        "enable_ollama_deep_dive": { "type": "boolean" },
+        "max_heading_chars_for_h3": { "type": "integer" },
+        "min_dictionary_coverage": { "type": "number", "minimum": 0.0, "maximum": 1.0 }
+      }
+    }
+  }
+}

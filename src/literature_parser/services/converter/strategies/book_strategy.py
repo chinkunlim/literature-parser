@@ -73,7 +73,7 @@ class BookPostProcessor(PostProcessorStrategy):
         # 3. Insert clickable Table of Contents (TOC)
         if options.generate_toc and not is_front_matter and options.toc_mode != "none":
             toc_block = generate_markdown_toc(md, toc_mode=options.toc_mode)
-            if toc_block and "<summary>📑 <b>Table of Contents</b>" not in md:
+            if toc_block and "<summary>" not in md:
                 m_h1 = re.search(r'^(#[^\n]+\n+)', md)
                 if m_h1:
                     md = md[:m_h1.end()] + toc_block + "\n\n" + md[m_h1.end():]

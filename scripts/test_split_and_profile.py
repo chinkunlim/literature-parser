@@ -437,10 +437,11 @@ def phase_validate_schema(output_dir: Path) -> None:
         raise InvariantViolationError("Some chapters in status file were not marked as 'SPLIT'")
 
 
-def run_test(enable_ollama: bool = False) -> int:
+def run_test(target_pdf: Optional[str | Path] = None, enable_ollama: bool = False) -> int:
     """Executes the complete integration test sequence from start to profile.
 
     Args:
+        target_pdf: Optional path to target PDF; defaults to Research Methods if omitted.
         enable_ollama: Whether to enable Ollama AI profiler stage.
 
     Returns:
@@ -449,17 +450,38 @@ def run_test(enable_ollama: bool = False) -> int:
     setup_test_logging()
     app_cfg = load_config()
 
-    input_pdf = (
-        app_cfg.input_dir
-        / "books"
-        / "digital-pdf"
-        / "Research Methods, Design, and Analysis 13th ed.pdf"
-    )
+    if target_pdf:
+        candidate = Path(target_pdf).expanduser()
+        if candidate.is_absolute() and candidate.exists():
+            input_pdf = candidate
+        elif (app_cfg.data_dir / candidate).exists():
+            input_pdf = (app_cfg.data_dir / candidate).resolve()
+        elif (app_cfg.input_dir / "books" / candidate).exists():
+            input_pdf = (app_cfg.input_dir / "books" / candidate).resolve()
+        elif (app_cfg.input_dir / candidate).exists():
+            input_pdf = (app_cfg.input_dir / candidate).resolve()
+        elif (PROJECT_ROOT / candidate).exists():
+            input_pdf = (PROJECT_ROOT / candidate).resolve()
+        else:
+            # Search by filename in data_dir
+            found = list(app_cfg.data_dir.rglob(candidate.name))
+            if found:
+                input_pdf = found[0]
+            else:
+                input_pdf = candidate.resolve()
+    else:
+        input_pdf = (
+            app_cfg.input_dir
+            / "books"
+            / "digital-pdf"
+            / "Research Methods, Design, and Analysis 13th ed.pdf"
+        )
+
     book_folder_name = sanitize_filename(input_pdf.stem)
     output_dir = app_cfg.output_dir / "books" / book_folder_name
 
     print("\n" + "=" * 70)
-    print("🚀 RESEARCH METHODS 13TH ED: PIPELINE INTEGRATION TEST")
+    print(f"🚀 PIPELINE INTEGRATION TEST: {input_pdf.name}")
     print("=" * 70)
     print(f"• Source PDF: {input_pdf}")
     print(f"• Target Output Directory: {output_dir}")
@@ -519,7 +541,12 @@ def main(argv: Optional[List[str]] = None) -> int:
         argv = sys.argv[1:]
 
     parser = argparse.ArgumentParser(
-        description="Integration test runner: Research Methods split and profile pipeline."
+        description="Integration test runner: Book split and profile pipeline."
+    )
+    parser.add_argument(
+        "--file", "-f",
+        default=None,
+        help="Target book PDF file path (default: Research Methods 13th ed).",
     )
     parser.add_argument(
         "--ollama",
@@ -536,12 +563,16 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     if args.restore:
         app_cfg = load_config()
-        book_folder_name = sanitize_filename("Research Methods, Design, and Analysis 13th ed")
+        if args.file:
+            stem = Path(args.file).stem
+        else:
+            stem = "Research Methods, Design, and Analysis 13th ed"
+        book_folder_name = sanitize_filename(stem)
         output_dir = app_cfg.output_dir / "books" / book_folder_name
         success = restore_latest_backup(output_dir)
         return 0 if success else 1
 
-    return run_test(enable_ollama=args.ollama)
+    return run_test(target_pdf=args.file, enable_ollama=args.ollama)
 
 
 if __name__ == "__main__":

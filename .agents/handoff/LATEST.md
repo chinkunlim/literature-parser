@@ -5,10 +5,10 @@
 <!-- LIVE_STATE_START -->
 ## 📊 即時狀態看板 (Live Snapshot)
 
-- **最後更新時間**: `2026-10-22 09:19 UTC`
+- **最後更新時間**: `2026-10-22 09:24 UTC`
 - **最近操作 Agent**: `antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `70de7b0 chore(tooling): update tooling tooling and config (ADR-008, ISSUE-005, TASK-018, TASK-019, TASK-024) [agent:antigravity]`
+- **最新 Git Commit**: `8526dbe test: add split and profile integration test with PyMuPDF in-memory optimization for Research Methods 13th ed (TASK-025) [agent:antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
@@ -17,6 +17,18 @@
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-10-22 09:24 UTC] 完成任務 `TASK-026` — Test split and profile pipeline for Group Counseling scanned book (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: Verified split and profile pipeline on Group Counseling scanned book without outline (22 sections, 500 pages in 0.34s)
+
+### [2026-10-22 09:22 UTC] 認領任務 `TASK-026` (Test split and profile pipeline for Group Counseling scanned book) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`
+
+### [2026-10-22 09:22 UTC] 建立任務 `TASK-026`: Test split and profile pipeline for Group Counseling scanned book (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
 
 ### [2026-10-22 09:19 UTC] 完成任務 `TASK-025` — Test split and profile pipeline for Research Methods 13th ed (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
@@ -91,17 +103,5 @@
 - **接棒自**: `antigravity`
 
 ### [2026-10-22 08:31 UTC] 建立任務 `TASK-021`: Externalize typography, palette, TOC, layout rules, and quality thresholds into unified config (by `antigravity`)
-- **狀態**: `in_progress`
-- **相關範圍**: `-`
-
-### [2026-10-22 08:18 UTC] 完成任務 `TASK-020` — Implement Marker-style layout framing, paragraph boundary anchoring, and typography colors (by `antigravity`)
-- **狀態**: ✅ 已完成 (`done`)
-- **完成摘要**: Implemented Marker-style layout framing, paragraph boundary anchoring, complex table HTML adaptation, collapsed TOC by default, and Google Fonts with 60-30-10 palette.
-
-### [2026-10-22 08:09 UTC] 認領任務 `TASK-020` (Implement Marker-style layout framing, paragraph boundary anchoring, and typography colors) (by `antigravity`)
-- **相關範圍**: `-`
-- **接棒自**: `antigravity`
-
-### [2026-10-22 08:09 UTC] 建立任務 `TASK-020`: Implement Marker-style layout framing, paragraph boundary anchoring, and typography colors (by `antigravity`)
 - **狀態**: `in_progress`
 - **相關範圍**: `-`

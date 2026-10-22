@@ -253,3 +253,15 @@
 ### [2026-10-22 07:45 UTC] 完成任務 `TASK-019` — Optimize literature and textbook pipeline for speed and quality (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
 - **完成摘要**: (無)
+
+### [2026-10-22 08:09 UTC] 建立任務 `TASK-020`: Implement Marker-style layout framing, paragraph boundary anchoring, and typography colors (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
+
+### [2026-10-22 08:09 UTC] 認領任務 `TASK-020` (Implement Marker-style layout framing, paragraph boundary anchoring, and typography colors) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`
+
+### [2026-10-22 08:18 UTC] 完成任務 `TASK-020` — Implement Marker-style layout framing, paragraph boundary anchoring, and typography colors (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: Implemented Marker-style layout framing, paragraph boundary anchoring, complex table HTML adaptation, collapsed TOC by default, and Google Fonts with 60-30-10 palette.

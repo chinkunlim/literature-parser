@@ -158,14 +158,25 @@ class PDFAnalyzer:
 
         scan_limit = min(end_page, 35)
         for p in range(1, scan_limit + 1):
+            text = ""
             try:
-                proc = subprocess.run(
-                    ['pdftotext', '-f', str(p), '-l', str(p), pdf_path, '-'],
-                    capture_output=True, timeout=10, check=False
-                )
-                text = proc.stdout.decode('utf-8', errors='ignore').strip()
+                import pymupdf  # type: ignore
+                doc = pymupdf.open(pdf_path)
+                if p - 1 < len(doc):
+                    text = doc[p - 1].get_text().strip()
+                doc.close()
             except Exception:
-                text = ""
+                pass
+
+            if not text:
+                try:
+                    proc = subprocess.run(
+                        ['pdftotext', '-f', str(p), '-l', str(p), pdf_path, '-'],
+                        capture_output=True, timeout=10, check=False
+                    )
+                    text = proc.stdout.decode('utf-8', errors='ignore').strip()
+                except Exception:
+                    text = ""
 
             if not text:
                 continue
@@ -207,14 +218,25 @@ class PDFAnalyzer:
             real_ch1_page = None
             scan_max = min(40, total_pages)
             for p in range(first_target_page, scan_max + 1):
+                text = ""
                 try:
-                    proc = subprocess.run(
-                        ['pdftotext', '-f', str(p), '-l', str(p), pdf_path, '-'],
-                        capture_output=True, timeout=10, check=False
-                    )
-                    text = proc.stdout.decode('utf-8', errors='ignore').strip()
+                    import pymupdf  # type: ignore
+                    doc = pymupdf.open(pdf_path)
+                    if p - 1 < len(doc):
+                        text = doc[p - 1].get_text().strip()
+                    doc.close()
                 except Exception:
-                    text = ""
+                    pass
+
+                if not text:
+                    try:
+                        proc = subprocess.run(
+                            ['pdftotext', '-f', str(p), '-l', str(p), pdf_path, '-'],
+                            capture_output=True, timeout=10, check=False
+                        )
+                        text = proc.stdout.decode('utf-8', errors='ignore').strip()
+                    except Exception:
+                        text = ""
                 if re.search(r'(?i)\bChapter\s+(?:1|One)\b', text[:300]):
                     real_ch1_page = p
                     break
@@ -339,22 +361,31 @@ class PDFAnalyzer:
     @classmethod
     def get_sections_from_text(cls, pdf_path: str, total_pages: int):
         """Fallback for PDFs without outline: scans page headers."""
+        pages = []
         try:
-            raw_text = subprocess.check_output(
-                ['pdftotext', pdf_path, '-'],
-                stderr=subprocess.DEVNULL,
-                timeout=45
-            ).decode('utf-8', errors='ignore')
-        except subprocess.TimeoutExpired:
-            logger.warning("pdftotext timed out (45s) for %s", pdf_path)
-            return None
-        except Exception as e:
-            logger.debug("pdftotext extraction error for %s: %s", pdf_path, e)
-            return None
+            import pymupdf  # type: ignore
+            doc = pymupdf.open(pdf_path)
+            pages = [page.get_text() for page in doc]
+            doc.close()
+        except Exception:
+            pass
 
-        pages = raw_text.split('\x0c')
-        if len(pages) > 1 and pages[-1] == '':
-            pages = pages[:-1]
+        if not pages:
+            try:
+                raw_text = subprocess.check_output(
+                    ['pdftotext', pdf_path, '-'],
+                    stderr=subprocess.DEVNULL,
+                    timeout=45
+                ).decode('utf-8', errors='ignore')
+                pages = raw_text.split('\x0c')
+                if len(pages) > 1 and pages[-1] == '':
+                    pages = pages[:-1]
+            except subprocess.TimeoutExpired:
+                logger.warning("pdftotext timed out (45s) for %s", pdf_path)
+                return None
+            except Exception as e:
+                logger.debug("pdftotext extraction error for %s: %s", pdf_path, e)
+                return None
 
         # Check document classification first: journals stay single section
         from literature_parser.services.fingerprinting.document_classifier import DocumentClassifier

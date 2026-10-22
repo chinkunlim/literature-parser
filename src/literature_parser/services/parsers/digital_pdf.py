@@ -172,7 +172,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
     def _is_running_footer(top: float, ph: float, txt: str, footer_ratio: float = 0.08, is_journal: bool = False) -> bool:
         """Determines if a text element is part of the bottom running footer."""
         clean = txt.strip()
-        cut_ratio = max(footer_ratio, 0.12)
+        cut_ratio = max(footer_ratio, 0.08)
         # Also drop standalone page numbers or article IDs in bottom 10%
         # Also drop running copyright notices or standalone page numbers in bottom 12%
         if top > ph * (1.0 - cut_ratio):
@@ -181,7 +181,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 return True
             # Running copyright, publisher, and permission notices
             if re.search(
-                r'\b(?:copyright|all rights reserved|cengage learning|may not be|wcn\s*02|duplicated|reproduced with permission)\b',
+                r'\b(?:copyright|all rights reserved|cengage learning|may not be|wcn|duplicated|reproduced with permission|copied, scanned)\b',
                 clean,
                 re.IGNORECASE,
             ):

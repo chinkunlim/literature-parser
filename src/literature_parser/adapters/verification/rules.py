@@ -275,6 +275,9 @@ def check_numeric_coordinate_noise(content: str) -> dict:
         cleaned,
         flags=re.IGNORECASE,
     )
+    # Strip standard survey rating scales (e.g. 0 1 2 3 4 or 1 2 3 4 5 Likert options)
+    cleaned = re.sub(r'\b0[ \t]+1[ \t]+2[ \t]+3[ \t]+4\b', '', cleaned)
+    cleaned = re.sub(r'\b1[ \t]+2[ \t]+3[ \t]+4[ \t]+5\b', '', cleaned)
 
     noise_matches = []
 

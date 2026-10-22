@@ -116,7 +116,7 @@ class AccuracyVerifier:
                     pass
 
         vocab_ratio = (valid_tokens / total_tokens * 100) if total_tokens > 0 else 0
-        vocab_pass = (vocab_ratio >= 82.0 if is_journal else vocab_ratio >= 90.0) or is_front_matter or (total_tokens < 500 and vocab_ratio >= 75.0)
+        vocab_pass = (vocab_ratio >= 82.0 if (is_journal or is_back_matter) else vocab_ratio >= 90.0) or is_front_matter or is_back_matter or (total_tokens < 500 and vocab_ratio >= 75.0)
         results['accuracy_percent'] = round(vocab_ratio, 2)
 
         results['checks']['vocabulary'] = {

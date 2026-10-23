@@ -530,12 +530,18 @@ class BookProcessorOrchestrator:
             PDFSplitter.split_chapter(pdf_path, s_start, s_end, s_ch_pdf)
 
         try:
-            CoordinateCalibrator.calibrate_and_save_profile(book_dir, Path(s_ch_pdf))
-            scanner = SpecialBlockScanner(book_dir)
-            scanner.scan_and_update([Path(s_ch_pdf)], max_pages_per_chapter=8)
-            logger.info("Pre-flight calibrated book profile from pure body sample %s", s_name)
+            from literature_parser.adapters.profiler.stage0_profiler import Stage0Profiler
+            Stage0Profiler.probe_and_persist_profile(Path(s_ch_pdf), book_dir, use_ollama=self.use_ollama)
+            logger.info("Pre-flight calibrated book profile via Stage0Profiler from pure body sample %s", s_name)
         except Exception as e:
-            logger.debug("Automatic pre-flight book calibration skipped: %s", e)
+            logger.debug("Stage0Profiler pre-flight failed (%s); falling back to legacy.", e)
+            try:
+                CoordinateCalibrator.calibrate_and_save_profile(book_dir, Path(s_ch_pdf))
+                scanner = SpecialBlockScanner(book_dir)
+                scanner.scan_and_update([Path(s_ch_pdf)], max_pages_per_chapter=8)
+                logger.info("Pre-flight calibrated book profile from pure body sample %s", s_name)
+            except Exception as e2:
+                logger.debug("Automatic pre-flight book calibration skipped: %s", e2)
 
     # =========================================================================
     # STAGE 3 & ALL: Full Book / Smart Resume Engine

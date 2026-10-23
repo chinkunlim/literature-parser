@@ -457,3 +457,15 @@
 ### [2026-10-22 14:33 UTC] 認領任務 `TASK-035` (Batch run all input books with output backup and no-modify failover) (by `antigravity`)
 - **相關範圍**: `-`
 - **接棒自**: `antigravity`
+
+### [2026-10-22 14:48 UTC] 完成任務 `TASK-035` — Batch run all input books with output backup and no-modify failover (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: (無)
+
+### [2026-10-22 15:05 UTC] 建立任務 `TASK-036`: Unify PDF engine to PyMuPDF and resolve batch audit interruptions (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
+
+### [2026-10-22 15:05 UTC] 認領任務 `TASK-036` (Unify PDF engine to PyMuPDF and resolve batch audit interruptions) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`

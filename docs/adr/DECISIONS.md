@@ -12,3 +12,4 @@
 | [ADR-006](006-dual-engine-and-pipelined-concurrency.md) | PyMuPDF 原生雙引擎解析與 CPU-GPU 流水線重疊並行架構 | Accepted | 2026-10-22 |
 | [ADR-007](007-unified-theme-and-pipeline-configuration.md) | 全專案樣式排版與管線規則集中外部化 (Unified Theme and Pipeline Configuration) | Accepted | 2026-10-22 |
 | [ADR-008](008-convention-input-routing-and-naming-hygiene.md) | 輸入目錄約定分流路由與產出目錄連字號命名衛生規範 | Accepted | 2026-10-22 |
+| [ADR-009](009-geometric-bounds-and-non-backtracking-regex.md) | 版面元件解析之嚴格幾何邊界收斂與線性時間跨頁流向縫合 | Accepted | 2026-10-23 |

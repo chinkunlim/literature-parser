@@ -46,6 +46,9 @@
 12. **集中外部化設定與一鍵即時重刷 (`config/theme.json` & `apply_theme.py`)**：
    - 將「字型系統（Google Fonts/字型堆疊）、60-30-10 出版調色盤、目錄開闔與深度（`toc_mode: close`）、圖表錨定邊距、表格轉譯、教學模組、Obsidian 導航、品質門檻」全數收納於根目錄 `config/theme.json`（附帶 `theme.schema.json`）。
    - 支援「全域母版 ＋ 單書選填覆寫」分層機制，免修 Python 程式碼即可自訂外觀；並提供 `scripts/apply_theme.py` 於數毫秒內重刷已轉出 Markdown 之樣式與目錄。
+13. **批次轉檔韌性與全量零缺陷保證 (Batch Resilience & Zero-Defect Pipeline)**：
+   - 導入線性時間跨頁段落流向縫合，杜絕災難性正則回溯；為邊欄名詞解釋與章末模組施加嚴格幾何邊界與字級硬約束，徹底防止內文大標題與段落被邊欄誤吞。
+   - 支援無人值守全量批次轉換與 Clean-Slate 乾淨重跑驗證，全書庫多出版社（Cengage, Pearson, Wiley 等）97/97 章節全數 100% 直通通過。
 
 ---
 

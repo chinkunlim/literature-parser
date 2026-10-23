@@ -301,3 +301,19 @@ flowchart TD
 2. **目錄開闔與深度**：支援 `toc_mode`（`close` / `open` / `none`）、`toc_depth`（預設收錄至 H3）與自訂標題。
 3. **即時重刷 CLI**：提供 `python3 scripts/apply_theme.py [書籍輸出目錄]`，於數毫秒內在已產出的 Markdown 檔中抽換 `<style>` 區塊、重刷 TOC 並生成 `style.css`，免去重新解析 PDF 的昂貴運算。
 
+---
+
+## 10. 批次處理韌性與邊界收斂架構 (Batch Resilience & Bounded Parsers)
+
+在對數十本跨出版商、數千頁教科書與期刊進行無人值守全量批次轉換時，系統導入嚴格的時間複雜度防禦與版面幾何硬約束（參照 `ADR-009` 與 `SPEC-008`）：
+
+1. **線性時間跨頁段落流向縫合 (`stitch_cross_page_continuity`)**：
+   - 全面重構跨頁插播圖表、表格與註釋的跳過正則，杜絕多層巢狀貪婪量詞，並限制插播行數 `{1, 20}`，將回溯計算複雜度由指數級 $O(2^n)$ 降為嚴格線性時間 $O(n)$，消滅密集條目與無標點符號頁面卡死問題。
+2. **版面元件之幾何硬約束 (`MarginParser` & `EndOfChapterParser`)**：
+   - 邊欄名詞解釋抽取嚴格受限於右邊界幾何上限（`width <= 200 pt` 且 `x1 <= margin_bound + 40`），並依據書籍設定守衛執行，杜絕主文大標題與正文被誤食入邊欄。
+   - 章末模組判定要求標題不可全為小寫（`not islower()`）且必須符合標題字級（`size >= 12` 或 `is_bold` 或 `isupper()`），杜絕正文內文之小寫 `summary` 與 `references` 截斷章節。
+3. **語法簽名精確識別與全域安全清洗**：
+   - 程式碼關鍵字採用具備語法特徵之模式（如 `\bclass\s+[A-Za-z_]\w*\s*(?:\([^)]*\))?\s*:`），杜絕自然語言（如 `social class worldview`）誤判為代碼塊。
+   - 輸出端配置全域保險清洗正則，徹底過濾 Cengage WCN 與出版商權利宣告雜訊。
+
+

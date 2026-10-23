@@ -6,6 +6,12 @@ All notable changes to **literature-parser** are documented here
 ## [Unreleased]
 
 ### Added
+- docs(adr): record ADR-009 on boundary-constrained layout parsers and non-backtracking continuity stitching (TASK-040) (by `@antigravity`)
+- docs(specs): add SPEC-008 on batch resilience, zero-defect audit, and clean-slate rerun criteria (TASK-040) (by `@antigravity`)
+- docs(known-issues): record ISSUE-006 on catastrophic regex backtracking during cross-page paragraph stitching (TASK-039, TASK-040) (by `@antigravity`)
+- docs(known-issues): record ISSUE-007 on EndOfChapter false-positive match on lowercase headings and WCN leakage (TASK-039, TASK-040) (by `@antigravity`)
+- docs(known-issues): record ISSUE-008 on programming keyword collision causing false-positive Python code blocks (TASK-039, TASK-040) (by `@antigravity`)
+- docs(known-issues): record ISSUE-009 on margin glossary parser swallowing main headings without geometric bounds (TASK-039, TASK-040) (by `@antigravity`)
 - docs(adr): record ADR-008 on convention-based input routing and hyphen-delimited naming hygiene (TASK-023) (by `@antigravity`)
 - docs(known-issues): record ISSUE-005 on global state path substring matching causing doc_type misattribution (TASK-023) (by `@antigravity`)
 - docs(adr): record ADR-007 on unified theme and pipeline configuration (TASK-021) (by `@antigravity`)
@@ -60,6 +66,7 @@ All notable changes to **literature-parser** are documented here
 - docs: synchronize all project markdown documentation for conversion and verification systems (TASK-018) (by `@antigravity`)
 - docs: update and synchronize all project markdown documentation, ADR-007, and architecture (TASK-022) (by `@antigravity`)
 - docs: synchronize all project markdown documentation for input/output convention routing, ADR-008, and ISSUE-005 (by `@antigravity`)
+- docs(all): update ADR-009, SPEC-008, ISSUE-006~009, README, ARCHITECTURE, and tree sync (TASK-040) (by `@antigravity`)
 
 ### Testing
 - test(workflows): verify all CLI workflows, fix pathing and pure-python fallbacks (by `@antigravity`)

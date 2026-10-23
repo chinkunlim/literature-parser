@@ -11,3 +11,4 @@
 | [SPEC-005](005-unified-profile-and-front-matter.md) | 統一 Profile 規格、共享知識庫與前言分類規格 | Implemented | `domain.profiler.profile_schema` |
 | [SPEC-006](006-conversion-service-and-three-tier-verification.md) | 獨立 Markdown 轉換服務與三層漸進檢驗體系規格 | Implemented | `services.converter.*`, `services.verification.*` |
 | [SPEC-007](007-theme-and-pipeline-configuration.md) | 樣式、排版與管線規則外部化規格 | Implemented | `config/theme.json`, `services.style_loader`, `scripts/apply_theme.py` |
+| [SPEC-008](008-batch-resilience-and-zero-defect-pipeline.md) | 批次轉檔韌性與全量零缺陷驗證規格 | Implemented | `adapters.core.orchestrator`, `services.utils.text_utils`, `services.parsers.layout.*` |

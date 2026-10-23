@@ -52,6 +52,7 @@ All notable changes to **literature-parser** are documented here
 - fix(verifier): exempt back-matter heading density, skip blockquotes in sentence checks, and fix running footer dead code (TASK-039) (by `@antigravity`)
 - fix(verifier): exempt back matter vocabulary threshold and strip Likert scale numbers (TASK-039) (by `@antigravity`)
 - fix(eoc,margin,rules): resolve EOC false positives, code-block keywords, KaTeX dollars, and margin glossary bounds (TASK-039) (by `@antigravity`)
+- fix(continuity): resolve catastrophic regex backtracking in intervening pattern (TASK-039) (by `@antigravity`)
 
 ### Documentation
 - docs: update and synchronize all project markdown documentation (by `@antigravity`)

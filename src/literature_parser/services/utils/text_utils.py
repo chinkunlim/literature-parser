@@ -371,8 +371,8 @@ def stitch_cross_page_continuity(text: str) -> str:
 
     text = re.sub(
         r'(?m)^(?P<p1>(?!(?:[#>`|!]|[-*+][ \t]+))[^\n]+[^.\?!:;\n#`>|\-])\n{2,}'
-        r'(?P<intervening>(?:(?:\*\*|#|>|\[\^|[-*•]|<table|\|)[^\n]*\n|[ \t]*\n)+)'
-        r'\s*(?P<page><!--\s*Page\s+\d+\s*-->)\s*\n+(?P<p2>[a-z](?:[^\n]|\n(?!\n))*)',
+        r'(?P<intervening>(?:[ \t]*(?:(?:\*\*|#|>|\[\^|[-*•]|<table|\|)[^\n]*|[ \t]*)\n){1,20})'
+        r'\s*(?P<page><!--\s*Page\s+\d+\s*-->)\s*\n+(?P<p2>[a-z][^\n]*)',
         _join_sentence_with_intervening,
         text,
     )

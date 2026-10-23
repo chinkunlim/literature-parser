@@ -103,7 +103,8 @@ literature-parser/
 │   │   ├── TASK-039-run-full-batch-conversion-for-al.json
 │   │   ├── TASK-040-markdown.json
 │   │   ├── TASK-041-stage-0.json
-│   │   └── TASK-042-research-methods.json
+│   │   ├── TASK-042-research-methods.json
+│   │   └── TASK-043-research-methods-27.json
 │   ├── framework.lock                      # [框架鎖定檔] 框架版本與檔案雜湊，供 update_framework 判斷是否被修改
 │   └── project.toml                        # [專案設定・各專案自訂] 語言、分層、品質門檻、指令、業務規則
 ├── .cursor/                                # [Agent 轉接] Cursor 規則 (自動產生)

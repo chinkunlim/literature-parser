@@ -105,6 +105,33 @@ class AppConfig:
         return self.data_dir / "needs_review"
 
     @property
+    def processed_dir(self) -> Path:
+        """Base folder for processed archives.
+
+        Returns:
+            `<data_dir>/input/processed`.
+        """
+        return self.input_dir / "processed"
+
+    @property
+    def processed_books_dir(self) -> Path:
+        """Folder for fully processed and verified books.
+
+        Returns:
+            `<data_dir>/input/processed/processed-books`.
+        """
+        return self.input_dir / "processed" / "processed-books"
+
+    @property
+    def processed_literature_dir(self) -> Path:
+        """Folder for fully processed and verified literature.
+
+        Returns:
+            `<data_dir>/input/processed/processed-literature`.
+        """
+        return self.input_dir / "processed" / "processed-literature"
+
+    @property
     def state_dir(self) -> Path:
         """Folder for progress / resume state.
 

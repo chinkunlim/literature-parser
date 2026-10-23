@@ -86,27 +86,42 @@ class BookProcessorOrchestrator:
 
         signal.signal(signal.SIGINT, handle_sigint)
 
-    def archive_source_file(self, source_path: str):
-        """Moves fully completed and verified book file to processed/ directory."""
+    def archive_source_file(self, source_path: str, doc_type: str = "book"):
+        """Moves fully completed and verified document file to appropriate processed directory.
+
+        Books are moved to `input/processed/processed-books/`.
+        Literature is moved to `input/processed/processed-literature/`.
+
+        Args:
+            source_path: Path to the original document file.
+            doc_type: Document archetype ('book' or 'literature').
+
+        Returns:
+            None.
+        """
         p = Path(source_path)
-        dest_dir = Path(self.processed_dir)
+        from literature_parser.config.settings import load_config as _load_cfg
+        app_cfg = _load_cfg()
+
+        is_lit = (doc_type in ("literature", "journal")) or ("literature" in str(p).lower())
+        dest_dir = app_cfg.processed_literature_dir if is_lit else app_cfg.processed_books_dir
         dest_dir.mkdir(parents=True, exist_ok=True)
         dest_file = dest_dir / p.name
         try:
             shutil.move(str(p), str(dest_file))
-            print(f"\n[📦 ARCHIVE] 100% of chapters verified! Source book moved to: {dest_file}\n")
+            print(f"\n[📦 ARCHIVE] 100% of document verified! Source moved to: {dest_file}\n")
         except Exception as e:
-            print(f"  [!] Note: Could not move source book to {dest_file}: {e}")
+            print(f"  [!] Note: Could not move source to {dest_file}: {e}")
 
     def discover_books(self, target_file: str = None) -> list:
         """Finds PDF and EPUB files, checking inbox/ first."""
         from literature_parser.config.settings import load_config as _load_cfg
         app_cfg = _load_cfg()
         allowed_roots = [
-            os.path.abspath(self.input_dir),
-            os.path.abspath(self.inbox_dir),
-            os.path.abspath(app_cfg.data_dir),
-            os.path.abspath(app_cfg.input_dir),
+            os.path.realpath(self.input_dir),
+            os.path.realpath(self.inbox_dir),
+            os.path.realpath(app_cfg.data_dir),
+            os.path.realpath(app_cfg.input_dir),
         ]
 
         def _safe_path(p: str) -> str | None:

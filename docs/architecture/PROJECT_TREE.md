@@ -104,7 +104,8 @@ literature-parser/
 │   │   ├── TASK-040-markdown.json
 │   │   ├── TASK-041-stage-0.json
 │   │   ├── TASK-042-research-methods.json
-│   │   └── TASK-043-research-methods-27.json
+│   │   ├── TASK-043-research-methods-27.json
+│   │   └── TASK-044-input-processed.json
 │   ├── framework.lock                      # [框架鎖定檔] 框架版本與檔案雜湊，供 update_framework 判斷是否被修改
 │   └── project.toml                        # [專案設定・各專案自訂] 語言、分層、品質門檻、指令、業務規則
 ├── .cursor/                                # [Agent 轉接] Cursor 規則 (自動產生)
@@ -384,6 +385,7 @@ literature-parser/
 │   ├── __init__.py
 │   ├── test_apa_stats_normalizer.py
 │   ├── test_archetype_pipeline_and_knowledge.py
+│   ├── test_archive_paths.py
 │   ├── test_component_registry.py
 │   ├── test_element_cropper.py
 │   ├── test_feedback_loop.py

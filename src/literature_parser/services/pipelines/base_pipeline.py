@@ -39,10 +39,24 @@ class BasePipeline(ABC):
         Returns a dictionary containing processing results and status.
         """
 
-    def archive_source(self, source_path: str):
-        """Moves fully processed and verified source file to processed/ directory."""
+    def archive_source(self, source_path: str, doc_type: str = "literature"):
+        """Moves fully processed and verified source file to appropriate processed directory.
+
+        Args:
+            source_path: Path to the original document file.
+            doc_type: Document archetype ('book' or 'literature').
+
+        Returns:
+            None.
+        """
         p = Path(source_path)
-        dest_file = self.processed_dir / p.name
+        from literature_parser.config.settings import load_config as _load_cfg
+        app_cfg = _load_cfg()
+
+        is_lit = (doc_type in ("literature", "journal")) or ("literature" in str(p).lower())
+        dest_dir = app_cfg.processed_literature_dir if is_lit else app_cfg.processed_books_dir
+        dest_dir.mkdir(parents=True, exist_ok=True)
+        dest_file = dest_dir / p.name
         try:
             shutil.move(str(p), str(dest_file))
             print(f"\n[📦 ARCHIVE] Document verified! Source moved to: {dest_file}\n")

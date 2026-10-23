@@ -86,6 +86,8 @@ def _run_process_pipeline(
         "--file", str(filepath),
         "--output-dir", str(output_base),
     ]
+    if doc_type == "book":
+        cli_cmd.append("--parallel")
     if is_scanned is True:
         cli_cmd.append("--scanned")
     elif is_scanned is False:
@@ -181,6 +183,7 @@ def cmd_batch(args):
     all_files = sorted(set(
         f for pat in ["*.pdf", "*.epub", "*.PDF", "*.EPUB"]
         for f in input_dir.rglob(pat)
+        if not any(part in ("processed", "processed-books", "processed-literature") for part in f.parts)
     ))
 
     if not all_files:

@@ -481,3 +481,11 @@
 ### [2026-10-22 15:20 UTC] 認領任務 `TASK-037` (Full batch re-run of all 3 books with PyMuPDF engine) (by `antigravity`)
 - **相關範圍**: `-`
 - **接棒自**: `antigravity`
+
+### [2026-10-22 15:40 UTC] 完成任務 `TASK-037` — Full batch re-run of all 3 books with PyMuPDF engine (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: (無)
+
+### [2026-10-22 15:45 UTC] 建立任務 `TASK-038`: Fix bullet letter e truncation, 573x716 watermark filter, and Cengage footer (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`

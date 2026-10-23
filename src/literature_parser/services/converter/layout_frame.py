@@ -32,6 +32,95 @@ class BlockType(Enum):
     CALLOUT = "callout"
 
 
+class PageZone(Enum):
+    """Enumeration of page physical geometric layout zones."""
+    HEADER_FOOTER = "header_footer"
+    MARGIN = "margin"
+    FLOATING = "floating"
+    MAIN_BODY = "main_body"
+
+
+@dataclass
+class ZoneClassification:
+    """Carries categorized elements belonging to a specific page zone."""
+    zone: PageZone
+    elements: List[Any] = field(default_factory=list)
+    metadata: Dict[str, Any] = field(default_factory=dict)
+
+
+class ZoneTagger:
+    """Partitions page elements into distinct geometric zones."""
+
+    @classmethod
+    def tag_elements(
+        cls,
+        elements: List[Any],
+        pw: float,
+        ph: float,
+        page_num: int,
+        geometry: Optional[Dict[str, Any]] = None,
+    ) -> Dict[PageZone, List[Any]]:
+        """Classifies raw page XML or bounding elements into layout zones.
+
+        Args:
+            elements: List of XML text or box elements.
+            pw: Physical page width in points.
+            ph: Physical page height in points.
+            page_num: 1-indexed page number (used for facing margins).
+            geometry: Optional calibrated geometry parameters.
+
+        Returns:
+            Dictionary mapping PageZone to the list of elements within that zone.
+        """
+        geom = geometry or {}
+        hdr_cut = geom.get("margins", {}).get("header_cutoff_y", ph * 0.05)
+        ftr_cut = geom.get("margins", {}).get("footer_cutoff_y", ph * 0.94)
+
+        has_margin_col = geom.get("has_margin_column", True)
+        is_odd = (page_num % 2 != 0)
+
+        # Default margin cutoffs
+        margin_left = pw * 0.72 if is_odd else 0.0
+        margin_right = pw if is_odd else pw * 0.28
+
+        zones: Dict[PageZone, List[Any]] = {
+            PageZone.HEADER_FOOTER: [],
+            PageZone.MARGIN: [],
+            PageZone.FLOATING: [],
+            PageZone.MAIN_BODY: [],
+        }
+
+        for el in elements:
+            try:
+                top = float(el.attrib.get("top", 0.0))
+                left = float(el.attrib.get("left", 0.0))
+                w = float(el.attrib.get("width", 0.0))
+            except AttributeError:
+                # If element is a dict or tuple
+                top = float(getattr(el, "top", 0.0) if hasattr(el, "top") else el[0] if isinstance(el, (list, tuple)) else 0.0)
+                left = float(getattr(el, "left", 0.0) if hasattr(el, "left") else el[1] if isinstance(el, (list, tuple)) else 0.0)
+                w = float(getattr(el, "width", 0.0) if hasattr(el, "width") else el[2] if isinstance(el, (list, tuple)) else 0.0)
+
+            # 1. Header / Footer Zone
+            if top <= hdr_cut or top >= ftr_cut:
+                zones[PageZone.HEADER_FOOTER].append(el)
+                continue
+
+            # 2. Margin Zone (glossaries, side callouts)
+            if has_margin_col:
+                if is_odd and left >= margin_left:
+                    zones[PageZone.MARGIN].append(el)
+                    continue
+                if not is_odd and (left + w) <= margin_right:
+                    zones[PageZone.MARGIN].append(el)
+                    continue
+
+            # 3. Main Body Zone
+            zones[PageZone.MAIN_BODY].append(el)
+
+        return zones
+
+
 @dataclass
 class FrameBlock:
     """Represents a discrete semantic block in a document layout frame."""

@@ -13,7 +13,13 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
+from literature_parser.adapters.guards.resilience_guard import ResilienceGuard
+from literature_parser.adapters.profiler.stage0_profiler import Stage0Profiler
+from literature_parser.adapters.verification.feedback_loop import LayoutFeedbackLoop
+from literature_parser.adapters.verification.layout_healer import LayoutAutoHealer
 from literature_parser.adapters.verification.ollama_verifier import OllamaVerifier
+from literature_parser.adapters.verification.review_manager import ReviewManager
+from literature_parser.adapters.verification.visual_auditor import VisualAuditor
 from literature_parser.services.book_style import build_textbook_css
 from literature_parser.services.core.image_manager import ImageManager
 from literature_parser.services.core.invariants import QualityInvariantGuard
@@ -30,9 +36,6 @@ from literature_parser.services.profiler.special_block_scanner import SpecialBlo
 from literature_parser.services.style_loader import load_style
 from literature_parser.services.utils.anki_exporter import AnkiExporter
 from literature_parser.services.utils.text_utils import stitch_cross_page_continuity
-from literature_parser.adapters.verification.layout_healer import LayoutAutoHealer
-from literature_parser.adapters.verification.review_manager import ReviewManager
-from literature_parser.adapters.verification.visual_auditor import VisualAuditor
 
 logger = logging.getLogger(__name__)
 
@@ -55,14 +58,21 @@ def calibrate_book_profile_if_missing(
     if cand_canon.exists() or cand_legacy.exists():
         return
     try:
-        CoordinateCalibrator.calibrate_and_save_profile(book_dir, ch_pdf)
+        Stage0Profiler.probe_and_persist_profile(ch_pdf, book_dir)
         if is_journal_doc:
             target_profile = cand_canon if cand_canon.exists() else cand_legacy
             _mark_profile_as_journal(target_profile)
-        scanner = SpecialBlockScanner(book_dir)
-        scanner.scan_and_update([ch_pdf], max_pages_per_chapter=10)
     except Exception as exc:
-        logger.debug("Automatic book calibration skipped: %s", exc)
+        logger.debug("Stage0Profiler calibration failed (%s); falling back to legacy.", exc)
+        try:
+            CoordinateCalibrator.calibrate_and_save_profile(book_dir, ch_pdf)
+            if is_journal_doc:
+                target_profile = cand_canon if cand_canon.exists() else cand_legacy
+                _mark_profile_as_journal(target_profile)
+            scanner = SpecialBlockScanner(book_dir)
+            scanner.scan_and_update([ch_pdf], max_pages_per_chapter=10)
+        except Exception as exc2:
+            logger.debug("Automatic book calibration skipped: %s", exc2)
 
 
 def _mark_profile_as_journal(book_profile_path: Path) -> None:
@@ -166,14 +176,33 @@ def parse_chapter_pages(
     with tempfile.TemporaryDirectory() as work_tmp:
         for page_num in range(1, total_pages + 1):
             p_imgs = [img for img in saved_images if img["page"] == page_num]
-            if is_scanned:
-                p_md = ScannedPDFParser.parse_page_to_markdown(
-                    str(ch_pdf), page_num, work_tmp
-                )
-            else:
-                p_md = DigitalPDFParser.parse_page_to_markdown(
+
+            def _parse_page() -> str:
+                if is_scanned:
+                    return ScannedPDFParser.parse_page_to_markdown(
+                        str(ch_pdf), page_num, work_tmp
+                    )
+                return DigitalPDFParser.parse_page_to_markdown(
                     str(ch_pdf), page_num, p_imgs
                 )
+
+            def _fallback_page(reason: str) -> str:
+                try:
+                    import pymupdf  # type: ignore
+                    doc = pymupdf.open(str(ch_pdf))
+                    txt = doc[page_num - 1].get_text("text") if 0 <= page_num - 1 < len(doc) else ""
+                    doc.close()
+                except Exception:
+                    txt = ""
+                return ResilienceGuard.format_degraded_page(txt, reason, page_num)
+
+            p_md = ResilienceGuard.execute_with_fallback(
+                func=_parse_page,
+                page_num=page_num,
+                fallback_func=_fallback_page,
+                timeout_seconds=15,
+                context_name=ch_pdf.stem,
+            )
             if p_md:
                 md_parts.append(f"<!-- Page {page_num} -->\n{p_md}")
     return "\n\n".join(md_parts).strip()
@@ -369,6 +398,17 @@ def apply_healers_to_markdown(
     if fixes:
         logger.info(
             "LayoutAutoHealer applied %d correction(s) on %s", len(fixes), ch_pdf.stem
+        )
+
+    book_dir = ch_dir.parent if ch_dir.parent.name != "chapters" else ch_dir.parent.parent
+    full_md, feedback_fixes = LayoutFeedbackLoop.audit_and_tune(
+        full_md, ch_pdf, book_dir, use_vision=use_ollama
+    )
+    if feedback_fixes:
+        logger.info(
+            "LayoutFeedbackLoop applied %d dynamic adjustment(s) for %s",
+            len(feedback_fixes),
+            ch_pdf.stem,
         )
     return full_md
 

@@ -101,7 +101,8 @@ literature-parser/
 │   │   ├── TASK-037-full-batch-re-run-of-all-3-books.json
 │   │   ├── TASK-038-fix-bullet-letter-e-truncation-5.json
 │   │   ├── TASK-039-run-full-batch-conversion-for-al.json
-│   │   └── TASK-040-markdown.json
+│   │   ├── TASK-040-markdown.json
+│   │   └── TASK-041-stage-0.json
 │   ├── framework.lock                      # [框架鎖定檔] 框架版本與檔案雜湊，供 update_framework 判斷是否被修改
 │   └── project.toml                        # [專案設定・各專案自訂] 語言、分層、品質門檻、指令、業務規則
 ├── .cursor/                                # [Agent 轉接] Cursor 規則 (自動產生)
@@ -199,6 +200,7 @@ literature-parser/
 │       │   │   ├── __init__.py
 │       │   │   ├── hardware.py
 │       │   │   ├── ollama_guard.py
+│       │   │   ├── resilience_guard.py
 │       │   │   └── validator.py
 │       │   ├── parsers/
 │       │   │   ├── layout/
@@ -213,12 +215,14 @@ literature-parser/
 │       │   │   └── literature_pipeline.py
 │       │   ├── profiler/
 │       │   │   ├── __init__.py
-│       │   │   └── ollama_profiler.py
+│       │   │   ├── ollama_profiler.py
+│       │   │   └── stage0_profiler.py
 │       │   ├── utils/
 │       │   │   ├── __init__.py
 │       │   │   └── system.py
 │       │   ├── verification/
 │       │   │   ├── __init__.py
+│       │   │   ├── feedback_loop.py
 │       │   │   ├── format_auditor.py
 │       │   │   ├── layout_healer.py
 │       │   │   ├── ollama_healer.py
@@ -295,7 +299,8 @@ literature-parser/
 │       │   │   ├── element_cropper.py
 │       │   │   ├── layout_frame.py
 │       │   │   ├── markdown_converter.py
-│       │   │   └── models.py
+│       │   │   ├── models.py
+│       │   │   └── semantic_stitcher.py
 │       │   ├── core/
 │       │   │   ├── __init__.py
 │       │   │   ├── analyzer.py
@@ -323,6 +328,7 @@ literature-parser/
 │       │   │   ├── layout/
 │       │   │   │   ├── __init__.py
 │       │   │   │   ├── callout_parser.py
+│       │   │   │   ├── component_registry.py
 │       │   │   │   ├── concept_map_parser.py
 │       │   │   │   ├── eoc_parser.py
 │       │   │   │   ├── list_parser.py
@@ -376,13 +382,18 @@ literature-parser/
 │   ├── __init__.py
 │   ├── test_apa_stats_normalizer.py
 │   ├── test_archetype_pipeline_and_knowledge.py
+│   ├── test_component_registry.py
 │   ├── test_element_cropper.py
+│   ├── test_feedback_loop.py
 │   ├── test_fingerprinting.py
 │   ├── test_journal_conversion.py
 │   ├── test_layout_submodules.py
 │   ├── test_m5_concurrency.py
 │   ├── test_markdown_converter.py
 │   ├── test_quality_engine.py
+│   ├── test_resilience_guard.py
+│   ├── test_semantic_stitcher.py
+│   ├── test_stage0_profiler.py
 │   ├── test_v21_features.py
 │   ├── test_v22_features.py
 │   ├── test_v23_layout_features.py
@@ -414,7 +425,8 @@ literature-parser/
 │   ├── test_v50_minicpm_visual_audit_and_surgical_healing.py
 │   ├── test_v51_book_profile_adaptive_learning.py
 │   ├── test_v52_unified_pymupdf_and_continuity_fixes.py
-│   └── test_v53_regex_bullet_and_watermark_filters.py
+│   ├── test_v53_regex_bullet_and_watermark_filters.py
+│   └── test_zone_tagger.py
 ├── web/
 │   ├── app.js
 │   ├── dashboard.html

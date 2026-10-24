@@ -53,7 +53,16 @@ class BasePipeline(ABC):
         from literature_parser.config.settings import load_config as _load_cfg
         app_cfg = _load_cfg()
 
-        is_lit = (doc_type in ("literature", "journal")) or ("literature" in str(p).lower())
+        p_resolved = p.resolve()
+        is_lit = (doc_type in ("literature", "journal"))
+        if not is_lit:
+            try:
+                rel = p_resolved.relative_to(app_cfg.input_dir.resolve())
+                if "literature" in [part.lower() for part in rel.parts]:
+                    is_lit = True
+            except ValueError:
+                pass
+
         dest_dir = app_cfg.processed_literature_dir if is_lit else app_cfg.processed_books_dir
         dest_dir.mkdir(parents=True, exist_ok=True)
         dest_file = dest_dir / p.name

@@ -24,6 +24,8 @@ def sanitize_filename(name: str, max_len: int = MAX_FILENAME_LEN) -> str:
     """
     if not name:
         return "untitled"
+    # Strip non-printable control characters including null bytes
+    name = re.sub(r'[\x00-\x1f\x7f]+', '', name)
     # Replace illegal filesystem characters, slashes, commas, and punctuation with hyphens
     name = re.sub(r'[/\\\\:*?\"<>|_,;&]+', '-', name)
     # Replace all whitespace sequences with hyphens

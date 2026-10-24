@@ -500,8 +500,11 @@ class PDFAnalyzer:
             return None, 0
 
         sections = cls.get_sections_from_outline(pdf_path, total_pages)
-        if sections and len(sections) >= 3:
-            return sections, total_pages
+        if not (sections and len(sections) >= 3):
+            sections = cls.get_sections_from_text(pdf_path, total_pages)
 
-        sections = cls.get_sections_from_text(pdf_path, total_pages)
+        if sections:
+            for s in sections:
+                if 'name' in s:
+                    s['name'] = re.sub(r'[\x00-\x1f\x7f]+', '', s['name']).strip()
         return sections, total_pages

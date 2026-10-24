@@ -27,7 +27,8 @@ def _run_process_pipeline(
     doc_type: Optional[str] = None,
     is_scanned: Optional[bool] = None,
     ignore_battery: bool = False,
-    export_epub: bool = False
+    export_epub: bool = False,
+    resume: bool = False
 ) -> bool:
     """Executes the conversion pipeline for a single file.
 
@@ -37,6 +38,7 @@ def _run_process_pipeline(
         is_scanned: Optional scan mode override (True for scanned OCR, False for digital vector).
         ignore_battery: Whether to bypass low-battery safety checks.
         export_epub: Whether to build EPUB 3 archive upon completion.
+        resume: Whether to resume and skip previously verified chapters.
 
     Returns:
         True on successful processing, False on error or rejection.
@@ -88,6 +90,8 @@ def _run_process_pipeline(
     ]
     if doc_type == "book":
         cli_cmd.append("--parallel")
+        if resume:
+            cli_cmd.append("--resume")
     if is_scanned is True:
         cli_cmd.append("--scanned")
     elif is_scanned is False:
@@ -131,7 +135,8 @@ def cmd_process(args):
         filepath,
         doc_type=args.type,
         ignore_battery=args.ignore_battery,
-        export_epub=getattr(args, "epub", False)
+        export_epub=getattr(args, "epub", False),
+        resume=getattr(args, "resume", False)
     )
     if not success:
         sys.exit(1)
@@ -218,7 +223,8 @@ def cmd_batch(args):
                 fpath,
                 doc_type=doc_type,
                 ignore_battery=getattr(args, "ignore_battery", False),
-                export_epub=getattr(args, "epub", False)
+                export_epub=getattr(args, "epub", False),
+                resume=getattr(args, "resume", False)
             )
             if ok:
                 success.append(fpath.name)

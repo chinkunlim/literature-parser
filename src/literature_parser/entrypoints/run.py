@@ -124,6 +124,7 @@ def main(argv=None):
     p_proc.add_argument("file", help="輸入檔案路徑 (PDF/EPUB)")
     p_proc.add_argument("--type", choices=["book", "literature", "journal"], default=None, help="強制指定處理類型 (book 或 literature)")
     p_proc.add_argument("--ignore-battery", action="store_true", help="忽略電池電量限制")
+    p_proc.add_argument("--resume", action="store_true", help="略過已驗證完成之章節接續執行")
     p_proc.add_argument("--epub", action="store_true", help="轉檔完成後自動輸出 EPUB 3 電子書")
     p_proc.set_defaults(func=cmd_process)
 
@@ -132,6 +133,7 @@ def main(argv=None):
     p_batch.add_argument("directory", help="輸入資料夾路徑 (例如 data/input/books/)")
     p_batch.add_argument("--type", choices=["book", "literature", "journal"], default=None, help="強制指定處理類型 (book 或 literature)")
     p_batch.add_argument("--ignore-battery", action="store_true", help="忽略電池電量限制")
+    p_batch.add_argument("--resume", action="store_true", help="略過已驗證完成之章節接續執行")
     p_batch.add_argument("--epub", action="store_true", help="批次轉檔完成後自動輸出 EPUB 3 電子書")
     p_batch.set_defaults(func=cmd_batch)
 

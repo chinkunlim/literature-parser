@@ -63,6 +63,7 @@ All notable changes to **literature-parser** are documented here
 - fix(eoc,margin,rules): resolve EOC false positives, code-block keywords, KaTeX dollars, and margin glossary bounds (TASK-039) (by `@antigravity`)
 - fix(continuity): resolve catastrophic regex backtracking in intervening pattern (TASK-039) (by `@antigravity`)
 - fix(pipeline): sanitize null bytes in section names and fix archive directory routing (by `@antigravity`)
+- fix(verifier): recognize credits and acknowledgments in back matter heading density exemption (by `@antigravity`)
 
 ### Documentation
 - docs: update and synchronize all project markdown documentation (by `@antigravity`)

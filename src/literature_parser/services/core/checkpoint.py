@@ -13,6 +13,7 @@ import datetime
 import json
 import logging
 import os
+import re
 import tempfile
 from pathlib import Path
 
@@ -49,7 +50,15 @@ class CheckpointManager:
         if self.json_path.exists():
             try:
                 with open(self.json_path, "r", encoding="utf-8") as f:
-                    return json.load(f)
+                    data = json.load(f)
+                    if isinstance(data, dict) and "chapters" in data and isinstance(data["chapters"], dict):
+                        cleaned_chapters = {}
+                        for k, v in data["chapters"].items():
+                            cleaned_k = re.sub(r'[\x00-\x1f\x7f]', '', k).strip()
+                            if cleaned_k:
+                                cleaned_chapters[cleaned_k] = v
+                        data["chapters"] = cleaned_chapters
+                    return data
             except (json.JSONDecodeError, OSError) as e:
                 logger.warning(
                     "CheckpointManager: could not load '%s' – %s. Starting fresh.",

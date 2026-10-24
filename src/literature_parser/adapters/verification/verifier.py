@@ -91,7 +91,7 @@ class AccuracyVerifier:
 
         # Check if chapter is front matter (cover, publisher imprint, copyright page)
         is_front_matter = ch_name.lower().startswith(('00-', 'cover', 'publish'))
-        is_back_matter = any(bm in ch_name.lower() for bm in ('glossary', 'references', 'index', 'author-index', 'subject-index', 'license', 'eula', 'agreement'))
+        is_back_matter = any(bm in ch_name.lower() for bm in ('glossary', 'references', 'index', 'author-index', 'subject-index', 'license', 'eula', 'agreement', 'credits', 'acknowledgements', 'acknowledgments', 'epilogue', 'appendix', 'appendices', 'sources', 'photo-credits'))
         is_journal = False
         candidates = [
             ch_path / "document_profile.json",

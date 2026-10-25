@@ -473,6 +473,67 @@ def check_broken_ligatures(content: str) -> dict:
     }
 
 
+def check_blueprint_compliance(content: str, blueprint_dict: dict | None = None) -> dict:
+    """Verifies that the generated Markdown satisfies the pre-conversion `chapter_blueprint.json` contract.
+
+    Checks that expected standalone tables in the blueprint are rendered as structured `<table>`
+    or GFM pipe tables in the Markdown output, and that authoritative outline headings are present
+    (Refs: ADR-011).
+
+    Args:
+        content: Markdown content of the chapter.
+        blueprint_dict: Dictionary loaded from `chapter_blueprint.json`, or None.
+
+    Returns:
+        Dictionary with `passed`, `count`, `missing_tables`, and `missing_headings`.
+    """
+    if not blueprint_dict:
+        return {
+            'passed': True,
+            'count': 0,
+            'missing_tables': [],
+            'missing_headings': [],
+        }
+
+    missing_tables = []
+    expected_tables = blueprint_dict.get('expected_tables', []) or []
+    for tbl in expected_tables:
+        t_id = str(tbl.get('table_id', '')).strip()
+        if not t_id:
+            continue
+        # Locate Table <t_id> header in content and verify a structured table exists nearby
+        pat = re.compile(
+            rf'(?m)^(?:###+\s*Table\s+{re.escape(t_id)}\b|\*\*Table\s+{re.escape(t_id)}\.?\*\*)',
+            re.IGNORECASE,
+        )
+        m = pat.search(content)
+        if m:
+            window = content[m.start() : min(len(content), m.end() + 1500)]
+            if '<table' not in window and not re.search(r'\|\s*:?-{3,}:?\s*\|', window):
+                missing_tables.append(f"Table {t_id}")
+        elif tbl.get('source') == 'docling':
+            missing_tables.append(f"Table {t_id}")
+
+    missing_headings = []
+    norm_content = re.sub(r'[^a-z0-9]+', '', content.lower())
+    expected_headings = blueprint_dict.get('expected_headings', []) or []
+    for hd in expected_headings:
+        if hd.get('source') != 'outline':
+            continue
+        title = str(hd.get('title', '')).strip()
+        norm_title = re.sub(r'[^a-z0-9]+', '', title.lower())
+        if len(norm_title) >= 8 and norm_title[:16] not in norm_content:
+            missing_headings.append(title[:60])
+
+    total_issues = len(missing_tables) + len(missing_headings)
+    return {
+        'passed': total_issues == 0,
+        'count': total_issues,
+        'missing_tables': missing_tables[:5],
+        'missing_headings': missing_headings[:5],
+    }
+
+
 def check_table_banner_integrity(content: str) -> dict:
     """
     Detects comparison tables where 'Strengths' or 'Weaknesses' banners collapsed

@@ -37,6 +37,7 @@ from literature_parser.services.core.image_manager import ImageManager
 from literature_parser.services.literature_style import build_literature_css
 from literature_parser.services.parsers.digital_pdf import DigitalPDFParser
 from literature_parser.services.parsers.scanned_pdf import ScannedPDFParser
+from literature_parser.services.profiler.chapter_blueprint_scanner import ChapterBlueprintScanner
 
 logger = logging.getLogger(__name__)
 
@@ -111,6 +112,20 @@ class MarkdownConversionService:
         total_pages = PDFAnalyzer.get_page_count(str(p_path))
         if total_pages <= 0:
             total_pages = 1
+
+        # 3.5. Pass 1: Pre-Conversion Chapter Structural Blueprint Scan (Refs: ADR-011)
+        ch_blueprint = None
+        try:
+            ch_blueprint = ChapterBlueprintScanner.scan_chapter(
+                pdf_path=p_path,
+                chapter_name=ctx.get("chapter_name") or p_path.stem,
+                output_dir=out_root,
+                is_scanned=is_scanned,
+                specialist_enricher=ctx.get("specialist_enricher"),
+            )
+            ctx["chapter_blueprint"] = ch_blueprint
+        except Exception as bp_err:
+            logger.debug("ChapterBlueprintScanner skipped for %s: %s", p_path.name, bp_err)
 
         # 4. Extract Genuine Raster Figures
         saved_images: List[Dict[str, Any]] = []

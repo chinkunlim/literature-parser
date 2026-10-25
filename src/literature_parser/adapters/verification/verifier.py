@@ -15,6 +15,7 @@ from pathlib import Path
 from literature_parser.config.processor_config import DEFAULT_DICT_PATH
 from literature_parser.adapters.verification.ollama_verifier import OllamaVerifier
 from literature_parser.adapters.verification.rules import (
+    check_blueprint_compliance,
     check_broken_ligatures,
     check_content_continuity,
     check_excessive_hard_wraps,
@@ -285,6 +286,15 @@ class AccuracyVerifier:
                 results['passed'] = False
 
         # 6. Semantic Meaningfulness & Content Integrity Checks
+        bp_dict = None
+        bp_file = ch_path / "chapter_blueprint.json"
+        if bp_file.exists():
+            try:
+                import json as _json
+                bp_dict = _json.loads(bp_file.read_text(encoding='utf-8'))
+            except Exception:
+                bp_dict = None
+
         num_noise_res = check_numeric_coordinate_noise(md_content)
         shat_math_res = check_shattered_math(md_content)
         infix_sym_res = check_infix_math_in_words(md_content)
@@ -292,6 +302,7 @@ class AccuracyVerifier:
         tbl_ban_res   = check_table_banner_integrity(md_content)
         unfmt_tbl_res = check_unformatted_table_blocks(md_content)
         ligature_res  = check_broken_ligatures(md_content)
+        bp_comp_res   = check_blueprint_compliance(md_content, bp_dict)
         head_den_res  = check_heading_density(md_content, total_tokens, is_front_matter, is_journal, is_back_matter)
         hard_wrap_res = check_excessive_hard_wraps(md_content)
 
@@ -303,6 +314,7 @@ class AccuracyVerifier:
             tbl_ban_res['passed'] and
             unfmt_tbl_res['passed'] and
             ligature_res['passed'] and
+            bp_comp_res['passed'] and
             head_den_res['passed']
         )
 
@@ -314,6 +326,7 @@ class AccuracyVerifier:
             'table_banners': tbl_ban_res,
             'unformatted_tables': unfmt_tbl_res,
             'broken_ligatures': ligature_res,
+            'blueprint_compliance': bp_comp_res,
             'heading_density': head_den_res,
             'hard_wraps': hard_wrap_res,
             'passed': semantic_pass,
@@ -325,6 +338,7 @@ class AccuracyVerifier:
         print(f"  • Table Banner Integrity: {'[PASS]' if tbl_ban_res['passed'] else '[FAIL]'} ({tbl_ban_res['count']} collapsed comparison banners)")
         print(f"  • Unformatted Table Blocks: {'[PASS]' if unfmt_tbl_res['passed'] else '[FAIL]'} ({unfmt_tbl_res['count']} unformatted table blocks)")
         print(f"  • Broken Ligature Check: {'[PASS]' if ligature_res['passed'] else '[FAIL]'} ({ligature_res['count']} broken ligature lines)")
+        print(f"  • Blueprint Compliance: {'[PASS]' if bp_comp_res['passed'] else '[FAIL]'} ({bp_comp_res['count']} missing blueprint items)")
         print(f"  • Heading Hierarchy Density: {'[PASS]' if head_den_res['passed'] else '[FAIL]'} ({head_den_res.get('heading_count', 0)} headings found)")
         print(f"  • Paragraph Reflow Sanity: {'[PASS]' if hard_wrap_res['passed'] else '[WARN]'} ({hard_wrap_res['unreflowed_paragraphs']} unreflowed blocks)")
 

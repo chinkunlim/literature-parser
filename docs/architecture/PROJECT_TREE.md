@@ -106,7 +106,8 @@ literature-parser/
 │   │   ├── TASK-042-research-methods.json
 │   │   ├── TASK-043-research-methods-27.json
 │   │   ├── TASK-044-input-processed.json
-│   │   └── TASK-045-enhance-batch-resilience-table-h.json
+│   │   ├── TASK-045-enhance-batch-resilience-table-h.json
+│   │   └── TASK-046-implement-two-pass-chapterbluepr.json
 │   ├── framework.lock                      # [框架鎖定檔] 框架版本與檔案雜湊，供 update_framework 判斷是否被修改
 │   └── project.toml                        # [專案設定・各專案自訂] 語言、分層、品質門檻、指令、業務規則
 ├── .cursor/                                # [Agent 轉接] Cursor 規則 (自動產生)
@@ -138,6 +139,7 @@ literature-parser/
 │   │   ├── 008-convention-input-routing-and-naming-hygiene.md
 │   │   ├── 009-geometric-bounds-and-non-backtracking-regex.md
 │   │   ├── 010-archive-segregation-and-batch-resilience.md
+│   │   ├── 011-two-pass-chapter-blueprint-and-hybrid-docling.md
 │   │   ├── _TEMPLATE.md                    # ADR 範本 (tracker_cli 會套用)
 │   │   └── DECISIONS.md                    # 架構決策總表
 │   ├── architecture/                       # [系統架構與資料模型]
@@ -221,6 +223,7 @@ literature-parser/
 │       │   │   ├── literature/
 │       │   │   │   ├── __init__.py
 │       │   │   │   └── metadata_extractor.py
+│       │   │   ├── docling_adapter.py
 │       │   │   └── pdf_engine.py
 │       │   ├── pipelines/
 │       │   │   ├── __init__.py
@@ -280,6 +283,7 @@ literature-parser/
 │       ├── domain/
 │       │   ├── profiler/
 │       │   │   ├── __init__.py
+│       │   │   ├── blueprint_schema.py
 │       │   │   ├── model_advisor.py
 │       │   │   └── profile_schema.py
 │       │   └── __init__.py
@@ -355,6 +359,9 @@ literature-parser/
 │       │   │   ├── math/
 │       │   │   │   ├── __init__.py
 │       │   │   │   └── apa_stats_normalizer.py
+│       │   │   ├── renderers/
+│       │   │   │   ├── __init__.py
+│       │   │   │   └── block_renderers.py
 │       │   │   ├── __init__.py
 │       │   │   ├── digital_pdf.py
 │       │   │   ├── epub_parser.py
@@ -367,6 +374,7 @@ literature-parser/
 │       │   │   └── textbook_pipeline.py
 │       │   ├── profiler/
 │       │   │   ├── __init__.py
+│       │   │   ├── chapter_blueprint_scanner.py
 │       │   │   ├── coordinate_calibrator.py
 │       │   │   └── special_block_scanner.py
 │       │   ├── utils/
@@ -396,6 +404,7 @@ literature-parser/
 │   ├── test_archetype_pipeline_and_knowledge.py
 │   ├── test_archive_paths.py
 │   ├── test_batch_resilience_and_table_structuring.py
+│   ├── test_chapter_blueprint_and_modular_renderers.py
 │   ├── test_component_registry.py
 │   ├── test_element_cropper.py
 │   ├── test_feedback_loop.py

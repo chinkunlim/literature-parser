@@ -47,6 +47,7 @@ from literature_parser.services.utils.text_utils import (
     sanitize_filename,
     stitch_cross_page_continuity,
 )
+from literature_parser.adapters.parsers.docling_adapter import DoclingBlueprintAdapter
 from literature_parser.adapters.verification.layout_healer import LayoutAutoHealer
 from literature_parser.adapters.verification.ollama_verifier import OllamaVerifier
 from literature_parser.adapters.verification.review_manager import ReviewManager
@@ -397,7 +398,11 @@ class BookProcessorOrchestrator:
             profile=prof_obj,
             output_dir=ch_dir,
             options=conv_opts,
-            context={"chapter_name": ch_name, "is_journal_doc": is_journal_doc},
+            context={
+                "chapter_name": ch_name,
+                "is_journal_doc": is_journal_doc,
+                "specialist_enricher": DoclingBlueprintAdapter.enrich_blueprint,
+            },
         )
         saved_images = conv_res.images
         full_md = conv_res.markdown

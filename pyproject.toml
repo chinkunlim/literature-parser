@@ -5,6 +5,7 @@ description = "Enterprise-grade PDF & EPUB Structured Markdown & Image Extractor
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "docling>=2.142.1",
     "pymupdf>=2.0",
 ]  # add with `uv add <package>` (never `pip install`)
 

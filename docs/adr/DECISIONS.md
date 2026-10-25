@@ -14,3 +14,4 @@
 | [ADR-008](008-convention-input-routing-and-naming-hygiene.md) | 輸入目錄約定分流路由與產出目錄連字號命名衛生規範 | Accepted | 2026-10-22 |
 | [ADR-009](009-geometric-bounds-and-non-backtracking-regex.md) | 版面元件解析之嚴格幾何邊界收斂與線性時間跨頁流向縫合 | Accepted | 2026-10-23 |
 | [ADR-010](010-archive-segregation-and-batch-resilience.md) | 處理完成文檔嚴格分流歸檔與全書庫斷點續傳機制 | Accepted | 2026-10-25 | TODO |
+| [ADR-011](011-two-pass-chapter-blueprint-and-hybrid-docling.md) | 兩階段章節結構藍圖（Two-Pass Chapter Blueprint）、PyMuPDF+Docling 混合掃描與五大模組化渲染架構 | Accepted | 2026-10-25 | TODO |

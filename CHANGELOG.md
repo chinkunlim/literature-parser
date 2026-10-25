@@ -41,6 +41,7 @@ All notable changes to **literature-parser** are documented here
 - feat(pipeline): implement autonomous layout adaptation, Stage 0 profiler, component registry, and resilience guard (by `@antigravity`)
 - feat(archive): route processed books to input/processed/processed-books and literature to input/processed/processed-literature (by `@antigravity`)
 - feat(cli): add --resume flag to run and batch commands for resilient checkpoint continuation (by `@antigravity`)
+- feat(parser,verifier): enforce HTML table structuring, batch error isolation, and strict layout verification (Refs: ISSUE-014, ISSUE-015) (by `@antigravity`)
 
 ### Changed
 - docs(migration): mark all migration acceptance criteria as completed (by `@antigravity`)

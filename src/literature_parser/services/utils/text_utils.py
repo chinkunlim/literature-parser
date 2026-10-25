@@ -14,6 +14,8 @@ def sanitize_filename(name: str, max_len: int = MAX_FILENAME_LEN) -> str:
 
     Replaces illegal filesystem characters, slashes, whitespace, and underscores with hyphens.
     Collapses multiple hyphens and trims leading/trailing hyphens and periods.
+    Enforces a strict character and UTF-8 byte ceiling (<= 120 chars / <= 200 bytes)
+    to prevent macOS/Linux Errno 63 (File name too long) crashes on verbose bookmarks.
 
     Args:
         name: Raw filename or folder title string.
@@ -33,8 +35,14 @@ def sanitize_filename(name: str, max_len: int = MAX_FILENAME_LEN) -> str:
     # Collapse multiple hyphens into a single hyphen
     name = re.sub(r'-+', '-', name).strip('-')
     name = name.rstrip('. ')
-    if len(name) > max_len:
-        name = name[:max_len].rstrip('- ')
+    effective_max = min(max_len, 120)
+    if len(name) > effective_max:
+        cut = name[:effective_max]
+        if '-' in cut[effective_max // 2:]:
+            cut = cut.rsplit('-', 1)[0]
+        name = cut.rstrip('- ')
+    while len(name.encode('utf-8')) > 200 and len(name) > 10:
+        name = name[:-5].rstrip('- ')
     return name or 'untitled'
 
 
@@ -199,11 +207,12 @@ def detect_plain_text_headings(raw_text: str) -> str:
         is_heading = False
         level = 2
 
-        # Filter out common non-heading patterns
+        #Filter out common non-heading patterns
         if (
             3 <= len(stripped) <= 65
             and not re.match(r'^(?:CHAPTER|PART|\d+|http|www|page|\[|\(|-|\*|•|=»|=)', stripped, re.IGNORECASE)
             and (not stripped.endswith(('.', ',', ';', ':')) or stripped.endswith('?'))
+            and not re.search(r'[a-z]\.\s+[A-Z]', stripped)
             and stripped.split()[-1].lower() not in trailing_prepositions
             and re.match(r'^[A-Z]', stripped)
         ):
@@ -425,15 +434,50 @@ LIGATURE_MAP = {
 
 
 def normalize_ligatures(text: str) -> str:
-    """
-    Unpacks PDF typographic ligatures (fi, fl, ffi, ffl, etc.) into constituent characters.
-    Prevents OCR and vocabulary check degradation caused by font ligature collapsing.
+    """Unpacks PDF typographic ligatures and repairs split ligature tokens.
+
+    Args:
+        text: Input string potentially containing Unicode ligatures or split fi/fl words.
+
+    Returns:
+        Normalized text with intact words.
     """
     if not text:
         return ""
     for lig, replacement in LIGATURE_MAP.items():
         if lig in text:
             text = text.replace(lig, replacement)
+    return repair_broken_ligatures(text)
+
+
+_LIGATURE_STANDALONE_EXCLUSIONS = {"hi", "lofi", "wifi", "scifi", "fi", "fl"}
+
+
+def repair_broken_ligatures(text: str) -> str:
+    """Repairs intra-word spaces introduced by PDF font ligature splitting (e.g. 'identifi cation' -> 'identification').
+
+    Handles multiple ligatures within the same word (e.g. 'fi refi ghter' -> 'firefighter').
+
+    Args:
+        text: Input text containing broken ligature gaps.
+
+    Returns:
+        Text with broken fi/fl/ffi/ffl ligature words seamlessly rejoined.
+    """
+    if not text:
+        return ""
+
+    def _rejoin(match: re.Match) -> str:
+        prefix = match.group(1)
+        suffix = match.group(2)
+        if prefix.lower() in {"hi", "lofi", "wifi", "scifi"}:
+            return match.group(0)
+        return f"{prefix}{suffix}"
+
+    # Apply twice to catch double ligatures in one word (e.g. 'fi refi ghter' -> 'firefighter')
+    pat = re.compile(r'\b([a-zA-Z]*(?:ffi|ffl|fi|fl))[ \t]+([a-z]{1,15})\b')
+    text = pat.sub(_rejoin, text)
+    text = pat.sub(_rejoin, text)
     return text
 
 

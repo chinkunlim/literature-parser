@@ -7,6 +7,7 @@ semantic consistency checking and mathematical LaTeX refinement with ZERO token 
 
 import json
 import logging
+import threading
 import urllib.error
 import urllib.request
 
@@ -21,6 +22,7 @@ from literature_parser.adapters.utils.system import ensure_ollama_running, is_ol
 from literature_parser.services.guards.prompts import PromptRegistry
 
 logger = logging.getLogger(__name__)
+_OLLAMA_SEMAPHORE = threading.Semaphore(1)
 
 
 class OllamaVerifier:
@@ -185,8 +187,9 @@ class OllamaVerifier:
                 data=json.dumps(payload).encode("utf-8"),
                 headers={"Content-Type": "application/json"},
             )
-            with urllib.request.urlopen(req, timeout=OLLAMA_GENERATE_TIMEOUT) as resp:
-                result = json.loads(resp.read().decode("utf-8"))
+            with _OLLAMA_SEMAPHORE:
+                with urllib.request.urlopen(req, timeout=OLLAMA_GENERATE_TIMEOUT) as resp:
+                    result = json.loads(resp.read().decode("utf-8"))
                 response_text = result.get("response", "").strip()
                 upper_resp = response_text.upper()
 
@@ -261,8 +264,9 @@ class OllamaVerifier:
                 data=json.dumps(payload).encode("utf-8"),
                 headers={"Content-Type": "application/json"},
             )
-            with urllib.request.urlopen(req, timeout=OLLAMA_GENERATE_TIMEOUT) as resp:
-                result = json.loads(resp.read().decode("utf-8"))
+            with _OLLAMA_SEMAPHORE:
+                with urllib.request.urlopen(req, timeout=OLLAMA_GENERATE_TIMEOUT) as resp:
+                    result = json.loads(resp.read().decode("utf-8"))
                 response_text = result.get("response", "").strip()
                 passed = "[PASS]" in response_text.upper() or "EXCELLENT" in response_text.upper() or "GOOD" in response_text.upper()
                 return {
@@ -308,8 +312,9 @@ class OllamaVerifier:
                 data=json.dumps(payload).encode("utf-8"),
                 headers={"Content-Type": "application/json"},
             )
-            with urllib.request.urlopen(req, timeout=OLLAMA_GENERATE_TIMEOUT) as resp:
-                result = json.loads(resp.read().decode("utf-8"))
+            with _OLLAMA_SEMAPHORE:
+                with urllib.request.urlopen(req, timeout=OLLAMA_GENERATE_TIMEOUT) as resp:
+                    result = json.loads(resp.read().decode("utf-8"))
                 raw_json = result.get("response", "{}")
                 data = json.loads(raw_json)
                 proposals = data.get("proposals", [])
@@ -405,8 +410,9 @@ class OllamaVerifier:
                 data=json.dumps(payload).encode("utf-8"),
                 headers={"Content-Type": "application/json"},
             )
-            with urllib.request.urlopen(req, timeout=OLLAMA_GENERATE_TIMEOUT) as resp:
-                data = json.loads(resp.read().decode("utf-8"))
+            with _OLLAMA_SEMAPHORE:
+                with urllib.request.urlopen(req, timeout=OLLAMA_GENERATE_TIMEOUT) as resp:
+                    data = json.loads(resp.read().decode("utf-8"))
                 resp_text = data.get("response", "{}")
                 match = re.search(r'\{.*\}', resp_text, re.DOTALL)
                 res_obj = json.loads(match.group(0)) if match else json.loads(resp_text)

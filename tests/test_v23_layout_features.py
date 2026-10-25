@@ -114,9 +114,10 @@ class TestV23LayoutFeatures(unittest.TestCase):
         )
         formatted = LayoutDetector.detect_and_format_tables([sample_table_block])
         self.assertEqual(len(formatted), 1)
-        # Bold-label style should be preserved as-is (already formatted correctly)
+        # Bold-label style should be preserved and items structured as a semantic HTML table
         self.assertIn("**Table 1.1**", formatted[0])
-        self.assertIn("- Learn how to conduct psychological research.", formatted[0])
+        self.assertIn('<table class="textbook-table"', formatted[0])
+        self.assertIn("<td>Learn how to conduct psychological research.</td>", formatted[0])
 
 
     def test_end_to_end_pages_1_to_3(self):

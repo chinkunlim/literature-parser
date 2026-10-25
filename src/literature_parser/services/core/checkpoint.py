@@ -15,9 +15,11 @@ import logging
 import os
 import re
 import tempfile
+import threading
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
+_CHECKPOINT_LOCK = threading.RLock()
 
 
 def _atomic_write(path: Path, text: str) -> None:
@@ -73,42 +75,45 @@ class CheckpointManager:
 
     def init_chapters(self, sections: list) -> None:
         """Initializes chapters in manifest if not already present."""
-        for s in sections:
-            name = s["name"]
-            if name not in self.data["chapters"]:
-                self.data["chapters"][name] = {
-                    "start_page": s["start"],
-                    "end_page": s["end"],
-                    "total_pages": s["end"] - s["start"] + 1,
-                    "status": "PENDING",
-                    "split_pdf": False,
-                    "markdown_generated": False,
-                    "images_count": 0,
-                    "verification_pass": None,
-                    "accuracy_percent": None,
-                    "last_updated": None,
-                }
-        self.save()
+        with _CHECKPOINT_LOCK:
+            for s in sections:
+                name = s["name"]
+                if name not in self.data["chapters"]:
+                    self.data["chapters"][name] = {
+                        "start_page": s["start"],
+                        "end_page": s["end"],
+                        "total_pages": s["end"] - s["start"] + 1,
+                        "status": "PENDING",
+                        "split_pdf": False,
+                        "markdown_generated": False,
+                        "images_count": 0,
+                        "verification_pass": None,
+                        "accuracy_percent": None,
+                        "last_updated": None,
+                    }
+            self.save()
 
     def update_status(self, chapter_name: str, **kwargs) -> None:
         """Updates status of a specific chapter."""
-        self.data = self._load()
-        if chapter_name not in self.data["chapters"]:
-            self.data["chapters"][chapter_name] = {}
-        self.data["chapters"][chapter_name].update(kwargs)
-        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        self.data["chapters"][chapter_name]["last_updated"] = now
-        self.data["last_updated"] = now
-        self.save()
+        with _CHECKPOINT_LOCK:
+            self.data = self._load()
+            if chapter_name not in self.data["chapters"]:
+                self.data["chapters"][chapter_name] = {}
+            self.data["chapters"][chapter_name].update(kwargs)
+            now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            self.data["chapters"][chapter_name]["last_updated"] = now
+            self.data["last_updated"] = now
+            self.save()
 
     def is_chapter_verified(self, chapter_name: str) -> bool:
         """Returns True if the chapter has been verified and can be skipped on resume."""
-        self.data = self._load()
-        ch = self.data["chapters"].get(chapter_name, {})
-        ch_dir = self.book_dir / "chapters" / chapter_name
-        pdf_exists = (ch_dir / f"{chapter_name}.pdf").exists() if ch_dir.exists() else False
-        has_pdf = bool(ch.get("split_pdf") or pdf_exists)
-        return ch.get("status") == "VERIFIED" and has_pdf and ch.get("markdown_generated") and ch.get("verification_pass") is True
+        with _CHECKPOINT_LOCK:
+            self.data = self._load()
+            ch = self.data["chapters"].get(chapter_name, {})
+            ch_dir = self.book_dir / "chapters" / chapter_name
+            pdf_exists = (ch_dir / f"{chapter_name}.pdf").exists() if ch_dir.exists() else False
+            has_pdf = bool(ch.get("split_pdf") or pdf_exists)
+            return ch.get("status") == "VERIFIED" and has_pdf and ch.get("markdown_generated") and ch.get("verification_pass") is True
 
 
     def get_pending_chapters(self) -> list:

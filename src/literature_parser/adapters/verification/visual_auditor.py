@@ -152,6 +152,7 @@ class VisualAuditor:
 
         # 2. Extract pages by splitting on page markers
         parts = re.split(r'<!-- Page (\d+) -->', md_text)
+        unformatted_table_pages = []
         table_pages = []
         exhibit_pages = []
 
@@ -159,16 +160,30 @@ class VisualAuditor:
             try:
                 p_num = int(parts[idx])
                 p_content = parts[idx + 1]
-                if '<table' in p_content or '| ---' in p_content:
+                has_struct_tbl = '<table' in p_content or '| ---' in p_content
+                has_tbl_mention = bool(
+                    re.search(
+                        r'(?:^|\*\*|###\s+)Table\s+\d+(?:[\.\-–]\d+)*',
+                        p_content,
+                        re.MULTILINE,
+                    )
+                )
+                if has_tbl_mention and not has_struct_tbl:
+                    unformatted_table_pages.append(p_num)
+                    table_pages.append(p_num)
+                elif has_struct_tbl:
                     table_pages.append(p_num)
                 if '### exhibit' in p_content.lower() or ('exhibit' in p_content.lower() and ('results' in p_content.lower() or 'program' in p_content.lower() or 'table' in p_content.lower())):
                     exhibit_pages.append(p_num)
             except (ValueError, IndexError):
                 continue
 
-        # Sample up to 2 table pages and 2 exhibit pages
+        # Prioritize any unformatted table pages first, then formatted table pages and exhibit pages
+        prioritized_tables = unformatted_table_pages + [
+            p for p in table_pages if p not in unformatted_table_pages
+        ]
         sample_pages = set()
-        for p in table_pages[:2]:
+        for p in prioritized_tables[:2]:
             sample_pages.add(p)
         for p in exhibit_pages[:2]:
             sample_pages.add(p)

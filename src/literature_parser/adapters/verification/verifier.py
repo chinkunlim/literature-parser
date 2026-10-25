@@ -15,6 +15,7 @@ from pathlib import Path
 from literature_parser.config.processor_config import DEFAULT_DICT_PATH
 from literature_parser.adapters.verification.ollama_verifier import OllamaVerifier
 from literature_parser.adapters.verification.rules import (
+    check_broken_ligatures,
     check_content_continuity,
     check_excessive_hard_wraps,
     check_heading_density,
@@ -29,6 +30,7 @@ from literature_parser.adapters.verification.rules import (
     check_table_banner_integrity,
     check_table_column_integrity,
     check_unescaped_special_chars,
+    check_unformatted_table_blocks,
     is_valid_dictionary_word,
 )
 
@@ -82,6 +84,7 @@ class AccuracyVerifier:
         # 2. Vocabulary & Dictionary Verification
         vocab_content = re.sub(r'<style>.*?</style>', '', md_content, flags=re.DOTALL)
         vocab_content = re.sub(r'<[^>]+>', ' ', vocab_content)
+        vocab_content = re.sub(r'&(?:[a-zA-Z0-9]+|#\d+|#x[0-9a-fA-F]+);', ' ', vocab_content)
         vocab_content = re.sub(r'\]\([^)]+\)', ']', vocab_content)
         vocab_content = re.sub(r'https?://[^\s\)]+', ' ', vocab_content)
         tokens = re.findall(r'\b[a-zA-Z0-9_\-’\']+\b', vocab_content)
@@ -89,9 +92,20 @@ class AccuracyVerifier:
         valid_tokens = sum(1 for t in tokens if is_valid_dictionary_word(t, self.dict_words))
         invalid_sample = [t for t in tokens if not is_valid_dictionary_word(t, self.dict_words)][:10]
 
-        # Check if chapter is front matter (cover, publisher imprint, copyright page)
-        is_front_matter = ch_name.lower().startswith(('00-', 'cover', 'publish'))
-        is_back_matter = any(bm in ch_name.lower() for bm in ('glossary', 'references', 'index', 'author-index', 'subject-index', 'license', 'eula', 'agreement', 'credits', 'acknowledgements', 'acknowledgments', 'epilogue', 'appendix', 'appendices', 'sources', 'photo-credits'))
+        # Check if chapter is front matter (cover, publisher imprint, copyright page, preface, foreword)
+        is_front_matter = ch_name.lower().startswith(('00-', 'cover', 'publish', 'preface', 'foreword'))
+        is_back_matter = any(
+            bm in ch_name.lower()
+            for bm in (
+                'glossary', 'references', 'bibliography', 'notes', 'index',
+                'name-index', 'author-index', 'subject-index', 'license',
+                'eula', 'agreement', 'credits', 'acknowledgements',
+                'acknowledgments', 'epilogue', 'appendix', 'appendices',
+                'sources', 'photo-credits', 'answer', 'answers',
+                'abbreviations', 'contributors', 'about-the-contributors',
+                'technical-support',
+            )
+        )
         is_journal = False
         candidates = [
             ch_path / "document_profile.json",
@@ -276,6 +290,8 @@ class AccuracyVerifier:
         infix_sym_res = check_infix_math_in_words(md_content)
         head_int_res  = check_heading_prose_intrusion(md_content)
         tbl_ban_res   = check_table_banner_integrity(md_content)
+        unfmt_tbl_res = check_unformatted_table_blocks(md_content)
+        ligature_res  = check_broken_ligatures(md_content)
         head_den_res  = check_heading_density(md_content, total_tokens, is_front_matter, is_journal, is_back_matter)
         hard_wrap_res = check_excessive_hard_wraps(md_content)
 
@@ -285,6 +301,8 @@ class AccuracyVerifier:
             infix_sym_res['passed'] and
             head_int_res['passed'] and
             tbl_ban_res['passed'] and
+            unfmt_tbl_res['passed'] and
+            ligature_res['passed'] and
             head_den_res['passed']
         )
 
@@ -294,6 +312,8 @@ class AccuracyVerifier:
             'infix_symbols': infix_sym_res,
             'heading_intrusion': head_int_res,
             'table_banners': tbl_ban_res,
+            'unformatted_tables': unfmt_tbl_res,
+            'broken_ligatures': ligature_res,
             'heading_density': head_den_res,
             'hard_wraps': hard_wrap_res,
             'passed': semantic_pass,
@@ -303,6 +323,8 @@ class AccuracyVerifier:
         print(f"  • Mathematical Integrity: {'[PASS]' if (shat_math_res['passed'] and infix_sym_res['passed']) else '[FAIL]'} (shattered: {shat_math_res['count']}, infix: {infix_sym_res['count']})")
         print(f"  • Heading Prose Integrity: {'[PASS]' if head_int_res['passed'] else '[FAIL]'} ({head_int_res['count']} heading prose intrusions)")
         print(f"  • Table Banner Integrity: {'[PASS]' if tbl_ban_res['passed'] else '[FAIL]'} ({tbl_ban_res['count']} collapsed comparison banners)")
+        print(f"  • Unformatted Table Blocks: {'[PASS]' if unfmt_tbl_res['passed'] else '[FAIL]'} ({unfmt_tbl_res['count']} unformatted table blocks)")
+        print(f"  • Broken Ligature Check: {'[PASS]' if ligature_res['passed'] else '[FAIL]'} ({ligature_res['count']} broken ligature lines)")
         print(f"  • Heading Hierarchy Density: {'[PASS]' if head_den_res['passed'] else '[FAIL]'} ({head_den_res.get('heading_count', 0)} headings found)")
         print(f"  • Paragraph Reflow Sanity: {'[PASS]' if hard_wrap_res['passed'] else '[WARN]'} ({hard_wrap_res['unreflowed_paragraphs']} unreflowed blocks)")
 

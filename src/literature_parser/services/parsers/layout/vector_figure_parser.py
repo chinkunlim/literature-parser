@@ -52,8 +52,9 @@ class VectorFigureParser:
 
         extracted_images = []
         consumed = set()
+        fig_elems.sort(key=lambda el: float(el.attrib.get('top', 0)))
 
-        for cap_t in fig_elems:
+        for idx_f, cap_t in enumerate(fig_elems):
             cap_txt = ''.join(cap_t.itertext()).strip()
             m = re.match(r'^(?:Figure|Fig\.)\s+(\d+[\.\d]*)', cap_txt, re.IGNORECASE)
             if not m:
@@ -62,6 +63,11 @@ class VectorFigureParser:
             fig_sanitized = fig_num.replace('.', '_')
             f_top = float(cap_t.attrib.get('top', 0))
             f_left = float(cap_t.attrib.get('left', 0))
+            next_fig_top = (
+                float(fig_elems[idx_f + 1].attrib.get('top', 9999.0))
+                if idx_f + 1 < len(fig_elems)
+                else 9999.0
+            )
 
             # Caption continuation lines
             cap_lines = [cap_txt]
@@ -82,7 +88,7 @@ class VectorFigureParser:
 
             full_caption = ' '.join(cap_lines)
 
-            # Find associated diagram elements (e.g. vector fonts or within diagram bounding area)
+            # Find associated diagram elements bounded between f_top and next_fig_top
             vec_elems = []
             for t in page_elem.findall('text'):
                 if t in cap_consumed:
@@ -93,6 +99,8 @@ class VectorFigureParser:
                 left = float(t.attrib.get('left', 0))
                 txt = ''.join(t.itertext()).strip()
                 if not txt:
+                    continue
+                if top < f_top - 15.0 or top >= next_fig_top - 5.0 or (top - f_top > 320.0):
                     continue
                 if 'heltcom' in fam or 'helveticaltcom' in fam or 'ltcom' in fam:
                     vec_elems.append(t)

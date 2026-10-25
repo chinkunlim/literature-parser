@@ -28,6 +28,8 @@ class PDFAnalyzer:
         try:
             import pymupdf  # type: ignore
             doc = pymupdf.open(pdf_path)
+            if doc.is_encrypted:
+                doc.authenticate("")
             cnt = len(doc)
             doc.close()
             return cnt
@@ -66,6 +68,8 @@ class PDFAnalyzer:
         try:
             import pymupdf  # type: ignore
             doc = pymupdf.open(pdf_path)
+            if doc.is_encrypted:
+                doc.authenticate("")
             toc = doc.get_toc()
             doc.close()
             if toc:
@@ -329,7 +333,7 @@ class PDFAnalyzer:
             all_targets.append((p, slug))
 
         for p, title in body_items:
-            m = re.search(r'^(?:Chapter\s+)?(\d+)[\.\s:\-]+(.*)', title, re.IGNORECASE)
+            m = re.search(r'^(?:Chapter|Module|Unit)\s+(\d+|[IVXLCDM]+)[\.\s:\-]+(.*)', title, re.IGNORECASE) or re.search(r'^(\d+)[\.\s:\-]+(.*)', title)
             if m:
                 all_targets.append((p, format_chapter_title(title)))
             elif title.lower().startswith('appendix'):

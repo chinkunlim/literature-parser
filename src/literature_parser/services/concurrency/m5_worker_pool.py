@@ -178,7 +178,7 @@ class M5WorkerPool:
                 try:
                     results[idx] = future.result()
                 except Exception as exc:
-                    logger.error("[%s] Worker task %d raised exception: %s", desc, idx, exc)
-                    raise exc
+                    logger.error("[%s] Worker task %d raised exception (isolated): %s", desc, idx, exc)
+                    results[idx] = {"passed": False, "error": str(exc)}
 
         return results

@@ -658,7 +658,7 @@ class BookProcessorOrchestrator:
             pool = M5WorkerPool()
 
             def _process_task(item):
-                if self.interrupted or self.circuit_breaker.is_tripped():
+                if self.interrupted:
                     return None
                 i_idx, s_sec = item
                 s_name = s_sec['name']
@@ -667,10 +667,15 @@ class BookProcessorOrchestrator:
                 s_ch_dir = os.path.join(chapters_root, s_name)
                 os.makedirs(s_ch_dir, exist_ok=True)
                 s_ch_pdf = os.path.join(s_ch_dir, f"{s_name}.pdf")
-                if not os.path.exists(s_ch_pdf) or os.path.getsize(s_ch_pdf) == 0:
-                    PDFSplitter.split_chapter(pdf_path, s_start, s_end, s_ch_pdf)
-                ckpt.update_status(s_name, split_pdf=True, status='SPLIT')
-                return self.convert_single_chapter(s_ch_pdf, book_source_pdf=pdf_path, is_scanned=is_scanned)
+                try:
+                    if not os.path.exists(s_ch_pdf) or os.path.getsize(s_ch_pdf) == 0:
+                        PDFSplitter.split_chapter(pdf_path, s_start, s_end, s_ch_pdf)
+                    ckpt.update_status(s_name, split_pdf=True, status='SPLIT')
+                    return self.convert_single_chapter(s_ch_pdf, book_source_pdf=pdf_path, is_scanned=is_scanned)
+                except Exception as ch_err:
+                    logger.error("Chapter '%s' raised exception during parallel run: %s", s_name, ch_err)
+                    ckpt.update_status(s_name, verification_pass=False, status='FAILED', error=str(ch_err))
+                    return {"chapter": s_name, "passed": False, "error": str(ch_err)}
 
             pool.execute_parallel(pending_sections, _process_task, desc="M5 Parallel Chapters")
         else:
@@ -679,11 +684,10 @@ class BookProcessorOrchestrator:
                     print(f"[!] Process paused at section {sec['name']}. Resume later with: book_processor resume")
                     break
 
-                # Circuit breaker guard
                 if self.circuit_breaker.is_tripped():
-                    print("\n[🚨 CIRCUIT BREAKER TRIPPED] Multiple consecutive chapters failed verification!")
-                    print("  Pipeline automatically paused to protect downstream output. Inspect errors before resuming.\n")
-                    break
+                    logger.warning(
+                        "[Circuit Breaker Advisory] Multiple chapters had verification warnings, but continuing unattended batch."
+                    )
 
                 name = sec['name']
                 start = sec['start']
@@ -694,13 +698,17 @@ class BookProcessorOrchestrator:
                 os.makedirs(ch_dir, exist_ok=True)
                 ch_pdf = os.path.join(ch_dir, f"{name}.pdf")
 
-                # 1. Split PDF (skip if already exists)
-                if not os.path.exists(ch_pdf) or os.path.getsize(ch_pdf) == 0:
-                    PDFSplitter.split_chapter(pdf_path, start, end, ch_pdf)
-                ckpt.update_status(name, split_pdf=True, status='SPLIT')
+                try:
+                    # 1. Split PDF (skip if already exists)
+                    if not os.path.exists(ch_pdf) or os.path.getsize(ch_pdf) == 0:
+                        PDFSplitter.split_chapter(pdf_path, start, end, ch_pdf)
+                    ckpt.update_status(name, split_pdf=True, status='SPLIT')
 
-                # 2. Convert & Auto-Verify (with auto-retry feedback loop)
-                self.convert_single_chapter(ch_pdf, book_source_pdf=pdf_path, is_scanned=is_scanned)
+                    # 2. Convert & Auto-Verify (with auto-retry feedback loop)
+                    self.convert_single_chapter(ch_pdf, book_source_pdf=pdf_path, is_scanned=is_scanned)
+                except Exception as ch_err:
+                    logger.error("Chapter '%s' raised exception during serial run: %s", name, ch_err)
+                    ckpt.update_status(name, verification_pass=False, status='FAILED', error=str(ch_err))
 
         # Mirror chapter markdown to root directory if single section or journal article
         if len(sections) == 1:

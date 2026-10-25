@@ -64,12 +64,25 @@ def is_valid_dictionary_word(token: str, dict_words: set) -> bool:
 
 
 def check_noise_strings(content: str) -> list:
-    """Detects if any copyright/running footer noise strings leaked into the markdown."""
+    """Detects if any copyright/running footer noise strings leaked into the markdown.
+
+    Args:
+        content: Markdown content of the chapter.
+
+    Returns:
+        List of matched noise strings.
+    """
+    cleaned = re.sub(r'<table.*?>.*?</table>', '', content, flags=re.DOTALL)
     found = []
-    for line in content.splitlines():
+    for line in cleaned.splitlines():
         line_clean = line.strip()
-        # Skip legitimate bibliographic / abstract records (e.g. PsycINFO Database Record, APA article meta)
-        if re.search(r'\b(?:psycinfo|database record|journal abstract|american psychological association)\b', line_clean, re.IGNORECASE):
+        # Skip legitimate bibliographic / abstract / source note records
+        if re.search(
+            r'\b(?:psycinfo|database record|journal abstract|american psychological association'
+            r'|adapted by permission|reprinted (?:with|by) permission|note\.\s+from)\b',
+            line_clean,
+            re.IGNORECASE,
+        ):
             continue
         # Running header/footer artifacts appear on short standalone lines (<140 chars)
         if line_clean and len(line_clean) < 140:
@@ -344,25 +357,119 @@ def check_infix_math_in_words(content: str) -> dict:
 
 
 def check_heading_prose_intrusion(content: str) -> dict:
-    """
-    Detects headings that have absorbed following body prose sentences due to
-    multi-column order or aggressive cross-page concatenation (length > 80 chars
-    with multiple full sentences).
+    """Detects corrupted headings caused by multi-column prose intrusion, lowercase fragments,
+    single-letter drop caps, or decorative symbol runs.
+
+    Args:
+        content: Markdown content of the chapter.
+
+    Returns:
+        Dictionary with `passed`, `count`, and `examples`.
     """
     bad_headings = []
     for line in content.splitlines():
         s = line.strip()
-        if s.startswith(('## ', '### ', '#### ')):
+        if s.startswith(('## ', '### ', '#### ', '##### ', '###### ')):
             header_text = s.lstrip('#').strip()
-            # If header is long and contains sentence ending punctuation followed by capital letters
-            # (requires preceding letter so numbered prefix like '7. How...' is not flagged)
-            if len(header_text) > 85 and re.search(r'[a-z][.?!]\s+[A-Z]', header_text):
+            clean_h = re.sub(r'^[\*_`]+|[\*_`]+$', '', header_text).strip()
+            if not clean_h:
+                bad_headings.append(s)
+                continue
+            # 1. Starts with lowercase letter
+            if clean_h[0].islower():
+                bad_headings.append(header_text[:100])
+                continue
+            # 2. Pure decorative symbol run or starts with URL
+            if not re.search(r'[A-Za-z0-9]', clean_h) or re.match(r'^(?:https?://|www\.)', clean_h, re.IGNORECASE):
+                bad_headings.append(header_text[:100])
+                continue
+            # 3. Too short (1-2 chars), unless a single uppercase letter (Index section A-Z)
+            if len(clean_h) < 3 and not re.fullmatch(r'[A-Z]', clean_h):
+                bad_headings.append(header_text[:100])
+                continue
+            # 4. Mid-heading sentence period followed by uppercase word (excluding common abbreviations)
+            scrubbed = re.sub(
+                r'\b(?:e\.g|i\.e|vs|et al|Dr|Mr|Mrs|Ms|Prof|St|Jr|Sr|Inc|Ltd|Co|No|Vol|Ch|Fig|pp|Ed|U\.S|U\.K|Ph\.D|M\.A|B\.A)\.\s+',
+                ' ',
+                clean_h,
+                flags=re.IGNORECASE,
+            )
+            if re.search(r'[a-z]{2,}\.\s+[A-Z][a-z]', scrubbed):
+                bad_headings.append(header_text[:100])
+                continue
+            if len(clean_h) > 85 and re.search(r'[a-z][.?!]\s+[A-Z]', scrubbed):
                 bad_headings.append(header_text[:100] + '...')
 
     return {
         'passed': len(bad_headings) == 0,
         'count': len(bad_headings),
         'examples': bad_headings[:5],
+    }
+
+
+def check_unformatted_table_blocks(content: str) -> dict:
+    """Detects standalone Table headings that are not followed by a structured HTML `<table>`
+    or GFM pipe table (`| --- |`), catching tables degraded into lists or raw text.
+
+    Args:
+        content: Markdown content of the chapter.
+
+    Returns:
+        Dictionary with `passed`, `count`, and `examples`.
+    """
+    unformatted = []
+    lines = content.splitlines()
+    tbl_head_re = re.compile(
+        r'^(?:###+\s*Table\s+(\d+(?:[\.\-–]\d+)*[a-zA-Z]?)\b|\*\*Table\s+(\d+(?:[\.\-–]\d+)*[a-zA-Z]?)\.?\*\*'
+        r'|Table\s+(\d+(?:[\.\-–]\d+)+)\.\s+[A-Z])',
+        re.IGNORECASE,
+    )
+    for idx, line in enumerate(lines):
+        s = line.strip()
+        m = tbl_head_re.match(s)
+        if not m:
+            continue
+        t_num = m.group(1) or m.group(2) or m.group(3)
+        # Look ahead up to 15 non-empty lines for <table or | ---
+        window = "\n".join(lines[idx : min(len(lines), idx + 18)])
+        if '<table' not in window and not re.search(r'\|\s*:?-{3,}:?\s*\|', window):
+            unformatted.append(f"Table {t_num}: {s[:80]}")
+
+    return {
+        'passed': len(unformatted) == 0,
+        'count': len(unformatted),
+        'examples': unformatted[:5],
+    }
+
+
+def check_broken_ligatures(content: str) -> dict:
+    """Detects broken `fi`/`fl`/`ffi`/`ffl` ligatures containing an internal space (e.g. 'identifi cation').
+
+    Args:
+        content: Markdown content of the chapter.
+
+    Returns:
+        Dictionary with `passed`, `count`, and `examples`.
+    """
+    from literature_parser.services.utils.text_utils import repair_broken_ligatures
+
+    repaired = repair_broken_ligatures(content)
+    if repaired == content:
+        return {'passed': True, 'count': 0, 'examples': []}
+
+    examples = []
+    for orig_line, rep_line in zip(content.splitlines(), repaired.splitlines()):
+        if orig_line != rep_line:
+            examples.append(orig_line.strip()[:80])
+            if len(examples) >= 5:
+                break
+    diff_count = sum(
+        1 for o, r in zip(content.splitlines(), repaired.splitlines()) if o != r
+    )
+    return {
+        'passed': False,
+        'count': diff_count,
+        'examples': examples,
     }
 
 

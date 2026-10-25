@@ -229,12 +229,32 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 p = doc[idx]
                 d = p.get_text('dict')
                 pw, ph = p.rect.width, p.rect.height
-                xml_lines = [f'<page number="{page_num}" position="absolute" top="0" left="0" height="{ph}" width="{pw}">']
+                rot_ccw = 0
+                rot_cw = 0
+                norm_spans = 0
+                for b in d.get('blocks', []):
+                    if b.get('type') == 0:
+                        for line in b.get('lines', []):
+                            ldir = line.get('dir', (1.0, 0.0))
+                            for span in line.get('spans', []):
+                                if len(span.get('text', '').strip()) >= 2:
+                                    if abs(ldir[0]) < 0.5 and ldir[1] < -0.5:
+                                        rot_ccw += 1
+                                    elif abs(ldir[0]) < 0.5 and ldir[1] > 0.5:
+                                        rot_cw += 1
+                                    else:
+                                        norm_spans += 1
+                is_landscape_ccw = rot_ccw > 5 and rot_ccw > norm_spans
+                is_landscape_cw = rot_cw > 5 and rot_cw > norm_spans
+                eff_pw = ph if (is_landscape_ccw or is_landscape_cw) else pw
+                eff_ph = pw if (is_landscape_ccw or is_landscape_cw) else ph
+                xml_lines = [f'<page number="{page_num}" position="absolute" top="0" left="0" height="{eff_ph}" width="{eff_pw}">']
                 font_map: dict[tuple[str, float], str] = {}
 
                 for b in d.get('blocks', []):
                     if b.get('type') == 0:
                         for line in b.get('lines', []):
+                            ldir = line.get('dir', (1.0, 0.0))
                             for span in line.get('spans', []):
                                 font_name = span.get('font', 'default')
                                 font_size = round(float(span.get('size', 12.0)), 1)
@@ -246,13 +266,26 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
 
                                 f_id = font_map[font_key]
                                 x0, y0, x1, y1 = span.get('bbox', (0, 0, 0, 0))
-                                left = round(x0, 2)
-                                top = round(y0, 2)
-                                width = round(max(0.0, x1 - x0), 2)
-                                height = round(max(0.0, y1 - y0), 2)
+                                if is_landscape_ccw and abs(ldir[0]) < 0.5 and ldir[1] < -0.5:
+                                    left = round(max(0.0, ph - y1), 2)
+                                    top = round(x0, 2)
+                                    width = round(max(0.0, y1 - y0), 2)
+                                    height = round(max(0.0, x1 - x0), 2)
+                                elif is_landscape_cw and abs(ldir[0]) < 0.5 and ldir[1] > 0.5:
+                                    left = round(y0, 2)
+                                    top = round(max(0.0, pw - x1), 2)
+                                    width = round(max(0.0, y1 - y0), 2)
+                                    height = round(max(0.0, x1 - x0), 2)
+                                else:
+                                    left = round(x0, 2)
+                                    top = round(y0, 2)
+                                    width = round(max(0.0, x1 - x0), 2)
+                                    height = round(max(0.0, y1 - y0), 2)
                                 s_text = span.get('text', '')
                                 if s_text:
-                                    txt = html.escape(s_text)
+                                    # Strip XML-illegal control chars (0x00-0x08, 0x0b, 0x0c, 0x0e-0x1f, 0x7f)
+                                    s_clean = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]+', ' ', s_text)
+                                    txt = html.escape(s_clean)
                                     flags = span.get('flags', 0)
                                     if (flags & 16) or 'bold' in font_name.lower():
                                         txt = f'<b>{txt}</b>'
@@ -438,7 +471,10 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
 
         # 4. Pre-extract Exhibits (e.g. Exhibit 3.1, Exhibit 4.1)
         try:
-            page_exhibits, ex_consumed = LayoutDetector.extract_exhibits(page_elem, fonts, pw, ph, page_num)
+            page_exhibits, ex_consumed = LayoutDetector.extract_exhibits(
+                page_elem, fonts, pw, ph, page_num,
+                already_consumed=lo_consumed | map_consumed | tbl_consumed
+            )
         except Exception as e:
             logger.warning("extract_exhibits failed on page %d: %s", page_num, e)
             page_exhibits, ex_consumed = [], set()
@@ -578,7 +614,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             if clean_inner:
                 raw_lines.append((top, left, w, font_info['size'], clean_inner))
 
-        if not raw_lines and not map_md and not lo_md and not page_tables and not eoc_sections and not page_exhibits:
+        if not raw_lines and not map_md and not lo_md and not page_tables and not eoc_sections and not page_exhibits and not page_images:
             return ""
 
         # Baseline clustering: cluster text elements within baseline tolerance into lines
@@ -586,6 +622,11 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
         p1_body_y = _STYLE.get("geometry", {}).get("content_start", {}).get("page_1_body_start_y") or (ph * 0.45)
         raw_lines.sort(key=lambda x: x[0])
         clusters = []
+
+        # Auto-detect if this page genuinely has two-column layout even if global _STYLE says single_column
+        left_col_spans = [it for it in raw_lines if it[1] < pw * 0.45 and (it[1] + it[2]) < pw * 0.49 and len(it[4]) > 15]
+        right_col_spans = [it for it in raw_lines if it[1] >= pw * 0.47 and len(it[4]) > 15]
+        page_has_two_cols = len(left_col_spans) >= 4 and len(right_col_spans) >= 4
 
         # Check for side rail on Page 1 (e.g. Cambridge UP / IEEE sidebar)
         has_p1_side_rail = False
@@ -602,21 +643,30 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             item_top = item[0]
             # Page 1 Sanctuary: On page 1 above the body content start (title, author, abstract), enforce single column unless side rail!
             is_p1_header_area = (page_num == 1) and (item_top < p1_body_y)
-            treat_as_single_col = is_single_col_doc or (is_p1_header_area and not has_p1_side_rail)
+            treat_as_single_col = (is_single_col_doc and not page_has_two_cols) or (is_p1_header_area and not has_p1_side_rail)
 
             split_x = p1_rail_split_x if (page_num == 1 and has_p1_side_rail and item_top < p1_body_y) else (pw * 0.48)
             item_is_left = item[1] < split_x and (item[1] + item[2]) < split_x
             item_is_right = item[1] >= split_x
             for c in clusters:
                 c_top = sum(x[0] for x in c) / len(c)
+                c_avg_size = sum(x[3] for x in c) / len(c)
                 # Normal vertical threshold: 6.5pt; allow up to 10.5pt for math subscripts/punctuation (e.g. colons/dots)
                 max_v = 10.5 if item[4] in (':', ';', ',', '.') else 6.5
                 if abs(c_top - item[0]) <= max_v:
+                    # Never merge spans with wildly different font sizes (e.g. 9.5pt body prose + 15pt/20pt heading)
+                    # unless horizontally adjacent (< 12pt gap) as part of an inline drop-cap or formula
+                    is_horizontally_close = any(
+                        abs(item[1] - (x[1] + x[2])) < 14 or abs(x[1] - (item[1] + item[2])) < 14
+                        for x in c
+                    )
+                    if abs(c_avg_size - item[3]) >= 2.5 and not is_horizontally_close:
+                        continue
                     # In multi-column layouts, don't mix left-column and right-column items into the same baseline cluster
                     if not treat_as_single_col:
-                        # If item is adjacent horizontally to an existing item in this cluster (gap < 20), it's part of the same line!
+                        # If item is adjacent horizontally to an existing item in this cluster (gap < 15), it's part of the same line!
                         is_horizontally_adjacent = any(
-                            abs(item[1] - (x[1] + x[2])) < 20 or abs(x[1] - (item[1] + item[2])) < 20
+                            abs(item[1] - (x[1] + x[2])) < 15 or abs(x[1] - (item[1] + item[2])) < 15
                             for x in c
                         )
                         if not is_horizontally_adjacent:
@@ -641,7 +691,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             for item in c_sorted:
                 top_val, left_val, width_val, size_val, txt_val = item
                 item_is_p1_header = (page_num == 1) and (top_val < p1_body_y)
-                treat_as_single_col = is_single_col_doc or (item_is_p1_header and not has_p1_side_rail)
+                treat_as_single_col = (is_single_col_doc and not page_has_two_cols) or (item_is_p1_header and not has_p1_side_rail)
                 split_x = p1_rail_split_x if (page_num == 1 and has_p1_side_rail and top_val < p1_body_y) else (pw * 0.48)
                 if not cur_line:
                     cur_line = [top_val, left_val, width_val, size_val, txt_val]
@@ -649,7 +699,10 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                     prev_top, prev_left, prev_width, prev_size, prev_txt = cur_line
                     prev_right = prev_left + prev_width
                     gap = left_val - prev_right
-                    is_diff_col = not treat_as_single_col and (gap > 20) and ((prev_left < split_x and left_val >= split_x) or (gap > 60 and left_val < prev_left))
+                    size_mismatch = abs(prev_size - size_val) >= 2.5 and gap > 12
+                    is_diff_col = size_mismatch or (
+                        not treat_as_single_col and (gap > 15) and ((prev_left < split_x and left_val >= split_x) or (gap > 60 and left_val < prev_left))
+                    )
                     if is_diff_col:
                         merged_same_y.append(tuple(cur_line))
                         cur_line = [top_val, left_val, width_val, size_val, txt_val]
@@ -692,7 +745,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
         left_count = sum(1 for c in classified if c[4] == 'left')
         right_count = sum(1 for c in classified if c[4] == 'right')
 
-        if not is_single_col_doc and left_count >= 5 and right_count >= 5:
+        if (not is_single_col_doc or page_has_two_cols) and left_count >= 5 and right_count >= 5:
             # Multi-column page: group spanning elements into bands
             span_intervals = []
             for top, left, size, text, cls_type in classified:
@@ -798,6 +851,46 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 continue
 
             # Check if major section heading (size >= 28 or journal academic section heading)
+            # Check if continuation of previous H2/H3/H4 heading wrapped across lines
+            # (e.g. 'Career Behavior ' + 'and Development', or 'Theories ' + 'of Group Counseling')
+            if (
+                not curr_p
+                and blocks
+                and re.match(r'^#{2,4}\s+', blocks[-1])
+                and last_top is not None
+                and (0 <= top - last_top <= 35)
+                and not re.search(r'[.?!]$', blocks[-1].strip())
+                and len(clean_t) < 70
+                and (
+                    (13.5 <= size < 28.0)
+                    or re.match(r'^(?:and|or|of|in|to|for|with|on|from|by|the|a|an)\b', clean_t, re.IGNORECASE)
+                )
+                and not re.search(r'[.?!]$', clean_t)
+                and not re.match(r'^(?:Figure|Fig\.|Table|Exhibit|Photo|LO\s+\d|\d+\.\d+)\b', clean_t, re.IGNORECASE)
+            ):
+                blocks[-1] = blocks[-1].rstrip() + " " + clean_t
+                last_top = top
+                continue
+
+            # Guard against decorative drop-caps, single-character diagram callouts, URLs, or symbol runs becoming headings
+            is_valid_heading_text = (
+                len(clean_t) >= 3
+                and bool(re.search(r'[A-Za-z]{2,}', clean_t))
+                and not clean_t[0].islower()
+                and not re.match(r'^(?:https?://|www\.|[•~—\-\*,\.;:\d]+$)', clean_t, re.IGNORECASE)
+                and not re.search(r'[a-z]\.\s+[A-Z]', clean_t)
+                and not re.match(r'^(?:different\s+[A-Z]|[A-Z]\s+\d+)$', clean_t)
+            )
+            # In Index sections, single uppercase letters 'A'..'Z' are valid alphabetical index dividers
+            is_index_letter = bool(re.fullmatch(r'[A-Z]', clean_t)) and ("index" in pdf_path.lower())
+
+            # Handle oversized Drop Cap single letter (size >= 22pt, single uppercase letter) by prepending to curr_p
+            if size >= 22.0 and re.fullmatch(r'[A-Z]', clean_t) and not is_index_letter:
+                curr_p.append(clean_t)
+                curr_p_lefts.append(left)
+                last_top = top
+                continue
+
             is_section_num = bool(re.match(r'^\d+\.\s+[A-Z]', clean_t)) and len(clean_t) < 50 and not re.search(r'\b(?:recommend|encouraged|practitioners|researchers|suggest|finally)\b', clean_t, re.IGNORECASE) and not re.search(r'[.?!]$', clean_t)
             is_journal_head = is_journal and (
                 clean_t in ('Abstract', 'Method', 'Methods', 'Results', 'Discussion', 'References', 'Conclusion', 'Conclusions') or
@@ -807,15 +900,19 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 bool(re.match(r'^\d+\.\d+\.?\s+[A-Z]', clean_t)) or
                 (clean_t in ('Participants', 'Procedure', 'Data Analysis', 'Measures', 'Apparatus', 'Statistical Analysis'))
             )
-            is_h2 = (size >= 28.0 and len(clean_t) < 100) or is_journal_head
+            is_h2 = ((size >= 28.0 and len(clean_t) < 100 and is_valid_heading_text) or is_journal_head)
             # Check if subsection heading (20 <= size < 28) or Chapter N in Appendix or journal subhead
-            is_h3 = ((20.0 <= size < 28.0 and len(clean_t) < 80) or bool(re.match(r'^(?:\*\*)?Chapter\s+\d+(?:\*\*)?$', text.strip(), re.IGNORECASE))) or is_journal_subhead
+            is_h3 = (((20.0 <= size < 28.0 and len(clean_t) < 80 and is_valid_heading_text) or bool(re.match(r'^(?:\*\*)?Chapter\s+\d+(?:\*\*)?$', text.strip(), re.IGNORECASE))) or is_journal_subhead)
             # Check if sub-subsection heading (14.0 <= size < 20.0) - only for textbooks
             is_h4 = not is_journal and (
-                14.0 <= size < 18.0
-                and len(clean_t) < 70
-                and not re.search(r'[.?!:]$', clean_t)
-                and not bool(re.match(r'^(?:Figure|Fig\.|Table|Exhibit|Photo)\b', clean_t, re.IGNORECASE))
+                (
+                    14.0 <= size < 20.0
+                    and len(clean_t) < 70
+                    and is_valid_heading_text
+                    and not re.search(r'[.?!:]$', clean_t)
+                    and not bool(re.match(r'^(?:Figure|Fig\.|Table|Exhibit|Photo)\b', clean_t, re.IGNORECASE))
+                )
+                or is_index_letter
             )
             # Check if objective heading (1.1 Compare ...) - only for textbooks
             is_obj = not is_journal and bool(re.match(r'^(?:\*\*)?\d+\.\d+(?:\*\*)?(?:\s+|$)', text.strip()))
@@ -893,7 +990,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 continue
 
             # Table detection
-            m_table = re.match(r'^(?:\*\*)?Table\s+(\d+[\.\d]*)\s*(?:\*\*)?\s*:?\s*(.*)', clean_t, re.IGNORECASE)
+            m_table = re.match(r'^(?:\*\*)?Table\s+(\d+(?:[\.\-–]\d+)*[a-zA-Z]?)\.?\s*(?:\*\*)?\s*:?\s*(.*)', clean_t, re.IGNORECASE)
             if m_table:
                 t_num = m_table.group(1)
                 t_title = m_table.group(2).strip()
@@ -902,7 +999,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 is_mid_sentence = bool(curr_p and not re.search(r'[.?!:]\s*$', curr_p[-1].strip()))
                 starts_lowercase = bool(t_title and t_title[0].islower())
                 is_prose_table = is_mid_sentence or starts_lowercase or re.match(
-                    r'^(?:shows|reveals|illustrates|demonstrates|depicts|provides|lists|is|was|presents|summarizes|gives|indicates|identifies|describes|contains|displays|outlines|compares|reports|because|that|which|when|if|as)\b',
+                    r'^(?:shows|reveals|illustrates|demonstrates|depicts|provides|lists|is|are|was|were|presents|summarizes|gives|indicates|identifies|describes|contains|displays|outlines|compares|reports|offers|because|that|which|when|if|as|in|on|of|for|to|with|by|and|or|,|\.|;|\))\b',
                     t_title, re.IGNORECASE
                 )
                 if not is_prose_table:
@@ -942,9 +1039,11 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             if (is_indent or is_gap) and curr_p:
                 flush_p()
 
-            # Un-hyphenate with previous line
+            # Un-hyphenate or attach single-letter drop-cap with previous line
             if curr_p and curr_p[-1].endswith('-'):
                 curr_p[-1] = curr_p[-1][:-1] + text
+            elif len(curr_p) == 1 and re.fullmatch(r'[A-Z]', curr_p[0]) and clean_t and clean_t[0].islower():
+                curr_p[0] = curr_p[0] + text.lstrip()
             else:
                 curr_p.append(text)
                 curr_p_lefts.append(left)
@@ -1025,7 +1124,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 for tbl in page_tables:
                     if tbl['top'] in placed_tables:
                         continue
-                    m_tbl = re.search(r'\bTable\s+(\d+[\.\d]*)', tbl['markdown'], re.IGNORECASE)
+                    m_tbl = re.search(r'\bTable\s+(\d+(?:[\.\-–]\d+)*[a-zA-Z]?)', tbl['markdown'], re.IGNORECASE)
                     if m_tbl:
                         t_ref = f"Table {m_tbl.group(1)}"
                         if t_ref in b and not b.startswith('#'):
@@ -1105,19 +1204,19 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
         # Format sidebars / callout boxes
         final_blocks = LayoutDetector.format_callout_boxes(final_blocks)
 
-        # Group Table headings with their immediately subsequent bullet items for table formatting
+        # Group Table headings with their immediately subsequent bullet/numbered items for table formatting
         # Match both ### Table heading style and **Table X** bold-label style
         tbl_heading_pat = re.compile(
-            r'^(?:###\s*Table\s+\d+|\*\*Table\s+[\d\.]+\*\*)', re.IGNORECASE
+            r'^(?:###\s*Table\s+\d+(?:[\.\-–]\d+)*|\*\*Table\s+\d+(?:[\.\-–]\d+)*\.?\*\*)', re.IGNORECASE
         )
         merged_for_tables = []
         i = 0
         while i < len(final_blocks):
             b = final_blocks[i]
-            if tbl_heading_pat.match(b):
+            if tbl_heading_pat.match(b) and '<table' not in b and '| ---' not in b:
                 tbl_lines = [b]
                 i += 1
-                while i < len(final_blocks) and re.match(r'^[-*•]\s+', final_blocks[i].strip()):
+                while i < len(final_blocks) and re.match(r'^(?:[-*•❏☐☑]|\d+[\.\)]|Step\s+\d+)\s+', final_blocks[i].strip()):
                     tbl_lines.append(final_blocks[i].strip())
                     i += 1
                 merged_for_tables.append('\n'.join(tbl_lines))

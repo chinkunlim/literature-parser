@@ -386,7 +386,7 @@ class LayoutDetector:
         return MarginParser.detect_page_margin_side(page_elem, pw, ph)
 
     @classmethod
-    def extract_exhibits(cls, page_elem, fonts: dict, pw: float, ph: float, page_num: int) -> tuple:
+    def extract_exhibits(cls, page_elem, fonts: dict, pw: float, ph: float, page_num: int, already_consumed: set = None) -> tuple:
         """
         Extracts Exhibit callout boxes (e.g. EXHIBIT 3.1, EXHIBIT 4.1, EXHIBIT 4.2, EXHIBIT 4.3).
         Handles both two-column narrative exhibits and structured key-value forms.
@@ -395,7 +395,11 @@ class LayoutDetector:
         """
         exhibits = []
         consumed = set()
-        sorted_texts = sorted(page_elem.findall('text'), key=lambda x: (float(x.attrib.get('top', 0)), float(x.attrib.get('left', 0))))
+        prior = already_consumed or set()
+        sorted_texts = sorted(
+            [t for t in page_elem.findall('text') if t not in prior],
+            key=lambda x: (float(x.attrib.get('top', 0)), float(x.attrib.get('left', 0)))
+        )
 
         # 1. Look for explicit Exhibit headers on this page
         exhibit_headers = []
@@ -413,7 +417,7 @@ class LayoutDetector:
         # Check for unlabelled exhibit continuation at top of page (e.g. Ch04 p4)
         is_continuation = False
         if not exhibit_headers and page_num > 1:
-            has_fig = any(re.match(r'^(?:Figure|Fig\.)\s+\d+', ''.join(t.itertext()).strip()) for t in sorted_texts if float(t.attrib.get('top', 0)) < ph * 0.4)
+            has_fig = any(re.match(r'^(?:Figure|Fig\.|Table|TABLE)\s+\d+', ''.join(t.itertext()).strip()) for t in page_elem.findall('text') if float(t.attrib.get('top', 0)) < ph * 0.4)
             if not has_fig:
                 top_helv = []
                 for t in sorted_texts:

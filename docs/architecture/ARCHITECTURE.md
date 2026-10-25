@@ -138,6 +138,9 @@ flowchart TD
   - `books/scanned-pdf/`：掃描版教科書（直接調用 Vision 神經 OCR 解析）。
   - `books/`（根目錄）：未分流時相容備援（自動執行抽樣檢測）。
   - `literature/`：期刊文獻論文（預設雙欄數位論文，亦支援 `digital-pdf/` 與 `scanned-pdf/` 子目錄）。
+  - `processed/`：處理完成且 100% 驗證通過之原始文檔歸檔專用區（自動排除於掃描外）：
+    - `processed-books/`：已完成驗證歸檔之教科書 PDF / EPUB 原檔。
+    - `processed-literature/`：已完成驗證歸檔之學術期刊論文 PDF 原檔。
 - `output/`：轉換產物（資料夾一律禁用底線 `_`，統一以連字號 `-` 取代空格）：
   - `books/<Book-Title-With-Hyphens>/`：章節 Markdown、抽像影像、EPUB 3 與 Obsidian 雙鏈。
   - `literature/<Paper-Title-With-Hyphens>/`：結構化論文 Markdown、圖表與 EPUB 3。

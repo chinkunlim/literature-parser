@@ -136,6 +136,7 @@ literature-parser/
 │   │   ├── 007-unified-theme-and-pipeline-configuration.md
 │   │   ├── 008-convention-input-routing-and-naming-hygiene.md
 │   │   ├── 009-geometric-bounds-and-non-backtracking-regex.md
+│   │   ├── 010-archive-segregation-and-batch-resilience.md
 │   │   ├── _TEMPLATE.md                    # ADR 範本 (tracker_cli 會套用)
 │   │   └── DECISIONS.md                    # 架構決策總表
 │   ├── architecture/                       # [系統架構與資料模型]
@@ -151,6 +152,10 @@ literature-parser/
 │   │   ├── 007-eoc-false-positive-and-wcn-leakage.md
 │   │   ├── 008-prose-keyword-collision-python-codeblock.md
 │   │   ├── 009-margin-glossary-swallowing-headings.md
+│   │   ├── 010-pdf-outline-embedded-null-bytes.md
+│   │   ├── 011-archive-path-substring-collision.md
+│   │   ├── 012-back-matter-credits-heading-density.md
+│   │   ├── 013-parallel-worker-status-race.md
 │   │   ├── _TEMPLATE.md                    # 已知問題範本 (tracker_cli 會套用)
 │   │   └── KNOWN_ISSUES.md                 # 已知問題總表 (🔴/🟡/🟢)
 │   ├── migration/                          # [遷移紀錄] 舊專案搬移清單、批次與完成標準
@@ -164,6 +169,7 @@ literature-parser/
 │   │   ├── 006-conversion-service-and-three-tier-verification.md
 │   │   ├── 007-theme-and-pipeline-configuration.md
 │   │   ├── 008-batch-resilience-and-zero-defect-pipeline.md
+│   │   ├── 009-autonomous-layout-and-archive-segregation.md
 │   │   ├── _TEMPLATE.md                    # 規格範本
 │   │   └── SPECS.md                        # 規格清單
 │   ├── standards/                          # [工程規範] 依任務載入 (Progressive Disclosure)

@@ -48,7 +48,10 @@
    - 支援「全域母版 ＋ 單書選填覆寫」分層機制，免修 Python 程式碼即可自訂外觀；並提供 `scripts/apply_theme.py` 於數毫秒內重刷已轉出 Markdown 之樣式與目錄。
 13. **批次轉檔韌性與全量零缺陷保證 (Batch Resilience & Zero-Defect Pipeline)**：
    - 導入線性時間跨頁段落流向縫合，杜絕災難性正則回溯；為邊欄名詞解釋與章末模組施加嚴格幾何邊界與字級硬約束，徹底防止內文大標題與段落被邊欄誤吞。
-   - 支援無人值守全量批次轉換與 Clean-Slate 乾淨重跑驗證，全書庫多出版社（Cengage, Pearson, Wiley 等）97/97 章節全數 100% 直通通過。
+   - 支援無人值守全量批次轉換、自動歸檔（`input/processed/processed-books/` 與 `processed-literature/`）與 Clean-Slate 乾淨重跑驗證，全書庫多出版社（Cengage, Pearson, Wiley 等）5 本教科書共 128/128 章節（含 485 頁神經 OCR 掃描版）全數 100% 直通通過。
+14. **自適應版面剖析與斷點續傳 (Autonomous Profiler & Checkpoint Continuation)**：
+   - Stage 0 探測器於並行前自動採樣正文特徵，解耦元件辨識（Component Registry）與容災守衛（Resilience Guard）。
+   - 支援 `--resume` 斷點續傳旗標，已通過出版級驗收之章節直接略過，並結合實體檔案校驗，徹底杜絕多執行緒競爭造成的假性未完成。
 
 ---
 
@@ -90,8 +93,8 @@ cp .env.example .env
 uv run literature-parser process path/to/document.pdf --type journal
 uv run literature-parser process path/to/textbook.pdf --type book
 
-# 批次遞迴處理整個目錄
-uv run literature-parser batch path/to/folder/ --type journal
+# 批次遞迴處理整個目錄（支援 --resume 略過已驗收章節斷點續傳）
+uv run literature-parser batch path/to/folder/ --type book --resume
 
 # 匯出結構化 Markdown 為標準 EPUB 3 電子書（支援書籍多章節與單篇論文）
 uv run literature-parser epub path/to/output_dir/ --type book

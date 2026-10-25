@@ -13,3 +13,7 @@
 | [ISSUE-007](007-eoc-false-positive-and-wcn-leakage.md) | 章末解析器鬆散正則誤吞內文並洩漏版權宣告 | Resolved | High | 2026-10-23 |
 | [ISSUE-008](008-prose-keyword-collision-python-codeblock.md) | 自然語言關鍵字碰撞誤判為 Python 程式碼區塊 | Resolved | Medium | 2026-10-23 |
 | [ISSUE-009](009-margin-glossary-swallowing-headings.md) | 邊欄名詞解釋缺乏幾何寬度限制誤食主文大標題 | Resolved | High | 2026-10-23 |
+| [ISSUE-010](010-pdf-outline-embedded-null-bytes.md) | 🟢 已根治 (Resolved) | PDF 大綱包含尾端 Null 字元導致建檔崩潰 | Biopsychology 大綱書籤夾帶 \x00，在 os.makedirs 時拋出 ValueError: embedded null byte | TODO |
+| [ISSUE-011](011-archive-path-substring-collision.md) | 🟢 已根治 (Resolved) | 歸檔比對因專案名稱命中字串導致書籍誤入文獻 | 資料目錄名稱 literature-parser 導致 is_lit 判斷一律命中，書籍誤歸檔至 processed-literature | TODO |
+| [ISSUE-012](012-back-matter-credits-heading-density.md) | 🟢 已根治 (Resolved) | 教科書 Credits 頁面因標題密度檢查誤判為未通過 | Credits 超過 1000 字且未列入 is_back_matter 豁免，導致 check_heading_density 判定未達標題密度 | TODO |
+| [ISSUE-013](013-parallel-worker-status-race.md) | 🟢 已根治 (Resolved) | 多 Worker 平行回寫狀態導致 split_pdf 旗標覆蓋 | 平行處理章節時因並發寫入 processing_status.json，短暫將 split_pdf 覆蓋為 False 導致假性未完成 | TODO |

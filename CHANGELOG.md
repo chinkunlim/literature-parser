@@ -73,6 +73,7 @@ All notable changes to **literature-parser** are documented here
 - docs: update and synchronize all project markdown documentation, ADR-007, and architecture (TASK-022) (by `@antigravity`)
 - docs: synchronize all project markdown documentation for input/output convention routing, ADR-008, and ISSUE-005 (by `@antigravity`)
 - docs(all): update ADR-009, SPEC-008, ISSUE-006~009, README, ARCHITECTURE, and tree sync (TASK-040) (by `@antigravity`)
+- docs: update all architecture, ADR, known issues, specs, and README markdown files (by `@antigravity`)
 
 ### Testing
 - test(workflows): verify all CLI workflows, fix pathing and pure-python fallbacks (by `@antigravity`)

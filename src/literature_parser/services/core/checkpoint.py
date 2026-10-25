@@ -105,7 +105,10 @@ class CheckpointManager:
         """Returns True if the chapter has been verified and can be skipped on resume."""
         self.data = self._load()
         ch = self.data["chapters"].get(chapter_name, {})
-        return ch.get("status") == "VERIFIED" and ch.get("split_pdf") and ch.get("markdown_generated") and ch.get("verification_pass") is True
+        ch_dir = self.book_dir / "chapters" / chapter_name
+        pdf_exists = (ch_dir / f"{chapter_name}.pdf").exists() if ch_dir.exists() else False
+        has_pdf = bool(ch.get("split_pdf") or pdf_exists)
+        return ch.get("status") == "VERIFIED" and has_pdf and ch.get("markdown_generated") and ch.get("verification_pass") is True
 
 
     def get_pending_chapters(self) -> list:

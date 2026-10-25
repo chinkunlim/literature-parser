@@ -510,6 +510,7 @@ class BookProcessorOrchestrator:
         ckpt = CheckpointManager(str(book_dir), book_dir.name)
         ckpt.update_status(
             ch_name,
+            split_pdf=True,
             markdown_generated=True,
             images_count=len(saved_images),
             verification_pass=v_res['passed'],

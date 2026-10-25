@@ -291,12 +291,18 @@ def load_style(book_output_dir: Optional[str | Path] = None) -> Dict[str, Any]:
                     if k in bp:
                         style[k] = bp[k]
 
-                # Apply special blocks / section rules
+                # Apply special blocks / section rules (preserve default EOC patterns via union, Refs: ISSUE-016)
                 if "special_blocks" in bp:
                     sb = bp["special_blocks"]
-                    for k in ("gloss_placement", "gloss_format", "eoc_heading_patterns", "lo_use_bullets"):
+                    for k in ("gloss_placement", "gloss_format", "lo_use_bullets"):
                         if k in sb:
                             style[k] = sb[k]
+                    if "eoc_heading_patterns" in sb and isinstance(sb["eoc_heading_patterns"], list):
+                        existing_eoc = list(style.get("eoc_heading_patterns", []))
+                        for pat in sb["eoc_heading_patterns"]:
+                            if pat not in existing_eoc:
+                                existing_eoc.append(pat)
+                        style["eoc_heading_patterns"] = existing_eoc
                 if "section_rules" in bp:
                     style["section_rules"] = bp["section_rules"]
         except Exception as exc:

@@ -70,6 +70,10 @@ class LayoutAutoHealer:
         text, f_head = cls.heal_corrupted_headings(text)
         fixes_applied.extend(f_head)
 
+        # 4.5. Heal Mermaid syntax corruptions (—> -> -->) and orphan ** lines (Refs: ISSUE-016)
+        text, f_mermaid = cls.heal_mermaid_and_divider_syntax(text)
+        fixes_applied.extend(f_mermaid)
+
         # 5. Heal leaked diagram text fragments by auto-cropping if images_dir is available
         if images_dir and os.path.exists(pdf_path):
             text, f4 = cls.heal_leaked_diagrams(text, pdf_path, images_dir)
@@ -101,6 +105,7 @@ class LayoutAutoHealer:
         fixes = []
 
         # 1. Stitch consecutive split headings where the second heading starts with a lowercase connector
+        # or where both are short uppercase/title headings (e.g. '## CAREER\n\n## COUNSELING')
         def _stitch_split_headings(match):
             h_hashes = match.group(1)
             part1 = match.group(2).strip()
@@ -111,6 +116,26 @@ class LayoutAutoHealer:
         text = re.sub(
             r"(?m)^(#{2,5})\s+([^\n]+?)\n{1,2}#{2,6}\s+((?:and|or|of|in|to|for|with|on|at|from|by|as|into|between|the|a|an)\b[^\n]+|[a-z][^\n]{1,55})$",
             _stitch_split_headings,
+            text,
+        )
+        text = re.sub(
+            r"(?m)^(#{2,4})\s+([A-Z][A-Z\s,&\-]{2,35})\n{1,2}\1\s+([A-Z][A-Z\s,&\-]{2,45})$",
+            _stitch_split_headings,
+            text,
+        )
+
+        # 1b. Stitch headings ending with a dangling connector/colon followed by a short non-sentence title line
+        # (e.g. '#### 3 Identifying Research Questions and\n\nForming Hypotheses' or '### Chapter 1\n\nCareer Counseling: ...')
+        def _stitch_dangling_heading_line(match):
+            h_hashes = match.group(1)
+            part1 = match.group(2).strip()
+            part2 = match.group(3).strip()
+            fixes.append(f"Stitched dangling heading continuation: '{part1} {part2}'")
+            return f"{h_hashes} {part1} {part2}"
+
+        text = re.sub(
+            r"(?m)^(#{2,5})\s+([^\n]*?\b(?:and|or|of|in|to|for|with|on|from|by|the|a|an)|Chapter\s+\d+)\n{1,2}([A-Z][^\n.!?;]{2,65})$",
+            _stitch_dangling_heading_line,
             text,
         )
 
@@ -222,6 +247,19 @@ class LayoutAutoHealer:
         text = re.sub(r"(?m)^>\s*(>\s*[🎯📖]\s+[^\n]+)", _break_callout, text)
         text = re.sub(r"(?m)^>\s*(>\s*\[!.*)", _break_callout, text)
 
+        # Unwrap tables swallowed inside blockquotes (e.g. '> **Table 5.2** ... \n>\n> <table ... > ... > </table>')
+        def _unwrap_quoted_table(match: re.Match) -> str:
+            raw_block = match.group(0)
+            unquoted = "\n".join(re.sub(r"^>\s?", "", ln) for ln in raw_block.splitlines())
+            fixes.append("Separated swallowed Table block from blockquote")
+            return "\n\n" + unquoted.strip() + "\n"
+
+        text = re.sub(
+            r"(?m)(?:^>\s*\*\*Table\s+[^\n]+\n(?:^>\s*\n)*)?^>\s*<table\b[^\n]*\n(?:^>[^\n]*\n)+?^>\s*</table>",
+            _unwrap_quoted_table,
+            text,
+        )
+
         return text, fixes
 
     @classmethod
@@ -298,6 +336,47 @@ class LayoutAutoHealer:
             text = re.sub(r"\*{4,}", "**", text)
 
         text = re.sub(r"\*\*\s+\*([^\*]+)\*\s+\*\*", r"***\1***", text)
+
+        return text, fixes
+
+    @classmethod
+    def heal_mermaid_and_divider_syntax(cls, text: str) -> tuple[str, list]:
+        """Repairs corrupted Mermaid arrows (`—>` -> `-->`), em-dash corrupted GFM table
+        separator rows (`| — |` -> `| --- |`), and orphan `**` lines left by sliced bold headings.
+
+        Args:
+            text: Chapter Markdown string.
+
+        Returns:
+            Tuple of `(healed_text, fixes_list)`.
+        """
+        fixes = []
+
+        # 1. Repair —> and –> inside ```mermaid blocks
+        def _fix_mermaid(match: re.Match) -> str:
+            block = match.group(0)
+            if "—>" in block or "–>" in block:
+                fixes.append("Repaired corrupted em-dash arrow ('—>') inside Mermaid block to '-->'")
+                block = block.replace("—>", "-->").replace("–>", "-->")
+            return block
+
+        text = re.sub(r"```mermaid\b.*?```", _fix_mermaid, text, flags=re.DOTALL)
+
+        # 2. Repair | — | or | -- | GFM table separator rows
+        def _fix_gfm_sep(match: re.Match) -> str:
+            row = match.group(0)
+            fixes.append("Repaired corrupted em-dash table separator row ('| — |') to '| --- |'")
+            return re.sub(r"[—–]|(?<!-)-(?!-)", "---", row)
+
+        text = re.sub(r"(?m)^\|(?:\s*:?[—–\-]{1,2}:?\s*\|)+$", _fix_gfm_sep, text)
+
+        # 3. Clean up orphan standalone '**' lines and 'Table X-Y** *Title*'
+        if re.search(r"(?m)^\*\*\s*$", text):
+            text = re.sub(r"(?m)^\*\*\s*\n+", "", text)
+            fixes.append("Removed orphan standalone '**' line")
+        if re.search(r"(?m)^Table\s+(\d+(?:[\.\-–]\d+)*)\*\*", text):
+            text = re.sub(r"(?m)^Table\s+(\d+(?:[\.\-–]\d+)*)\*\*", r"**Table \1**", text)
+            fixes.append("Restored leading '**' on sliced Table heading")
 
         return text, fixes
 

@@ -742,3 +742,95 @@ def check_unescaped_special_chars(content: str) -> dict:
     }
 
 
+def check_mermaid_syntax_integrity(content: str) -> dict:
+    """Validates all ```mermaid code blocks for lexical/syntax errors such as em-dash arrows (`—>`),
+    unbalanced brackets/quotes, and corrupted GFM table separator rows (`| — |`).
+
+    Args:
+        content: Chapter Markdown text to inspect.
+
+    Returns:
+        Dictionary with `passed` (bool), `count` (int), and `issues` (list[str]).
+    """
+    issues = []
+
+    for idx, block in enumerate(re.findall(r"```mermaid\b(.*?)```", content, flags=re.DOTALL), start=1):
+        if "—>" in block or "–>" in block:
+            issues.append(f"Mermaid block {idx}: contains em/en-dash arrow ('—>' or '–>') instead of '-->'")
+        for ln_num, ln in enumerate(block.splitlines(), start=1):
+            s = ln.strip()
+            if not s or s.startswith("%%"):
+                continue
+            if s.count("[") != s.count("]"):
+                issues.append(f"Mermaid block {idx} line {ln_num}: unbalanced square brackets in '{s[:60]}'")
+            if s.count('"') % 2 != 0:
+                issues.append(f"Mermaid block {idx} line {ln_num}: unbalanced double quotes in '{s[:60]}'")
+
+    corrupted_seps = re.findall(r"(?m)^\|(?:\s*:?[—–]:?\s*\|)+$", content)
+    if corrupted_seps:
+        issues.append(f"Found {len(corrupted_seps)} em-dash corrupted GFM table separator row(s) ('| — |')")
+
+    return {
+        "passed": len(issues) == 0,
+        "count": len(issues),
+        "issues": issues,
+    }
+
+
+def check_table_callout_completeness(content: str) -> dict:
+    """Verifies that every chapter-local Table ID (`Table X-Y` or `Table X.Y`) cited in prose
+    has a corresponding rendered Table block (`**Table X-Y**` or `### Table X-Y` + `<table>` / `| --- |`).
+
+    Args:
+        content: Chapter Markdown text to inspect.
+
+    Returns:
+        Dictionary with `passed` (bool), `missing_tables` (list[str]), and `count` (int).
+    """
+    prose_only = re.sub(r"<table.*?>.*?</table>", "", content, flags=re.DOTALL | re.IGNORECASE)
+    cited_ids = set(
+        m.replace("–", "-")
+        for m in re.findall(r"\bTable\s+(\d+[\.\-–]\d+[a-zA-Z]?)\b", prose_only)
+    )
+    if not cited_ids:
+        return {"passed": True, "missing_tables": [], "count": 0}
+
+    # Determine dominant chapter prefix from citations or headings if multiple chapters are cited
+    rendered_ids = set()
+    for m in re.finditer(
+        r"(?m)^(?:#{2,5}\s*Table\s+(\d+[\.\-–]\d+[a-zA-Z]?)|\*\*Table\s+(\d+[\.\-–]\d+[a-zA-Z]?)\.?\*\*|Table\s+(\d+[\.\-–]\d+[a-zA-Z]?)\b)",
+        content,
+    ):
+        tid = (m.group(1) or m.group(2) or m.group(3)).replace("–", "-")
+        window = content[m.start() : m.start() + 2500]
+        if "<table" in window or re.search(r"\|\s*:?-{3,}:?\s*\|", window):
+            rendered_ids.add(tid)
+
+    # Filter cross-chapter citations (e.g. Chapter 12 citing Table 2.1 or Chapter 16 citing Table 15.3)
+    chapter_prefixes = set()
+    ch_m = re.search(
+        r"(?m)^#{1,4}\s*Chapter\s+(\d+)\b|🎯\s*\*\*(\d+)\.\d+\*\*|\bLO\s+(\d+)\.\d+\b",
+        content,
+        re.IGNORECASE,
+    )
+    if ch_m:
+        chapter_prefixes.add(ch_m.group(1) or ch_m.group(2) or ch_m.group(3))
+    else:
+        chapter_prefixes = {tid.split("-")[0].split(".")[0] for tid in rendered_ids}
+
+    missing = []
+    for cid in sorted(cited_ids):
+        prefix = cid.split("-")[0].split(".")[0]
+        if chapter_prefixes and prefix not in chapter_prefixes:
+            continue
+        if cid not in rendered_ids:
+            missing.append(cid)
+
+    return {
+        "passed": len(missing) == 0,
+        "missing_tables": missing,
+        "count": len(missing),
+    }
+
+
+

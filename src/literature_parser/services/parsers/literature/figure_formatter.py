@@ -102,10 +102,10 @@ class FigureFormatter:
             fig_html = m.group(0)
             start, end = m.start(), m.end()
 
-            # Extract Figure number (e.g. '1', '2', '1.1')
-            num_m = re.search(r'<strong>Figure\s+([0-9IVXLCDM]+(?:\.[0-9]+)*[a-zA-Z]?)[\.:]?', fig_html, re.IGNORECASE)
+            # Extract Figure number (e.g. '1', '2', '1.1', '1-1')
+            num_m = re.search(r'<strong>Figure\s+([0-9IVXLCDM]+(?:[\.\-–][0-9]+)*[a-zA-Z]?)[\.:]?', fig_html, re.IGNORECASE)
             if not num_m:
-                num_m = re.search(r'Figure\s+([0-9IVXLCDM]+(?:\.[0-9]+)*[a-zA-Z]?)', fig_html, re.IGNORECASE)
+                num_m = re.search(r'Figure\s+([0-9IVXLCDM]+(?:[\.\-–][0-9]+)*[a-zA-Z]?)', fig_html, re.IGNORECASE)
             fig_id = num_m.group(1) if num_m else ''
 
             pre = text[:start].rstrip()
@@ -137,9 +137,10 @@ class FigureFormatter:
 
         figs.reverse()
 
-        # 2. Extract Tables
+        # 2. Extract Tables (support both dot Table 1.1 and hyphen Table 1-1 numbering, Refs: ISSUE-016)
+        _tbl_id_pat = r'\d+(?:[\.\-–]\d+)*[a-zA-Z]?'
         p_tbl = re.compile(
-            r'((?:(?:\*\*Table\s+\d+[\.\d]*\*\*.*?\n+|<p\s+class="table-caption">Table\s+\d+[\.\d]*</p>|###\s*Table\s+\d+[\.\d]*.*?\n+|Table\s+\d+[\.\d]*[^\n]*\n+)?\s*<table\b[^>]*>.*?</table>(?:\s*\n+<p\s+class="table-notes">.*?</p>)?))',
+            rf'((?:(?:\*\*Table\s+{_tbl_id_pat}\*\*[^\n]*\n+|<p\s+class="table-caption">Table\s+{_tbl_id_pat}</p>|###\s*Table\s+{_tbl_id_pat}[^\n]*\n+|(?<!\*)\bTable\s+{_tbl_id_pat}[^\n]*\n+)?\s*<table\b[^>]*>.*?</table>(?:\s*\n+<p\s+class="table-notes">.*?</p>)?))',
             re.DOTALL | re.IGNORECASE
         )
         tbl_matches = list(p_tbl.finditer(text))
@@ -149,9 +150,12 @@ class FigureFormatter:
             for m in reversed(tbl_matches):
                 start, end = m.span()
                 tbl_html = m.group(1).strip()
-                # Extract Table number
-                num_m = re.search(r'(?<!<)\bTable\s+(\d+(?:\.\d+)*[a-zA-Z]?)', tbl_html, re.IGNORECASE)
+                # Extract Table number (including hyphenated e.g. 1-1, 1-2, 16-1)
+                num_m = re.search(rf'(?<!<)\bTable\s+({_tbl_id_pat})', tbl_html, re.IGNORECASE)
                 tbl_id = num_m.group(1) if num_m else ''
+                if not tbl_id:
+                    # Unnumbered inline tables (e.g. Box 9-1..9-6 Transferable Skills) stay in place
+                    continue
 
                 pre = text[:start].rstrip()
                 post = text[end:].lstrip()
@@ -171,9 +175,17 @@ class FigureFormatter:
             tbls.reverse()
 
         # 3. Unified Paragraph-Based Anchoring
-        # Identify which figures and tables are actually cited in the narrative text
-        fig_dict = {f_id: html for f_id, html in figs if f_id}
-        tbl_dict = {t_id: html for t_id, html in tbls if t_id}
+        # Identify which figures and tables are actually cited in the narrative text.
+        # Concatenate multi-page continued tables sharing the same ID instead of overwriting.
+        fig_dict: Dict[str, str] = {}
+        for f_id, html in figs:
+            if f_id:
+                fig_dict[f_id] = f"{fig_dict[f_id]}\n\n{html}" if f_id in fig_dict else html
+
+        tbl_dict: Dict[str, str] = {}
+        for t_id, html in tbls:
+            if t_id:
+                tbl_dict[t_id] = f"{tbl_dict[t_id]}\n\n{html}" if t_id in tbl_dict else html
 
         cited_fig_ids = set()
         for f_id in fig_dict:
@@ -199,11 +211,11 @@ class FigureFormatter:
 
             # If block is a heading (## ...) after the start of document, flush uncited orphans before it
             if b_clean.startswith('##') and idx > 0:
-                for f_id, f_html in figs:
+                for f_id, f_html in fig_dict.items():
                     if f_id not in cited_fig_ids and f_id not in mounted_figs:
                         output_blocks.append(f_html)
                         mounted_figs.add(f_id)
-                for t_id, t_html in tbls:
+                for t_id, t_html in tbl_dict.items():
                     if t_id not in cited_tbl_ids and t_id not in mounted_tbls:
                         output_blocks.append(t_html)
                         mounted_tbls.add(t_id)
@@ -214,7 +226,7 @@ class FigureFormatter:
             found_artifacts = []
 
             # Figure mentions
-            fig_mention_pat = re.compile(r'\b(?:Figure|Fig\.)\s+([0-9IVXLCDM]+(?:\.[0-9]+)*[a-zA-Z]?)\b')
+            fig_mention_pat = re.compile(r'\b(?:Figure|Fig\.)\s+([0-9IVXLCDM]+(?:[\.\-–][0-9]+)*[a-zA-Z]?)\b')
             for m in fig_mention_pat.finditer(b_clean):
                 raw_id = m.group(1)
                 norm_id = re.sub(r'[a-zA-Z]+$', '', raw_id) or raw_id
@@ -224,7 +236,7 @@ class FigureFormatter:
                     mounted_figs.add(target_id)
 
             # Table mentions
-            tbl_mention_pat = re.compile(r'(?<!<)\bTable\s+([0-9IVXLCDM]+(?:\.[0-9]+)*[a-zA-Z]?)\b')
+            tbl_mention_pat = re.compile(r'(?<!<)\bTable\s+([0-9IVXLCDM]+(?:[\.\-–][0-9]+)*[a-zA-Z]?)\b')
             for m in tbl_mention_pat.finditer(b_clean):
                 raw_id = m.group(1)
                 norm_id = re.sub(r'[a-zA-Z]+$', '', raw_id) or raw_id
@@ -239,14 +251,20 @@ class FigureFormatter:
                 output_blocks.append(artifact_html)
 
         # Flush any remaining unmounted artifacts at end of document
-        for f_id, f_html in figs:
+        for f_id, f_html in fig_dict.items():
             if f_id not in mounted_figs:
                 output_blocks.append(f_html)
                 mounted_figs.add(f_id)
-        for t_id, t_html in tbls:
+        for t_id, t_html in tbl_dict.items():
             if t_id not in mounted_tbls:
                 output_blocks.append(t_html)
                 mounted_tbls.add(t_id)
+        for f_id, f_html in figs:
+            if not f_id:
+                output_blocks.append(f_html)
+        for t_id, t_html in tbls:
+            if not t_id:
+                output_blocks.append(t_html)
 
         result = '\n\n'.join(output_blocks)
         result = re.sub(r'\n{3,}', '\n\n', result)

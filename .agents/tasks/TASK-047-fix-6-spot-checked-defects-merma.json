@@ -1,0 +1,28 @@
+{
+  "id": "TASK-047",
+  "title": "Fix 6 spot-checked defects (Mermaid arrows, EOC sections, Key Terms table, bogus diagram crops, complex Career Counseling tables, split headings) and run visual/structural verification",
+  "status": "done",
+  "agent": "Antigravity",
+  "handed_off_from": "",
+  "handed_off_to": "",
+  "paths": [],
+  "done_items": "Fixed all 6 spot-checked defects (Mermaid arrow corruption, EOC profile overwrite, hyphenated Table ID collision, centered landscape table left boundary, bogus diagram_p* cropping, split multi-line headings) and re-converted & verified all 128 chapters across 5 books.",
+  "todo_items": "",
+  "blockers": "",
+  "created_at": "2026-10-25 16:34 UTC",
+  "updated_at": "2026-10-25 17:05 UTC",
+  "history": [
+    {
+      "timestamp": "2026-10-25 16:34 UTC",
+      "action": "created_and_claimed",
+      "agent": "Antigravity"
+    },
+    {
+      "timestamp": "2026-10-25 17:05 UTC",
+      "action": "done",
+      "agent": "Antigravity",
+      "summary": "Fixed all 6 spot-checked defects (Mermaid arrow corruption, EOC profile overwrite, hyphenated Table ID collision, centered landscape table left boundary, bogus diagram_p* cropping, split multi-line headings) and re-converted & verified all 128 chapters across 5 books."
+    }
+  ],
+  "summary": "Fixed all 6 spot-checked defects (Mermaid arrow corruption, EOC profile overwrite, hyphenated Table ID collision, centered landscape table left boundary, bogus diagram_p* cropping, split multi-line headings) and re-converted & verified all 128 chapters across 5 books."
+}

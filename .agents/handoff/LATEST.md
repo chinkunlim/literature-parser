@@ -5,10 +5,10 @@
 <!-- LIVE_STATE_START -->
 ## 📊 即時狀態看板 (Live Snapshot)
 
-- **最後更新時間**: `2026-10-25 16:10 UTC`
-- **最近操作 Agent**: `antigravity`
+- **最後更新時間**: `2026-10-25 17:05 UTC`
+- **最近操作 Agent**: `Antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `73db293 feat(parser,verifier): enforce HTML table structuring, batch error isolation, and strict layout verification (Refs: ISSUE-014, ISSUE-015) [agent:antigravity]`
+- **最新 Git Commit**: `83bbb7f feat(profiler,renderers): add two-pass ChapterBlueprintScanner, Docling adapter, modular renderers, and blueprint compliance check (Refs: ADR-011) [agent:antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
@@ -17,6 +17,14 @@
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-10-25 17:05 UTC] 完成任務 `TASK-047` — Fix 6 spot-checked defects (Mermaid arrows, EOC sections, Key Terms table, bogus diagram crops, complex Career Counseling tables, split headings) and run visual/structural verification (by `Antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: Fixed all 6 spot-checked defects (Mermaid arrow corruption, EOC profile overwrite, hyphenated Table ID collision, centered landscape table left boundary, bogus diagram_p* cropping, split multi-line headings) and re-converted & verified all 128 chapters across 5 books.
+
+### [2026-10-25 16:34 UTC] 建立任務 `TASK-047`: Fix 6 spot-checked defects (Mermaid arrows, EOC sections, Key Terms table, bogus diagram crops, complex Career Counseling tables, split headings) and run visual/structural verification (by `Antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
 
 ### [2026-10-25 16:10 UTC] 完成任務 `TASK-046` — Implement Two-Pass ChapterBlueprintScanner (PyMuPDF + Docling), five modular block renderers, and blueprint compliance verification (by `antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
@@ -97,11 +105,3 @@
 - **下一步**: 全書庫4本97章節已達成出版級零缺陷轉換與全套文檔同步；後續可推進學術論文/期刊領域 (DATA_DIR/input/literature/) 之批次轉檔實測與EPUB 3匯出檢驗
 - **交接備註**: 4本大型教科書97章節100% ALL_PASSED乾淨重跑驗證通過，文檔與規範已完整落地
 - **本機對話紀錄**: `.agents/conversations/2026-10-23-1153-antigravity-summary.md`（只在這台電腦）
-
-### [2026-10-23 03:52 UTC] 完成任務 `TASK-040` — 更新所有文檔與知識庫 Markdown 檔案 (by `antigravity`)
-- **狀態**: ✅ 已完成 (`done`)
-- **完成摘要**: (無)
-
-### [2026-10-23 03:49 UTC] 認領任務 `TASK-040` (更新所有文檔與知識庫 Markdown 檔案) (by `antigravity`)
-- **相關範圍**: `-`
-- **接棒自**: `antigravity`

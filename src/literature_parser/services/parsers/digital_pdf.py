@@ -852,7 +852,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
 
             # Check if major section heading (size >= 28 or journal academic section heading)
             # Check if continuation of previous H2/H3/H4 heading wrapped across lines
-            # (e.g. 'Career Behavior ' + 'and Development', or 'Theories ' + 'of Group Counseling')
+            # (e.g. 'Career Behavior ' + 'and Development', or '#### 3 Identifying Research Questions and' + 'Forming Hypotheses')
             if (
                 not curr_p
                 and blocks
@@ -860,10 +860,11 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 and last_top is not None
                 and (0 <= top - last_top <= 35)
                 and not re.search(r'[.?!]$', blocks[-1].strip())
-                and len(clean_t) < 70
+                and len(clean_t) < 95
                 and (
                     (13.5 <= size < 28.0)
                     or re.match(r'^(?:and|or|of|in|to|for|with|on|from|by|the|a|an)\b', clean_t, re.IGNORECASE)
+                    or bool(re.search(r'\b(?:and|or|of|in|to|for|with|on|from|by|the|a|an|:)$', blocks[-1].strip(), re.IGNORECASE))
                 )
                 and not re.search(r'[.?!]$', clean_t)
                 and not re.match(r'^(?:Figure|Fig\.|Table|Exhibit|Photo|LO\s+\d|\d+\.\d+)\b', clean_t, re.IGNORECASE)
@@ -941,7 +942,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             if is_h2:
                 flush_p()
                 if blocks and blocks[-1].startswith('## ') and (top - last_top < 75):
-                    if len(blocks[-1]) + len(clean_t) < 80 and not re.search(r'[.?!:]$', blocks[-1]):
+                    if len(blocks[-1]) + len(clean_t) < 130 and not re.search(r'[.?!]$', blocks[-1]):
                         blocks[-1] = blocks[-1] + " " + clean_t
                     else:
                         blocks.append(f"## {clean_t}")
@@ -952,7 +953,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             elif is_h3:
                 flush_p()
                 if blocks and blocks[-1].startswith('### ') and (top - last_top < 45):
-                    if len(blocks[-1]) + len(clean_t) < 70 and not re.search(r'[.?!:]$', blocks[-1]):
+                    if len(blocks[-1]) + len(clean_t) < 120 and not re.search(r'[.?!]$', blocks[-1]):
                         blocks[-1] = blocks[-1] + " " + clean_t
                     else:
                         blocks.append(f"### {clean_t}")
@@ -980,7 +981,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             elif is_h4:
                 flush_p()
                 if blocks and blocks[-1].startswith('#### ') and (top - last_top < 40):
-                    if len(blocks[-1]) + len(clean_t) < 70 and not re.search(r'[.?!:]$', blocks[-1]):
+                    if len(blocks[-1]) + len(clean_t) < 120 and not re.search(r'[.?!]$', blocks[-1]):
                         blocks[-1] = blocks[-1] + " " + clean_t
                     else:
                         blocks.append(f"#### {clean_t}")
@@ -1130,6 +1131,10 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                         if t_ref in b and not b.startswith('#'):
                             with_tables.append(tbl['markdown'])
                             placed_tables.add(tbl['top'])
+                    elif "Transferable Skills" in b and "<th>Skills</th>" in tbl['markdown']:
+                        with_tables.append(tbl['markdown'])
+                        placed_tables.add(tbl['top'])
+                        break
             for tbl in page_tables:
                 if tbl['top'] not in placed_tables:
                     if tbl['top'] < 250:
@@ -1182,7 +1187,10 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 sq_parts = []
                 while sq_idx < len(final_blocks):
                     nxt = final_blocks[sq_idx]
-                    if nxt.startswith(('#', '> [!', '> 🎯', '> 📖', '- 🎯')) or re.match(r'^(?:> 🎯|- 🎯|\*\*?\d+\.\d+)', nxt):
+                    if (
+                        nxt.startswith(('#', '> [!', '> 🎯', '> 📖', '- 🎯', '<table', '**Table'))
+                        or re.match(r'^(?:> 🎯|- 🎯|\*\*?\d+\.\d+)', nxt)
+                    ):
                         break
                     # Strip any existing leading '>' indentation so we never produce nested '> >' blockquotes
                     clean_nxt = '\n'.join(re.sub(r'^[ \t]*>[ \t]?', '', line) for line in nxt.splitlines())

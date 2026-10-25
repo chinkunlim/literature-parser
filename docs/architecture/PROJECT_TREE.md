@@ -107,7 +107,8 @@ literature-parser/
 │   │   ├── TASK-043-research-methods-27.json
 │   │   ├── TASK-044-input-processed.json
 │   │   ├── TASK-045-enhance-batch-resilience-table-h.json
-│   │   └── TASK-046-implement-two-pass-chapterbluepr.json
+│   │   ├── TASK-046-implement-two-pass-chapterbluepr.json
+│   │   └── TASK-047-fix-6-spot-checked-defects-merma.json
 │   ├── framework.lock                      # [框架鎖定檔] 框架版本與檔案雜湊，供 update_framework 判斷是否被修改
 │   └── project.toml                        # [專案設定・各專案自訂] 語言、分層、品質門檻、指令、業務規則
 ├── .cursor/                                # [Agent 轉接] Cursor 規則 (自動產生)
@@ -161,6 +162,7 @@ literature-parser/
 │   │   ├── 013-parallel-worker-status-race.md
 │   │   ├── 014-xml-control-bytes-and-rotated-landscape-tables.md
 │   │   ├── 015-table-list-degradation-and-vision-blindspot.md
+│   │   ├── 016-mermaid-arrow-corruption-eoc-profile-overwrite-and-hyphen-table-collision.md
 │   │   ├── _TEMPLATE.md                    # 已知問題範本 (tracker_cli 會套用)
 │   │   └── KNOWN_ISSUES.md                 # 已知問題總表 (🔴/🟡/🟢)
 │   ├── migration/                          # [遷移紀錄] 舊專案搬移清單、批次與完成標準
@@ -416,6 +418,7 @@ literature-parser/
 │   ├── test_quality_engine.py
 │   ├── test_resilience_guard.py
 │   ├── test_semantic_stitcher.py
+│   ├── test_spotcheck_defects_and_visual_audit.py
 │   ├── test_stage0_profiler.py
 │   ├── test_v21_features.py
 │   ├── test_v22_features.py

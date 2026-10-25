@@ -150,14 +150,24 @@ class M5WorkerPool:
         if not items:
             return []
 
+        def _run_serial_isolated() -> List[Any]:
+            serial_results: List[Any] = []
+            for idx, item in enumerate(items):
+                try:
+                    serial_results.append(process_fn(item))
+                except Exception as exc:
+                    logger.error("[%s] Worker task %d raised exception (isolated): %s", desc, idx, exc)
+                    serial_results.append({"passed": False, "error": str(exc)})
+            return serial_results
+
         # Enforce memory safety before starting batch
         if not M5HardwareProfile.is_memory_safe(self.min_headroom_gb):
             logger.info("[%s] Low memory headroom; falling back to serial execution.", desc)
-            return [process_fn(item) for item in items]
+            return _run_serial_isolated()
 
         effective_workers = min(self.max_workers, len(items))
         if effective_workers <= 1:
-            return [process_fn(item) for item in items]
+            return _run_serial_isolated()
 
         logger.info(
             "[%s] Spawning M5 Worker Pool with %d workers (M5 P-Core limit: %d). Available RAM: %.1f GB",

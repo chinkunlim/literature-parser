@@ -67,6 +67,7 @@ All notable changes to **literature-parser** are documented here
 - fix(pipeline): sanitize null bytes in section names and fix archive directory routing (by `@antigravity`)
 - fix(verifier): recognize credits and acknowledgments in back matter heading density exemption (by `@antigravity`)
 - fix(checkpoint): make is_chapter_verified robust to parallel worker status updates (by `@antigravity`)
+- fix(parsers,verifier): resolve 6 spot-checked defects in Mermaid, EOC headings, complex tables, and bogus diagrams (TASK-047, ISSUE-016) (by `@Antigravity`)
 
 ### Documentation
 - docs: update and synchronize all project markdown documentation (by `@antigravity`)

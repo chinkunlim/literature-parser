@@ -24,11 +24,13 @@ from literature_parser.adapters.verification.rules import (
     check_heading_ratio,
     check_infix_math_in_words,
     check_latex_and_symbol_integrity,
+    check_mermaid_syntax_integrity,
     check_noise_strings,
     check_numeric_coordinate_noise,
     check_sentence_completeness,
     check_shattered_math,
     check_table_banner_integrity,
+    check_table_callout_completeness,
     check_table_column_integrity,
     check_unescaped_special_chars,
     check_unformatted_table_blocks,
@@ -345,21 +347,27 @@ class AccuracyVerifier:
         if not semantic_pass:
             results['passed'] = False
 
-        # 7. Math & LaTeX Delimiter Sanity ($$, $, %, {}, currency $)
+        # 7. Math & LaTeX Delimiter Sanity ($$, $, %, {}, currency $, Mermaid, Table Callouts)
         latex_sym_res = check_latex_and_symbol_integrity(md_content)
         tbl_col_res   = check_table_column_integrity(md_content)
         spec_char_res = check_unescaped_special_chars(md_content)
+        mermaid_res   = check_mermaid_syntax_integrity(md_content)
+        tbl_call_res  = check_table_callout_completeness(md_content)
 
         integrity_pass = (
             latex_sym_res['passed'] and
             tbl_col_res['passed'] and
-            spec_char_res['passed']
+            spec_char_res['passed'] and
+            mermaid_res['passed'] and
+            tbl_call_res['passed']
         )
 
         results['checks']['syntax_and_symbols'] = {
             'latex_symbols': latex_sym_res,
             'table_columns': tbl_col_res,
             'special_chars': spec_char_res,
+            'mermaid_syntax': mermaid_res,
+            'table_callouts': tbl_call_res,
             'passed': integrity_pass
         }
 
@@ -372,6 +380,13 @@ class AccuracyVerifier:
         if not tbl_col_res['passed']:
             for iss in tbl_col_res['issues'][:3]:
                 print(f"      - {iss}")
+
+        print(f"  • Mermaid & GFM Divider Syntax: {'[PASS]' if mermaid_res['passed'] else '[FAIL]'} ({mermaid_res['count']} syntax issues)")
+        if not mermaid_res['passed']:
+            for iss in mermaid_res['issues'][:3]:
+                print(f"      - {iss}")
+
+        print(f"  • Table Callout Completeness: {'[PASS]' if tbl_call_res['passed'] else '[FAIL]'} ({tbl_call_res['count']} missing cited tables: {tbl_call_res['missing_tables']})")
 
         print(f"  • Special Character Leaks & Angle Brackets: {'[PASS]' if spec_char_res['passed'] else '[FAIL]'} ({len(spec_char_res['issues'])} syntax leaks)")
         if not spec_char_res['passed']:

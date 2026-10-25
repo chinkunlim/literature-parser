@@ -367,7 +367,7 @@ class TableParser:
                 table_consumed.append(el)
                 cur_right = max(cur_right, el_left + el_w)
 
-            title_bottom = h_top
+            title_bottom = max(float(el.attrib.get("top", h_top)) for el in table_consumed)
             # Check for a wrapped second line of the title (within 15pt vertically)
             line2_elems = [
                 t
@@ -420,35 +420,36 @@ class TableParser:
             title = re.sub(r"[\s\u00a0]+", " ", " ".join(title_parts)).strip()
 
             # 2. Determine horizontal boundaries (table_left_min and table_right_max)
-            # Check if this table is confined to the left column of a 2-column page
+            # Check if this table is confined to the left/center portion of a multi-column page
             table_right_max = pw
-            if h_left < pw * 0.35 and cur_right <= pw * 0.52:
+            if h_left < pw * 0.35 and cur_right <= pw * 0.65:
                 right_col_intruders = [
                     t
                     for t in text_elements
                     if t not in table_consumed
-                    and float(t.attrib.get("left", 0)) >= pw * 0.48
-                    and (h_top - 30.0 <= float(t.attrib.get("top", 0)) <= title_bottom + 8.0)
+                    and float(t.attrib.get("left", 0)) >= max(cur_right + 35.0, pw * 0.48)
+                    and (h_top - 40.0 <= float(t.attrib.get("top", 0)) <= title_bottom + 40.0)
                     and "".join(t.itertext()).strip()
                 ]
                 if right_col_intruders:
-                    table_right_max = pw * 0.48
+                    table_right_max = min(float(t.attrib.get("left", pw)) for t in right_col_intruders) - 10.0
 
-            # Determine table_left_min: support centered headers (Career Counseling where h_left~145 and col1~60)
+            # Determine table_left_min: support centered headers (Career Counseling where h_left~229 and col0~51)
             # while excluding left-margin glossaries (Research Methods where h_left~189 and glossary~39)
             first_band_lefts = [
                 float(t.attrib.get("left", 0))
                 for t in text_elements
                 if t not in table_consumed
                 and t not in consumed
-                and 0 < float(t.attrib.get("top", 0)) - title_bottom <= 42.0
+                and 0 < float(t.attrib.get("top", 0)) - title_bottom <= 65.0
                 and float(t.attrib.get("left", 0)) < table_right_max
                 and "".join(t.itertext()).strip()
             ]
             table_left_min = h_left - 15.0
             if first_band_lefts:
+                max_left_shift = 200.0 if h_left >= pw * 0.25 else 115.0
                 cand_lefts = [
-                    lx for lx in first_band_lefts if lx >= 35.0 and (h_left - lx <= 115.0)
+                    lx for lx in first_band_lefts if lx >= 35.0 and (h_left - lx <= max_left_shift)
                 ]
                 if cand_lefts:
                     table_left_min = min(h_left, min(cand_lefts)) - 15.0
@@ -592,11 +593,17 @@ class TableParser:
             header_titles = []
 
             if band_lines:
-                # Consider the first 1..3 band lines within 24pt of band_lines[0] for multi-line column headers
+                # Consider consecutive header band lines only where each line is within 13.5pt of the previous line,
+                # or up to 16.5pt if the upper header line is a 1-cell spanning super-header (e.g. 'Time' above 4 columns in Table 13.2, Refs: ISSUE-016)
                 first_band_top = band_lines[0]["top"]
-                header_band_lines = [
-                    bl for bl in band_lines if bl["top"] - first_band_top <= 24.0
-                ][:3]
+                header_band_lines = [band_lines[0]]
+                for bl_cand in band_lines[1:3]:
+                    prev_cells_count = len(merge_line_cells(header_band_lines[-1]["elems"]))
+                    max_hdr_gap = 16.5 if prev_cells_count < 2 else 13.5
+                    if bl_cand["top"] - header_band_lines[-1]["top"] <= max_hdr_gap:
+                        header_band_lines.append(bl_cand)
+                    else:
+                        break
                 # Find the anchor line with the most horizontal cells (>= 2)
                 best_idx = 0
                 best_merged = merge_line_cells(header_band_lines[0]["elems"])
@@ -695,7 +702,8 @@ class TableParser:
                     d_fid = d.attrib.get("font", "")
                     d_fsize = float(fonts.get(d_fid, {}).get("size", 9.0))
 
-                    if d_top - curr_row_top > 38.0:
+                    max_grid_gap = 46.0 if not grid_data else 40.0
+                    if d_top - curr_row_top > max_grid_gap:
                         break
                     if re.match(
                         r"^(?:Steps?:?|\(?\d+\)?\s*Insert|\(?\d+\)?\s*Calculate)\b",
@@ -785,34 +793,63 @@ class TableParser:
                     if not any(cell_strs):
                         continue
 
-                    # Stitch multi-line wrapped cell continuations into the previous row
-                    is_tight_wrap = (
-                        prev_row_top is not None and (r["top"] - prev_row_top <= 10.5)
-                    )
-                    if is_tight_wrap and parsed_rows:
+                    # Stitch multi-line wrapped cell continuations into the previous row (Refs: ISSUE-016)
+                    row_max_top = max(float(el.attrib.get("top", r["top"])) for el in r["elements"])
+                    gap_from_prev = (r["top"] - prev_row_top) if prev_row_top is not None else 999.0
+                    if prev_row_top is not None and gap_from_prev <= 15.0 and parsed_rows:
                         prev_r = parsed_rows[-1]
                         prev_is_banner = bool(prev_r[0] and not any(prev_r[1:]))
-                        cur_has_no_col0 = not cell_strs[0] and any(cell_strs[1:])
+                        cur_has_no_col0 = (not cell_strs[0] and any(cell_strs[1:])) and gap_from_prev <= 11.5
                         cur_col0_wraps = (
                             bool(cell_strs[0])
                             and (
                                 cell_strs[0][0].islower()
                                 or cell_strs[0].startswith(("(", "or ", "and ", "to ", "of ", "with "))
-                                or prev_r[0].endswith(("-", "/", "and", "or", "of", "for", "with"))
+                                or prev_r[0].endswith(("-", "/", ",", ";", "and", "or", "of", "for", "with", "to", "in", "the", "a", "an", "that", "work"))
                             )
                         )
-                        if not prev_is_banner and (cur_has_no_col0 or cur_col0_wraps):
+                        any_col_mid_sentence = False
+                        for ci_chk, cs_chk in enumerate(cell_strs):
+                            prev_c = prev_r[ci_chk] if ci_chk < len(prev_r) else ""
+                            if cs_chk and (
+                                cs_chk[0].islower()
+                                or cs_chk.startswith(("•", ")"))
+                            ):
+                                any_col_mid_sentence = True
+                                break
+                            if prev_c and cs_chk and (
+                                prev_c.endswith(("-", ",", ";", "/", "to be", "and", "or", "of", "for", "in", "with", "by", "on", "the", "a", "an", "from"))
+                                or (prev_c.count("“") > prev_c.count("”"))
+                            ):
+                                any_col_mid_sentence = True
+                                break
+
+                        if not prev_is_banner and (cur_has_no_col0 or cur_col0_wraps or any_col_mid_sentence):
+                            is_stub_trait_table = (header_titles[0] == "" and len(header_titles) >= 5)
                             for ci, cs in enumerate(cell_strs):
                                 if cs:
-                                    if prev_r[ci].endswith("-") and cs[0].islower():
+                                    if not prev_r[ci]:
+                                        prev_r[ci] = cs
+                                    elif prev_r[ci].endswith("-") and cs[0].islower():
                                         prev_r[ci] = prev_r[ci][:-1] + cs
+                                    elif cs.startswith("•"):
+                                        prev_r[ci] = f"{prev_r[ci]}<br>{cs}"
+                                    elif cs.startswith("“") and prev_r[ci].endswith((".”", "!”", "?”", '"')):
+                                        prev_r[ci] = f"{prev_r[ci]}<br>{cs}"
+                                    elif (
+                                        is_stub_trait_table
+                                        and ci >= 1
+                                        and cs[0].isupper()
+                                        and not prev_r[ci].endswith(("-", ",", "and", "or", "of", "in", "to"))
+                                    ):
+                                        prev_r[ci] = f"{prev_r[ci]}<br>{cs}"
                                     else:
                                         prev_r[ci] = (prev_r[ci] + " " + cs).strip()
-                            prev_row_top = r["top"]
+                            prev_row_top = row_max_top
                             continue
 
                     parsed_rows.append(cell_strs)
-                    prev_row_top = r["top"]
+                    prev_row_top = row_max_top
 
                 if fn_start_top is not None:
                     fn_elements = [
@@ -1023,7 +1060,8 @@ class TableParser:
                 t_w = float(t.attrib.get("width", 0))
                 t_fid = t.attrib.get("font", "")
                 t_fsize = float(fonts.get(t_fid, {}).get("size", 9.0))
-                if t_top - prev_v_top > 32.0:
+                max_v_gap = 45.0 if not visual_lines else 35.0
+                if t_top - prev_v_top > max_v_gap:
                     break
                 if t_w > 310.0 and t_fsize >= 9.8 and (t_top - prev_v_top > 13.5) and visual_lines:
                     break
@@ -1038,6 +1076,7 @@ class TableParser:
 
             items = []
             curr_item = []
+            prev_vl_top = None
             for vl in visual_lines:
                 vl["elems"].sort(key=lambda el: float(el.attrib.get("left", 0)))
                 line_txt = " ".join(
@@ -1047,13 +1086,17 @@ class TableParser:
                 ).strip()
                 if not line_txt:
                     continue
+                v_gap = (vl["top"] - prev_vl_top) if prev_vl_top is not None else 0.0
                 is_new_entry = bool(
                     re.match(
-                        r"^(?:[•\-\*❏☐☑]|\(?\d+[\.\)]|Step\s+\d+[\.\):]?|Decision\s+Rule\s+\d+:?|If:|Then:|Conclusion:|[IVX]+\.\s+[A-Z])\s*",
+                        r"^(?:[•\-\*❏☐☑]|\(?\d+[\.\)]|Step\s+\d+[\.\):]?|Phase\s+\d+[\.\):]?|Stage\s+\d+[\.\):]?|Decision\s+Rule\s+\d+:?|If:|Then:|Conclusion:|[IVX]+\.\s+[A-Z])\s*",
                         line_txt,
                     )
                     or re.match(r"^[A-Z][A-Za-z\-\s]{2,40}\s*(?:—|–)\s*", line_txt)
+                    or (line_txt.isupper() and len(line_txt) >= 4)
+                    or (v_gap >= 17.5 and line_txt[0].isupper())
                 )
+                prev_vl_top = vl["top"]
                 if is_new_entry:
                     if curr_item:
                         items.append(" ".join(curr_item))
@@ -1078,6 +1121,79 @@ class TableParser:
                     intro_text=" ".join(intro_notes),
                 )
                 tables.append({"top": h_top, "markdown": html_tbl})
+
+        # 9. Detect embedded Box sub-tables (e.g. "Transferable Skills: Skills | Specific Operations" in Career Counseling Box 9-1..9-6)
+        for t in text_elements:
+            if t in consumed:
+                continue
+            txt = "".join(t.itertext()).strip()
+            if txt == "Transferable Skills":
+                ts_top = float(t.attrib.get("top", 0))
+                # Check if "Skills" and "Specific Operations" appear within 22pt below
+                sub_cands = [
+                    el
+                    for el in text_elements
+                    if el not in consumed
+                    and el != t
+                    and 0 < float(el.attrib.get("top", 0)) - ts_top <= 160.0
+                    and "".join(el.itertext()).strip()
+                ]
+                has_skills_hdr = any(
+                    "".join(el.itertext()).strip() == "Skills"
+                    and float(el.attrib.get("top", 0)) - ts_top <= 22.0
+                    for el in sub_cands
+                )
+                if not has_skills_hdr:
+                    continue
+                ts_consumed = [t]
+                col_split_x = 175.0
+                ts_rows: list[list[str]] = []
+                hdr_bottom = ts_top + 18.0
+                for el in sub_cands:
+                    el_top = float(el.attrib.get("top", 0))
+                    el_left = float(el.attrib.get("left", 0))
+                    el_txt = "".join(el.itertext()).strip()
+                    if el_txt in ("Possible Life Career Themes",) or el_txt.startswith("Box "):
+                        break
+                    if el_top - ts_top <= 22.0 and (el_txt == "Skills" or "Operations" in el_txt):
+                        ts_consumed.append(el)
+                        hdr_bottom = max(hdr_bottom, el_top)
+                        if "Operations" in el_txt:
+                            col_split_x = float(el.attrib.get("left", 180.0)) - 10.0
+                        continue
+                    if el_top <= hdr_bottom:
+                        continue
+                    ts_consumed.append(el)
+                    is_col0 = el_left < col_split_x
+                    is_new_num = bool(re.match(r"^\d+\.\s+", el_txt))
+                    if is_col0 and is_new_num:
+                        ts_rows.append([el_txt, ""])
+                    elif not is_col0 and is_new_num:
+                        if ts_rows and not ts_rows[-1][1]:
+                            ts_rows[-1][1] = el_txt
+                        else:
+                            ts_rows.append(["", el_txt])
+                    elif ts_rows:
+                        c_i = 0 if is_col0 else 1
+                        if ts_rows[-1][c_i].endswith("-") and el_txt[0].islower():
+                            ts_rows[-1][c_i] = ts_rows[-1][c_i][:-1] + el_txt
+                        else:
+                            ts_rows[-1][c_i] = (ts_rows[-1][c_i] + " " + el_txt).strip()
+                if ts_rows:
+                    consumed.update(ts_consumed)
+                    ts_html = [
+                        "**Transferable Skills**",
+                        "",
+                        '<table class="textbook-table" style="width: auto; max-width: 100%; border-collapse: collapse; margin: 1.0em 0;">',
+                        "  <thead>",
+                        "    <tr><th>Skills</th><th>Specific Operations</th></tr>",
+                        "  </thead>",
+                        "  <tbody>",
+                    ]
+                    for r0, r1 in ts_rows:
+                        ts_html.append(f"    <tr><td>{r0}</td><td>{r1}</td></tr>")
+                    ts_html.extend(["  </tbody>", "</table>"])
+                    tables.append({"top": ts_top, "markdown": "\n".join(ts_html)})
 
         return tables, consumed
 

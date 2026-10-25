@@ -329,10 +329,19 @@ class ProfileSpecialBlocks:
     has_margin_glossary: bool = False
     lo_pattern: Optional[str] = None
     eoc_heading_patterns: List[str] = field(default_factory=lambda: [
-        r"^References\b",
-        r"^Author Note\b",
+        r"^Key Terms and Concepts\b",
+        r"^Related Internet Sites\b",
+        r"^Practice Test\b",
+        r"^Challenge Exercises\b",
         r"^Summary\b",
         r"^Review Questions\b",
+        r"^Discussion Questions\b",
+        r"^Critical Thinking\b",
+        r"^Further Reading\b",
+        r"^Questions for Thought and Discussion\b",
+        r"^Exercises\b",
+        r"^References\b",
+        r"^Author Note\b",
     ])
     active_blocks: List[str] = field(default_factory=list)
     block_rules: Dict[str, Dict[str, Any]] = field(default_factory=dict)
@@ -362,19 +371,36 @@ class ProfileSpecialBlocks:
         Returns:
             Validated ProfileSpecialBlocks instance.
         """
+        default_patterns = [
+            r"^Key Terms and Concepts\b",
+            r"^Related Internet Sites\b",
+            r"^Practice Test\b",
+            r"^Challenge Exercises\b",
+            r"^Summary\b",
+            r"^Review Questions\b",
+            r"^Discussion Questions\b",
+            r"^Critical Thinking\b",
+            r"^Further Reading\b",
+            r"^Questions for Thought and Discussion\b",
+            r"^Exercises\b",
+            r"^References\b",
+            r"^Author Note\b",
+        ]
         patterns = data.get("eoc_heading_patterns")
+        if patterns is not None:
+            merged_patterns = list(patterns)
+            for dp in default_patterns:
+                if dp not in merged_patterns:
+                    merged_patterns.append(dp)
+        else:
+            merged_patterns = default_patterns
         active = data.get("active_blocks", [])
         rules = data.get("block_rules", {})
         return cls(
             has_concept_map=bool(data.get("has_concept_map", False)),
             has_margin_glossary=bool(data.get("has_margin_glossary", False)),
             lo_pattern=data.get("lo_pattern"),
-            eoc_heading_patterns=list(patterns) if patterns is not None else [
-                r"^References\b",
-                r"^Author Note\b",
-                r"^Summary\b",
-                r"^Review Questions\b",
-            ],
+            eoc_heading_patterns=merged_patterns,
             active_blocks=list(active),
             block_rules={k: dict(v) for k, v in rules.items()} if isinstance(rules, dict) else {},
         )

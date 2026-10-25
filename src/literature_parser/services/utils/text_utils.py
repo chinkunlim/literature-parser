@@ -482,19 +482,43 @@ def repair_broken_ligatures(text: str) -> str:
 
 
 def clean_typography_artifacts(text: str) -> str:
-    """
-    Normalizes common PDF extraction typographical quirks:
-    - Smart quotes and dashes (---, -- -> —)
+    """Normalizes common PDF extraction typographical quirks while protecting code fences and tables.
+
+    - Smart quotes and dashes (---, -- -> —) outside fenced code blocks and Markdown table dividers
     - Orphaned page-margin artifacts (e.g. solitary '|' or '¦')
     - Font ligatures
+
+    Args:
+        text: Raw Markdown or prose string to normalize.
+
+    Returns:
+        Typography-normalized string with Mermaid arrows and table dividers preserved.
     """
     if not text:
         return ""
     text = normalize_ligatures(text)
     text = clean_decorative_noise(text)
-    # Standardize dashes
-    text = re.sub(r'---', '—', text)
-    text = re.sub(r'--', '—', text)
+
+    # Protect fenced code blocks (e.g. ```mermaid ... ```) and Markdown table separator rows (| --- |)
+    # so `-->` and `| --- |` are never corrupted into `—>` or `| — |` (Refs: ISSUE-016)
+    protected_blocks: list[str] = []
+
+    def _stash(match: re.Match) -> str:
+        idx = len(protected_blocks)
+        protected_blocks.append(match.group(0))
+        return f"\x00PROTECTED_BLOCK_{idx}\x00"
+
+    text = re.sub(r"```[\s\S]*?```", _stash, text)
+    text = re.sub(r"(?m)^[ \t]*\|[ \t:\-\|]+\|[ \t]*$", _stash, text)
+
+    # Standardize dashes in regular prose
+    text = re.sub(r"---", "—", text)
+    text = re.sub(r"--", "—", text)
+
+    # Restore protected fenced code blocks and table separator rows
+    for idx, original in enumerate(protected_blocks):
+        text = text.replace(f"\x00PROTECTED_BLOCK_{idx}\x00", original)
+
     # Standardize OCR broken bullet glyphs (e.g. =», =s, », •)
     text = re.sub(r'(?m)^[ \t]*(?:=[»s]|»)\s*', '- ', text)
     text = re.sub(r'(?m)^[ \t]*=\s+([A-Z])', r'- \1', text)

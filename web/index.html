@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <!--
 Literature Parser Web Studio & Review Dashboard
-Interactive Single Page Application for Comparing PDF with EPUB,
-In-browser Markdown/EPUB Editing, Issue Feedback Logging, and Regression Test Generation.
+Interactive Single Page Application with Collapsible Sidebar,
+Canvas Pan & Zoom for Small Screens, and Resizable Split Panes.
 -->
 <html lang="zh-TW">
 <head>
@@ -53,25 +53,32 @@ In-browser Markdown/EPUB Editing, Issue Feedback Logging, and Regression Test Ge
           <option value="">載入中...</option>
         </select>
 
-        <div class="tree-section-title" style="margin-top: 1rem;">章節清單</div>
+        <div class="tree-section-title" style="margin-top: 0.8rem;">章節清單</div>
         <ul id="chapter-list" class="chapter-list">
-          <li style="padding: 0.5rem; color: var(--text-secondary);">請先選擇書籍</li>
+          <li style="padding: 0.4rem; color: var(--text-secondary);">請先選擇書籍</li>
         </ul>
       </div>
     </aside>
 
     <!-- Main Viewport -->
     <main id="main-viewport">
-      <!-- Top Action Header -->
+      <!-- Top Header -->
       <header class="top-header">
         <div class="top-title-area">
+          <button id="btn-sidebar-toggle" class="btn-sidebar-toggle" title="折疊/展開側邊欄 (釋放螢幕空間)">☰</button>
           <h2 id="current-view-title" class="current-view-title">📊 處理進度儀表板</h2>
-          <span id="active-breadcrumb" style="font-size: 0.8rem; color: var(--text-secondary); margin-left: 0.5rem;"></span>
+          <span id="active-breadcrumb" style="font-size: 0.76rem; color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></span>
         </div>
         <div class="top-actions">
+          <!-- Small Screen Layout Switcher (visible in compare view) -->
+          <div id="layout-switcher" class="btn-group" style="display: none;">
+            <button id="btn-layout-pdf" class="btn" title="純 PDF 檢視">📄 僅 PDF</button>
+            <button id="btn-layout-split" class="btn active" title="左右雙欄對照">⚖️ 雙欄</button>
+            <button id="btn-layout-editor" class="btn" title="純編輯器檢視">✏️ 僅編輯</button>
+          </div>
           <button id="btn-refresh" class="btn">🔄 重新整理</button>
-          <button id="btn-rebuild-epub-top" class="btn btn-primary" style="display: none;">📦 重新編譯 EPUB</button>
-          <a id="btn-download-epub" class="btn" style="display: none; text-decoration: none;" target="_blank">⬇️ 下載 EPUB</a>
+          <button id="btn-rebuild-epub-top" class="btn btn-primary" style="display: none;">📦 重編 EPUB</button>
+          <a id="btn-download-epub" class="btn" style="display: none; text-decoration: none;" target="_blank">⬇️ 下載</a>
         </div>
       </header>
 
@@ -97,7 +104,7 @@ In-browser Markdown/EPUB Editing, Issue Feedback Logging, and Regression Test Ge
             </div>
           </div>
 
-          <h3 style="margin-bottom: 0.8rem; font-size: 1rem;">📚 書籍與論文轉檔明細</h3>
+          <h3 style="margin-bottom: 0.8rem; font-size: 0.95rem;">📚 書籍與論文轉檔明細</h3>
           <div id="books-grid" class="books-grid">
             <p style="color: var(--text-secondary); padding: 2rem; text-align: center;">載入資料中...</p>
           </div>
@@ -106,45 +113,50 @@ In-browser Markdown/EPUB Editing, Issue Feedback Logging, and Regression Test Ge
 
       <!-- View 2: Split View (PDF vs EPUB / Markdown Editor) -->
       <section id="view-compare" class="view-panel">
-        <div class="split-workspace">
-          <!-- Left: PDF Viewer -->
-          <div class="pane pane-pdf">
+        <div id="split-workspace" class="split-workspace" data-layout="split">
+          <!-- Left: Continuous PDF Feed with Synchronized Scroll -->
+          <div id="pane-pdf" class="pane pane-pdf">
             <div class="pane-toolbar">
-              <div style="display: flex; align-items: center; gap: 0.4rem;">
-                <span>📄 原始章節 PDF</span>
-                <span id="pdf-meta-badge" class="badge-score" style="background:#1f6feb20; color:var(--accent-blue-hover); border-color:#1f6feb40;">-</span>
+              <div style="display: flex; align-items: center; gap: 0.35rem;">
+                <span style="font-weight: 600;">📄 原始 PDF</span>
+                <span id="pdf-scroll-indicator" class="badge-score" style="background:#1f6feb20; color:var(--accent-blue-hover);">第 1 頁</span>
               </div>
+              <!-- Sync Toggle & Zoom Controls -->
               <div style="display: flex; align-items: center; gap: 0.4rem;">
-                <button id="btn-pdf-prev" class="btn" style="padding: 0.2rem 0.5rem;">◀ 上頁</button>
-                <span id="pdf-page-display">1 / 1</span>
-                <button id="btn-pdf-next" class="btn" style="padding: 0.2rem 0.5rem;">下頁 ▶</button>
-                <button id="btn-pdf-zoom-in" class="btn" style="padding: 0.2rem 0.4rem;">🔍+</button>
-                <button id="btn-pdf-zoom-out" class="btn" style="padding: 0.2rem 0.4rem;">🔍-</button>
+                <button id="btn-toggle-sync" class="btn btn-primary active" title="點擊切換是否啟用雙向滾動同步">🔗 同步中</button>
+                <div class="btn-group">
+                  <button id="btn-pdf-fit-width" class="btn" title="符合寬度">適寬</button>
+                  <button id="btn-pdf-zoom-in" class="btn" title="放大 (+)">🔍+</button>
+                  <button id="btn-pdf-zoom-out" class="btn" title="縮小 (-)">🔍-</button>
+                  <button id="btn-pdf-reset-view" class="btn" title="重設 (100%)">↺</button>
+                </div>
               </div>
             </div>
-            <div class="pdf-viewport">
-              <div id="pdf-loading" style="display: none; position: absolute; color: var(--text-secondary);">渲染頁面中...</div>
-              <img id="pdf-render-img" class="pdf-image" src="" alt="PDF Page" style="display: none;">
+            <!-- Continuous Scroll Feed -->
+            <div id="pdf-scroll-feed" class="pdf-scroll-feed">
               <div id="pdf-empty-notice" style="color: var(--text-secondary); text-align: center; padding: 2rem;">
                 請於左側選取章節以載入對應 PDF。
               </div>
             </div>
           </div>
 
+          <!-- Draggable Splitter -->
+          <div id="pane-resizer" class="split-resizer" title="按住並左右拖曳以調整欄位寬度"></div>
+
           <!-- Right: EPUB / Markdown Editor -->
-          <div class="pane pane-editor">
+          <div id="pane-editor" class="pane pane-editor">
             <div class="pane-toolbar">
               <div class="editor-tabs">
                 <div id="tab-editor-preview" class="editor-tab active" data-tab="preview">👁️ 即時排版預覽</div>
                 <div id="tab-editor-raw" class="editor-tab" data-tab="raw">✏️ Markdown 編輯器</div>
               </div>
-              <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <button id="btn-save-correction" class="btn btn-success">💾 儲存修改並記錄問題</button>
+              <div style="display: flex; align-items: center; gap: 0.4rem;">
+                <button id="btn-save-correction" class="btn btn-success" title="儲存修改並記錄問題 (Cmd+S / Ctrl+S)">💾 儲存修改並記錄問題</button>
               </div>
             </div>
             <div class="editor-container">
               <!-- Raw Markdown Code Editor -->
-              <textarea id="markdown-textarea" class="code-editor" style="display: none;" placeholder="在此編輯章節 Markdown..."></textarea>
+              <textarea id="markdown-textarea" class="code-editor" style="display: none;" placeholder="在此編輯章節 Markdown... 支援 Cmd+S 快速儲存"></textarea>
               <!-- Live Preview Container -->
               <div id="preview-viewport" class="preview-container active">
                 <p style="color: #666;">載入預覽內容中...</p>
@@ -156,10 +168,10 @@ In-browser Markdown/EPUB Editing, Issue Feedback Logging, and Regression Test Ge
 
       <!-- View 3: Visual Diff Samples -->
       <section id="view-diffs" class="view-panel">
-        <div style="padding: 1.5rem;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <div style="padding: 1.2rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
             <h3>🖼️ 頁對頁視覺圖像對照 (Visual Page Diff Samples)</h3>
-            <span style="font-size: 0.82rem; color: var(--text-secondary);">展示 PDF 原頁 vs EPUB 3 渲染截圖並列分析</span>
+            <span style="font-size: 0.8rem; color: var(--text-secondary);">展示 PDF 原頁 vs EPUB 3 渲染截圖並列分析</span>
           </div>
           <div id="diff-gallery" class="diff-gallery">
             <p style="color: var(--text-secondary);">載入視覺差異樣本中...</p>
@@ -170,10 +182,10 @@ In-browser Markdown/EPUB Editing, Issue Feedback Logging, and Regression Test Ge
       <!-- View 4: Correction Feedback Library -->
       <section id="view-corrections" class="view-panel">
         <div class="table-container">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
             <div>
               <h3>🛠️ 人工修正與反饋資料庫</h3>
-              <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.2rem;">
+              <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.2rem;">
                 記錄所有在 Web Studio 進行的校訂，並支援一鍵生成自動化回歸測試以防止重複犯錯。
               </p>
             </div>
@@ -206,7 +218,7 @@ In-browser Markdown/EPUB Editing, Issue Feedback Logging, and Regression Test Ge
   <div id="correction-modal" class="modal-overlay">
     <div class="modal-dialog">
       <div class="modal-header">
-        <h4 style="font-size: 1rem;">💾 記錄問題分類與修正備註</h4>
+        <h4 style="font-size: 0.95rem;">💾 記錄問題分類與修正備註</h4>
         <button id="btn-modal-close" class="btn" style="padding: 0.2rem 0.5rem;">✕</button>
       </div>
       <div class="modal-body">
@@ -232,7 +244,7 @@ In-browser Markdown/EPUB Editing, Issue Feedback Logging, and Regression Test Ge
         </div>
         <div style="display: flex; align-items: center; gap: 0.5rem;">
           <input type="checkbox" id="modal-rebuild-epub" checked>
-          <label for="modal-rebuild-epub" style="font-size: 0.82rem; cursor: pointer;">儲存後在背景自動重新編譯 EPUB 3 並刷新</label>
+          <label for="modal-rebuild-epub" style="font-size: 0.8rem; cursor: pointer;">儲存後在背景自動重新編譯 EPUB 3 並刷新</label>
         </div>
       </div>
       <div class="modal-footer">
@@ -246,6 +258,7 @@ In-browser Markdown/EPUB Editing, Issue Feedback Logging, and Regression Test Ge
   <div id="toast-container"></div>
 
   <!-- Application Logic -->
+  <script src="/static/panzoom.js"></script>
   <script src="/static/app.js"></script>
 </body>
 </html>

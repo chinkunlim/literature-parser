@@ -1,8 +1,9 @@
 /**
  * @file Client-side controller for Literature Parser Web Studio.
- * Handles view routing, PDF rendering, Markdown/EPUB editing, issue logging, and test generation.
+ * Handles view routing, book and chapter navigation, live editing, and test generation.
  */
 
+// Application State
 const state = {
   currentView: "dashboard",
   books: [],
@@ -11,15 +12,14 @@ const state = {
   selectedChapterId: "",
   currentPdfPage: 1,
   totalPdfPages: 1,
-  pdfZoom: 1.0,
   originalMarkdown: "",
   currentMarkdown: "",
 };
 
 /**
- * Displays a temporary toast notification.
- * @param {string} msg - Notification message.
- * @param {"info"|"success"|"error"} [type="info"] - Toast styling type.
+ * Shows temporary toast notification.
+ * @param {string} msg - Message text.
+ * @param {"info"|"success"|"error"} [type="info"] - Notification style.
  * @returns {void}
  */
 function showToast(msg, type = "info") {
@@ -32,12 +32,12 @@ function showToast(msg, type = "info") {
   setTimeout(() => {
     t.style.opacity = "0";
     setTimeout(() => t.remove(), 250);
-  }, 3200);
+  }, 3000);
 }
 
 /**
- * Switches the active viewport tab.
- * @param {string} view - View identifier to activate.
+ * Switches the active main viewport view.
+ * @param {string} view - View identifier.
  * @returns {void}
  */
 function switchView(view) {
@@ -48,6 +48,9 @@ function switchView(view) {
   document.querySelectorAll(".view-panel").forEach((el) => {
     el.classList.toggle("active", el.id === `view-${view}`);
   });
+  const switcher = document.getElementById("layout-switcher");
+  if (switcher) switcher.style.display = (view === "compare") ? "inline-flex" : "none";
+
   const titleMap = {
     dashboard: "📊 處理進度儀表板",
     compare: "🔍 PDF vs EPUB 雙欄對比與編輯",
@@ -202,33 +205,16 @@ async function selectChapter(chId) {
     const res = await fetch(`/api/books/${state.selectedBookId}/chapters/${chId}/pdf/meta`);
     const meta = await res.json();
     state.totalPdfPages = meta.total_pages || 1;
-    document.getElementById("pdf-meta-badge").textContent = meta.has_pdf ? `共 ${state.totalPdfPages} 頁` : "無 PDF";
-    if (meta.has_pdf && state.totalPdfPages > 0) renderPdfPage(1);
+    if (meta.has_pdf && state.totalPdfPages > 0) {
+      buildPdfScrollFeed(state.selectedBookId, chId, state.totalPdfPages);
+    }
   } catch (err) {
     console.error("PDF meta error:", err);
   }
 }
 
 /**
- * Renders a chapter PDF page image.
- * @param {number} p - 1-based page number.
- * @returns {void}
- */
-function renderPdfPage(p) {
-  if (p < 1 || p > state.totalPdfPages) return;
-  state.currentPdfPage = p;
-  document.getElementById("pdf-page-display").textContent = `${p} / ${state.totalPdfPages}`;
-  const img = document.getElementById("pdf-render-img");
-  const load = document.getElementById("pdf-loading");
-  if (load) load.style.display = "block";
-  img.src = `/api/books/${state.selectedBookId}/chapters/${state.selectedChapterId}/pdf/page/${p}`;
-  img.style.display = "block";
-  img.onload = () => { if (load) load.style.display = "none"; };
-  img.onerror = () => { if (load) load.style.display = "none"; showToast("PDF 渲染失敗", "error"); };
-}
-
-/**
- * Renders Markdown into EPUB-like HTML preview.
+ * Renders Markdown into EPUB-like HTML preview with page anchors.
  * @param {string} md - Markdown source.
  * @returns {void}
  */
@@ -242,6 +228,7 @@ function renderPreview(md) {
     .replace(/\*\*(.*?)\*\*/gim, "<strong>$1</strong>")
     .replace(/\*(.*?)\*/gim, "<em>$1</em>")
     .replace(/!\[(.*?)\]\((.*?)\)/gim, '<div style="text-align:center;margin:1.2rem 0;"><img src="$2" alt="$1" style="max-width:90%;"><p style="font-size:0.8rem;color:#666;">$1</p></div>')
+    .replace(/<!-- Page (\d+) -->/gim, '<div id="epub-page-$1" class="epub-page-divider" data-page="$1"><span class="epub-page-pill">Page $1</span></div>')
     .replace(/\n\n/gim, "</p><p style=\"margin-bottom:1rem;text-indent:1.5rem;\">");
   c.innerHTML = `<div style="max-width:760px;margin:0 auto;"><p style="margin-bottom:1rem;text-indent:1.5rem;">${html}</p></div>`;
 }
@@ -367,7 +354,7 @@ async function generateRegressionTests() {
     showToast("正在分析問題並生成回歸測試...", "info");
     const res = await fetch("/api/corrections/generate-tests", { method: "POST" });
     const data = await res.json();
-    showToast(`成功生成 ${data.total_records} 個回歸測試！存於 tests/test_user_corrections_regression.py`, "success");
+    showToast(`成功生成 ${data.total_records} 個回歸測試！`, "success");
   } catch (err) {
     showToast(`生成失敗: ${err.message}`, "error");
   }
@@ -378,26 +365,28 @@ async function generateRegressionTests() {
  * @returns {void}
  */
 function init() {
+  document.getElementById("btn-sidebar-toggle")?.addEventListener("click", toggleSidebar);
   document.querySelectorAll(".nav-item").forEach((el) => {
     el.addEventListener("click", () => switchView(el.dataset.view));
   });
+
+  // Layout Switcher
+  document.getElementById("btn-layout-pdf")?.addEventListener("click", () => setLayoutMode("pdf-only"));
+  document.getElementById("btn-layout-split")?.addEventListener("click", () => setLayoutMode("split"));
+  document.getElementById("btn-layout-editor")?.addEventListener("click", () => setLayoutMode("editor-only"));
+
+  document.getElementById("btn-pdf-fit-width")?.addEventListener("click", resetPdfFeedZoom);
+  document.getElementById("btn-pdf-reset-view")?.addEventListener("click", resetPdfFeedZoom);
+  document.getElementById("btn-pdf-zoom-in")?.addEventListener("click", () => zoomPdfFeed(1.15));
+  document.getElementById("btn-pdf-zoom-out")?.addEventListener("click", () => zoomPdfFeed(0.85));
+
   document.getElementById("book-select")?.addEventListener("change", (e) => selectBook(e.target.value));
   document.getElementById("btn-refresh")?.addEventListener("click", () => {
     loadDashboard();
     if (state.selectedBookId) selectBook(state.selectedBookId);
     showToast("已重新整理", "info");
   });
-  document.getElementById("btn-rebuild-epub-top")?.addEventListener("click", async () => {
-    if (!state.selectedBookId) return;
-    try {
-      showToast("正在編譯 EPUB 3...", "info");
-      await fetch(`/api/books/${state.selectedBookId}/rebuild-epub`, { method: "POST" });
-      showToast("EPUB 重編完成！", "success");
-      loadDashboard();
-    } catch (err) {
-      showToast(`重編失敗: ${err.message}`, "error");
-    }
-  });
+
   document.getElementById("tab-editor-preview")?.addEventListener("click", () => {
     document.getElementById("tab-editor-preview").classList.add("active");
     document.getElementById("tab-editor-raw").classList.remove("active");
@@ -412,32 +401,32 @@ function init() {
     document.getElementById("markdown-textarea").style.display = "block";
     document.getElementById("preview-viewport").classList.remove("active");
   });
-  document.getElementById("btn-pdf-prev")?.addEventListener("click", () => {
-    if (state.currentPdfPage > 1) renderPdfPage(state.currentPdfPage - 1);
-  });
-  document.getElementById("btn-pdf-next")?.addEventListener("click", () => {
-    if (state.currentPdfPage < state.totalPdfPages) renderPdfPage(state.currentPdfPage + 1);
-  });
-  document.getElementById("btn-pdf-zoom-in")?.addEventListener("click", () => {
-    state.pdfZoom = Math.min(state.pdfZoom + 0.2, 2.5);
-    const img = document.getElementById("pdf-render-img");
-    if (img) img.style.transform = `scale(${state.pdfZoom})`;
-  });
-  document.getElementById("btn-pdf-zoom-out")?.addEventListener("click", () => {
-    state.pdfZoom = Math.max(state.pdfZoom - 0.2, 0.6);
-    const img = document.getElementById("pdf-render-img");
-    if (img) img.style.transform = `scale(${state.pdfZoom})`;
-  });
+
   document.getElementById("btn-save-correction")?.addEventListener("click", openCorrectionModal);
-  document.getElementById("btn-modal-close")?.addEventListener("click", () => {
-    document.getElementById("correction-modal")?.classList.remove("active");
-  });
-  document.getElementById("btn-modal-cancel")?.addEventListener("click", () => {
-    document.getElementById("correction-modal")?.classList.remove("active");
-  });
+  document.getElementById("btn-modal-close")?.addEventListener("click", () => document.getElementById("correction-modal")?.classList.remove("active"));
+  document.getElementById("btn-modal-cancel")?.addEventListener("click", () => document.getElementById("correction-modal")?.classList.remove("active"));
   document.getElementById("btn-modal-confirm")?.addEventListener("click", submitCorrection);
   document.getElementById("btn-generate-tests")?.addEventListener("click", generateRegressionTests);
 
+  initSyncScrollController();
+  initSplitResizer();
+
+  // Keyboard Shortcuts
+  window.addEventListener("keydown", (e) => {
+    const isEditing = ["TEXTAREA", "INPUT"].includes(document.activeElement?.tagName);
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "s") {
+      e.preventDefault();
+      openCorrectionModal();
+      return;
+    }
+    if ((e.metaKey || e.ctrlKey) && e.key === "0") {
+      e.preventDefault();
+      resetPdfFeedZoom();
+      return;
+    }
+  });
+
+  if (window.innerWidth < 960) document.getElementById("sidebar")?.classList.add("collapsed");
   loadDashboard();
   loadBooks();
 }

@@ -5,18 +5,28 @@
 <!-- LIVE_STATE_START -->
 ## 📊 即時狀態看板 (Live Snapshot)
 
-- **最後更新時間**: `2026-10-26 05:29 UTC`
+- **最後更新時間**: `2026-10-26 05:35 UTC`
 - **最近操作 Agent**: `Antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `3f38512 docs(adr/docs): update adr/docs documentation (ADR-009, ADR-010, ADR-011, ADR-012, ISSUE-006, ISSUE-015, ISSUE-016, ISSUE-017, ISSUE-018, TASK-039, TASK-040, TASK-041, TASK-047, TASK-048) [agent:Antigravity]`
+- **最新 Git Commit**: `90b7bae fix(epub): add cover thumbnail metadata, TOC backlinks, and fix references layout [agent:Antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
-> 目前無進行中或待接手任務。可執行 `python3 scripts/agentctl.py task create "任務名稱" --agent <name>` 建立任務。
+| 任務 | 狀態 | 目前/上一位 Agent | 建議接手 | 相關範圍 | 已完成 | 待辦與卡點 |
+|---|---|---|---|---|---|---|
+| **TASK-050**<br/>全書庫 EPUB 視覺審查與版面排版全量檢驗 | 🟢 `in_progress` | `Antigravity` | `-` | - | - | - |
 
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-10-26 05:35 UTC] 認領任務 `TASK-050` (全書庫 EPUB 視覺審查與版面排版全量檢驗) (by `Antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `Antigravity`
+
+### [2026-10-26 05:35 UTC] 建立任務 `TASK-050`: 全書庫 EPUB 視覺審查與版面排版全量檢驗 (by `Antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
 
 ### [2026-10-26 05:29 UTC] 完成任務 `TASK-049` — EPUB Layout Healing, Front-matter Image Filtering, and TOC Title Backlinks (by `Antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
@@ -93,11 +103,3 @@
 ### [2026-10-23 13:59 UTC] 建立任務 `TASK-043`: 執行 Research Methods 全書 27 章節全量平行轉檔與自適應版位驗證 (by `antigravity`)
 - **狀態**: `in_progress`
 - **相關範圍**: `-`
-
-### [2026-10-23 13:06 UTC] 完成任務 `TASK-042` — 使用 Research Methods 書籍重新測試轉檔與自適應版位驗證 (by `antigravity`)
-- **狀態**: ✅ 已完成 (`done`)
-- **完成摘要**: (無)
-
-### [2026-10-23 13:04 UTC] 認領任務 `TASK-042` (使用 Research Methods 書籍重新測試轉檔與自適應版位驗證) (by `antigravity`)
-- **相關範圍**: `-`
-- **接棒自**: `antigravity`

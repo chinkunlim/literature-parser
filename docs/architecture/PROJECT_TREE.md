@@ -404,6 +404,7 @@ literature-parser/
 │       │   │   └── text_utils.py
 │       │   ├── verification/
 │       │   │   ├── __init__.py
+│       │   │   ├── epub_visual_auditor.py
 │       │   │   ├── layout_auditor.py
 │       │   │   ├── lexical_auditor.py
 │       │   │   ├── models.py
@@ -425,6 +426,7 @@ literature-parser/
 │   ├── test_chapter_blueprint_and_modular_renderers.py
 │   ├── test_component_registry.py
 │   ├── test_element_cropper.py
+│   ├── test_epub_visual_auditor.py
 │   ├── test_epub_visual_closed_loop.py
 │   ├── test_feedback_loop.py
 │   ├── test_feedback_service.py

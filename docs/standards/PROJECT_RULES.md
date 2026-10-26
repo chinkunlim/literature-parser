@@ -70,6 +70,13 @@
 - **記憶體直讀架構**：採用 PyMuPDF (fitz) 原生 API 一次性載入文檔至記憶體，直接抽取文字 span 樣式、向量路徑與高解析圖片，徹底消滅逐頁呼叫外部子進程的行程負擔；保留 Poppler 作為備援 fallback。
 - **CPU-GPU 流水線並行**：實作 `PipelinedChapterProcessor`，在 CPU 正在解析下一章節的同時，由 GPU/Metal 本地 Ollama 對上一章節進行非同步背景語意驗證，達到資源最大化利用。
 
+### 2.12 EPUB 渲染後必須使用本地 Ollama 視覺模型雙重確認 (EPUB Post-Render Ollama Vision Double-Check)
+- **鐵律原則**：用完 PyMuPDF 進行 EPUB 頁面渲染後，一律透過本地 Ollama 視覺模型（VLM，如 `minicpm-v:latest` 或 `qwen2.5`）進行多模態排版複查，嚴禁僅依賴啟發式規則就宣告通過。
+- **雙重確認標準**：
+  1. 第一道：PyMuPDF 快速將 EPUB 關鍵章節頁面（封面、目錄、章首、圖表密集頁、章末參考文獻）渲染為 150 DPI 高解析度點陣圖（PNG）。
+  2. 第二道：自動傳送至本地 Ollama `minicpm-v:latest` 呼叫多模態視覺檢驗，評估是否有標題雙重陰影、HTML 實體洩漏、雙欄撕裂、殘留裝飾切片或段落中斷，由 VLM 給予審查評分（`rating: 1-10` 與 `has_defects`）。
+  3. 發現缺陷時自動拋出警示或觸發補償修正，確保交付使用者的 Apple Books EPUB 達到出版級無瑕疵品質。
+
 ---
 
 ## 3. 和通用規範不同的例外

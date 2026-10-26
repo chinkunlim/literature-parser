@@ -51,6 +51,7 @@ All notable changes to **literature-parser** are documented here
 - feat(epub): add full-page screenshot closed-loop healer, GFM table, Mermaid SVG, and 2-column soft-hyphen fixes (TASK-048, ISSUE-017) (by `@Antigravity`)
 - feat(deps/adapters): add deps/adapters module (ISSUE-017) (by `@Antigravity`)
 - feat(services/test): add services/test module (ISSUE-017) (by `@Antigravity`)
+- feat(epub): add EpubVisualAuditor with Ollama vision verification and update project rules (by `@Antigravity`)
 
 ### Changed
 - docs(migration): mark all migration acceptance criteria as completed (by `@antigravity`)

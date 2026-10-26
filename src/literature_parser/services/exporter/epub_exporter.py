@@ -328,6 +328,16 @@ class MarkdownToXHTML:
         if not rows:
             return ""
 
+        if sep_idx is None:
+            # Buffer did not contain a '| --- |' divider; render as standard paragraphs
+            p_lines = []
+            for ln in table_lines:
+                clean_ln = re.sub(r'(?m)(^|[ \t>\[\(])\|[ \t]+(?=[a-z]{1,15}\b)', r'\1I ', ln)
+                clean_ln = clean_ln.strip().strip("|").strip()
+                if clean_ln:
+                    p_lines.append(f"<p>{cls._format_inline(clean_ln)}</p>")
+            return "\n".join(p_lines)
+
         out = ['<div class="table-container"><table class="textbook-table">']
         if sep_idx is not None and sep_idx > 0:
             out.append("  <thead>")

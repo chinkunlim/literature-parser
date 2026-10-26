@@ -69,6 +69,7 @@ All notable changes to **literature-parser** are documented here
 - fix(verifier): recognize credits and acknowledgments in back matter heading density exemption (by `@antigravity`)
 - fix(checkpoint): make is_chapter_verified robust to parallel worker status updates (by `@antigravity`)
 - fix(parsers,verifier): resolve 6 spot-checked defects in Mermaid, EOC headings, complex tables, and bogus diagrams (TASK-047, ISSUE-016) (by `@Antigravity`)
+- fix(healer): unwrap false-positive prose codeblocks and normalize OCR pipe pronouns to achieve 0 defects across all 5 books (TASK-048, ISSUE-017) (by `@Antigravity`)
 
 ### Documentation
 - docs: update and synchronize all project markdown documentation (by `@antigravity`)

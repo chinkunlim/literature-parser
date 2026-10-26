@@ -538,6 +538,9 @@ def clean_typography_artifacts(text: str) -> str:
     # Standardize OCR broken bullet glyphs (e.g. =», =s, », •)
     text = re.sub(r'(?m)^[ \t]*(?:=[»s]|»)\s*', '- ', text)
     text = re.sub(r'(?m)^[ \t]*=\s+([A-Z])', r'- \1', text)
+    # Fix OCR misread of pronoun 'I' as pipe '|' (e.g. '| want' -> 'I want', '[| feel' -> 'I feel') (Refs: ISSUE-017)
+    text = re.sub(r'(?m)(^|[ \t>\[\(])\|[ \t]+(?=[a-z]{1,15}\b)', r'\1I ', text)
+    text = re.sub(r'(?m)^\[\|[ \t]*', '', text)
     # Remove standalone border ticks often left by table or sidebar borders
     text = re.sub(r'(?m)^[|¦·]\s*$', '', text)
     # Remove vector chart coordinate axis tick leaks (e.g. '5 2 5 2 5 2' or '2 2 2 2 1 1 1 1')

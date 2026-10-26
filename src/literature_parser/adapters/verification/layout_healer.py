@@ -67,6 +67,10 @@ class LayoutAutoHealer:
         text, f2 = cls.heal_blockquote_false_positives(text)
         fixes_applied.extend(f2)
 
+        # 2.5. Heal false-positive code fences containing prose paragraphs (Refs: ISSUE-017)
+        text, f_code = cls.heal_false_positive_codeblocks(text)
+        fixes_applied.extend(f_code)
+
         # 3. Heal double-formatting artifacts (****Title**** or ** *Title* **)
         text, f3 = cls.heal_double_formatting(text)
         fixes_applied.extend(f3)
@@ -325,6 +329,57 @@ class LayoutAutoHealer:
         return "\n".join(out_lines), fixes
 
     @classmethod
+    def heal_false_positive_codeblocks(cls, text: str) -> tuple[str, list]:
+        """Detects and unwraps non-code natural prose paragraphs mistakenly wrapped in ``` code fences.
+
+        Args:
+            text: Chapter Markdown string.
+
+        Returns:
+            Tuple of `(healed_text, fixes_list)`.
+        """
+        fixes = []
+
+        def _unwrap(m: re.Match) -> str:
+            lang = m.group(1).lower()
+            inner = m.group(2).strip()
+            if lang == "mermaid":
+                return m.group(0)
+            words = inner.split()
+            common_prose = sum(
+                1
+                for w in words
+                if w.lower()
+                in (
+                    "the",
+                    "and",
+                    "in",
+                    "of",
+                    "to",
+                    "was",
+                    "that",
+                    "this",
+                    "learning",
+                    "neurons",
+                    "brain",
+                    "behavior",
+                )
+            )
+            if (
+                common_prose >= 6
+                or "LO " in inner
+                or re.search(r"\b(?:When I|Although|Nevertheless|Researchers)\b", inner)
+            ):
+                fixes.append(
+                    f"Unwrapped false-positive ```{lang} codeblock containing body prose"
+                )
+                return f"\n\n{inner}\n\n"
+            return m.group(0)
+
+        text = re.sub(r"(?m)^```([a-zA-Z0-9_-]*)\n([\s\S]*?)\n```$", _unwrap, text)
+        return text, fixes
+
+    @classmethod
     def heal_double_formatting(cls, text: str) -> tuple[str, list]:
         """Cleans up nested bold/italic tags (`****Text****` -> `**Text**`), stray `**` inside
         HTML cells, and unbalanced `**` markers on single lines (Refs: ISSUE-017).
@@ -390,9 +445,13 @@ class LayoutAutoHealer:
                         line = line.replace("**", "", 1)
                         fixes.append("Removed unclosed leading '**'")
                 else:
-                    # Strip the last stray '**' to restore balanced bold pairs
+                    # Check if line ends with an unclosed opening '**' before trailing words (e.g. '**A** **B** **trailing text')
                     r_idx = line.rfind("**")
-                    if r_idx != -1:
+                    trailing_text = line[r_idx + 2 :].strip()
+                    if trailing_text and not trailing_text.endswith((".", "!", "?", ";")) and len(trailing_text) < 65:
+                        line = line + "**"
+                        fixes.append(f"Closed unclosed trailing bold span '{trailing_text}'")
+                    elif r_idx != -1:
                         line = line[:r_idx] + line[r_idx + 2 :]
                         fixes.append("Removed trailing unbalanced '**' on line")
             out_lines.append(line)

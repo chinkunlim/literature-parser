@@ -5,18 +5,24 @@
 <!-- LIVE_STATE_START -->
 ## 📊 即時狀態看板 (Live Snapshot)
 
-- **最後更新時間**: `2026-10-25 17:05 UTC`
+- **最後更新時間**: `2026-10-26 00:38 UTC`
 - **最近操作 Agent**: `Antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `83bbb7f feat(profiler,renderers): add two-pass ChapterBlueprintScanner, Docling adapter, modular renderers, and blueprint compliance check (Refs: ADR-011) [agent:antigravity]`
+- **最新 Git Commit**: `b9a0ae7 fix(parsers,verifier): resolve 6 spot-checked defects in Mermaid, EOC headings, complex tables, and bogus diagrams (TASK-047, ISSUE-016) [agent:Antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
-> 目前無進行中或待接手任務。可執行 `python3 scripts/agentctl.py task create "任務名稱" --agent <name>` 建立任務。
+| 任務 | 狀態 | 目前/上一位 Agent | 建議接手 | 相關範圍 | 已完成 | 待辦與卡點 |
+|---|---|---|---|---|---|---|
+| **TASK-048**<br/>Full-pipeline formatting enhancements and EPUB full-page screenshot closed-loop healing | 🟢 `in_progress` | `Antigravity` | `-` | - | - | - |
 
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-10-26 00:38 UTC] 建立任務 `TASK-048`: Full-pipeline formatting enhancements and EPUB full-page screenshot closed-loop healing (by `Antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
 
 ### [2026-10-25 17:05 UTC] 完成任務 `TASK-047` — Fix 6 spot-checked defects (Mermaid arrows, EOC sections, Key Terms table, bogus diagram crops, complex Career Counseling tables, split headings) and run visual/structural verification (by `Antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
@@ -97,11 +103,3 @@
 ### [2026-10-23 06:50 UTC] 建立任務 `TASK-041`: 實作自適應版位引擎、Stage 0 探針、元件微處理器與閉環容錯機制 (by `antigravity`)
 - **狀態**: `in_progress`
 - **相關範圍**: `-`
-
-### [2026-10-23 03:53 UTC] Session Closeout (結束對話收尾) (by `antigravity`)
-- **檢查結果**: 測試與 Code Review Guard 通過
-- **目標**: 推進4本書籍100%全量無人值守轉檔通過，Clean-slate乾淨重跑驗證零缺陷，並更新全專案ADR-009、SPEC-008、ISSUE-006~009及所有Markdown文檔
-- **錯誤與根因**: 1. Glossary cross-page continuity regex backtracking freeze -> 線性化正則 (ISSUE-006); 2. EOC false positive on lowercase summary & Cengage WCN leak -> 樣式檢驗與全域正則清洗 (
-- **下一步**: 全書庫4本97章節已達成出版級零缺陷轉換與全套文檔同步；後續可推進學術論文/期刊領域 (DATA_DIR/input/literature/) 之批次轉檔實測與EPUB 3匯出檢驗
-- **交接備註**: 4本大型教科書97章節100% ALL_PASSED乾淨重跑驗證通過，文檔與規範已完整落地
-- **本機對話紀錄**: `.agents/conversations/2026-10-23-1153-antigravity-summary.md`（只在這台電腦）

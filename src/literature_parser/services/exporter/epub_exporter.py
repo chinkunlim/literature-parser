@@ -100,6 +100,192 @@ class LaTeXToMathML:
         return text
 
 
+class MermaidToSVGConverter:
+    """Renders Mermaid graph/flowchart blocks into standards-compliant inline SVG diagrams for EPUB 3."""
+
+    @classmethod
+    def convert_to_svg(cls, mermaid_code: str) -> str:
+        """Converts Mermaid graph LR/TD syntax into an XHTML figure containing an inline SVG diagram.
+
+        Args:
+            mermaid_code: Raw text content inside a ```mermaid fenced block.
+
+        Returns:
+            XHTML `<figure class="concept-map-figure"><svg ...>...</svg></figure>` string.
+        """
+        node_labels: Dict[str, str] = {}
+        edges: List[Tuple[str, str]] = []
+        node_order: List[str] = []
+
+        def _reg_node(nid: str, lbl: Optional[str] = None) -> None:
+            nid = nid.strip()
+            if not nid:
+                return
+            if nid not in node_order:
+                node_order.append(nid)
+            if lbl:
+                clean_lbl = lbl.strip().strip('"').strip("'")
+                node_labels[nid] = clean_lbl
+            elif nid not in node_labels:
+                node_labels[nid] = nid
+
+        for raw_line in mermaid_code.splitlines():
+            line = raw_line.strip()
+            if not line or line.startswith(("graph ", "flowchart ", "%%")):
+                continue
+            # Extract all inline node definitions like N5["Characteristics"]
+            for m_node in re.finditer(r'([A-Za-z0-9_]+)\s*\[\s*"([^"]+)"\s*\]', line):
+                _reg_node(m_node.group(1), m_node.group(2))
+            # Check for directed edge: A --> B
+            if "-->" in line:
+                parts = line.split("-->")
+                for i in range(len(parts) - 1):
+                    left_id = re.sub(r'\[.*?\]', '', parts[i]).strip()
+                    right_id = re.sub(r'\[.*?\]', '', parts[i + 1]).strip()
+                    if left_id and right_id:
+                        _reg_node(left_id)
+                        _reg_node(right_id)
+                        edges.append((left_id, right_id))
+
+        if not node_order:
+            escaped = html.escape(mermaid_code.strip())
+            return f'<div class="concept-map-fallback"><pre>{escaped}</pre></div>'
+
+        children_map: Dict[str, List[str]] = {n: [] for n in node_order}
+        in_degree: Dict[str, int] = {n: 0 for n in node_order}
+        for u, v in edges:
+            if v not in children_map.get(u, []):
+                children_map.setdefault(u, []).append(v)
+                in_degree[v] = in_degree.get(v, 0) + 1
+
+        roots = [n for n in node_order if in_degree.get(n, 0) == 0]
+        if not roots:
+            roots = [node_order[0]]
+
+        # If multiple disconnected roots exist (e.g. 'Root' declared standalone and 'N5' has edges),
+        # attach secondary roots with children under the primary Root if Root has no outgoing edges
+        if len(roots) > 1 and not children_map.get(roots[0]):
+            primary_root = roots[0]
+            for r in roots[1:]:
+                children_map[primary_root].append(r)
+                in_degree[r] = 1
+            roots = [primary_root]
+
+        # Assign horizontal depth levels via BFS
+        depth_map: Dict[str, int] = {}
+        queue: List[Tuple[str, int]] = [(r, 0) for r in roots]
+        visited = set()
+        while queue:
+            curr, d = queue.pop(0)
+            if curr in visited:
+                continue
+            visited.add(curr)
+            depth_map[curr] = d
+            for ch in children_map.get(curr, []):
+                if ch not in visited:
+                    queue.append((ch, d + 1))
+        for n in node_order:
+            if n not in depth_map:
+                depth_map[n] = 1
+
+        # Compute vertical positions via DFS leaf ordering
+        y_coords: Dict[str, float] = {}
+        leaf_counter = [0]
+        row_h = 44.0
+
+        def _assign_y(node: str, seen: set) -> float:
+            if node in y_coords:
+                return y_coords[node]
+            seen.add(node)
+            ch_list = [c for c in children_map.get(node, []) if c not in seen]
+            if not ch_list:
+                y_val = 28.0 + leaf_counter[0] * row_h
+                leaf_counter[0] += 1
+                y_coords[node] = y_val
+                return y_val
+            child_ys = [_assign_y(c, seen) for c in ch_list]
+            y_val = sum(child_ys) / len(child_ys)
+            y_coords[node] = y_val
+            return y_val
+
+        seen_dfs: set = set()
+        for r in roots:
+            _assign_y(r, seen_dfs)
+        for n in node_order:
+            if n not in y_coords:
+                y_coords[n] = 28.0 + leaf_counter[0] * row_h
+                leaf_counter[0] += 1
+
+        max_depth = max(depth_map.values()) if depth_map else 0
+        col_w = 235.0
+        box_w = 195.0
+        box_h = 30.0
+        svg_w = int(max(520.0, (max_depth + 1) * col_w + 30.0))
+        svg_h = int(max(90.0, (max(y_coords.values()) if y_coords else 60.0) + 45.0))
+
+        svg_elements: List[str] = [
+            f'<figure class="concept-map-figure" style="margin: 1.2em 0; text-align: center;">',
+            f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {svg_w} {svg_h}" width="100%" height="auto" style="max-width: {svg_w}px; font-family: sans-serif;">',
+        ]
+
+        # Draw edges first
+        for u, v in edges:
+            x1 = 20.0 + depth_map.get(u, 0) * col_w + box_w
+            y1 = y_coords.get(u, 28.0)
+            x2 = 20.0 + depth_map.get(v, 1) * col_w
+            y2 = y_coords.get(v, 28.0)
+            mid_x = (x1 + x2) / 2.0
+            svg_elements.append(
+                f'  <path d="M {x1:.1f} {y1:.1f} C {mid_x:.1f} {y1:.1f}, {mid_x:.1f} {y2:.1f}, {x2:.1f} {y2:.1f}" '
+                f'fill="none" stroke="#8a6d7b" stroke-width="1.6" />'
+            )
+
+        # Also draw implicit edges from primary root if connected synthetically
+        for r in roots:
+            for ch in children_map.get(r, []):
+                if (r, ch) not in edges:
+                    x1 = 20.0 + depth_map.get(r, 0) * col_w + box_w
+                    y1 = y_coords.get(r, 28.0)
+                    x2 = 20.0 + depth_map.get(ch, 1) * col_w
+                    y2 = y_coords.get(ch, 28.0)
+                    mid_x = (x1 + x2) / 2.0
+                    svg_elements.append(
+                        f'  <path d="M {x1:.1f} {y1:.1f} C {mid_x:.1f} {y1:.1f}, {mid_x:.1f} {y2:.1f}, {x2:.1f} {y2:.1f}" '
+                        f'fill="none" stroke="#8a6d7b" stroke-width="1.4" stroke-dasharray="4,3" />'
+                    )
+
+        # Draw node boxes and labels
+        for n in node_order:
+            d = depth_map.get(n, 0)
+            x = 20.0 + d * col_w
+            y = y_coords.get(n, 28.0) - box_h / 2.0
+            raw_lbl = node_labels.get(n, n)
+            display_lbl = raw_lbl if len(raw_lbl) <= 45 else (raw_lbl[:42].rstrip() + "…")
+            f_size = "9.5" if len(display_lbl) > 28 else "11"
+            esc_lbl = html.escape(display_lbl)
+            if d == 0:
+                fill, stroke, txt_color, weight = "#782b4d", "#5a1e38", "#ffffff", "bold"
+            elif d == 1:
+                fill, stroke, txt_color, weight = "#f3eaf0", "#782b4d", "#222222", "bold"
+            else:
+                fill, stroke, txt_color, weight = "#ffffff", "#b89aa9", "#333333", "normal"
+
+            svg_elements.append(
+                f'  <rect x="{x:.1f}" y="{y:.1f}" width="{box_w:.1f}" height="{box_h:.1f}" rx="6" ry="6" '
+                f'fill="{fill}" stroke="{stroke}" stroke-width="1.4" />'
+            )
+            text_x = x + box_w / 2.0
+            text_y = y + box_h / 2.0 + 4.0
+            svg_elements.append(
+                f'  <text x="{text_x:.1f}" y="{text_y:.1f}" fill="{txt_color}" font-size="{f_size}" '
+                f'font-weight="{weight}" text-anchor="middle">{esc_lbl}</text>'
+            )
+
+        svg_elements.append("</svg>")
+        svg_elements.append("</figure>")
+        return "\n".join(svg_elements)
+
+
 class MarkdownToXHTML:
     """Translates sanitized Markdown into XHTML5 suitable for EPUB 3 content docs."""
 
@@ -117,22 +303,88 @@ class MarkdownToXHTML:
     VOID_TAGS = {"br", "hr", "img", "col", "input", "meta", "link"}
 
     @classmethod
+    def _convert_pipe_table_lines(cls, table_lines: List[str]) -> str:
+        """Converts a block of GFM pipe table lines into a semantic XHTML `<table>` (Refs: ISSUE-017).
+
+        Args:
+            table_lines: List of raw Markdown table rows starting and ending with `|`.
+
+        Returns:
+            XHTML string containing `<div class="table-container"><table ...>...</table></div>`.
+        """
+        rows: List[List[str]] = []
+        sep_idx: Optional[int] = None
+        for idx, r_line in enumerate(table_lines):
+            stripped = r_line.strip()
+            if stripped.startswith("|"):
+                stripped = stripped[1:]
+            if stripped.endswith("|"):
+                stripped = stripped[:-1]
+            cells = [c.strip() for c in stripped.split("|")]
+            if sep_idx is None and all(re.fullmatch(r":?-{2,}:?", c) for c in cells if c):
+                sep_idx = idx
+            rows.append(cells)
+
+        if not rows:
+            return ""
+
+        out = ['<div class="table-container"><table class="textbook-table">']
+        if sep_idx is not None and sep_idx > 0:
+            out.append("  <thead>")
+            for h_row in rows[:sep_idx]:
+                ths = "".join(f"<th>{cls._format_inline(c)}</th>" for c in h_row)
+                out.append(f"    <tr>{ths}</tr>")
+            out.append("  </thead>")
+            body_rows = rows[sep_idx + 1 :]
+        else:
+            body_rows = [r for i, r in enumerate(rows) if i != sep_idx]
+
+        if body_rows:
+            out.append("  <tbody>")
+            for b_row in body_rows:
+                tds = "".join(f"<td>{cls._format_inline(c)}</td>" for c in b_row)
+                out.append(f"    <tr>{tds}</tr>")
+            out.append("  </tbody>")
+        out.append("</table></div>")
+        return "\n".join(out)
+
+    @classmethod
     def to_xhtml_body(cls, md: str) -> str:
-        """Converts Markdown text into well-formed XHTML5 body content."""
+        """Converts Markdown text into well-formed XHTML5 body content (Refs: ISSUE-017)."""
         # 1. MathML conversion
         content = LaTeXToMathML.process_markdown_math(md)
 
-        # 2. Block replacements with HTML tag-stack tracking
+        # 2. Block replacements with HTML tag-stack tracking, Mermaid SVG rendering, and GFM Pipe Tables
         lines = content.splitlines()
         out_lines = []
         stack = []
         in_codeblock = False
+        codeblock_lang = ""
+        codeblock_buf: List[str] = []
         in_list = False
         in_blockquote = False
+        pipe_table_buf: List[str] = []
+
+        def _flush_pipe_table() -> None:
+            nonlocal pipe_table_buf
+            if not pipe_table_buf:
+                return
+            if len(pipe_table_buf) >= 2:
+                out_lines.append(cls._convert_pipe_table_lines(pipe_table_buf))
+            else:
+                # Single line with pipes (e.g. OCR artifact '| want you to...' or '| i |')
+                single = pipe_table_buf[0].strip()
+                if re.fullmatch(r"\|\s*[iI1l]?\s*\|", single):
+                    pass
+                else:
+                    cleaned_single = re.sub(r"^\|\s+(?=[a-zA-Z])", "I ", single)
+                    out_lines.append(f"<p>{cls._format_inline(cleaned_single)}</p>")
+            pipe_table_buf = []
 
         for line in lines:
             trimmed = line.strip()
             if not trimmed:
+                _flush_pipe_table()
                 if in_list and not stack:
                     out_lines.append("</ul>")
                     in_list = False
@@ -141,17 +393,26 @@ class MarkdownToXHTML:
                     in_blockquote = False
                 continue
 
-            # Code block
+            # Code block (with special Mermaid -> SVG handling for EPUB)
             if trimmed.startswith("```"):
+                _flush_pipe_table()
                 if in_codeblock:
-                    out_lines.append("</code></pre>")
+                    if codeblock_lang == "mermaid":
+                        out_lines.append(MermaidToSVGConverter.convert_to_svg("\n".join(codeblock_buf)))
+                    else:
+                        out_lines.append("<pre><code>")
+                        out_lines.extend(html.escape(c_ln) for c_ln in codeblock_buf)
+                        out_lines.append("</code></pre>")
                     in_codeblock = False
+                    codeblock_lang = ""
+                    codeblock_buf = []
                 else:
-                    out_lines.append("<pre><code>")
                     in_codeblock = True
+                    codeblock_lang = trimmed[3:].strip().lower()
+                    codeblock_buf = []
                 continue
             if in_codeblock:
-                out_lines.append(html.escape(line))
+                codeblock_buf.append(line)
                 continue
 
             # Track HTML tag nesting
@@ -176,6 +437,7 @@ class MarkdownToXHTML:
             is_html = was_in_html or now_in_html or (trimmed.startswith("<") and trimmed.endswith(">"))
 
             if is_html:
+                _flush_pipe_table()
                 if in_list:
                     out_lines.append("</ul>")
                     in_list = False
@@ -188,8 +450,34 @@ class MarkdownToXHTML:
                     item_text = trimmed[2:].strip()
                     out_lines.append(f"<li>{cls._format_inline(item_text)}</li>")
                 else:
-                    out_lines.append(line)
+                    # Also convert Markdown links [text](url) and stray ** inside HTML lines
+                    formatted_html_line = re.sub(
+                        r'\[([^\]]+)\]\(([^)]+)\)',
+                        r'<a href="\2">\1</a>',
+                        line,
+                    )
+                    formatted_html_line = re.sub(
+                        r'\*\*([^\*<>]+)\*\*',
+                        r'<strong>\1</strong>',
+                        formatted_html_line,
+                    )
+                    # Strip any remaining unbalanced '**' inside HTML text
+                    formatted_html_line = formatted_html_line.replace("**", "")
+                    out_lines.append(formatted_html_line)
                 continue
+
+            # GFM Pipe Table row detection
+            if trimmed.startswith("|") and (trimmed.endswith("|") or trimmed.count("|") >= 2):
+                if in_list:
+                    out_lines.append("</ul>")
+                    in_list = False
+                if in_blockquote:
+                    out_lines.append("</blockquote>")
+                    in_blockquote = False
+                pipe_table_buf.append(trimmed)
+                continue
+            else:
+                _flush_pipe_table()
 
             # Blockquote
             if trimmed.startswith(">"):
@@ -234,12 +522,18 @@ class MarkdownToXHTML:
             # Standard paragraph
             out_lines.append(f"<p>{cls._format_inline(trimmed)}</p>")
 
+        _flush_pipe_table()
         if in_list:
             out_lines.append("</ul>")
         if in_blockquote:
             out_lines.append("</blockquote>")
         if in_codeblock:
-            out_lines.append("</code></pre>")
+            if codeblock_lang == "mermaid":
+                out_lines.append(MermaidToSVGConverter.convert_to_svg("\n".join(codeblock_buf)))
+            else:
+                out_lines.append("<pre><code>")
+                out_lines.extend(html.escape(c_ln) for c_ln in codeblock_buf)
+                out_lines.append("</code></pre>")
 
         body = "\n".join(out_lines)
 
@@ -581,11 +875,25 @@ class EpubExporter:
             c_title = c_title or c_dir.name
             c_filename = f"chapter_{c_idx:02d}.xhtml"
 
-            # Register chapter images
+            # Register chapter images (including .jpx converted to .png for EPUB 3 reader compatibility)
             img_dir = c_dir / "images"
             if img_dir.exists():
                 for img_f in img_dir.iterdir():
-                    if img_f.is_file() and img_f.suffix.lower() in (".png", ".jpg", ".jpeg", ".webp"):
+                    if not img_f.is_file():
+                        continue
+                    ext_low = img_f.suffix.lower()
+                    if ext_low == ".jpx":
+                        png_equiv = img_f.with_suffix(".png")
+                        if not png_equiv.exists():
+                            try:
+                                import pymupdf
+                                pymupdf.Pixmap(str(img_f)).save(str(png_equiv))
+                            except Exception:
+                                pass
+                        target_img = png_equiv if png_equiv.exists() else img_f
+                        builder.add_image(f"images/{c_idx:02d}_{target_img.name}", target_img)
+                        c_cleaned = c_cleaned.replace(f"images/{img_f.name}", f"../images/{c_idx:02d}_{target_img.name}")
+                    elif ext_low in (".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg"):
                         builder.add_image(f"images/{c_idx:02d}_{img_f.name}", img_f)
                         # Relink in chapter text
                         c_cleaned = c_cleaned.replace(f"images/{img_f.name}", f"../images/{c_idx:02d}_{img_f.name}")

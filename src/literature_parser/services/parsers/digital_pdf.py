@@ -623,10 +623,16 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
         raw_lines.sort(key=lambda x: x[0])
         clusters = []
 
-        # Auto-detect if this page genuinely has two-column layout even if global _STYLE says single_column
-        left_col_spans = [it for it in raw_lines if it[1] < pw * 0.45 and (it[1] + it[2]) < pw * 0.49 and len(it[4]) > 15]
-        right_col_spans = [it for it in raw_lines if it[1] >= pw * 0.47 and len(it[4]) > 15]
+        # Auto-detect if this page genuinely has two-column layout even if global _STYLE says single_column (Refs: ISSUE-017)
+        left_col_spans = [it for it in raw_lines if it[1] < pw * 0.45 and (it[1] + it[2]) < pw * 0.51 and len(it[4]) >= 10]
+        right_col_spans = [it for it in raw_lines if it[1] >= pw * 0.46 and len(it[4]) >= 10]
         page_has_two_cols = len(left_col_spans) >= 4 and len(right_col_spans) >= 4
+        two_col_top_y = (
+            max(min(it[0] for it in left_col_spans), min(it[0] for it in right_col_spans))
+            if page_has_two_cols
+            else p1_body_y
+        )
+        effective_p1_header_y = min(p1_body_y, two_col_top_y - 5.0) if page_has_two_cols else p1_body_y
 
         # Check for side rail on Page 1 (e.g. Cambridge UP / IEEE sidebar)
         has_p1_side_rail = False
@@ -634,18 +640,18 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
         if page_num == 1:
             left_rail_items = [it for it in raw_lines if it[1] < pw * 0.33 and (it[1] + it[2]) < pw * 0.35 and it[0] < p1_body_y]
             right_rail_items = [it for it in raw_lines if it[1] >= pw * 0.33 and it[0] < p1_body_y]
-            if len(left_rail_items) >= 4 and len(right_rail_items) >= 4:
+            if len(left_rail_items) >= 4 and len(right_rail_items) >= 4 and not page_has_two_cols:
                 has_p1_side_rail = True
                 p1_rail_split_x = pw * 0.33
 
         for item in raw_lines:
             matched_c = None
             item_top = item[0]
-            # Page 1 Sanctuary: On page 1 above the body content start (title, author, abstract), enforce single column unless side rail!
-            is_p1_header_area = (page_num == 1) and (item_top < p1_body_y)
+            # Page 1 Sanctuary: On page 1 above the body content start (title, author, abstract), enforce single column unless side rail or genuine 2-col start!
+            is_p1_header_area = (page_num == 1) and (item_top < effective_p1_header_y)
             treat_as_single_col = (is_single_col_doc and not page_has_two_cols) or (is_p1_header_area and not has_p1_side_rail)
 
-            split_x = p1_rail_split_x if (page_num == 1 and has_p1_side_rail and item_top < p1_body_y) else (pw * 0.48)
+            split_x = p1_rail_split_x if (page_num == 1 and has_p1_side_rail and item_top < effective_p1_header_y) else (pw * 0.48)
             item_is_left = item[1] < split_x and (item[1] + item[2]) < split_x
             item_is_right = item[1] >= split_x
             for c in clusters:
@@ -690,9 +696,9 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             cur_line = []
             for item in c_sorted:
                 top_val, left_val, width_val, size_val, txt_val = item
-                item_is_p1_header = (page_num == 1) and (top_val < p1_body_y)
+                item_is_p1_header = (page_num == 1) and (top_val < effective_p1_header_y)
                 treat_as_single_col = (is_single_col_doc and not page_has_two_cols) or (item_is_p1_header and not has_p1_side_rail)
-                split_x = p1_rail_split_x if (page_num == 1 and has_p1_side_rail and top_val < p1_body_y) else (pw * 0.48)
+                split_x = p1_rail_split_x if (page_num == 1 and has_p1_side_rail and top_val < effective_p1_header_y) else (pw * 0.48)
                 if not cur_line:
                     cur_line = [top_val, left_val, width_val, size_val, txt_val]
                 else:

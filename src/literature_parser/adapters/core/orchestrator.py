@@ -749,10 +749,14 @@ class BookProcessorOrchestrator:
 
         if export_epub:
             from literature_parser.services.exporter.epub_exporter import EpubExporter
+            from literature_parser.adapters.verification.epub_visual_auditor import EpubVisualAuditor
             try:
                 EpubExporter.export_book(Path(book_out))
+                print(f"  [📸 EPUB AUDITOR] 啟動全書 EPUB 逐頁截圖與閉環自動修復...")
+                aud_res = EpubVisualAuditor.closed_loop_heal_book_epub(Path(book_out))
+                print(f"  [✓] EPUB 逐頁截圖完成: 共渲染 {aud_res.get('total_pages_rendered', 0)} 頁，剩餘排版缺陷: {aud_res.get('remaining_defects', 0)}")
             except Exception as e:
-                logger.debug("EPUB export error: %s", e)
+                logger.debug("EPUB export / visual audit error: %s", e)
 
         print(f"\n{'='*70}\nBOOK RUN COMPLETE! Progress saved in: {ckpt.md_path}\n{'='*70}\n")
 

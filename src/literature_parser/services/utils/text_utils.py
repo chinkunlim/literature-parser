@@ -47,10 +47,21 @@ def sanitize_filename(name: str, max_len: int = MAX_FILENAME_LEN) -> str:
 
 
 def repair_hyphens(text: str) -> str:
-    """Re-flows line-wrapped words broken by a hyphen (e.g., 'coun-\\n seling' -> 'counseling')."""
+    """Re-flows line-wrapped words broken by an ASCII or soft hyphen (U+00AD).
+
+    Args:
+        text: Input string potentially containing line-wrapped hyphenated words.
+
+    Returns:
+        String with line-broken hyphenated words rejoined and soft hyphens removed.
+    """
     if not text:
         return ""
-    return re.sub(r'([a-zA-Z]+)-\s*\n\s*([a-zA-Z]+)', r'\1\2', text)
+    # Preserve explicit compound hyphen when followed by soft hyphen at line wrap (e.g. 'brain-\xad\nimaging' -> 'brain-imaging')
+    text = re.sub(r'([a-zA-Z]+)-\xad[ \t]*\n[ \t]*([a-zA-Z]+)', r'\1-\2', text)
+    # Rejoin standard or soft-hyphen line wraps (Refs: ISSUE-017)
+    text = re.sub(r'([a-zA-Z]+)[-\xad][ \t]*\n[ \t]*([a-zA-Z]+)', r'\1\2', text)
+    return text.replace('\xad', '')
 
 
 def repair_drop_caps(text: str) -> str:
@@ -496,6 +507,11 @@ def clean_typography_artifacts(text: str) -> str:
     """
     if not text:
         return ""
+    # Repair soft-hyphen line wraps and strip residual U+00AD characters (Refs: ISSUE-017)
+    if "\xad" in text:
+        text = re.sub(r"([a-zA-Z]+)-\xad[ \t]*\n[ \t]*([a-zA-Z]+)", r"\1-\2", text)
+        text = re.sub(r"([a-zA-Z]+)\xad[ \t]*\n[ \t]*([a-zA-Z]+)", r"\1\2", text)
+        text = text.replace("\xad", "")
     text = normalize_ligatures(text)
     text = clean_decorative_noise(text)
 

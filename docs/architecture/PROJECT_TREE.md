@@ -108,7 +108,8 @@ literature-parser/
 │   │   ├── TASK-044-input-processed.json
 │   │   ├── TASK-045-enhance-batch-resilience-table-h.json
 │   │   ├── TASK-046-implement-two-pass-chapterbluepr.json
-│   │   └── TASK-047-fix-6-spot-checked-defects-merma.json
+│   │   ├── TASK-047-fix-6-spot-checked-defects-merma.json
+│   │   └── TASK-048-full-pipeline-formatting-enhance.json
 │   ├── framework.lock                      # [框架鎖定檔] 框架版本與檔案雜湊，供 update_framework 判斷是否被修改
 │   └── project.toml                        # [專案設定・各專案自訂] 語言、分層、品質門檻、指令、業務規則
 ├── .cursor/                                # [Agent 轉接] Cursor 規則 (自動產生)
@@ -163,6 +164,7 @@ literature-parser/
 │   │   ├── 014-xml-control-bytes-and-rotated-landscape-tables.md
 │   │   ├── 015-table-list-degradation-and-vision-blindspot.md
 │   │   ├── 016-mermaid-arrow-corruption-eoc-profile-overwrite-and-hyphen-table-collision.md
+│   │   ├── 017-epub-gfm-table-mermaid-svg-and-two-col-soft-hyphen-healer.md
 │   │   ├── _TEMPLATE.md                    # 已知問題範本 (tracker_cli 會套用)
 │   │   └── KNOWN_ISSUES.md                 # 已知問題總表 (🔴/🟡/🟢)
 │   ├── migration/                          # [遷移紀錄] 舊專案搬移清單、批次與完成標準
@@ -239,6 +241,7 @@ literature-parser/
 │       │   │   └── system.py
 │       │   ├── verification/
 │       │   │   ├── __init__.py
+│       │   │   ├── epub_visual_auditor.py
 │       │   │   ├── feedback_loop.py
 │       │   │   ├── format_auditor.py
 │       │   │   ├── layout_healer.py
@@ -409,6 +412,7 @@ literature-parser/
 │   ├── test_chapter_blueprint_and_modular_renderers.py
 │   ├── test_component_registry.py
 │   ├── test_element_cropper.py
+│   ├── test_epub_visual_closed_loop.py
 │   ├── test_feedback_loop.py
 │   ├── test_fingerprinting.py
 │   ├── test_journal_conversion.py

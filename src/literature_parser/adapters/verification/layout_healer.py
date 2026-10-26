@@ -48,7 +48,12 @@ class LayoutAutoHealer:
         fixes_applied = []
         text = markdown_text
 
-        # 0. Repair broken fi/fl/ffi/ffl ligatures
+        # 0. Repair broken fi/fl/ffi/ffl ligatures and U+00AD soft hyphens (Refs: ISSUE-017)
+        if "\xad" in text:
+            text = re.sub(r"([a-zA-Z]+)-\xad[ \t]*\n[ \t]*([a-zA-Z]+)", r"\1-\2", text)
+            text = re.sub(r"([a-zA-Z]+)\xad[ \t]*\n[ \t]*([a-zA-Z]+)", r"\1\2", text)
+            text = text.replace("\xad", "")
+            fixes_applied.append("Repaired and stripped U+00AD soft hyphens")
         repaired_lig = repair_broken_ligatures(text)
         if repaired_lig != text:
             fixes_applied.append("Repaired broken fi/fl/ffi/ffl ligature words")
@@ -124,8 +129,8 @@ class LayoutAutoHealer:
             text,
         )
 
-        # 1b. Stitch headings ending with a dangling connector/colon followed by a short non-sentence title line
-        # (e.g. '#### 3 Identifying Research Questions and\n\nForming Hypotheses' or '### Chapter 1\n\nCareer Counseling: ...')
+        # 1b. Stitch headings ending with a dangling connector/colon or numbered chapter title followed by a short non-sentence title line (Refs: ISSUE-017)
+        # (e.g. '#### 14 Sleep, Dreaming, and Circadian\n\nRhythms 371' or '### Chapter 2 ...:\n\nSelected Theories 21')
         def _stitch_dangling_heading_line(match):
             h_hashes = match.group(1)
             part1 = match.group(2).strip()
@@ -134,7 +139,7 @@ class LayoutAutoHealer:
             return f"{h_hashes} {part1} {part2}"
 
         text = re.sub(
-            r"(?m)^(#{2,5})\s+([^\n]*?\b(?:and|or|of|in|to|for|with|on|from|by|the|a|an)|Chapter\s+\d+)\n{1,2}([A-Z][^\n.!?;]{2,65})$",
+            r"(?m)^(#{2,5})\s+([^\n]*?(?:\b(?:and|or|of|in|to|for|with|on|from|by|the|a|an|&)|:)\s*|Chapter\s+\d+[^\n]*|\d{1,2}\s+[A-Z][^\n]{5,55})\n{1,2}([A-Z][^\n.!?;]{1,65}?)$",
             _stitch_dangling_heading_line,
             text,
         )
@@ -321,7 +326,8 @@ class LayoutAutoHealer:
 
     @classmethod
     def heal_double_formatting(cls, text: str) -> tuple[str, list]:
-        """Cleans up nested bold and italic tags (`****Text****` -> `**Text**`).
+        """Cleans up nested bold/italic tags (`****Text****` -> `**Text**`), stray `**` inside
+        HTML cells, and unbalanced `**` markers on single lines (Refs: ISSUE-017).
 
         Args:
             text: Chapter Markdown string.
@@ -337,7 +343,61 @@ class LayoutAutoHealer:
 
         text = re.sub(r"\*\*\s+\*([^\*]+)\*\s+\*\*", r"***\1***", text)
 
-        return text, fixes
+        # Strip stray '**' inside HTML tags like <td>Simple correlation ( r )**</td> or <strong>Multiple regression**</strong>
+        def _clean_html_bold_leak(match: re.Match) -> str:
+            fixes.append("Stripped stray '**' inside HTML table/inline tag")
+            return f"{match.group(1)}{match.group(2)}"
+
+        text = re.sub(
+            r"(<(?:td|th|strong|em|b|i|span)[^>]*>[^<\n]*?)\*\*([^<\n]*?</(?:td|th|strong|em|b|i|span)>)",
+            _clean_html_bold_leak,
+            text,
+        )
+
+        # Collapse '** ** **Text**' -> '** **Text**' -> '**Text**'
+        if re.search(r"\*\*\s+\*\*\s+\*\*", text):
+            text = re.sub(r"(\*\*[^*\n]+\*\*)\s+\*\*\s+(\*\*[^*\n]+\*\*)", r"\1 \2", text)
+            fixes.append("Removed empty '**' between bold spans")
+
+        # Line-by-line check for unbalanced '**' (odd count of '**' on a single line)
+        out_lines = []
+        for line in text.split("\n"):
+            s = line.strip()
+            # Drop pure symbol OCR garbage lines like '**~** ** **-ll•J!•Jt—**'
+            if s.startswith("**") and len(re.sub(r"[^A-Za-z]", "", s)) <= 3 and re.search(r"[~•!—\-]{2,}", s):
+                fixes.append(f"Removed symbol OCR garbage line '{s[:30]}'")
+                continue
+            if line.count("**") % 2 == 1:
+                # Case 1: '**Prefix** ** ShortTitle' -> '**Prefix** **ShortTitle**' or '**Prefix** rest of sentence'
+                m_dup = re.match(r"^(\s*\*\*[^*\n]+\*\*)\s+\*\*\s*(.*)$", line)
+                if m_dup:
+                    prefix, rest = m_dup.group(1), m_dup.group(2).strip()
+                    if rest and len(rest) <= 35 and rest[0].isupper() and not rest.endswith((".", "!", "?")):
+                        line = f"{prefix} **{rest}**"
+                        fixes.append(f"Closed unbalanced bold title '{rest}'")
+                    else:
+                        line = f"{prefix} {rest}".rstrip()
+                        fixes.append("Removed dangling duplicate '**' after bold span")
+                elif line.lstrip().startswith("**") and line.count("**") == 1:
+                    # Leading '**' at start of paragraph with no closing '**' on the line
+                    clean_rest = line.lstrip()[2:].strip()
+                    # If there is a sentence break or colon early in the line, close bold there; otherwise strip leading '**'
+                    m_lead = re.match(r"^(\d+\.\s+[^.:\n]{2,40}[.:])\s+(.*)$", clean_rest)
+                    if m_lead:
+                        line = f"**{m_lead.group(1)}** {m_lead.group(2)}"
+                        fixes.append("Closed leading bold numbered item header")
+                    else:
+                        line = line.replace("**", "", 1)
+                        fixes.append("Removed unclosed leading '**'")
+                else:
+                    # Strip the last stray '**' to restore balanced bold pairs
+                    r_idx = line.rfind("**")
+                    if r_idx != -1:
+                        line = line[:r_idx] + line[r_idx + 2 :]
+                        fixes.append("Removed trailing unbalanced '**' on line")
+            out_lines.append(line)
+
+        return "\n".join(out_lines), fixes
 
     @classmethod
     def heal_mermaid_and_divider_syntax(cls, text: str) -> tuple[str, list]:

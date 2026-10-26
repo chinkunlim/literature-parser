@@ -27,7 +27,7 @@ class TestUserCorrectionsRegression(unittest.TestCase):
             self.assertTrue(len(cleaned) > 0)
 
     def test_correction_2_heading_level(self):
-        """Regression test for issue e51054a7-969f-4243-aa90-c6eb1256cf86 (heading_level) in TestBook/Ch02.
+        """Regression test for issue c7a63a1e-ca0a-482b-8092-14ae3334ca63 (heading_level) in TestBook/Ch02.
         Notes: Level was wrong
         """
         original = "bad text"

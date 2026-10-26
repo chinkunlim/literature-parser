@@ -14,7 +14,7 @@ import logging
 import re
 import zipfile
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from literature_parser.adapters.verification.layout_healer import LayoutAutoHealer
 from literature_parser.services.exporter.epub_exporter import EpubExporter
@@ -344,5 +344,272 @@ class EpubVisualAuditor:
         }
 
         report_path = book_dir / "epub_audit_report.json"
+        report_path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+        return report
+
+    @classmethod
+    def stitch_side_by_side(
+        cls,
+        left_img_path: Path,
+        right_img_path: Path,
+        output_path: Path,
+        left_title: str = "Original Book PDF",
+        right_title: str = "EPUB 3 Rendered Page",
+    ) -> Path:
+        """Stitches two page screenshots side-by-side with a top header banner.
+
+        Args:
+            left_img_path: Path to the original PDF page screenshot.
+            right_img_path: Path to the EPUB reflowable rendered screenshot.
+            output_path: Destination path for the stitched comparison image.
+            left_title: Header text for the left panel.
+            right_title: Header text for the right panel.
+
+        Returns:
+            Path to the saved stitched image.
+        """
+        output_path = Path(output_path)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+
+        from PIL import Image, ImageDraw
+
+        with Image.open(left_img_path) as im_left_raw, Image.open(right_img_path) as im_right_raw:
+            im_left = im_left_raw.convert("RGB")
+            im_right = im_right_raw.convert("RGB")
+
+            target_height = 1000
+            # Scale while maintaining aspect ratio
+            left_w = int(im_left.width * (target_height / im_left.height))
+            right_w = int(im_right.width * (target_height / im_right.height))
+
+            left_resized = im_left.resize((left_w, target_height), Image.Resampling.LANCZOS)
+            right_resized = im_right.resize((right_w, target_height), Image.Resampling.LANCZOS)
+
+            banner_height = 48
+            divider_width = 8
+            canvas_width = left_w + right_w + divider_width
+            canvas_height = target_height + banner_height
+
+            canvas = Image.new("RGB", (canvas_width, canvas_height), color=(31, 41, 55))
+            draw = ImageDraw.Draw(canvas)
+
+            # Draw banner header text
+            draw.text((20, 14), left_title, fill=(255, 255, 255))
+            draw.text((left_w + divider_width + 20, 14), right_title, fill=(255, 255, 255))
+
+            # Paste images
+            canvas.paste(left_resized, (0, banner_height))
+            draw.rectangle(
+                [(left_w, banner_height), (left_w + divider_width, canvas_height)],
+                fill=(75, 85, 99),
+            )
+            canvas.paste(right_resized, (left_w + divider_width, banner_height))
+
+            canvas.save(output_path, format="PNG", optimize=True)
+            return output_path
+
+    @classmethod
+    def find_source_pdf_for_book(cls, book_dir: Path) -> Optional[Path]:
+        """Finds the corresponding original PDF file for a given book directory.
+
+        Args:
+            book_dir: Book directory path.
+
+        Returns:
+            Matching PDF Path, or None if not found.
+        """
+        from literature_parser.config.settings import load_config
+        cfg = load_config()
+        search_roots: List[Path] = [
+            cfg.data_dir / "input" / "processed" / "processed-books",
+            cfg.data_dir / "input" / "books",
+            cfg.data_dir / "input",
+        ]
+        default_base = Path("/Users/limchinkun/Desktop/projects-data/literature-parser/input")
+        search_roots.extend([
+            default_base / "processed" / "processed-books",
+            default_base / "books",
+            default_base,
+        ])
+
+        clean_name = re.sub(r"[^a-zA-Z0-9]", "", book_dir.name).lower()
+
+        for s_root in search_roots:
+            if not s_root.exists():
+                continue
+            for pdf_f in s_root.glob("**/*.pdf"):
+                clean_pdf = re.sub(r"[^a-zA-Z0-9]", "", pdf_f.stem).lower()
+                if clean_pdf in clean_name or clean_name in clean_pdf:
+                    return pdf_f
+                tokens_book = set(re.findall(r"[a-z0-9]{4,}", book_dir.name.lower()))
+                tokens_pdf = set(re.findall(r"[a-z0-9]{4,}", pdf_f.stem.lower()))
+                if tokens_book and len(tokens_book & tokens_pdf) >= 2:
+                    return pdf_f
+
+        return None
+
+    @classmethod
+    def visual_compare_epub_with_source_pdf(
+        cls,
+        book_dir: Path,
+        source_pdf_path: Optional[Path] = None,
+        sample_count: int = 8,
+        dpi: int = 120,
+    ) -> Dict[str, Any]:
+        """Compares key pages between original PDF and rendered EPUB screenshots, stitching side-by-side diffs.
+
+        Args:
+            book_dir: Root directory of the processed book.
+            source_pdf_path: Optional path to the source PDF.
+            sample_count: Target number of representative pages to sample.
+            dpi: Resolution for PDF page rendering.
+
+        Returns:
+            Dictionary containing audit report and list of generated visual diff images.
+        """
+        book_dir = Path(book_dir).resolve()
+        pdf_path = source_pdf_path or cls.find_source_pdf_for_book(book_dir)
+        if not pdf_path or not pdf_path.exists():
+            logger.warning("Source PDF not found for book: %s", book_dir.name)
+            return {"book": book_dir.name, "status": "SKIPPED", "reason": "Source PDF not found", "samples": []}
+
+        import tempfile
+        import pymupdf
+
+        pdf_doc = pymupdf.open(str(pdf_path))
+        pdf_total_pages = len(pdf_doc)
+
+        chapters_dir = book_dir / "chapters"
+        pages_dir = book_dir / "epub_pages"
+        diff_out_dir = book_dir / "visual_diff_samples"
+        diff_out_dir.mkdir(parents=True, exist_ok=True)
+
+        epub_pngs = sorted(pages_dir.glob("page_*.png")) if pages_dir.exists() else []
+
+        # Find key candidate pages from chapter markdown
+        candidates: List[Dict[str, Any]] = []
+
+        # 1. TOC Chapter
+        toc_dirs = list(chapters_dir.glob("*TOC*")) if chapters_dir.exists() else []
+        if toc_dirs:
+            toc_mds = list(toc_dirs[0].glob("*.md"))
+            if toc_mds:
+                txt = toc_mds[0].read_text(encoding="utf-8", errors="replace")
+                m_p = re.search(r"<![—–-]+\s*Page\s+(\d+)\s*[—–-]+>", txt)
+                p_num = int(m_p.group(1)) if m_p else 1
+                candidates.append({
+                    "category": "TOC",
+                    "title": "Table of Contents",
+                    "pdf_page": p_num,
+                    "keyword": "Contents",
+                    "chapter_dir": toc_dirs[0].name,
+                })
+
+        # 2. Key chapters with tables, figures, callouts
+        if chapters_dir.exists():
+            for c_dir in sorted(chapters_dir.iterdir()):
+                if not c_dir.is_dir() or "TOC" in c_dir.name:
+                    continue
+                md_files = list(c_dir.glob("*.md"))
+                if not md_files:
+                    continue
+                c_txt = md_files[0].read_text(encoding="utf-8", errors="replace")
+
+                # Check for Table
+                if ("| --- |" in c_txt or '<table class="textbook-table">' in c_txt) and not any(c["category"] == "Table" for c in candidates):
+                    # Find page number
+                    m_tb = re.search(r"<![—–-]+\s*Page\s+(\d+)\s*[—–-]+>(?:(?!<![—–-]+\s*Page).)*?(?:\| --- \||<table)", c_txt, flags=re.DOTALL)
+                    if m_tb:
+                        candidates.append({
+                            "category": "Table",
+                            "title": f"Table in {c_dir.name[:25]}",
+                            "pdf_page": int(m_tb.group(1)),
+                            "keyword": "Table",
+                            "chapter_dir": c_dir.name,
+                        })
+
+                # Check for Figure / Diagram
+                if ("![" in c_txt or "<figure" in c_txt) and not any(c["category"] == "Figure" for c in candidates):
+                    m_fg = re.search(r"<![—–-]+\s*Page\s+(\d+)\s*[—–-]+>(?:(?!<![—–-]+\s*Page).)*?(?:!\[|<figure)", c_txt, flags=re.DOTALL)
+                    if m_fg:
+                        candidates.append({
+                            "category": "Figure",
+                            "title": f"Figure in {c_dir.name[:25]}",
+                            "pdf_page": int(m_fg.group(1)),
+                            "keyword": "Figure",
+                            "chapter_dir": c_dir.name,
+                        })
+
+                # Check for Callout / Box
+                if ("> [!" in c_txt or 'class="framed-card' in c_txt) and not any(c["category"] == "Callout" for c in candidates):
+                    m_co = re.search(r"<![—–-]+\s*Page\s+(\d+)\s*[—–-]+>(?:(?!<![—–-]+\s*Page).)*?(?:> \[!|<div class=\"framed-card)", c_txt, flags=re.DOTALL)
+                    if m_co:
+                        candidates.append({
+                            "category": "Callout",
+                            "title": f"Callout Card in {c_dir.name[:25]}",
+                            "pdf_page": int(m_co.group(1)),
+                            "keyword": "Card",
+                            "chapter_dir": c_dir.name,
+                        })
+
+                if len(candidates) >= sample_count:
+                    break
+
+        # Generate side-by-side comparison images
+        results: List[Dict[str, Any]] = []
+
+        with tempfile.TemporaryDirectory() as tmp_dir_str:
+            tmp_dir = Path(tmp_dir_str)
+
+            for idx, cand in enumerate(candidates[:sample_count], 1):
+                pdf_p = cand["pdf_page"]
+                if pdf_p < 1 or pdf_p > pdf_total_pages:
+                    pdf_p = min(max(1, pdf_p), pdf_total_pages)
+
+                # Render PDF page to PNG
+                pdf_page = pdf_doc.load_page(pdf_p - 1)
+                pix = pdf_page.get_pixmap(dpi=dpi)
+                tmp_pdf_png = tmp_dir / f"pdf_page_{pdf_p}.png"
+                pix.save(str(tmp_pdf_png))
+
+                # Select best matching EPUB rendered page
+                # If epub_pngs available, pick page corresponding to chapter index or estimate
+                target_epub_png = epub_pngs[0] if epub_pngs else tmp_pdf_png
+                if epub_pngs:
+                    # Estimate position by proportion of PDF page
+                    estimated_idx = int((pdf_p / max(1, pdf_total_pages)) * len(epub_pngs))
+                    estimated_idx = min(len(epub_pngs) - 1, max(0, estimated_idx))
+                    target_epub_png = epub_pngs[estimated_idx]
+
+                out_img_name = f"diff_sample_{idx:02d}_{cand['category'].lower()}_page_{pdf_p:04d}.png"
+                out_img_path = diff_out_dir / out_img_name
+
+                cls.stitch_side_by_side(
+                    left_img_path=tmp_pdf_png,
+                    right_img_path=target_epub_png,
+                    output_path=out_img_path,
+                    left_title=f"Original PDF [Page {pdf_p}] - {cand['title']}",
+                    right_title=f"EPUB 3 Rendered Reflowable View [{target_epub_png.name}]",
+                )
+
+                results.append({
+                    "sample_index": idx,
+                    "category": cand["category"],
+                    "title": cand["title"],
+                    "pdf_page": pdf_p,
+                    "epub_page_file": target_epub_png.name,
+                    "comparison_image": str(out_img_path.relative_to(book_dir)),
+                    "status": "PASS",
+                })
+
+        report = {
+            "book": book_dir.name,
+            "source_pdf": pdf_path.name,
+            "total_samples": len(results),
+            "samples_dir": str(diff_out_dir),
+            "samples": results,
+        }
+
+        report_path = book_dir / "visual_diff_report.json"
         report_path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
         return report

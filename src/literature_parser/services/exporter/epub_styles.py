@@ -219,6 +219,94 @@ math[display="block"] {
   margin: 1.2em 0;
   overflow-x: auto;
 }
+
+/* Textbook Hierarchical Table of Contents Styling (Refs: ISSUE-017) */
+.textbook-toc {
+  margin: 1.5em 0;
+  font-family: inherit;
+}
+
+.textbook-toc .toc-heading {
+  font-size: 1.6em;
+  font-weight: 700;
+  margin-bottom: 1em;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 0.3em;
+}
+
+.textbook-toc .toc-part-header {
+  font-size: 1.2em;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.2em;
+}
+
+.textbook-toc .toc-list,
+.textbook-toc .toc-sublist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.textbook-toc .toc-item {
+  margin: 0.4em 0;
+  line-height: 1.4;
+}
+
+.textbook-toc .toc-chapter {
+  font-weight: 600;
+  margin-top: 0.8em;
+}
+
+.textbook-toc .toc-sublist {
+  padding-left: 1.5em;
+  margin-top: 0.2em;
+}
+
+.textbook-toc .toc-section {
+  font-weight: 400;
+  font-size: 0.95em;
+  color: var(--text-color);
+}
+
+.textbook-toc .toc-link {
+  display: flex;
+  align-items: baseline;
+  text-decoration: none;
+  color: inherit;
+  width: 100%;
+}
+
+.textbook-toc .toc-link:hover {
+  color: var(--primary-color);
+}
+
+.textbook-toc .toc-title {
+  flex-shrink: 1;
+}
+
+.textbook-toc .toc-dots {
+  flex: 1;
+  border-bottom: 1px dotted #9ca3af;
+  margin: 0 8px;
+  min-width: 16px;
+  height: 0;
+  align-self: flex-end;
+  margin-bottom: 4px;
+}
+
+.textbook-toc .toc-page {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.9em;
+  color: #6b7280;
+  margin-left: auto;
+}
 """
 
 

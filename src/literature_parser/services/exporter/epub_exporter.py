@@ -24,8 +24,9 @@ import tempfile
 import uuid
 import zipfile
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
+from literature_parser.services.core.toc_resolver import TOCResolver, TOCNode
 from literature_parser.services.exporter.epub_styles import get_epub_css
 
 logger = logging.getLogger("EpubExporter")
@@ -534,8 +535,12 @@ class MarkdownToXHTML:
             header_match = re.match(r'^(#{1,6})\s+(.*)', trimmed)
             if header_match:
                 level = len(header_match.group(1))
-                h_text = cls._format_inline(header_match.group(2).strip())
-                out_lines.append(f"<h{level}>{h_text}</h{level}>")
+                h_text_raw = header_match.group(2).strip()
+                from literature_parser.services.core.toc_resolver import TOCResolver
+                h_slug = TOCResolver.slugify_anchor(h_text_raw)
+                h_text = cls._format_inline(h_text_raw)
+                id_attr = f' id="{h_slug}"' if h_slug else ""
+                out_lines.append(f"<h{level}{id_attr}>{h_text}</h{level}>")
                 continue
 
             # Markdown images: ![alt](src)
@@ -753,13 +758,22 @@ class PurePythonEpubBuilder:
     nav.xhtml, toc.ncx, and embeds images and CSS.
     """
 
-    def __init__(self, book_title: str, author: str = "Unknown Author", language: str = "en"):
+    def __init__(
+        self,
+        book_title: str,
+        author: str = "Unknown Author",
+        language: str = "en",
+        toc_nodes: Optional[List[Any]] = None,
+        chapter_id_map: Optional[Dict[str, str]] = None,
+    ):
         self.book_title = book_title
         self.author = author
         self.language = language
         self.book_id = f"urn:uuid:{uuid.uuid4()}"
         self.chapters: List[Dict[str, str]] = []  # [{title, filename, xhtml_content}]
         self.images: Dict[str, Path] = {}  # {epub_relative_path: source_abs_path}
+        self.toc_nodes = toc_nodes or []
+        self.chapter_id_map = chapter_id_map or {}
 
     def add_chapter(self, title: str, filename: str, xhtml_body: str):
         """Adds an XHTML document to the book spine with XML well-formedness validation."""
@@ -851,12 +865,20 @@ class PurePythonEpubBuilder:
             for ch in self.chapters:
                 zf.writestr(f"OEBPS/text/{ch['filename']}", ch["content"], compress_type=zipfile.ZIP_DEFLATED)
 
-            # 6. OEBPS/nav.xhtml (EPUB 3 Navigation Document)
-            nav_items = "\n".join(
-                f'      <li><a href="text/{ch["filename"]}">{html.escape(ch["title"])}</a></li>'
-                for ch in self.chapters
-            )
-            nav_xhtml = f"""<?xml version="1.0" encoding="utf-8"?>
+            # 6. OEBPS/nav.xhtml (EPUB 3 Navigation Document with nested hierarchy) (Refs: ISSUE-017)
+            if self.toc_nodes:
+                nav_xhtml = TOCResolver.render_epub_nav_xhtml(
+                    self.toc_nodes,
+                    self.book_title,
+                    chapter_id_map=self.chapter_id_map,
+                    language=self.language,
+                )
+            else:
+                nav_items = "\n".join(
+                    f'      <li><a href="text/{ch["filename"]}">{html.escape(ch["title"])}</a></li>'
+                    for ch in self.chapters
+                )
+                nav_xhtml = f"""<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="{self.language}">
 <head>
@@ -875,18 +897,49 @@ class PurePythonEpubBuilder:
 </html>"""
             zf.writestr("OEBPS/nav.xhtml", nav_xhtml, compress_type=zipfile.ZIP_DEFLATED)
 
-            # 7. OEBPS/toc.ncx (EPUB 2 NCX for backward compatibility)
-            ncx_points = []
-            for idx, ch in enumerate(self.chapters, 1):
-                ncx_points.append(f"""    <navPoint id="navPoint-{idx}" playOrder="{idx}">
+            # 7. OEBPS/toc.ncx (EPUB 2 NCX with hierarchical navPoints)
+            if self.toc_nodes:
+                ncx_points: List[str] = []
+                play_order = 1
+
+                def _build_ncx(nodes: List[TOCNode]) -> List[str]:
+                    nonlocal play_order
+                    lines: List[str] = []
+                    for n in nodes:
+                        clean_name = Path(n.target_file).name if n.target_file else ""
+                        epub_name = self.chapter_id_map.get(clean_name, clean_name.replace(".md", ".xhtml")) if clean_name else ""
+                        if not epub_name and not n.children:
+                            continue
+                        src_url = f"text/{epub_name}" if epub_name else "text/chapter_01.xhtml"
+                        if n.anchor_id and n.level == "section":
+                            src_url = f"{src_url}#{n.anchor_id}"
+
+                        p_id = f"navPoint-{play_order}"
+                        curr_order = play_order
+                        play_order += 1
+
+                        lines.append(f'    <navPoint id="{p_id}" playOrder="{curr_order}">')
+                        lines.append(f'      <navLabel><text>{html.escape(n.title)}</text></navLabel>')
+                        lines.append(f'      <content src="{src_url}"/>')
+                        if n.children:
+                            lines.extend(_build_ncx(n.children))
+                        lines.append('    </navPoint>')
+                    return lines
+
+                ncx_points = _build_ncx(self.toc_nodes)
+            else:
+                ncx_points = []
+                for idx, ch in enumerate(self.chapters, 1):
+                    ncx_points.append(f"""    <navPoint id="navPoint-{idx}" playOrder="{idx}">
       <navLabel><text>{html.escape(ch['title'])}</text></navLabel>
       <content src="text/{ch['filename']}"/>
     </navPoint>""")
+
             ncx_content = f"""<?xml version="1.0" encoding="UTF-8"?>
 <ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1">
   <head>
     <meta name="dtb:uid" content="{self.book_id}"/>
-    <meta name="dtb:depth" content="1"/>
+    <meta name="dtb:depth" content="2"/>
     <meta name="dtb:totalPageCount" content="0"/>
     <meta name="dtb:maxPageNumber" content="0"/>
   </head>
@@ -1042,9 +1095,24 @@ class EpubExporter:
 
         use_pandoc = (engine == "pandoc") or (engine == "auto" and cls.is_pandoc_available())
 
+        # Build chapter filename mapping and scan hierarchical TOC structure (Refs: ISSUE-017)
+        chapter_id_map: Dict[str, str] = {}
+        for c_idx, c_dir in enumerate(chapter_dirs, 1):
+            md_files = [f for f in c_dir.glob("*.md") if not f.name.endswith("_Verified.md")]
+            if md_files:
+                chapter_id_map[md_files[0].name] = f"chapter_{c_idx:02d}.xhtml"
+
+        toc_nodes = TOCResolver.scan_book_hierarchy(book_dir) if not chapter else []
+
         # Collect chapter markdown files and images
         chapter_data = []
-        builder = PurePythonEpubBuilder(book_title=book_name, author="Author", language="en")
+        builder = PurePythonEpubBuilder(
+            book_title=book_name,
+            author="Author",
+            language="en",
+            toc_nodes=toc_nodes,
+            chapter_id_map=chapter_id_map,
+        )
 
         for c_idx, c_dir in enumerate(chapter_dirs, 1):
             md_files = [f for f in c_dir.glob("*.md") if not f.name.endswith("_Verified.md")]
@@ -1079,7 +1147,20 @@ class EpubExporter:
                         # Relink in chapter text
                         c_cleaned = c_cleaned.replace(f"images/{img_f.name}", f"../images/{c_idx:02d}_{img_f.name}")
 
-            xhtml_body = MarkdownToXHTML.to_xhtml_body(c_cleaned)
+            # If this is the TOC chapter, render structured hierarchical TOC with hyperlinks
+            if toc_nodes and (c_dir.name in ("00-07-TOC", "TOC") or "contents" in c_title.lower()):
+                in_book_toc_html = TOCResolver.render_in_book_toc_html(
+                    toc_nodes, for_epub=True, chapter_id_map=chapter_id_map
+                )
+                xhtml_body = in_book_toc_html
+                # Also update markdown on disk for Obsidian / raw viewers
+                md_toc_html = TOCResolver.render_in_book_toc_html(
+                    toc_nodes, for_epub=False
+                )
+                c_md_path.write_text(f"# Contents\n\n{md_toc_html}\n", encoding="utf-8")
+            else:
+                xhtml_body = MarkdownToXHTML.to_xhtml_body(c_cleaned)
+
             builder.add_chapter(title=c_title, filename=c_filename, xhtml_body=xhtml_body)
             chapter_data.append((c_md_path, c_title))
 

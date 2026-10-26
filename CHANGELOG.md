@@ -44,6 +44,7 @@ All notable changes to **literature-parser** are documented here
 - feat(parser,verifier): enforce HTML table structuring, batch error isolation, and strict layout verification (Refs: ISSUE-014, ISSUE-015) (by `@antigravity`)
 - feat(profiler,renderers): add two-pass ChapterBlueprintScanner, Docling adapter, modular renderers, and blueprint compliance check (Refs: ADR-011) (by `@antigravity`)
 - feat(epub): add full-page screenshot closed-loop healer, GFM table, Mermaid SVG, and 2-column soft-hyphen fixes (TASK-048, ISSUE-017) (by `@Antigravity`)
+- feat(deps/adapters): add deps/adapters module (ISSUE-017) (by `@Antigravity`)
 
 ### Changed
 - docs(migration): mark all migration acceptance criteria as completed (by `@antigravity`)

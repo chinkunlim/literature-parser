@@ -78,7 +78,7 @@ class TestMarkdownToXHTML(unittest.TestCase):
         )
         xhtml = MarkdownToXHTML.to_xhtml_body(md)
         # Ensure XHTML compliance
-        self.assertIn("<h1>Main Heading</h1>", xhtml)
+        self.assertIn('<h1 id="main-heading">Main Heading</h1>', xhtml)
         self.assertIn("<strong>bold</strong>", xhtml)
         self.assertIn("<em>italic</em>", xhtml)
         self.assertIn("<code>code</code>", xhtml)

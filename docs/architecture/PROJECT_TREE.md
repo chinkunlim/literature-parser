@@ -332,6 +332,7 @@ literature-parser/
 │       │   │   ├── learner.py
 │       │   │   ├── logger.py
 │       │   │   ├── splitter.py
+│       │   │   ├── toc_resolver.py
 │       │   │   └── watchdog.py
 │       │   ├── exporter/
 │       │   │   ├── __init__.py
@@ -424,6 +425,7 @@ literature-parser/
 │   ├── test_semantic_stitcher.py
 │   ├── test_spotcheck_defects_and_visual_audit.py
 │   ├── test_stage0_profiler.py
+│   ├── test_toc_resolver.py
 │   ├── test_v21_features.py
 │   ├── test_v22_features.py
 │   ├── test_v23_layout_features.py
@@ -456,6 +458,7 @@ literature-parser/
 │   ├── test_v51_book_profile_adaptive_learning.py
 │   ├── test_v52_unified_pymupdf_and_continuity_fixes.py
 │   ├── test_v53_regex_bullet_and_watermark_filters.py
+│   ├── test_visual_pdf_epub_diff.py
 │   └── test_zone_tagger.py
 ├── web/
 │   ├── app.js

@@ -5,20 +5,22 @@
 <!-- LIVE_STATE_START -->
 ## 📊 即時狀態看板 (Live Snapshot)
 
-- **最後更新時間**: `2026-10-26 10:14 UTC`
+- **最後更新時間**: `2026-10-26 11:48 UTC`
 - **最近操作 Agent**: `Antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `ee39fe8 chore(deps/test): update deps/test tooling and config (TASK-050, TASK-051, TASK-053, TASK-054, TASK-055, TASK-056, TASK-057, TASK-058) [agent:Antigravity]`
+- **最新 Git Commit**: `894483d chore(tooling): update tooling tooling and config (TASK-050, TASK-051, TASK-052, TASK-053, TASK-054, TASK-055, TASK-056, TASK-057, TASK-058) [agent:Antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
-| 任務 | 狀態 | 目前/上一位 Agent | 建議接手 | 相關範圍 | 已完成 | 待辦與卡點 |
-|---|---|---|---|---|---|---|
-| **TASK-057**<br/>全書庫5本書清空與雙閘門全流程重新生成 | 🟢 `in_progress` | `Antigravity` | `-` | - | - | - |
+> 目前無進行中或待接手任務。可執行 `python3 scripts/agentctl.py task create "任務名稱" --agent <name>` 建立任務。
 
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-10-26 11:48 UTC] 完成任務 `TASK-057` — 全書庫5本書清空與雙閘門全流程重新生成 (by `Antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: (無)
 
 ### [2026-10-26 10:14 UTC] 完成任務 `TASK-058` — 修復側邊欄折疊排版並建立Playwright測試 (by `Antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
@@ -95,7 +97,3 @@
 ### [2026-10-26 06:04 UTC] 認領任務 `TASK-052` (實作三大教科書結構錨定強化體系（Glossary雙向鏈接與詞庫、圖表連續性審查、LO與EOC閉合校驗）) (by `Antigravity`)
 - **相關範圍**: `-`
 - **接棒自**: `Antigravity`
-
-### [2026-10-26 06:04 UTC] 建立任務 `TASK-052`: 實作三大教科書結構錨定強化體系（Glossary雙向鏈接與詞庫、圖表連續性審查、LO與EOC閉合校驗） (by `Antigravity`)
-- **狀態**: `in_progress`
-- **相關範圍**: `-`

@@ -653,3 +653,7 @@
 ### [2026-10-26 06:00 UTC] 完成任務 `TASK-051` — 雙閘門五維度本地模型檢查體系（Markdown與EPUB雙重把關） (by `Antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
 - **完成摘要**: Implemented dual-gate five-dimension verification architecture (Gate 1 Markdown + Gate 2 EPUB, covering Layout, Lexical, Formula, Semantic, and local Ollama Vision)
+
+### [2026-10-26 06:04 UTC] 建立任務 `TASK-052`: 實作三大教科書結構錨定強化體系（Glossary雙向鏈接與詞庫、圖表連續性審查、LO與EOC閉合校驗） (by `Antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`

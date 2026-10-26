@@ -331,6 +331,7 @@ literature-parser/
 │       │   │   ├── invariants.py
 │       │   │   ├── learner.py
 │       │   │   ├── logger.py
+│       │   │   ├── markdown_updater.py
 │       │   │   ├── splitter.py
 │       │   │   ├── toc_resolver.py
 │       │   │   └── watchdog.py
@@ -420,6 +421,7 @@ literature-parser/
 │   ├── test_layout_submodules.py
 │   ├── test_m5_concurrency.py
 │   ├── test_markdown_converter.py
+│   ├── test_markdown_updater.py
 │   ├── test_quality_engine.py
 │   ├── test_resilience_guard.py
 │   ├── test_semantic_stitcher.py

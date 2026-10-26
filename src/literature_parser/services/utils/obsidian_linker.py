@@ -73,9 +73,8 @@ def inject_chapter_navigation(chapters: List[Dict[str, Any]]) -> int:
         except Exception:
             continue
 
-        # Prevent duplicate insertion on multiple runs
-        if "<!-- OBSIDIAN_NAV_START -->" in existing:
-            continue
+        # Remove any existing navigation blocks (standard or corrupted) to allow clean re-generation
+        cleaned_existing = re.sub(r'<![-—–]+\s*OBSIDIAN_NAV_START[\s\S]*?OBSIDIAN_NAV_END\s*[-—–]+>', '', existing).rstrip()
 
         prev_link = ""
         next_link = ""
@@ -100,7 +99,9 @@ def inject_chapter_navigation(chapters: List[Dict[str, Any]]) -> int:
             "<!-- OBSIDIAN_NAV_END -->\n"
         )
 
-        md_path.write_text(existing + nav, encoding="utf-8")
-        modified += 1
+        new_text = cleaned_existing + nav
+        if new_text != existing:
+            md_path.write_text(new_text, encoding="utf-8")
+            modified += 1
 
     return modified

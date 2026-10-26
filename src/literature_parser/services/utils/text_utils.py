@@ -128,11 +128,11 @@ def clean_decorative_noise(text: str) -> str:
     # Strip leading decorative divider bullets (e.g. '•~-------- 7. How aware...' -> '7. How aware...')
     text = re.sub(r'(?m)^[ \t]*[•~·—\-_]{2,}[ \t]*', '', text)
 
-    # Dingbats in Book 2 (Group Counseling)
+    # Dingbats in Book 2 (Group Counseling), protecting CSS at-rules
     text = re.sub(r'(?m)^[ \t]*m?@\s*EXAMPLES?\s*$', '### Examples', text, flags=re.IGNORECASE)
     text = re.sub(r'(?m)^[ \t]*m?@\s*ACTIVITIES\s*$', '### Activities', text, flags=re.IGNORECASE)
     text = re.sub(r'(?m)^[ \t]*m?@\s*([A-Z\s]{3,30})$', r'### \1', text)
-    text = re.sub(r'(?m)^[ \t]*m?@\s*', '- ', text)
+    text = re.sub(r'(?m)^[ \t]*m?@\s*(?!import\b|media\b|keyframes\b|font-face\b|charset\b)', '- ', text)
 
     # Stray '(Continued)' or 'Table X.X Continued'
     text = re.sub(
@@ -524,10 +524,25 @@ def clean_typography_artifacts(text: str) -> str:
         protected_blocks.append(match.group(0))
         return f"\x00PROTECTED_BLOCK_{idx}\x00"
 
-    # Restore any already-corrupted em-dash comments back to standard ASCII <!-- ... -->
+    # Restore any already-corrupted em-dash or multi-hyphen comments back to standard ASCII <!-- ... -->
     text = re.sub(
-        r"<![—–-]([\s\S]*?)[—–-]>",
-        lambda m: f"<!--{m.group(1).replace('—', '--').replace('–', '--')}-->",
+        r"<![-—–]+\s*OBSIDIAN_NAV_START\s*[-—–]+>",
+        "<!-- OBSIDIAN_NAV_START -->",
+        text,
+    )
+    text = re.sub(
+        r"<![-—–]+\s*OBSIDIAN_NAV_END\s*[-—–]+>",
+        "<!-- OBSIDIAN_NAV_END -->",
+        text,
+    )
+    text = re.sub(
+        r"<![-—–]+\s*Page\s+(\d+)\s*[-—–]+>",
+        r"<!-- Page \1 -->",
+        text,
+    )
+    text = re.sub(
+        r"<![-—–]+([\s\S]*?)[-—–]+>",
+        lambda m: f"<!-- {m.group(1).strip('-—– ')} -->",
         text,
     )
     text = re.sub(r"```[\s\S]*?```", _stash, text)
@@ -553,6 +568,11 @@ def clean_typography_artifacts(text: str) -> str:
     # Remove vector chart coordinate axis tick leaks (e.g. '5 2 5 2 5 2' or '2 2 2 2 1 1 1 1')
     text = re.sub(r'(?m)^[ \t]*(?:\d{1,3}[ \t]+){2,}\d{1,3}[ \t]*$', '', text)
     text = re.sub(r'(?m)\b(?:\d{1,2}[ \t]+){2,}\d{1,2}[ \t]+(?=[a-z]{3,}\b)', '', text)
+    # Strip empty bold/italic tokens (Refs: ISSUE-017)
+    text = re.sub(r'\*\*\s*\*\*', '', text)
+    text = re.sub(r'\*\*\*\s*\*\*\*', '', text)
+    # Separate touching bold and italic markers in numbered items (e.g. **2.***Temporality.* -> **2.** *Temporality.*)
+    text = re.sub(r'(?<=\d\.)\*\*\*(?=[a-zA-Z])', r'** *', text)
     return text
 
 

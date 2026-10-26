@@ -80,6 +80,7 @@ All notable changes to **literature-parser** are documented here
 - fix(adapters/services): fix adapters/services logic (ISSUE-016, ISSUE-017) (by `@Antigravity`)
 - fix(epub): add cover thumbnail metadata, TOC backlinks, and fix references layout (by `@Antigravity`)
 - fix(services/test): fix services/test logic (ISSUE-017) (by `@Antigravity`)
+- fix(epub): eliminate TOC HTML entity corruption, filter decorative texture slices, and fix word fragments (by `@Antigravity`)
 
 ### Documentation
 - docs: update and synchronize all project markdown documentation (by `@antigravity`)

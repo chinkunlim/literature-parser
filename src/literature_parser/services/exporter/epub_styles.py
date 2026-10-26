@@ -318,6 +318,107 @@ math[display="block"] {
   color: #6b7280;
   margin-left: auto;
 }
+
+/* Borderless Quiz Table for Practice Tests */
+table.quiz-table {
+  width: 100% !important;
+  border: none !important;
+  border-collapse: collapse !important;
+  margin: 1.2em 0 1.6em 0 !important;
+}
+
+table.quiz-table td {
+  border: none !important;
+  padding: 4px 10px !important;
+  vertical-align: top !important;
+}
+
+table.quiz-table td.quiz-q {
+  font-weight: bold !important;
+  padding-top: 10px !important;
+  padding-bottom: 6px !important;
+}
+
+/* Callout Box Styling (Tip, Note, Warning, Important, Caution) */
+.callout {
+  margin: 1.5em 0;
+  padding: 1em 1.2em;
+  border-left: 4px solid var(--primary-color);
+  background-color: rgba(120, 43, 77, 0.06);
+  border-radius: 0 8px 8px 0;
+}
+
+.callout .callout-header {
+  font-weight: 700;
+  margin-bottom: 0.5em;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  color: var(--primary-color);
+}
+
+.callout .callout-body p {
+  margin: 0.4em 0;
+}
+
+.callout-tip {
+  border-left-color: #059669;
+  background-color: rgba(5, 150, 105, 0.08);
+}
+.callout-tip .callout-header {
+  color: #059669;
+}
+
+.callout-note {
+  border-left-color: #2563eb;
+  background-color: rgba(37, 99, 235, 0.08);
+}
+.callout-note .callout-header {
+  color: #2563eb;
+}
+
+.callout-warning, .callout-caution {
+  border-left-color: #d97706;
+  background-color: rgba(217, 119, 6, 0.08);
+}
+.callout-warning .callout-header, .callout-caution .callout-header {
+  color: #d97706;
+}
+
+.callout-important {
+  border-left-color: #e11d48;
+  background-color: rgba(225, 29, 72, 0.08);
+}
+.callout-important .callout-header {
+  color: #e11d48;
+}
+
+/* Exhibit Card Styling */
+.exhibit-card {
+  margin: 1.8em 0;
+  padding: 1.2em 1.4em;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+@media (prefers-color-scheme: dark) {
+  .callout-tip {
+    background-color: rgba(5, 150, 105, 0.15);
+  }
+  .callout-note {
+    background-color: rgba(37, 99, 235, 0.15);
+  }
+  .callout-warning, .callout-caution {
+    background-color: rgba(217, 119, 6, 0.15);
+  }
+  .callout-important {
+    background-color: rgba(225, 29, 72, 0.15);
+  }
+  .exhibit-card {
+    background-color: rgba(255, 255, 255, 0.03);
+  }
+}
 """
 
 

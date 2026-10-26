@@ -60,8 +60,17 @@ def repair_hyphens(text: str) -> str:
         return ""
     # Preserve explicit compound hyphen when followed by soft hyphen at line wrap (e.g. 'brain-\xad\nimaging' -> 'brain-imaging')
     text = re.sub(r'([a-zA-Z]+)-\xad[ \t]*\n[ \t]*([a-zA-Z]+)', r'\1-\2', text)
+    # Rejoin across page comments: e.g. 'experi-\n<!-- Page 24 -->\nmental' -> 'experimental'
+    text = re.sub(r'([a-zA-Z]{2,})[-\xad][ \t]*\n*(?:<![—–-]+\s*Page\s+\d+\s*[—–-]+>\s*\n*)+[ \t]*([a-zA-Z]{2,})', r'\1\2', text)
     # Rejoin standard or soft-hyphen line wraps (Refs: ISSUE-017)
     text = re.sub(r'([a-zA-Z]+)[-\xad][ \t]*\n[ \t]*([a-zA-Z]+)', r'\1\2', text)
+    # Rejoin space-separated soft hyphens before standard linguistic suffixes (e.g. 'valu- able', 'educa- tion', 'sec- tion')
+    text = re.sub(
+        r'\b([a-zA-Z]{3,})[-\xad]\s+(tion|tions|tive|tively|ment|ments|able|ably|ing|ed|ly|ity|ities|ism|al|ally|ic|ical|ically|ness|less|ance|ence|ant|ent|sion|sions|ous|ious|ize|ised|izing|ized|graphic|graphical)\b',
+        r'\1\2',
+        text,
+        flags=re.IGNORECASE,
+    )
     return text.replace('\xad', '')
 
 
@@ -820,6 +829,45 @@ def get_primary_chapter_markdown(ch_dir: Path) -> Optional[Path]:
 
     candidates.sort(key=score_candidate, reverse=True)
     return candidates[0]
+
+
+def get_chapter_sort_key(ch_dir_name: str) -> Tuple[int, int, str]:
+    """Computes a deterministic sort key ordering book chapters into canonical publication sequence:
+    Front matter (00-*) -> Main chapters (Ch01..Ch99) -> Back matter (Appendix, Glossary, Index, References).
+
+    Args:
+        ch_dir_name: Directory or file name of the chapter (e.g. '00-01-Cover', 'Ch02-...', 'Appendix').
+
+    Returns:
+        Tuple of (tier, order_index, normalized_name) suitable for Python `sorted(..., key=get_chapter_sort_key)`.
+    """
+    name_l = ch_dir_name.lower().replace("_", "-")
+    # Tier 0: Front matter (00-01-Cover, 00-07-TOC, etc.)
+    if name_l.startswith("00-"):
+        m_num = re.search(r"^00-(\d+)", name_l)
+        num = int(m_num.group(1)) if m_num else 0
+        return (0, num, name_l)
+
+    # Tier 1: Main matter chapters (Ch01, Chapter 2, etc.)
+    m_ch = re.match(r"^ch(?:apter)?0*(\d+)", name_l)
+    if m_ch:
+        return (1, int(m_ch.group(1)), name_l)
+
+    # Tier 2: Back matter in standard publishing order
+    back_matter_order = {
+        "appendix": 10,
+        "glossary": 20,
+        "index": 30,
+        "reference": 40,
+        "references": 40,
+        "afterword": 50,
+    }
+    for k, order in back_matter_order.items():
+        if k in name_l:
+            return (2, order, name_l)
+
+    # Tier 3: Unknown or custom sections
+    return (3, 999, name_l)
 
 
 def heal_corrupted_headings(text: str) -> Tuple[str, List[str]]:

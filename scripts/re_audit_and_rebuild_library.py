@@ -17,7 +17,10 @@ from typing import Any, Dict, List, Optional
 from literature_parser.config.logging_setup import setup_logging
 from literature_parser.config.settings import load_config
 from literature_parser.services.exporter.epub_exporter import EpubExporter
-from literature_parser.services.utils.text_utils import get_primary_chapter_markdown
+from literature_parser.services.utils.text_utils import (
+    get_chapter_sort_key,
+    get_primary_chapter_markdown,
+)
 from literature_parser.services.verification.glossary_anchor import GlossaryAnchor
 from literature_parser.services.verification.quality_engine import QualityInspectionEngine
 from literature_parser.services.verification.toc_alignment_auditor import TocAlignmentAuditor, TocNode
@@ -70,7 +73,10 @@ def re_audit_and_rebuild_book(book_dir: Path, rebuild_epub: bool = True) -> Dict
                 logger.warning("Failed extracting glossary terms from %s: %s", glo_cand, err)
 
     # 3. Iterate through all chapters
-    chapter_dirs = sorted([d for d in chapters_dir.iterdir() if d.is_dir() and not d.name.startswith(".")])
+    chapter_dirs = sorted(
+        [d for d in chapters_dir.iterdir() if d.is_dir() and not d.name.startswith(".")],
+        key=lambda d: get_chapter_sort_key(d.name),
+    )
     total_chapters = len(chapter_dirs)
     chapter_scores: List[float] = []
     total_issues = 0

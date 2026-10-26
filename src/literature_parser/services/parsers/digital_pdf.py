@@ -630,10 +630,11 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             if it[1] >= pw * 0.46 and len(it[4]) >= 10
             and not any(abs(x[0] - it[0]) <= 3.5 and x[1] < pw * 0.40 for x in raw_lines)
         ]
+        # A crossing line must genuinely span across the central gutter (e.g. from < 0.40 to > 0.60 as a single element)
+        # Never consider two independent column lines on the same baseline as a crossing line!
         crossing_lines = sum(
             1 for it in raw_lines
-            if (it[1] < pw * 0.35 and (it[1] + it[2]) > pw * 0.65)
-            or any(abs(x[0] - it[0]) <= 3.5 and x[1] < pw * 0.35 and (it[1] + it[2]) > pw * 0.65 for x in raw_lines)
+            if it[1] < pw * 0.38 and (it[1] + it[2]) > pw * 0.62 and len(it[4]) >= 20
         )
         page_has_two_cols = len(left_col_spans) >= 4 and len(right_col_spans) >= 4 and (crossing_lines < 4)
         two_col_top_y = (
@@ -642,6 +643,14 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             else p1_body_y
         )
         effective_p1_header_y = min(p1_body_y, two_col_top_y - 5.0) if page_has_two_cols else p1_body_y
+
+        # Dynamic gutter calculation
+        split_x = pw * 0.50
+        if page_has_two_cols and left_col_spans and right_col_spans:
+            max_l = max(it[1] + it[2] for it in left_col_spans)
+            min_r = min(it[1] for it in right_col_spans)
+            if min_r > max_l:
+                split_x = (max_l + min_r) / 2.0
 
         # Check for side rail on Page 1 (e.g. Cambridge UP / IEEE sidebar)
         has_p1_side_rail = False
@@ -660,9 +669,10 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             is_p1_header_area = (page_num == 1) and (item_top < effective_p1_header_y)
             treat_as_single_col = (not is_multi_col_doc and not page_has_two_cols) or (is_p1_header_area and not has_p1_side_rail)
 
-            split_x = p1_rail_split_x if (page_num == 1 and has_p1_side_rail and item_top < effective_p1_header_y) else (pw * 0.48)
-            item_is_left = item[1] < split_x and (item[1] + item[2]) < split_x
-            item_is_right = item[1] >= split_x
+            curr_split_x = p1_rail_split_x if (page_num == 1 and has_p1_side_rail and item_top < effective_p1_header_y) else split_x
+            item_center = item[1] + (item[2] / 2.0)
+            item_is_left = item_center < curr_split_x
+            item_is_right = item_center >= curr_split_x
             for c in clusters:
                 c_top = sum(x[0] for x in c) / len(c)
                 c_avg_size = sum(x[3] for x in c) / len(c)
@@ -685,8 +695,8 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                             for x in c
                         )
                         if not is_horizontally_adjacent:
-                            c_has_left = any(x[1] < split_x and (x[1] + x[2]) < split_x for x in c)
-                            c_has_right = any(x[1] >= split_x for x in c)
+                            c_has_left = any((x[1] + x[2] / 2.0) < curr_split_x for x in c)
+                            c_has_right = any((x[1] + x[2] / 2.0) >= curr_split_x for x in c)
                             if item_is_left and c_has_right:
                                 continue
                             if item_is_right and c_has_left:
@@ -707,7 +717,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 top_val, left_val, width_val, size_val, txt_val = item
                 item_is_p1_header = (page_num == 1) and (top_val < effective_p1_header_y)
                 treat_as_single_col = (not is_multi_col_doc and not page_has_two_cols) or (item_is_p1_header and not has_p1_side_rail)
-                split_x = p1_rail_split_x if (page_num == 1 and has_p1_side_rail and top_val < effective_p1_header_y) else (pw * 0.48)
+                curr_split_x = p1_rail_split_x if (page_num == 1 and has_p1_side_rail and top_val < effective_p1_header_y) else split_x
                 if not cur_line:
                     cur_line = [top_val, left_val, width_val, size_val, txt_val]
                 else:
@@ -716,7 +726,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                     gap = left_val - prev_right
                     size_mismatch = abs(prev_size - size_val) >= 2.5 and gap > 12
                     is_diff_col = size_mismatch or (
-                        not treat_as_single_col and (gap > 15) and ((prev_left < split_x and left_val >= split_x) or (gap > 60 and left_val < prev_left))
+                        not treat_as_single_col and (gap > 15) and ((prev_left < curr_split_x and left_val >= curr_split_x) or (gap > 60 and left_val < prev_left))
                     )
                     if is_diff_col:
                         merged_same_y.append(tuple(cur_line))
@@ -737,13 +747,14 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
         # Separate bottom-of-page footnotes after horizontal merging
         lines, footnotes = LayoutDetector.separate_footnotes(merged_same_y, ph)
 
-        gutter_left = pw * 0.42
-        gutter_right = pw * 0.58
+        gutter_left = split_x - 15.0
+        gutter_right = split_x + 15.0
 
         classified = []
         for item in lines:
             top, left, width, size, text = item[0], item[1], item[2], item[3], item[4]
             right = left + width
+            center_x = left + (width / 2.0)
             if page_num == 1 and has_p1_side_rail and top < p1_body_y:
                 if left < p1_rail_split_x:
                     cls_type = 'left'
@@ -751,7 +762,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                     cls_type = 'right'
             elif left < gutter_left and right > gutter_right and width > pw * 0.48:
                 cls_type = 'span'
-            elif left < pw * 0.48:
+            elif center_x < split_x:
                 cls_type = 'left'
             else:
                 cls_type = 'right'
@@ -1042,7 +1053,19 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 last_top = top
                 continue
 
-            # Paragraph splitting on indentation or spacing (never split if continuing with lowercase letter, unless previous sentence was complete)
+            # Numbered question or multiple-choice option item detection
+            is_mcq_item = bool(re.match(r'^(?:\*\*)?(?:\d+|[a-e])[\.\)]', clean_t))
+
+            # Column switch detection (vertical rewind or crossing column gutter)
+            is_col_switch = bool(
+                curr_p_lefts and (
+                    (last_top is not None and top < last_top - 120) or
+                    (curr_p_lefts[-1] < gutter_left and left >= gutter_left) or
+                    (curr_p_lefts[-1] >= gutter_left and left < gutter_left)
+                )
+            )
+
+            # Paragraph splitting on indentation, spacing, or column switch
             is_prev_complete = bool(curr_p and re.search(r'[.?!]\s*$', curr_p[-1].strip()))
             is_lowercase = bool(clean_t and clean_t[0].islower()) and not is_prev_complete
             cur_base = col2_base_left if (col2_base_left and left >= gutter_left - 20) else col1_base_left
@@ -1052,7 +1075,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 is_indent = False
             is_gap = last_top is not None and (top - last_top > body_size * 1.5) and not is_lowercase
 
-            if (is_indent or is_gap) and curr_p:
+            if (is_mcq_item or is_col_switch or is_indent or is_gap) and curr_p:
                 flush_p()
 
             # Un-hyphenate or attach single-letter drop-cap with previous line

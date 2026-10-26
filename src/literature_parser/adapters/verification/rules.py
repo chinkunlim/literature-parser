@@ -522,7 +522,9 @@ def check_blueprint_compliance(content: str, blueprint_dict: dict | None = None)
             continue
         title = str(hd.get('title', '')).strip()
         norm_title = re.sub(r'[^a-z0-9]+', '', title.lower())
-        if len(norm_title) >= 8 and norm_title[:16] not in norm_content:
+        clean_norm_title = re.sub(r'^(?:chapter)?\d+', '', norm_title)
+        match_target = clean_norm_title[:16] if len(clean_norm_title) >= 8 else norm_title[:16]
+        if len(match_target) >= 6 and (match_target not in norm_content and norm_title[:16] not in norm_content):
             missing_headings.append(title[:60])
 
     total_issues = len(missing_tables) + len(missing_headings)

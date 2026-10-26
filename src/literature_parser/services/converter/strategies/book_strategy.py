@@ -53,22 +53,31 @@ class BookPostProcessor(PostProcessorStrategy):
 
         # 1. Heading Normalization & Title Prepending
         if options.prepend_title_if_missing and not is_front_matter:
-            has_h1 = bool(re.search(r'^\s*#\s+[^\n]+', md, re.MULTILINE))
-            if not has_h1 and chapter_name:
+            m_slug = re.match(r'^Ch0*(\d+)[-_](.*)', chapter_name, re.IGNORECASE) if chapter_name else None
+            ch_prefix = f"Chapter {m_slug.group(1)}: " if m_slug else ""
+
+            m_h1 = re.search(r'^\s*#\s+([^\n]+)', md, re.MULTILINE)
+            if not m_h1 and chapter_name:
                 # Check if markdown already contains an H2 that matches the chapter topic
                 m_h2 = re.search(r'^\s*##\s+([^\n]+)', md, re.MULTILINE)
                 clean_target = re.sub(r'^Ch\d+[-_]?', '', chapter_name).replace('-', ' ').strip().lower()
                 if m_h2 and clean_target and clean_target in m_h2.group(1).lower():
-                    # Promote the authorial H2 to H1 rather than inserting a duplicate slug title
-                    md = re.sub(r'^\s*##\s+', '# ', md, count=1, flags=re.MULTILINE)
+                    # Promote authorial H2 to canonical H1 with chapter number prefix
+                    h2_txt = m_h2.group(1).strip()
+                    if ch_prefix and not re.match(r'^Chapter\s+\d+', h2_txt, re.IGNORECASE):
+                        canonical_h1 = f"# {ch_prefix}{h2_txt}"
+                    else:
+                        canonical_h1 = f"# {h2_txt}"
+                    md = md[:m_h2.start()] + canonical_h1 + md[m_h2.end():]
                 else:
                     # Format slug into human-readable chapter title if needed
-                    m_slug = re.match(r'^Ch0*(\d+)[-_](.*)', chapter_name, re.IGNORECASE)
-                    if m_slug:
-                        pretty_title = f"Chapter {m_slug.group(1)}: {m_slug.group(2).replace('-', ' ')}"
-                    else:
-                        pretty_title = chapter_name
+                    pretty_title = f"{ch_prefix}{m_slug.group(2).replace('-', ' ')}" if m_slug else chapter_name
                     md = f"# {pretty_title}\n\n{md}"
+            elif m_h1 and m_slug:
+                h1_txt = m_h1.group(1).strip()
+                if not re.match(r'^Chapter\s+\d+', h1_txt, re.IGNORECASE):
+                    canonical_h1 = f"# {ch_prefix}{h1_txt}"
+                    md = md[:m_h1.start()] + canonical_h1 + md[m_h1.end():]
 
         # 2. Table Dual Presentation (Insert image reference alongside text table)
         if getattr(options, "dual_table_presentation", False):
@@ -84,11 +93,11 @@ class BookPostProcessor(PostProcessorStrategy):
                         idx = match.start()
                         md = md[:idx] + img_tag + "\n" + md[idx:]
 
-        # 3. Insert clickable Table of Contents (TOC)
+        # 3. Insert clickable Table of Contents (TOC) underneath Chapter Heading
         if options.generate_toc and not is_front_matter and options.toc_mode != "none":
             toc_block = generate_markdown_toc(md, toc_mode=options.toc_mode)
             if toc_block and "<summary>" not in md:
-                m_h1 = re.search(r'^(#[^\n]+\n+)', md)
+                m_h1 = re.search(r'(?m)^(#[^\n]+\n+)', md)
                 if m_h1:
                     md = md[:m_h1.end()] + toc_block + "\n\n" + md[m_h1.end():]
                 else:

@@ -17,6 +17,7 @@ from literature_parser.services.utils.obsidian_linker import (
     inject_chapter_navigation,
 )
 from literature_parser.services.utils.text_utils import (
+    get_chapter_sort_key,
     get_primary_chapter_markdown,
     heal_corrupted_headings,
 )
@@ -102,10 +103,10 @@ class MarkdownUpdater:
             logger.warning("No chapters directory found in %s", book_dir)
             return {"updated_chapters": 0, "status": "no_chapters"}
 
-        # 1. Discover ordered chapter directories
+        # 1. Discover ordered chapter directories in canonical sequence
         ch_dirs = sorted(
             [d for d in chapters_root.iterdir() if d.is_dir() and not d.name.startswith(".")],
-            key=lambda d: d.name,
+            key=lambda d: get_chapter_sort_key(d.name),
         )
 
         ch_list: List[Dict[str, Any]] = []

@@ -229,17 +229,25 @@ def postprocess_chapter_headings_and_toc(
     if is_journal_doc:
         full_md = _promote_journal_title(full_md)
     elif style.get("prepend_chapter_title_if_missing", True):
-        has_title = re.search(
-            r"^\s*#+\s*(?:PART|CHAPTER|\d+|Introduction)", full_md, re.IGNORECASE
-        ) or re.search(r"^\s*<!--.*?-->\s*#+\s*", full_md, re.IGNORECASE)
-        if not has_title:
-            full_md = f"# {ch_name}\n\n{full_md}"
+        # Format standardized Chapter Title
+        m_ch = re.match(r"^Ch(\d+)[\-_](.*)$", ch_name, re.IGNORECASE)
+        canonical_title = f"Chapter {int(m_ch.group(1))}: {m_ch.group(2).replace('-', ' ').replace('_', ' ')}" if m_ch else ch_name
+
+        # Check if an explicit H1 is present
+        m_h1 = re.search(r"(?m)^#\s+([^\n]+)", full_md)
+        if not m_h1:
+            full_md = f"# {canonical_title}\n\n{full_md}"
+        elif m_ch:
+            h1_txt = m_h1.group(1).strip()
+            # If H1 lacks chapter number (e.g. '# Ethics' or '# Identifying Research Questions...'), upgrade to canonical
+            if not re.match(r"^Chapter\s+\d+", h1_txt, re.IGNORECASE):
+                full_md = full_md[:m_h1.start()] + f"# {canonical_title}" + full_md[m_h1.end():]
 
     toc_mode = style.get("toc_mode", "open")
     if not is_journal_doc and style.get("generate_toc", True) and toc_mode != "none":
         toc_block = generate_markdown_toc(full_md, toc_mode=toc_mode)
         if toc_block and "<summary>📑 <b>Table of Contents</b>" not in full_md:
-            m_h1 = re.search(r"^(#[^\n]+\n+)", full_md)
+            m_h1 = re.search(r"(?m)^(#[^\n]+\n+)", full_md)
             if m_h1:
                 full_md = full_md[: m_h1.end()] + toc_block + "\n\n" + full_md[m_h1.end() :]
             else:

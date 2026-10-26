@@ -14,7 +14,10 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from literature_parser.services.utils.text_utils import get_primary_chapter_markdown
+from literature_parser.services.utils.text_utils import (
+    get_chapter_sort_key,
+    get_primary_chapter_markdown,
+)
 
 logger = logging.getLogger("TOCResolver")
 
@@ -74,8 +77,8 @@ class TOCResolver:
         if not chapters_root.exists():
             return []
 
-        # Find all chapter subdirectories sorted by name
-        ch_dirs = sorted([d for d in chapters_root.iterdir() if d.is_dir()])
+        # Find all chapter subdirectories sorted in publication sequence
+        ch_dirs = sorted([d for d in chapters_root.iterdir() if d.is_dir()], key=lambda d: get_chapter_sort_key(d.name))
         top_nodes: List[TOCNode] = []
 
         # Extract Part definitions from 00-07-TOC or raw TOC if available
@@ -207,17 +210,11 @@ class TOCResolver:
         if dir_clean_key in cls.FRONT_MATTER_TITLES:
             ch_title = cls.FRONT_MATTER_TITLES[dir_clean_key]
         else:
-            # 1. Search for explicit Chapter/Part heading at the top of content (within first 8000 chars)
+            # 1. Search for explicit Chapter/Appendix heading with full name in content (never Part)
             ch_heading_match = re.search(
-                r"(?im)^\s*#{1,3}\s*((?:Chapter\s+\d+|Part\s+[IVXLCDM\d]+|Appendix\s+[A-Z\d]+)[:\s\.\-].*)$",
+                r"(?im)^\s*#{1,3}\s*((?:Chapter\s+\d+|Appendix\s+[A-Z\d]+)[:\s\.\-][^\n]+)$",
                 content[:8000],
             )
-            if not ch_heading_match:
-                ch_heading_match = re.search(
-                    r"(?im)^\s*#{1,3}\s*(Chapter\s+\d+\b.*)$",
-                    content[:8000],
-                )
-
             if ch_heading_match:
                 cand = ch_heading_match.group(1).strip()
                 ch_title = re.sub(r"\s+", " ", cand)

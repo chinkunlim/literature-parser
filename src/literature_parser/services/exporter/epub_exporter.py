@@ -28,7 +28,10 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from literature_parser.services.core.toc_resolver import TOCResolver, TOCNode
 from literature_parser.services.exporter.epub_styles import get_epub_css
-from literature_parser.services.utils.text_utils import get_primary_chapter_markdown
+from literature_parser.services.utils.text_utils import (
+    get_chapter_sort_key,
+    get_primary_chapter_markdown,
+)
 
 logger = logging.getLogger("EpubExporter")
 
@@ -222,13 +225,31 @@ class MermaidToSVGConverter:
         max_depth = max(depth_map.values()) if depth_map else 0
         col_w = 235.0
         box_w = 195.0
-        box_h = 30.0
+        box_h = 36.0
         svg_w = int(max(520.0, (max_depth + 1) * col_w + 30.0))
-        svg_h = int(max(90.0, (max(y_coords.values()) if y_coords else 60.0) + 45.0))
+        svg_h = int(max(90.0, (max(y_coords.values()) if y_coords else 60.0) + 50.0))
 
         svg_elements: List[str] = [
             f'<figure class="concept-map-figure" style="margin: 1.2em 0; text-align: center;">',
             f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {svg_w} {svg_h}" width="100%" height="auto" style="max-width: {svg_w}px; font-family: sans-serif;">',
+            '  <defs>',
+            '    <style>',
+            '      .concept-edge { stroke: #8a6d7b; stroke-width: 1.6; fill: none; }',
+            '      .node-d0-rect { fill: #782b4d; stroke: #5a1e38; stroke-width: 1.4; }',
+            '      .node-d0-text { fill: #ffffff; font-weight: bold; font-size: 11px; }',
+            '      .node-d1-rect { fill: #f3eaf0; stroke: #782b4d; stroke-width: 1.4; }',
+            '      .node-d1-text { fill: #222222; font-weight: bold; font-size: 10.5px; }',
+            '      .node-d2-rect { fill: #fbf6f9; stroke: #8a6d7b; stroke-width: 1.4; }',
+            '      .node-d2-text { fill: #261b21; font-size: 10px; }',
+            '      @media (prefers-color-scheme: dark) {',
+            '        .concept-edge { stroke: #b89aa9; }',
+            '        .node-d1-rect { fill: #382430; stroke: #b89aa9; }',
+            '        .node-d1-text { fill: #f3eaf0; }',
+            '        .node-d2-rect { fill: #261b21; stroke: #8a6d7b; }',
+            '        .node-d2-text { fill: #f3eaf0; }',
+            '      }',
+            '    </style>',
+            '  </defs>',
         ]
 
         # Draw edges first
@@ -239,8 +260,7 @@ class MermaidToSVGConverter:
             y2 = y_coords.get(v, 28.0)
             mid_x = (x1 + x2) / 2.0
             svg_elements.append(
-                f'  <path d="M {x1:.1f} {y1:.1f} C {mid_x:.1f} {y1:.1f}, {mid_x:.1f} {y2:.1f}, {x2:.1f} {y2:.1f}" '
-                f'fill="none" stroke="#8a6d7b" stroke-width="1.6" />'
+                f'  <path class="concept-edge" d="M {x1:.1f} {y1:.1f} C {mid_x:.1f} {y1:.1f}, {mid_x:.1f} {y2:.1f}, {x2:.1f} {y2:.1f}" />'
             )
 
         # Also draw implicit edges from primary root if connected synthetically
@@ -253,36 +273,52 @@ class MermaidToSVGConverter:
                     y2 = y_coords.get(ch, 28.0)
                     mid_x = (x1 + x2) / 2.0
                     svg_elements.append(
-                        f'  <path d="M {x1:.1f} {y1:.1f} C {mid_x:.1f} {y1:.1f}, {mid_x:.1f} {y2:.1f}, {x2:.1f} {y2:.1f}" '
-                        f'fill="none" stroke="#8a6d7b" stroke-width="1.4" stroke-dasharray="4,3" />'
+                        f'  <path class="concept-edge" stroke-dasharray="4,3" d="M {x1:.1f} {y1:.1f} C {mid_x:.1f} {y1:.1f}, {mid_x:.1f} {y2:.1f}, {x2:.1f} {y2:.1f}" />'
                     )
 
         # Draw node boxes and labels
         for n in node_order:
             d = depth_map.get(n, 0)
+            d_cls = min(d, 2)
             x = 20.0 + d * col_w
             y = y_coords.get(n, 28.0) - box_h / 2.0
             raw_lbl = node_labels.get(n, n)
-            display_lbl = raw_lbl if len(raw_lbl) <= 45 else (raw_lbl[:42].rstrip() + "…")
-            f_size = "9.5" if len(display_lbl) > 28 else "11"
-            esc_lbl = html.escape(display_lbl)
-            if d == 0:
-                fill, stroke, txt_color, weight = "#782b4d", "#5a1e38", "#ffffff", "bold"
-            elif d == 1:
-                fill, stroke, txt_color, weight = "#f3eaf0", "#782b4d", "#222222", "bold"
-            else:
-                fill, stroke, txt_color, weight = "#ffffff", "#b89aa9", "#333333", "normal"
+            display_lbl = raw_lbl if len(raw_lbl) <= 50 else (raw_lbl[:47].rstrip() + "…")
+
+            # Word wrap into up to 2 lines if longer than 36 characters
+            lines_wrapped = []
+            if len(display_lbl) > 36:
+                words = display_lbl.split()
+                curr_words = []
+                for w in words:
+                    if sum(len(x) for x in curr_words) + len(curr_words) + len(w) <= 24:
+                        curr_words.append(w)
+                    else:
+                        if curr_words:
+                            lines_wrapped.append(' '.join(curr_words))
+                        curr_words = [w]
+                if curr_words:
+                    lines_wrapped.append(' '.join(curr_words))
 
             svg_elements.append(
-                f'  <rect x="{x:.1f}" y="{y:.1f}" width="{box_w:.1f}" height="{box_h:.1f}" rx="6" ry="6" '
-                f'fill="{fill}" stroke="{stroke}" stroke-width="1.4" />'
+                f'  <rect class="node-d{d_cls}-rect" x="{x:.1f}" y="{y:.1f}" width="{box_w:.1f}" height="{box_h:.1f}" rx="6" ry="6" />'
             )
             text_x = x + box_w / 2.0
-            text_y = y + box_h / 2.0 + 4.0
-            svg_elements.append(
-                f'  <text x="{text_x:.1f}" y="{text_y:.1f}" fill="{txt_color}" font-size="{f_size}" '
-                f'font-weight="{weight}" text-anchor="middle">{esc_lbl}</text>'
-            )
+            if len(lines_wrapped) >= 2:
+                t1 = html.escape(lines_wrapped[0])
+                t2 = html.escape(' '.join(lines_wrapped[1:]))
+                svg_elements.append(
+                    f'  <text class="node-d{d_cls}-text" x="{text_x:.1f}" y="{y + 14.0:.1f}" text-anchor="middle">'
+                    f'<tspan x="{text_x:.1f}">{t1}</tspan>'
+                    f'<tspan x="{text_x:.1f}" dy="13">{t2}</tspan>'
+                    f'</text>'
+                )
+            else:
+                esc_lbl = html.escape(display_lbl)
+                text_y = y + box_h / 2.0 + 4.0
+                svg_elements.append(
+                    f'  <text class="node-d{d_cls}-text" x="{text_x:.1f}" y="{text_y:.1f}" text-anchor="middle">{esc_lbl}</text>'
+                )
 
         svg_elements.append("</svg>")
         svg_elements.append("</figure>")
@@ -417,12 +453,39 @@ class MarkdownToXHTML:
         codeblock_lang = ""
         codeblock_buf: List[str] = []
         in_list = False
-        in_blockquote = False
+        blockquote_buf: List[str] = []
         in_references = False
         pipe_table_buf: List[str] = []
         has_h1 = bool(re.search(r'(?m)^#\s+', content))
         first_h_linked = False
         last_h1_text = ""
+
+        def _flush_blockquote() -> None:
+            nonlocal blockquote_buf
+            if not blockquote_buf:
+                return
+            first_line = blockquote_buf[0].strip()
+            m_callout = re.match(r"^\[!(TIP|NOTE|WARNING|IMPORTANT|CAUTION)\]\s*(.*)$", first_line, re.IGNORECASE)
+            if m_callout:
+                c_type = m_callout.group(1).lower()
+                c_title = m_callout.group(2).strip() or c_type.capitalize()
+                icons = {"tip": "💡", "note": "📝", "warning": "⚠️", "important": "❗", "caution": "🛑"}
+                icon = icons.get(c_type, "💡")
+                out_lines.append(f'<div class="callout callout-{c_type}">')
+                out_lines.append(f'  <div class="callout-header"><span class="callout-icon">{icon}</span> <strong>{cls._format_inline(c_title)}</strong></div>')
+                out_lines.append('  <div class="callout-body">')
+                for b_ln in blockquote_buf[1:]:
+                    if b_ln.strip():
+                        out_lines.append(f'    <p>{cls._format_inline(b_ln.strip())}</p>')
+                out_lines.append('  </div>')
+                out_lines.append('</div>')
+            else:
+                out_lines.append("<blockquote>")
+                for b_ln in blockquote_buf:
+                    if b_ln.strip():
+                        out_lines.append(f"<p>{cls._format_inline(b_ln.strip())}</p>")
+                out_lines.append("</blockquote>")
+            blockquote_buf = []
 
         def _flush_pipe_table() -> None:
             nonlocal pipe_table_buf
@@ -444,17 +507,16 @@ class MarkdownToXHTML:
             trimmed = line.strip()
             if not trimmed:
                 _flush_pipe_table()
+                _flush_blockquote()
                 if in_list and not stack:
                     out_lines.append("</ul>")
                     in_list = False
-                if in_blockquote and not stack:
-                    out_lines.append("</blockquote>")
-                    in_blockquote = False
                 continue
 
             # Code block (with special Mermaid -> SVG handling for EPUB)
             if trimmed.startswith("```"):
                 _flush_pipe_table()
+                _flush_blockquote()
                 if in_codeblock:
                     if codeblock_lang == "mermaid":
                         out_lines.append(MermaidToSVGConverter.convert_to_svg("\n".join(codeblock_buf)))
@@ -497,12 +559,10 @@ class MarkdownToXHTML:
 
             if is_html:
                 _flush_pipe_table()
+                _flush_blockquote()
                 if in_list:
                     out_lines.append("</ul>")
                     in_list = False
-                if in_blockquote:
-                    out_lines.append("</blockquote>")
-                    in_blockquote = False
 
                 # Inside <details> list items like "- [Text](#link)"
                 if trimmed.startswith(("- ", "* ")):
@@ -530,9 +590,7 @@ class MarkdownToXHTML:
                 if in_list:
                     out_lines.append("</ul>")
                     in_list = False
-                if in_blockquote:
-                    out_lines.append("</blockquote>")
-                    in_blockquote = False
+                _flush_blockquote()
                 pipe_table_buf.append(trimmed)
                 continue
             else:
@@ -540,15 +598,11 @@ class MarkdownToXHTML:
 
             # Blockquote
             if trimmed.startswith(">"):
-                if not in_blockquote:
-                    out_lines.append("<blockquote>")
-                    in_blockquote = True
                 b_text = trimmed.lstrip(">").strip()
-                out_lines.append(f"<p>{cls._format_inline(b_text)}</p>")
+                blockquote_buf.append(b_text)
                 continue
-            elif in_blockquote:
-                out_lines.append("</blockquote>")
-                in_blockquote = False
+            else:
+                _flush_blockquote()
 
             # Unordered list
             if trimmed.startswith(("- ", "* ")):
@@ -608,10 +662,9 @@ class MarkdownToXHTML:
             out_lines.append(f"<p{p_class}>{cls._format_inline(trimmed)}</p>")
 
         _flush_pipe_table()
+        _flush_blockquote()
         if in_list:
             out_lines.append("</ul>")
-        if in_blockquote:
-            out_lines.append("</blockquote>")
         if in_codeblock:
             if codeblock_lang == "mermaid":
                 out_lines.append(MermaidToSVGConverter.convert_to_svg("\n".join(codeblock_buf)))
@@ -1190,7 +1243,10 @@ class EpubExporter:
                 return cls.export_literature(book_dir, output_epub_path=output_epub_path, engine=engine)
             raise FileNotFoundError(f"Book directory missing 'chapters/' subfolder: {book_dir}")
 
-        chapter_dirs = sorted([d for d in chapters_root.iterdir() if d.is_dir()])
+        chapter_dirs = sorted(
+            [d for d in chapters_root.iterdir() if d.is_dir()],
+            key=lambda d: get_chapter_sort_key(d.name),
+        )
         if chapter:
             clean_ch = chapter.strip().lower()
             chapter_dirs = [d for d in chapter_dirs if clean_ch in d.name.lower()]

@@ -101,7 +101,7 @@ class EndOfChapterParser:
 
         # Check if there are EOC continuation items ABOVE the first heading
         first_h_top = eoc_headings[0]['top']
-        above_elems = [t for t in text_elements if 50.0 < float(t.attrib.get('top', 0)) < first_h_top and ''.join(t.itertext()).strip()]
+        above_elems = [t for t in text_elements if 35.0 < float(t.attrib.get('top', 0)) < first_h_top and ''.join(t.itertext()).strip()]
         has_above_items = any(re.match(r'^(?:\*\*)?(?:\d+|[a-e])[\.\)]', ''.join(t.itertext()).strip()) for t in above_elems)
         if has_above_items and len(above_elems) >= 5:
             above_md = cls._extract_generic_eoc_section(above_elems, fonts, pw)
@@ -288,10 +288,10 @@ class EndOfChapterParser:
                 if re.match(r'^\*\*\d+\.\*\*|^\*\*[a-e]\.\*\*', txt):
                     result_lines.append('')
                     result_lines.append(txt)
-                elif is_bold and len(txt) < 80 and re.match(r'^\d+\.', txt):
-                    clean_num = re.sub(r'^(\d+\.)\s*', r'**\1** ', txt)
-                    result_lines.append(f"\n{clean_num}")
-                elif re.match(r'^[a-e][\.\)]\s+\S', txt):
+                elif len(txt) < 90 and re.match(r'^\d+[\.\)]', txt):
+                    clean_num = re.sub(r'^(\d+[\.\)])\s*', r'**\1** ', txt)
+                    result_lines.append(clean_num)
+                elif re.match(r'^[a-e][\.\)]\s*', txt):
                     result_lines.append(f"{txt}")
                 else:
                     result_lines.append(txt)
@@ -299,19 +299,34 @@ class EndOfChapterParser:
             output = []
             pending = []
             for line in result_lines:
-                if line == '':
+                line_s = line.strip()
+                if not line_s:
                     if pending:
                         output.append(' '.join(pending))
                         pending = []
                     if output and output[-1] != '':
                         output.append('')
-                elif re.match(r'^[a-e][\.\)]\s+\S', line) or line.startswith('**') or line.startswith('*') or line.startswith('#'):
+                elif re.match(r'^\*\*\d+[\.\)]\*\*$', line_s):
+                    # Standalone number like **3.** -> prepend to next pending line
                     if pending:
                         output.append(' '.join(pending))
                         pending = []
-                    output.append(line)
+                    pending.append(line_s)
+                elif line_s.startswith(('•', '▪', '–')):
+                    if pending:
+                        output.append(' '.join(pending))
+                        pending = []
+                    pending.append(re.sub(r'^[•▪–]\s*', '- ', line_s))
+                elif pending and pending[0].startswith('- ') and line_s and not line_s[0].islower():
+                    output.append(' '.join(pending))
+                    pending = [line_s]
+                elif re.match(r'^[a-e][\.\)]\s+\S', line_s) or (line_s.startswith('**') and len(line_s) > 10) or line_s.startswith('#'):
+                    if pending:
+                        output.append(' '.join(pending))
+                        pending = []
+                    output.append(line_s)
                 else:
-                    pending.append(line)
+                    pending.append(line_s)
             if pending:
                 output.append(' '.join(pending))
 
@@ -328,13 +343,98 @@ class EndOfChapterParser:
             for l in left_elems
         )
 
-        if len(left_elems) >= 3 and len(right_elems) >= 3 and not has_baseline_crossing:
+        if len(left_elems) >= 3 and len(right_elems) >= 3:
             col1_md = process_elems(left_elems)
             col2_md = process_elems(right_elems)
             col1_rstrip = col1_md.rstrip()
             col2_lstrip = col2_md.lstrip()
             if col1_rstrip and not re.search(r'[.?!:;>]$', col1_rstrip) and col2_lstrip and col2_lstrip[0].islower():
-                return f"{col1_rstrip} {col2_lstrip}".strip()
-            return f"{col1_md}\n\n{col2_md}".strip()
+                combined = f"{col1_rstrip} {col2_lstrip}".strip()
+            else:
+                combined = f"{col1_md}\n\n{col2_md}".strip()
+            return cls._format_quiz_tables_if_present(combined)
         else:
-            return process_elems(section_elems)
+            return cls._format_quiz_tables_if_present(process_elems(section_elems))
+
+    @classmethod
+    def _format_quiz_tables_if_present(cls, text: str) -> str:
+        """Converts multiple-choice questions with options (a, b, c, d) into borderless quiz tables."""
+        if not text or not re.search(r'\b[a-d]\.\s+', text):
+            return text
+
+        lines = text.splitlines()
+        output = []
+        i = 0
+        n = len(lines)
+
+        while i < n:
+            line = lines[i].strip()
+            # Detect Question Start: e.g. "**1.** Question", "1. Question", or "**1.**"
+            m_q = re.match(r'^(?:\*\*)?(\d+)[\.\)](?:\*\*)?\s*(.*)', line)
+            if m_q and (i + 1 < n and any(re.match(r'^(?:\*\*)?[a-d][\.\)]', lines[j].strip()) for j in range(i + 1, min(i + 6, n)))):
+                q_num = m_q.group(1)
+                q_text = m_q.group(2).strip()
+                i += 1
+                # Consume continuation lines for question prompt
+                while i < n:
+                    nxt = lines[i].strip()
+                    if not nxt:
+                        i += 1
+                        continue
+                    if re.match(r'^(?:\*\*)?[a-d][\.\)]', nxt) or re.match(r'^(?:\*\*)?\d+[\.\)]', nxt):
+                        break
+                    q_text = f"{q_text} {nxt}".strip()
+                    i += 1
+
+                # Consume options
+                options = []
+                while i < n:
+                    nxt = lines[i].strip()
+                    if not nxt:
+                        i += 1
+                        continue
+                    m_opt = re.match(r'^(?:\*\*)?([a-d])[\.\)](?:\*\*)?\s*(.*)', nxt)
+                    if m_opt:
+                        opt_key = m_opt.group(1).lower()
+                        opt_val = m_opt.group(2).strip()
+                        i += 1
+                        # Option continuation lines
+                        while i < n:
+                            opt_nxt = lines[i].strip()
+                            if not opt_nxt:
+                                i += 1
+                                continue
+                            if re.match(r'^(?:\*\*)?[a-d][\.\)]', opt_nxt) or re.match(r'^(?:\*\*)?\d+[\.\)]', opt_nxt) or opt_nxt.startswith('#'):
+                                break
+                            opt_val = f"{opt_val} {opt_nxt}".strip()
+                            i += 1
+                        options.append((opt_key, opt_val))
+                    else:
+                        break
+
+                # Build borderless HTML table
+                if options:
+                    tbl = ['<table class="quiz-table" style="width: 100%; border: none; border-collapse: collapse; margin-bottom: 1.2em;">', '  <tbody>']
+                    full_q = f"<b>{q_num}.</b> {q_text}".strip()
+                    tbl.append(f'    <tr><td colspan="2" style="border: none; font-weight: bold; padding: 6px 0;">{full_q}</td></tr>')
+                    
+                    has_long_opts = any(len(val) > 40 for _, val in options)
+                    if has_long_opts or len(options) != 4:
+                        for k, v in options:
+                            tbl.append(f'    <tr><td colspan="2" style="border: none; padding: 3px 8px; vertical-align: top;"><b>{k}.</b> {v}</td></tr>')
+                    else:
+                        # 2x2 grid: a/b, c/d
+                        tbl.append(f'    <tr><td style="border: none; width: 50%; padding: 3px 8px; vertical-align: top;"><b>{options[0][0]}.</b> {options[0][1]}</td><td style="border: none; width: 50%; padding: 3px 8px; vertical-align: top;"><b>{options[1][0]}.</b> {options[1][1]}</td></tr>')
+                        tbl.append(f'    <tr><td style="border: none; width: 50%; padding: 3px 8px; vertical-align: top;"><b>{options[2][0]}.</b> {options[2][1]}</td><td style="border: none; width: 50%; padding: 3px 8px; vertical-align: top;"><b>{options[3][0]}.</b> {options[3][1]}</td></tr>')
+                    
+                    tbl.append('  </tbody>')
+                    tbl.append('</table>')
+                    output.append('\n'.join(tbl))
+                else:
+                    output.append(f"**{q_num}.** {q_text}")
+                continue
+
+            output.append(lines[i])
+            i += 1
+
+        return '\n\n'.join([l for l in output if l.strip()])

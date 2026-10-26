@@ -88,6 +88,7 @@ All notable changes to **literature-parser** are documented here
 - fix(epub): eliminate TOC HTML entity corruption, filter decorative texture slices, and fix word fragments (by `@Antigravity`)
 - fix(epub): prioritize primary chapter markdown and exclude AUDIT.md from EPUB export (by `@Antigravity`)
 - fix(toc): prevent rogue prose headings from hijacking chapter titles in EPUB TOC (by `@Antigravity`)
+- fix(layout): heal two-column flow, borderless quiz tables, TOC positioning, and EPUB chapter sort order (by `@Antigravity`)
 
 ### Documentation
 - docs: update and synchronize all project markdown documentation (by `@antigravity`)

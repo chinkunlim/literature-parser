@@ -603,17 +603,29 @@ class LayoutDetector:
             # 1. Key-Value form exhibit check (e.g. Exhibit 3.2)
             colon_keys = [t for t in ex_elems if ''.join(t.itertext()).strip().endswith(':') and float(t.attrib.get('left', 0)) < pw * 0.35]
             if len(colon_keys) >= 3:
-                ex_elems.sort(key=lambda x: (float(x.attrib.get('top', 0)), float(x.attrib.get('left', 0))))
-                for t in ex_elems:
+                left_col = [t for t in ex_elems if float(t.attrib.get('left', 0)) < pw * 0.50]
+                right_col = [t for t in ex_elems if float(t.attrib.get('left', 0)) >= pw * 0.50]
+                if len(left_col) >= 3 and len(right_col) >= 3:
+                    ordered_ex_elems = sorted(left_col, key=lambda x: float(x.attrib.get('top', 0))) + \
+                                       sorted(right_col, key=lambda x: float(x.attrib.get('top', 0)))
+                else:
+                    ordered_ex_elems = sorted(ex_elems, key=lambda x: (float(x.attrib.get('top', 0)), float(x.attrib.get('left', 0))))
+
+                card_body = []
+                for t in ordered_ex_elems:
                     txt = ''.join(t.itertext()).strip()
+                    if not txt or txt in ('(', ')', '()', '( )'):
+                        continue
                     if txt.endswith(':'):
-                        md_lines.append(f"**{txt}**")
+                        card_body.append(f"**{txt}**")
                     else:
-                        if md_lines and md_lines[-1].startswith('**') and md_lines[-1].endswith('**'):
-                            md_lines[-1] = f"{md_lines[-1]} {txt}"
+                        if card_body and card_body[-1].startswith('**') and card_body[-1].endswith('**'):
+                            card_body[-1] = f"{card_body[-1]} {txt}"
                         else:
-                            md_lines.append(txt)
-                exhibits.append({'top': h_top, 'markdown': '\n\n'.join(md_lines)})
+                            card_body.append(txt)
+                
+                ex_card_md = f'<div class="exhibit-card">\n\n' + '\n\n'.join(md_lines + card_body) + '\n\n</div>'
+                exhibits.append({'top': h_top, 'markdown': ex_card_md})
                 consumed.update(ex_consumed)
                 continue
 

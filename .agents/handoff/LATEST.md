@@ -5,10 +5,10 @@
 <!-- LIVE_STATE_START -->
 ## 📊 即時狀態看板 (Live Snapshot)
 
-- **最後更新時間**: `2026-10-26 11:48 UTC`
+- **最後更新時間**: `2026-10-26 16:02 UTC`
 - **最近操作 Agent**: `Antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `894483d chore(tooling): update tooling tooling and config (TASK-050, TASK-051, TASK-052, TASK-053, TASK-054, TASK-055, TASK-056, TASK-057, TASK-058) [agent:Antigravity]`
+- **最新 Git Commit**: `4039f19 feat(library): complete clean full-library re-parse and dual-gate rebuild from raw source PDFs [agent:Antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
@@ -17,6 +17,18 @@
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-10-26 16:02 UTC] 完成任務 `TASK-059` — Fix two-column reading flow, quiz tables, TOC positioning, and EPUB callouts (by `Antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: Fixed two-column reading flow interleaving, borderless quiz tables, TOC positioning below chapter titles, explicit chapter titles, bullet list continuations, and canonical EPUB chapter sort order
+
+### [2026-10-26 15:13 UTC] 認領任務 `TASK-059` (Fix two-column reading flow, quiz tables, TOC positioning, and EPUB callouts) (by `Antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `Antigravity`
+
+### [2026-10-26 15:13 UTC] 建立任務 `TASK-059`: Fix two-column reading flow, quiz tables, TOC positioning, and EPUB callouts (by `Antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
 
 ### [2026-10-26 11:48 UTC] 完成任務 `TASK-057` — 全書庫5本書清空與雙閘門全流程重新生成 (by `Antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
@@ -83,17 +95,5 @@
 - **完成摘要**: 完成三大教科書結構錨定核心模組（Glossary詞庫與超連結、圖表跳號連續性審查、LO與EOC閉合校驗）與QualityEngine全面整合
 
 ### [2026-10-26 06:18 UTC] 認領任務 `TASK-053` (實作教科書三大結構錨定核心（Glossary雙向鏈接與詞庫、圖表跳號連續性審查、LO與EOC閉合校驗）) (by `Antigravity`)
-- **相關範圍**: `-`
-- **接棒自**: `Antigravity`
-
-### [2026-10-26 06:18 UTC] 建立任務 `TASK-053`: 實作教科書三大結構錨定核心（Glossary雙向鏈接與詞庫、圖表跳號連續性審查、LO與EOC閉合校驗） (by `Antigravity`)
-- **狀態**: `in_progress`
-- **相關範圍**: `-`
-
-### [2026-10-26 06:17 UTC] 完成任務 `TASK-052` — 實作三大教科書結構錨定強化體系（Glossary雙向鏈接與詞庫、圖表連續性審查、LO與EOC閉合校驗） (by `Antigravity`)
-- **狀態**: ✅ 已完成 (`done`)
-- **完成摘要**: 實作確定性布林缺陷評分標準、TOC 標題骨架雙向對齊與 Web Studio 缺陷側邊清單一鍵跳轉閃爍高亮
-
-### [2026-10-26 06:04 UTC] 認領任務 `TASK-052` (實作三大教科書結構錨定強化體系（Glossary雙向鏈接與詞庫、圖表連續性審查、LO與EOC閉合校驗）) (by `Antigravity`)
 - **相關範圍**: `-`
 - **接棒自**: `Antigravity`

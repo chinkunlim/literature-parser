@@ -621,3 +621,15 @@
 ### [2026-10-26 04:58 UTC] 建立任務 `TASK-049`: EPUB Layout Healing, Front-matter Image Filtering, and TOC Title Backlinks (by `Antigravity`)
 - **狀態**: `in_progress`
 - **相關範圍**: `-`
+
+### [2026-10-26 04:58 UTC] 認領任務 `TASK-049` (EPUB Layout Healing, Front-matter Image Filtering, and TOC Title Backlinks) (by `Antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `Antigravity`
+
+### [2026-10-26 05:29 UTC] 完成任務 `TASK-049` — EPUB Layout Healing, Front-matter Image Filtering, and TOC Title Backlinks (by `Antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: Fixed EPUB cover metadata for Apple Books thumbnail, added chapter title TOC backlinks with immediate duplicate suppression, filtered decorative front-matter image slices, and resolved Ch02 references layout tearing
+
+### [2026-10-26 05:35 UTC] 建立任務 `TASK-050`: 全書庫 EPUB 視覺審查與版面排版全量檢驗 (by `Antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`

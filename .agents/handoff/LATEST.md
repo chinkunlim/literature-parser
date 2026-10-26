@@ -5,10 +5,10 @@
 <!-- LIVE_STATE_START -->
 ## 📊 即時狀態看板 (Live Snapshot)
 
-- **最後更新時間**: `2026-10-26 09:10 UTC`
+- **最後更新時間**: `2026-10-26 09:40 UTC`
 - **最近操作 Agent**: `Antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `91b6466 feat(library): complete full library re-audit, AUDIT updates, and EPUB 3 rebuild across all 5 books [agent:Antigravity]`
+- **最新 Git Commit**: `273206d fix(epub): prioritize primary chapter markdown and exclude AUDIT.md from EPUB export [agent:Antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
@@ -17,6 +17,18 @@
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-10-26 09:40 UTC] 完成任務 `TASK-056` — 修復EPUB目錄章節標題誤判內文與標題層級 (by `Antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: (無)
+
+### [2026-10-26 09:25 UTC] 認領任務 `TASK-056` (修復EPUB目錄章節標題誤判內文與標題層級) (by `Antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `Antigravity`
+
+### [2026-10-26 09:24 UTC] 建立任務 `TASK-056`: 修復EPUB目錄章節標題誤判內文與標題層級 (by `Antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
 
 ### [2026-10-26 09:10 UTC] 完成任務 `TASK-055` — 修復EPUB匯出誤讀AUDIT.md及全書庫重匯出 (by `Antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
@@ -83,17 +95,5 @@
 - **完成摘要**: Completed visual audit across all 5 books, eliminated TOC HTML double-escaping cycle, filtered decorative texture slices, enhanced multi-word phrase drop-shadow deduplication, and repaired broken word fragments
 
 ### [2026-10-26 05:35 UTC] 認領任務 `TASK-050` (全書庫 EPUB 視覺審查與版面排版全量檢驗) (by `Antigravity`)
-- **相關範圍**: `-`
-- **接棒自**: `Antigravity`
-
-### [2026-10-26 05:35 UTC] 建立任務 `TASK-050`: 全書庫 EPUB 視覺審查與版面排版全量檢驗 (by `Antigravity`)
-- **狀態**: `in_progress`
-- **相關範圍**: `-`
-
-### [2026-10-26 05:29 UTC] 完成任務 `TASK-049` — EPUB Layout Healing, Front-matter Image Filtering, and TOC Title Backlinks (by `Antigravity`)
-- **狀態**: ✅ 已完成 (`done`)
-- **完成摘要**: Fixed EPUB cover metadata for Apple Books thumbnail, added chapter title TOC backlinks with immediate duplicate suppression, filtered decorative front-matter image slices, and resolved Ch02 references layout tearing
-
-### [2026-10-26 04:58 UTC] 認領任務 `TASK-049` (EPUB Layout Healing, Front-matter Image Filtering, and TOC Title Backlinks) (by `Antigravity`)
 - **相關範圍**: `-`
 - **接棒自**: `Antigravity`

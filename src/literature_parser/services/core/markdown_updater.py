@@ -16,7 +16,10 @@ from literature_parser.services.utils.obsidian_linker import (
     generate_book_index,
     inject_chapter_navigation,
 )
-from literature_parser.services.utils.text_utils import get_primary_chapter_markdown
+from literature_parser.services.utils.text_utils import (
+    get_primary_chapter_markdown,
+    heal_corrupted_headings,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -108,9 +111,7 @@ class MarkdownUpdater:
         ch_list: List[Dict[str, Any]] = []
         updated_count = 0
 
-        # Scan book hierarchy for TOC generation
-        toc_nodes = TOCResolver.scan_book_hierarchy(book_dir)
-
+        # Step 1: Discover chapters and heal regular chapter markdown first
         for c_dir in ch_dirs:
             md_file = get_primary_chapter_markdown(c_dir)
             if not md_file:
@@ -121,21 +122,32 @@ class MarkdownUpdater:
 
             # Check if this is the in-book TOC chapter
             is_toc_chapter = c_dir.name in ("00-07-TOC", "TOC") or "contents" in c_dir.name.lower()
-            if is_toc_chapter and toc_nodes:
-                toc_html = TOCResolver.render_in_book_toc_html(toc_nodes, for_epub=False)
-                new_content = f"# Contents\n\n{toc_html}\n"
-                if new_content != content:
-                    md_file.write_text(new_content, encoding="utf-8")
-                    updated_count += 1
-                    logger.info("Updated TOC chapter: %s", md_file.name)
+            if is_toc_chapter:
                 continue
 
             # Standard chapter cleaning
             healed_content = cls.clean_markdown_text(content)
+            healed_content, _ = heal_corrupted_headings(healed_content)
             if healed_content != content:
                 md_file.write_text(healed_content, encoding="utf-8")
                 updated_count += 1
                 logger.debug("Healed chapter Markdown: %s", md_file.name)
+
+        # Scan book hierarchy for TOC generation
+        toc_nodes = TOCResolver.scan_book_hierarchy(book_dir)
+
+        # Step 3: Update in-book TOC chapter with clean scanned hierarchy
+        for ch_info in ch_list:
+            if ch_info["name"] in ("00-07-TOC", "TOC") or "contents" in ch_info["name"].lower():
+                md_file = ch_info["md_path"]
+                content = md_file.read_text(encoding="utf-8")
+                if toc_nodes:
+                    toc_html = TOCResolver.render_in_book_toc_html(toc_nodes, for_epub=False)
+                    new_content = f"# Contents\n\n{toc_html}\n"
+                    if new_content != content:
+                        md_file.write_text(new_content, encoding="utf-8")
+                        updated_count += 1
+                        logger.info("Updated TOC chapter: %s", md_file.name)
 
         # 2. Inject clean Obsidian navigation footers across all chapters
         nav_count = inject_chapter_navigation(ch_list)

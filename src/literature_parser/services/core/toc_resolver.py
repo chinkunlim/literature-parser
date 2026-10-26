@@ -200,15 +200,44 @@ class TOCResolver:
         Returns:
             TOCNode for the chapter containing section children.
         """
-        # Determine Chapter Title from first H1 or standard taxonomy
-        h1_match = re.search(r"(?m)^#\s+([^\n]+)", content)
+        # Determine Chapter Title from first H1 or standard taxonomy, explicit chapter heading, or clean directory name
         dir_clean_key = dir_name.lower().replace("_", "-")
-        if h1_match and not h1_match.group(1).strip().startswith(("#", "<")):
-            ch_title = h1_match.group(1).strip()
-        elif dir_clean_key in cls.FRONT_MATTER_TITLES:
+        ch_title: Optional[str] = None
+
+        if dir_clean_key in cls.FRONT_MATTER_TITLES:
             ch_title = cls.FRONT_MATTER_TITLES[dir_clean_key]
         else:
-            ch_title = dir_name.replace("-", " ").replace("_", " ").strip()
+            # 1. Search for explicit Chapter/Part heading at the top of content (within first 8000 chars)
+            ch_heading_match = re.search(
+                r"(?im)^\s*#{1,3}\s*((?:Chapter\s+\d+|Part\s+[IVXLCDM\d]+|Appendix\s+[A-Z\d]+)[:\s\.\-].*)$",
+                content[:8000],
+            )
+            if not ch_heading_match:
+                ch_heading_match = re.search(
+                    r"(?im)^\s*#{1,3}\s*(Chapter\s+\d+\b.*)$",
+                    content[:8000],
+                )
+
+            if ch_heading_match:
+                cand = ch_heading_match.group(1).strip()
+                ch_title = re.sub(r"\s+", " ", cand)
+            else:
+                # 2. Check if directory name is a standardized ChXX name
+                m_dir = re.match(r"^Ch(\d+)[\-_](.*)$", dir_name, re.IGNORECASE)
+                if m_dir:
+                    ch_num = int(m_dir.group(1))
+                    rest = m_dir.group(2).replace("-", " ").replace("_", " ").strip()
+                    ch_title = f"Chapter {ch_num}: {rest}"
+                else:
+                    # 3. Check for early H1 that is not prose
+                    h1_match = re.search(r"(?m)^#\s+([^\n]+)", content[:8000])
+                    if h1_match:
+                        cand = h1_match.group(1).strip()
+                        if len(cand) < 80 and not cand.endswith((".", "?")) and not cand.startswith(("<", "#")):
+                            ch_title = cand
+
+                    if not ch_title:
+                        ch_title = dir_name.replace("-", " ").replace("_", " ").strip()
 
         # Find initial page number
         p_match = re.search(r"<![—–-]+\s*Page\s+(\d+)\s*[—–-]+>", content)

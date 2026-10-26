@@ -296,9 +296,21 @@ class MarkdownToXHTML:
     def clean_markdown_for_epub(cls, md: str) -> Tuple[str, Optional[str]]:
         """Strips in-line <style> blocks, Obsidian navigation wikilinks, and comments, and extracts primary title."""
         # Extract title from first H1 (or H2/H3 if no H1 exists)
-        title_match = re.search(r'(?m)^#\s+([^\n]+)', md)
+        # Extract title from explicit chapter heading or early non-prose H1 (within first 8000 chars)
+        title_match = re.search(
+            r"(?im)^\s*#{1,3}\s*((?:Chapter\s+\d+|Part\s+[IVXLCDM\d]+|Appendix\s+[A-Z\d]+)[:\s\.\-].*)",
+            md[:8000],
+        )
         if not title_match:
-            title_match = re.search(r'(?m)^#{1,3}\s+([^\n]+)', md)
+            title_match = re.search(r"(?im)^\s*#{1,3}\s*(Chapter\s+\d+\b.*)", md[:8000])
+        if not title_match:
+            title_match = re.search(r"(?m)^#\s+([^\n]+)", md[:8000])
+            if title_match:
+                cand = title_match.group(1).strip()
+                if len(cand) > 80 or cand.endswith((".", "?")) or cand.startswith(("<", "#")):
+                    title_match = None
+        if not title_match:
+            title_match = re.search(r"(?m)^#{1,3}\s+([^\n]+)", md[:8000])
         title = title_match.group(1).strip() if title_match else None
 
         # Strip Obsidian navigation blocks and center navigation divs
@@ -1214,6 +1226,19 @@ class EpubExporter:
                 toc_filename = f"chapter_{c_idx:02d}.xhtml"
                 break
 
+        toc_title_map: Dict[str, str] = {}
+        def _collect_toc_titles(nodes: List[TOCNode]) -> None:
+            for n in nodes:
+                if n.target_file:
+                    parent_part = Path(n.target_file).parent.name
+                    if parent_part and parent_part != "..":
+                        toc_title_map[parent_part] = n.title
+                    else:
+                        toc_title_map[Path(n.target_file).name] = n.title
+                if n.children:
+                    _collect_toc_titles(n.children)
+        _collect_toc_titles(toc_nodes)
+
         builder = PurePythonEpubBuilder(
             book_title=book_name,
             author="Author",
@@ -1228,7 +1253,7 @@ class EpubExporter:
                 continue
             c_text = c_md_path.read_text(encoding="utf-8")
             c_cleaned, c_title = MarkdownToXHTML.clean_markdown_for_epub(c_text)
-            c_title = c_title or c_dir.name
+            c_title = toc_title_map.get(c_dir.name, c_title or c_dir.name)
             c_filename = f"chapter_{c_idx:02d}.xhtml"
 
             is_cover_chapter = ("cover" in c_dir.name.lower() or "00-01" in c_dir.name.lower() or c_idx == 1)

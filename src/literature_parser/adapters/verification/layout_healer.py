@@ -14,7 +14,10 @@ import re
 from pathlib import Path
 
 from literature_parser.services.parsers.layout.table_parser import TableParser
-from literature_parser.services.utils.text_utils import repair_broken_ligatures
+from literature_parser.services.utils.text_utils import (
+    heal_corrupted_headings,
+    repair_broken_ligatures,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -105,126 +108,30 @@ class LayoutAutoHealer:
         """Repairs headings corrupted by cross-column prose intrusion, split multi-line
         continuations, single-letter drop caps, or decorative dingbats.
 
+        Stitches split headings, demotes prose intrusions and spurious mid-chapter H1s,
+        and removes decorative symbol headings.
+
         Args:
             text: Chapter Markdown string.
 
         Returns:
             Tuple of `(healed_text, fixes_list)`.
         """
-        fixes = []
-
         # 1. Stitch consecutive split headings where the second heading starts with a lowercase connector
         # or where both are short uppercase/title headings (e.g. '## CAREER\n\n## COUNSELING')
-        def _stitch_split_headings(match):
-            h_hashes = match.group(1)
-            part1 = match.group(2).strip()
-            part2 = match.group(3).strip()
-            fixes.append(f"Stitched split multi-line heading: '{part1} {part2}'")
-            return f"{h_hashes} {part1} {part2}"
-
-        text = re.sub(
-            r"(?m)^(#{2,5})\s+([^\n]+?)\n{1,2}#{2,6}\s+((?:and|or|of|in|to|for|with|on|at|from|by|as|into|between|the|a|an)\b[^\n]+|[a-z][^\n]{1,55})$",
-            _stitch_split_headings,
-            text,
-        )
-        text = re.sub(
-            r"(?m)^(#{2,4})\s+([A-Z][A-Z\s,&\-]{2,35})\n{1,2}\1\s+([A-Z][A-Z\s,&\-]{2,45})$",
-            _stitch_split_headings,
-            text,
-        )
-
         # 1b. Stitch headings ending with a dangling connector/colon or numbered chapter title followed by a short non-sentence title line (Refs: ISSUE-017)
         # (e.g. '#### 14 Sleep, Dreaming, and Circadian\n\nRhythms 371' or '### Chapter 2 ...:\n\nSelected Theories 21')
-        def _stitch_dangling_heading_line(match):
-            h_hashes = match.group(1)
-            part1 = match.group(2).strip()
-            part2 = match.group(3).strip()
-            fixes.append(f"Stitched dangling heading continuation: '{part1} {part2}'")
-            return f"{h_hashes} {part1} {part2}"
-
-        text = re.sub(
-            r"(?m)^(#{2,5})\s+([^\n]*?(?:\b(?:and|or|of|in|to|for|with|on|from|by|the|a|an|&)|:)\s*|Chapter\s+\d+[^\n]*|\d{1,2}\s+[A-Z][^\n]{5,55})\n{1,2}([A-Z][^\n.!?;]{1,65}?)$",
-            _stitch_dangling_heading_line,
-            text,
-        )
-
-        lines = text.split("\n")
-        out_lines = []
-        for line in lines:
-            s = line.strip()
-            m_h = re.match(r"^(#{2,6})\s+(.+)$", s)
-            if not m_h:
-                out_lines.append(line)
-                continue
-
-            hashes, h_body = m_h.group(1), m_h.group(2).strip()
-            clean_h = re.sub(r"^[\*_`]+|[\*_`]+$", "", h_body).strip()
-
-            # Drop decorative symbol headings (e.g. ## •~———)
-            if not clean_h or not re.search(r"[A-Za-z0-9]", clean_h):
-                fixes.append(f"Removed decorative symbol heading '{s}'")
-                continue
-
-            # Strip leading decorative dingbat prefixes from valid headings (e.g. '## •~--- 7. How...')
-            if re.match(r"^[•~—\-]+\s+", clean_h):
-                clean_h = re.sub(r"^[•~—\-]+\s+", "", clean_h).strip()
-                h_body = clean_h
-                line = f"{hashes} {clean_h}"
-                fixes.append(f"Stripped leading decorative dingbats from heading '{clean_h[:40]}'")
-
-            # Demote URL headings or 1-2 char non-Index headings (e.g. ## e, ## rou)
-            if re.match(r"^(?:https?://|www\.)", clean_h, re.IGNORECASE) or (
-                len(clean_h) < 3 and not re.fullmatch(r"[A-Z]", clean_h)
-            ):
-                fixes.append(f"Demoted invalid short/URL heading '{s}'")
-                out_lines.append(clean_h)
-                continue
-
-            # Check if heading starts with lowercase (prose fragment or cross-column merge)
-            if clean_h[0].islower():
-                # Check if there is a sentence end followed by an uppercase heading at the end
-                m_split = re.search(r"^(.+?[.?!])\s+([A-Z][A-Za-z0-9\s\-\–:,\'’\(\)\?]{3,80})$", clean_h)
-                if m_split:
-                    prose_part = m_split.group(1).strip()
-                    real_head = m_split.group(2).strip()
-                    fixes.append(f"Separated leading prose from heading '{real_head}'")
-                    out_lines.append(prose_part)
-                    out_lines.append("")
-                    out_lines.append(f"{hashes} {real_head}")
-                else:
-                    fixes.append(f"Demoted lowercase heading fragment '{clean_h[:50]}'")
-                    out_lines.append(h_body)
-                continue
-
-            # Check for mid-heading sentence period intrusion (excluding abbreviations)
-            scrubbed = re.sub(
-                r"\b(?:e\.g|i\.e|vs|et al|Dr|Mr|Mrs|Ms|Prof|St|Jr|Sr|Inc|Ltd|Co|No|Vol|Ch|Fig|pp|Ed|U\.S|U\.K|Ph\.D|M\.A|B\.A)\.\s+",
-                " ",
-                clean_h,
-                flags=re.IGNORECASE,
-            )
-            if re.search(r"[a-z]{2,}\.\s+[A-Z][a-z]", scrubbed) or (
-                len(clean_h) > 85 and re.search(r"[a-z][.?!]\s+[A-Z]", scrubbed)
-            ):
-                # Split at the sentence boundary
-                m_sent = re.match(r"^(.+?[a-z]{2,}[.?!])\s+([A-Z].+)$", clean_h)
-                if m_sent:
-                    part_a = m_sent.group(1).strip()
-                    part_b = m_sent.group(2).strip()
-                    # Decide which part is the heading (shorter title-like part without a trailing period)
-                    if not part_b.endswith(".") and len(part_b) < 75:
-                        fixes.append(f"Extracted heading '{part_b}' from merged prose line")
-                        out_lines.append(part_a)
-                        out_lines.append("")
-                        out_lines.append(f"{hashes} {part_b}")
-                        continue
-                fixes.append(f"Demoted prose-intruded heading '{clean_h[:60]}...'")
-                out_lines.append(h_body)
-                continue
-
-            out_lines.append(line)
-
-        return "\n".join(out_lines), fixes
+        # 2. Drop decorative symbol headings (e.g. ## •~———)
+        # 3. Strip leading decorative dingbat prefixes from valid headings (e.g. '## •~--- 7. How...')
+        # 4. Demote URL headings or 1-2 char non-Index headings (e.g. ## e, ## rou)
+        # 5. Check if heading starts with lowercase (prose fragment or cross-column merge)
+        # Check if there is a sentence end followed by an uppercase heading at the end
+        # 6. Check for mid-heading sentence period intrusion (excluding abbreviations)
+        # Split at the sentence boundary
+        # Decide which part is the heading (shorter title-like part without a trailing period)
+        # 7. Check adjacent bullet context to demote spurious bullet H1s back to list items
+        # Delegated to text_utils.heal_corrupted_headings to maintain clean architecture layering.
+        return heal_corrupted_headings(text)
 
     @classmethod
     def heal_swallowed_callout_boundaries(cls, text: str) -> tuple[str, list]:

@@ -79,6 +79,7 @@ All notable changes to **literature-parser** are documented here
 - fix(healer): unwrap false-positive prose codeblocks and normalize OCR pipe pronouns to achieve 0 defects across all 5 books (TASK-048, ISSUE-017) (by `@Antigravity`)
 - fix(adapters/services): fix adapters/services logic (ISSUE-016, ISSUE-017) (by `@Antigravity`)
 - fix(epub): add cover thumbnail metadata, TOC backlinks, and fix references layout (by `@Antigravity`)
+- fix(services/test): fix services/test logic (ISSUE-017) (by `@Antigravity`)
 
 ### Documentation
 - docs: update and synchronize all project markdown documentation (by `@antigravity`)

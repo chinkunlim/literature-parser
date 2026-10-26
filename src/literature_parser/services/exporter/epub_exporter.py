@@ -318,6 +318,14 @@ class MarkdownToXHTML:
         # Separate touching bold and italic markers in numbered items (e.g. **2.***Temporality.* -> **2.** *Temporality.*)
         cleaned = re.sub(r'(?<=\d\.)\*\*\*(?=[a-zA-Z])', r'** *', cleaned)
 
+        # Strip decorative Part divider texture slices in regular chapters (001_001..001_005)
+        cleaned = re.sub(
+            r"!\[(?:Illustration)?\]\((?:[^)]*001_00\d[^)]*)\)\s*(?:\*Illustration\*)?",
+            "",
+            cleaned,
+            flags=re.IGNORECASE,
+        )
+
         # Deduplicate drop-shadow doubled tokens and lines (Refs: ISSUE-017)
         from literature_parser.services.utils.text_utils import clean_shadow_duplicates
         cleaned = clean_shadow_duplicates(cleaned)
@@ -1255,11 +1263,6 @@ class EpubExporter:
                     toc_nodes, for_epub=True, chapter_id_map=chapter_id_map
                 )
                 xhtml_body = in_book_toc_html
-                # Also update markdown on disk for Obsidian / raw viewers
-                md_toc_html = TOCResolver.render_in_book_toc_html(
-                    toc_nodes, for_epub=False
-                )
-                c_md_path.write_text(f"# Contents\n\n{md_toc_html}\n", encoding="utf-8")
             else:
                 current_toc_href = toc_filename if c_filename != toc_filename else None
                 xhtml_body = MarkdownToXHTML.to_xhtml_body(c_cleaned, toc_href=current_toc_href)

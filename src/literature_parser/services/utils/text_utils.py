@@ -139,14 +139,37 @@ def clean_shadow_duplicates(text: str) -> str:
         deduped_lines.append(line)
     text = "\n".join(deduped_lines)
 
-    # 2. Word-level deduplication: repeated identical words 'WORD WORD' -> 'WORD'
+    # 2. Phrase-level deduplication: repeated multi-word phrases (e.g. 'Career Counseling in Career Counseling in', 'Client Goal or Client Goal or')
+    for _ in range(4):
+        text = re.sub(
+            r"\b([A-Za-z0-9_,-]{2,}(?:\s+[A-Za-z0-9_,-]+){0,4})\s+\1\b",
+            r"\1",
+            text,
+            flags=re.IGNORECASE,
+        )
+
+    # 2.5. Concatenated phrase deduplication without space (e.g. 'the 21st Centurythe 21st Century')
+    text = re.sub(
+        r"([A-Za-z0-9_-]{2,}(?:\s+[A-Za-z0-9_-]{2,}){1,4})\1",
+        r"\1",
+        text,
+        flags=re.IGNORECASE,
+    )
+
+    # 3. Word-level deduplication: repeated identical words 'WORD WORD' -> 'WORD'
     pat_dup = re.compile(r"\b([A-Za-z0-9_-]{2,})\s+\1\b", re.IGNORECASE)
     prev = None
     while prev != text:
         prev = text
         text = pat_dup.sub(r"\1", text)
 
-    # 3. Fix fractured drop-shadow title text: 'A MERICAN OUNSELING C A SSOCIATION' -> 'AMERICAN COUNSELING ASSOCIATION'
+    # 4. Suffix and hyphenation repair for fragmented words from vector art / narrow boxes
+    text = re.sub(r"\b(infor)\s+(mation)\b", r"\1\2", text, flags=re.IGNORECASE)
+    text = re.sub(r"\b(Understand|Clos|Mean|Sett|Find|Train)\s+(ing)\b", r"\1\2", text, flags=re.IGNORECASE)
+    text = re.sub(r"\b([A-Za-z]{3,})\s+(ing|tion|tions|ment|ments)\b", r"\1\2", text, flags=re.IGNORECASE)
+    text = re.sub(r"\b(reoc-)\s*(curring)\b", "reoccurring", text, flags=re.IGNORECASE)
+
+    # 5. Fix fractured drop-shadow title text: 'A MERICAN OUNSELING C A SSOCIATION' -> 'AMERICAN COUNSELING ASSOCIATION'
     text = re.sub(
         r"\bA\s+MERICAN\s+OUNSELING\s+C\s+A\s*SSOCIATION\b",
         "AMERICAN COUNSELING ASSOCIATION",

@@ -151,14 +151,26 @@ class TOCResolver:
         ch_to_part: Dict[int, str] = {}
 
         for line in raw_text.splitlines():
-            m_part = part_pat.search(line)
+            # First strip all HTML tags and unescape any nested entities
+            clean_line = re.sub(r"<[^>]+>", " ", line)
+            while "&" in clean_line:
+                unesc = html.unescape(clean_line)
+                if unesc == clean_line:
+                    break
+                clean_line = unesc
+
+            from literature_parser.services.utils.text_utils import clean_shadow_duplicates
+            clean_line = clean_shadow_duplicates(clean_line)
+
+            m_part = part_pat.search(clean_line)
             if m_part:
                 clean_part = re.sub(r"[*#]", "", m_part.group(0)).strip()
                 # Remove trailing numbers like '354' or page numbers
                 clean_part = re.sub(r"\s+\d+(?:\s+\d+)*$", "", clean_part).strip()
+                clean_part = clean_part.rstrip(":;—–- ")
                 if len(clean_part) >= 6:
                     current_part = clean_part
-            m_ch = ch_pat.search(line)
+            m_ch = ch_pat.search(clean_line)
             if m_ch and current_part:
                 num = int(m_ch.group(1) or m_ch.group(2))
                 ch_to_part[num] = current_part
@@ -275,9 +287,19 @@ class TOCResolver:
                     return f"{node.target_file}#{node.anchor_id}"
                 return node.target_file
 
+        from literature_parser.services.utils.text_utils import clean_shadow_duplicates
+
         for node in nodes:
             if node.level == "part":
-                out.append(f'  <div class="toc-part-header">{html.escape(node.title)}</div>')
+                # Ensure part title is pure text without any HTML tags or unescaped entities
+                clean_title = re.sub(r"<[^>]+>", " ", node.title)
+                while "&" in clean_title:
+                    unesc = html.unescape(clean_title)
+                    if unesc == clean_title:
+                        break
+                    clean_title = unesc
+                clean_title = clean_shadow_duplicates(clean_title).strip().rstrip(":;—–- ")
+                out.append(f'  <div class="toc-part-header">{html.escape(clean_title)}</div>')
                 out.append('  <ul class="toc-list">')
                 for ch in node.children:
                     cls._render_chapter_li(ch, out, _resolve_link)
@@ -293,12 +315,22 @@ class TOCResolver:
     @classmethod
     def _render_chapter_li(cls, ch: TOCNode, out: List[str], link_fn) -> None:
         """Renders an individual chapter item and any nested sections."""
+        from literature_parser.services.utils.text_utils import clean_shadow_duplicates
+
         link_url = link_fn(ch)
-        page_html = f'<span class="toc-page">{ch.page_number}</span>' if ch.page_number else ""
+        is_real_page = False
+        if ch.page_number:
+            p_str = str(ch.page_number).strip()
+            if p_str.isdigit() and int(p_str) > 1:
+                is_real_page = True
+            elif not p_str.isdigit() and p_str != "1":
+                is_real_page = True
+        page_html = f'<span class="toc-page">{ch.page_number}</span>' if is_real_page else ""
+        ch_title = clean_shadow_duplicates(ch.title).strip()
         out.append('    <li class="toc-item toc-chapter">')
         out.append(
             f'      <a href="{html.escape(link_url)}" class="toc-link">'
-            f'<span class="toc-title">{html.escape(ch.title)}</span>'
+            f'<span class="toc-title">{html.escape(ch_title)}</span>'
             f'<span class="toc-dots"></span>'
             f"{page_html}</a>"
         )
@@ -307,11 +339,19 @@ class TOCResolver:
             out.append('      <ul class="toc-sublist">')
             for sec in ch.children:
                 sec_url = link_fn(sec)
-                sec_page = f'<span class="toc-page">{sec.page_number}</span>' if sec.page_number else ""
+                sec_real_page = False
+                if sec.page_number:
+                    sec_p_str = str(sec.page_number).strip()
+                    if sec_p_str.isdigit() and int(sec_p_str) > 1:
+                        sec_real_page = True
+                    elif not sec_p_str.isdigit() and sec_p_str != "1":
+                        sec_real_page = True
+                sec_page = f'<span class="toc-page">{sec.page_number}</span>' if sec_real_page else ""
+                sec_title = clean_shadow_duplicates(sec.title).strip()
                 out.append('        <li class="toc-item toc-section">')
                 out.append(
                     f'          <a href="{html.escape(sec_url)}" class="toc-link">'
-                    f'<span class="toc-title">{html.escape(sec.title)}</span>'
+                    f'<span class="toc-title">{html.escape(sec_title)}</span>'
                     f'<span class="toc-dots"></span>'
                     f"{sec_page}</a>"
                 )

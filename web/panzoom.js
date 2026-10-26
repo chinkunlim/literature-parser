@@ -140,6 +140,16 @@ function initSyncScrollController() {
       epubPreview.scrollTo({ top: Math.max(0, targetTop), behavior: "smooth" });
       clearTimeout(syncState.timer);
       syncState.timer = setTimeout(() => { syncState.isProgrammatic = false; }, 140);
+    } else {
+      const maxPdf = pdfFeed.scrollHeight - pdfFeed.clientHeight;
+      const maxEpub = epubPreview.scrollHeight - epubPreview.clientHeight;
+      if (maxPdf > 0 && maxEpub > 0) {
+        syncState.isProgrammatic = true;
+        const ratio = pdfFeed.scrollTop / maxPdf;
+        epubPreview.scrollTo({ top: ratio * maxEpub, behavior: "smooth" });
+        clearTimeout(syncState.timer);
+        syncState.timer = setTimeout(() => { syncState.isProgrammatic = false; }, 140);
+      }
     }
   }, { passive: true });
 
@@ -148,6 +158,19 @@ function initSyncScrollController() {
     if (!syncState.enabled || syncState.isProgrammatic) return;
 
     const dividers = epubPreview.querySelectorAll(".epub-page-divider");
+    if (dividers.length === 0) {
+      const maxEpub = epubPreview.scrollHeight - epubPreview.clientHeight;
+      const maxPdf = pdfFeed.scrollHeight - pdfFeed.clientHeight;
+      if (maxEpub > 0 && maxPdf > 0) {
+        syncState.isProgrammatic = true;
+        const ratio = epubPreview.scrollTop / maxEpub;
+        pdfFeed.scrollTo({ top: ratio * maxPdf, behavior: "smooth" });
+        clearTimeout(syncState.timer);
+        syncState.timer = setTimeout(() => { syncState.isProgrammatic = false; }, 140);
+      }
+      return;
+    }
+
     let activePage = 1;
     const scrollY = epubPreview.scrollTop + 60;
 

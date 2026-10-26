@@ -228,7 +228,7 @@ function renderPreview(md) {
     .replace(/\*\*(.*?)\*\*/gim, "<strong>$1</strong>")
     .replace(/\*(.*?)\*/gim, "<em>$1</em>")
     .replace(/!\[(.*?)\]\((.*?)\)/gim, '<div style="text-align:center;margin:1.2rem 0;"><img src="$2" alt="$1" style="max-width:90%;"><p style="font-size:0.8rem;color:#666;">$1</p></div>')
-    .replace(/<!-- Page (\d+) -->/gim, '<div id="epub-page-$1" class="epub-page-divider" data-page="$1"><span class="epub-page-pill">Page $1</span></div>')
+    .replace(/<!--\s*page\s*0*(\d+)\s*-->/gim, '<div id="epub-page-$1" class="epub-page-divider" data-page="$1"><span class="epub-page-pill">Page $1</span></div>')
     .replace(/\n\n/gim, "</p><p style=\"margin-bottom:1rem;text-indent:1.5rem;\">");
   c.innerHTML = `<div style="max-width:760px;margin:0 auto;"><p style="margin-bottom:1rem;text-indent:1.5rem;">${html}</p></div>`;
 }

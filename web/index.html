@@ -154,6 +154,27 @@ Canvas Pan & Zoom for Small Screens, and Resizable Split Panes.
                 <button id="btn-save-correction" class="btn btn-success" title="儲存修改並記錄問題 (Cmd+S / Ctrl+S)">💾 儲存修改並記錄問題</button>
               </div>
             </div>
+
+            <!-- Quality & Defect Inspector Bar -->
+            <div id="audit-inspector-bar" class="audit-inspector-bar" style="display: none;">
+              <div class="audit-score-summary">
+                <span id="audit-score-badge" class="badge-score">100%</span>
+                <span id="audit-summary-text" class="audit-summary-text">質量檢驗通過</span>
+              </div>
+              <button id="btn-toggle-defects" class="btn" style="display: none; padding: 2px 8px; font-size: 0.74rem;">🚨 展開待審查問題 (0)</button>
+            </div>
+
+            <!-- Defect Drawer (expands when defects exist or toggled) -->
+            <div id="audit-defect-drawer" class="audit-defect-drawer" style="display: none;">
+              <div class="defect-drawer-header">
+                <span>🔍 檢測到的格式與排版問題（點擊任一項目直接跳轉並高亮）:</span>
+                <button id="btn-close-defects" class="btn" style="padding: 1px 6px; font-size: 0.7rem;">✕</button>
+              </div>
+              <div id="audit-defect-list" class="audit-defect-list">
+                <!-- Dynamically populated defect cards -->
+              </div>
+            </div>
+
             <div class="editor-container">
               <!-- Raw Markdown Code Editor -->
               <textarea id="markdown-textarea" class="code-editor" style="display: none;" placeholder="在此編輯章節 Markdown... 支援 Cmd+S 快速儲存"></textarea>

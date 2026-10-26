@@ -1,5 +1,6 @@
 """Unit tests for WebDataService, document queries, PDF rendering, and markdown updates."""
 
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -78,6 +79,27 @@ class TestWebDataService(unittest.TestCase):
         # Verify disk update
         updated_data = self.service.get_chapter_markdown("Sample-Book", "Ch01-Introduction")
         self.assertIn("Hello world updated text", updated_data["markdown"])
+
+        # Test audit report loading
+        audit_file = self.ch1_dir / "audit_report.json"
+        audit_file.write_text(json.dumps({
+            "score": 85.0,
+            "issues": [
+                {
+                    "severity": "WARNING",
+                    "category": "TOC_SURPLUS_HEADING",
+                    "line_num": 12,
+                    "message": "H2 heading found in text but not in TOC",
+                    "snippet": "## Extra Section",
+                }
+            ]
+        }), encoding="utf-8")
+
+        audit_data = self.service.get_chapter_markdown("Sample-Book", "Ch01-Introduction")
+        self.assertIsNotNone(audit_data.get("audit_report"))
+        self.assertEqual(audit_data["audit_report"]["score"], 85.0)
+        self.assertEqual(len(audit_data["audit_report"]["issues"]), 1)
+        self.assertEqual(audit_data["audit_report"]["issues"][0]["category"], "TOC_SURPLUS_HEADING")
 
     def test_render_pdf_page(self):
         """Verifies rendering a chapter PDF page to PNG bytes via PyMuPDF."""

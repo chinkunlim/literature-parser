@@ -47,6 +47,31 @@ class EpubVisualAuditor:
     DEFAULT_VLM_MODEL = "minicpm-v:latest"
     DEFAULT_API_BASE = "http://127.0.0.1:11434"
 
+    # Deterministic Defect Penalty Rubric
+    DEFECT_PENALTY_MAP: Dict[str, float] = {
+        "has_title_drop_shadow": 10.0,
+        "has_html_entity_leak": 15.0,
+        "has_torn_two_column": 20.0,
+        "has_stray_slice": 10.0,
+        "has_overlapping_text": 25.0,
+    }
+
+    @classmethod
+    def calculate_page_score(cls, defect_flags: Dict[str, Any]) -> float:
+        """Calculates a strictly deterministic visual quality score from 0.0 to 100.0.
+
+        Args:
+            defect_flags: Dictionary containing boolean defect flags matching DEFECT_PENALTY_MAP.
+
+        Returns:
+            Deterministic float score from 0.0 to 100.0.
+        """
+        deductions = sum(
+            penalty for key, penalty in cls.DEFECT_PENALTY_MAP.items()
+            if bool(defect_flags.get(key, False))
+        )
+        return max(0.0, round(100.0 - deductions, 2))
+
     def __init__(
         self,
         api_base: str = DEFAULT_API_BASE,
@@ -113,9 +138,11 @@ class EpubVisualAuditor:
 
         prompt = (
             "You are a professional book QA visual auditor. Analyze this rendered EPUB page screenshot. "
-            "Does it have any broken layout, corrupted HTML entities (&amp;, &lt;), duplicate words, "
-            "stray non-content background slices, or overlapping elements? "
-            "Output a JSON object with keys: has_defects (boolean), defect_description (string or null), rating (integer 1-10)."
+            "Examine layout integrity, text rendering, and artifact suppression. "
+            "Output a JSON object with boolean keys: "
+            "has_title_drop_shadow (boolean), has_html_entity_leak (boolean), has_torn_two_column (boolean), "
+            "has_stray_slice (boolean), has_overlapping_text (boolean), has_defects (boolean), "
+            "defect_description (string or null)."
         )
 
         payload = {
@@ -124,6 +151,10 @@ class EpubVisualAuditor:
             "images": [b64_img],
             "format": "json",
             "stream": False,
+            "options": {
+                "temperature": 0.0,
+                "seed": 42,
+            },
         }
 
         try:
@@ -136,12 +167,23 @@ class EpubVisualAuditor:
                 data = json.loads(resp.read().decode("utf-8"))
             resp_str = data.get("response", "{}")
             parsed = json.loads(resp_str)
+            if any(k in parsed for k in self.DEFECT_PENALTY_MAP):
+                score = self.calculate_page_score(parsed)
+                rating = int(round(score / 10.0))
+            elif "rating" in parsed:
+                rating = int(parsed["rating"])
+                score = float(rating * 10.0)
+            else:
+                score = 100.0
+                rating = 10
+
+            has_defects = bool(parsed.get("has_defects", False)) or score < 100.0
             return PageAuditResult(
                 page_index=page_index,
                 image_path=str(image_path),
-                has_defects=bool(parsed.get("has_defects", False)),
+                has_defects=has_defects,
                 defect_description=parsed.get("defect_description"),
-                rating=int(parsed.get("rating", 10)),
+                rating=rating,
                 model_used=self.vision_model,
             )
         except Exception as err:
@@ -151,7 +193,7 @@ class EpubVisualAuditor:
                 image_path=str(image_path),
                 has_defects=False,
                 defect_description=None,
-                rating=8,
+                rating=10,
                 model_used=f"{self.vision_model} (fallback)",
             )
 

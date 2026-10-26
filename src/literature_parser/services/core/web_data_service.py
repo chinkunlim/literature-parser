@@ -205,11 +205,44 @@ class WebDataService:
 
         md_path = md_files[0]
         content = md_path.read_text(encoding="utf-8")
+
+        # Check for audit reports in chapter directory
+        audit_report: Optional[Dict[str, Any]] = None
+        audit_candidates = [
+            ch_dir / "audit_report.json",
+            ch_dir / f"{chapter_id}_audit.json",
+        ] + list(ch_dir.glob("*_audit.json"))
+
+        for cand in audit_candidates:
+            if cand.exists():
+                try:
+                    data = json.loads(cand.read_text(encoding="utf-8"))
+                    score = (
+                        data.get("scores", {}).get("overall_score")
+                        if isinstance(data.get("scores"), dict)
+                        else data.get("score", data.get("final_score", 100))
+                    )
+                    passed = bool(
+                        data.get("scores", {}).get("passed")
+                        if isinstance(data.get("scores"), dict)
+                        else (score >= 85)
+                    )
+                    issues = data.get("issues", [])
+                    audit_report = {
+                        "score": round(float(score), 2),
+                        "passed": passed,
+                        "issues": issues,
+                    }
+                    break
+                except Exception as err:
+                    logger.debug("Failed to read audit report from %s: %s", cand, err)
+
         return {
             "book_id": book_id,
             "chapter_id": chapter_id,
             "file_name": md_path.name,
             "markdown": content,
+            "audit_report": audit_report,
         }
 
     def save_chapter_markdown(

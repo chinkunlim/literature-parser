@@ -53,6 +53,7 @@ All notable changes to **literature-parser** are documented here
 - feat(services/test): add services/test module (ISSUE-017) (by `@Antigravity`)
 - feat(epub): add EpubVisualAuditor with Ollama vision verification and update project rules (by `@Antigravity`)
 - feat(verification): implement dual-gate five-dimension verification with FormulaAuditor and Gate 2 EPUB audit (by `@Antigravity`)
+- feat(verification): implement deterministic scoring matrix, TOC skeleton alignment, and web defect inspector with flash highlighting (by `@Antigravity`)
 
 ### Changed
 - docs(migration): mark all migration acceptance criteria as completed (by `@antigravity`)

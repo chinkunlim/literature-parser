@@ -1,0 +1,34 @@
+{
+  "id": "TASK-052",
+  "title": "實作三大教科書結構錨定強化體系（Glossary雙向鏈接與詞庫、圖表連續性審查、LO與EOC閉合校驗）",
+  "status": "done",
+  "agent": "Antigravity",
+  "handed_off_from": "",
+  "handed_off_to": "",
+  "paths": [],
+  "done_items": "實作確定性布林缺陷評分標準、TOC 標題骨架雙向對齊與 Web Studio 缺陷側邊清單一鍵跳轉閃爍高亮",
+  "todo_items": "",
+  "blockers": "",
+  "created_at": "2026-10-26 06:04 UTC",
+  "updated_at": "2026-10-26 06:17 UTC",
+  "history": [
+    {
+      "timestamp": "2026-10-26 06:04 UTC",
+      "action": "created_and_claimed",
+      "agent": "Antigravity"
+    },
+    {
+      "timestamp": "2026-10-26 06:04 UTC",
+      "action": "claimed",
+      "agent": "Antigravity",
+      "previous_agent": "Antigravity"
+    },
+    {
+      "timestamp": "2026-10-26 06:17 UTC",
+      "action": "done",
+      "agent": "Antigravity",
+      "summary": "實作確定性布林缺陷評分標準、TOC 標題骨架雙向對齊與 Web Studio 缺陷側邊清單一鍵跳轉閃爍高亮"
+    }
+  ],
+  "summary": "實作確定性布林缺陷評分標準、TOC 標題骨架雙向對齊與 Web Studio 缺陷側邊清單一鍵跳轉閃爍高亮"
+}

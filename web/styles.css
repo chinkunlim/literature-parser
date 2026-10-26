@@ -749,3 +749,147 @@ body {
 
 .toast-success { border-left-color: var(--accent-green-text); }
 .toast-error { border-left-color: var(--accent-red-text); }
+
+/* Audit Inspector Bar & Defect Drawer */
+.audit-inspector-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.35rem 0.8rem;
+  font-size: 0.78rem;
+}
+
+.audit-score-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.badge-score-success {
+  background: rgba(46, 160, 67, 0.15);
+  color: #3fb950;
+  border: 1px solid rgba(46, 160, 67, 0.4);
+}
+
+.badge-score-warning {
+  background: rgba(210, 153, 34, 0.15);
+  color: #d29922;
+  border: 1px solid rgba(210, 153, 34, 0.4);
+}
+
+.badge-score-danger {
+  background: rgba(248, 81, 73, 0.15);
+  color: #f85149;
+  border: 1px solid rgba(248, 81, 73, 0.4);
+}
+
+.audit-defect-drawer {
+  background: #161b22;
+  border-bottom: 2px solid #d29922;
+  padding: 0.5rem 0.8rem;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.defect-drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.76rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.4rem;
+}
+
+.audit-defect-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.audit-defect-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 4px;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.76rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.audit-defect-card:hover {
+  border-color: #58a6ff;
+  background: #1f242c;
+  transform: translateX(2px);
+}
+
+.audit-defect-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.audit-severity-tag {
+  font-size: 0.68rem;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.severity-ERROR {
+  background: rgba(248, 81, 73, 0.2);
+  color: #f85149;
+  border: 1px solid rgba(248, 81, 73, 0.4);
+}
+
+.severity-WARNING {
+  background: rgba(210, 153, 34, 0.2);
+  color: #d29922;
+  border: 1px solid rgba(210, 153, 34, 0.4);
+}
+
+.severity-INFO {
+  background: rgba(88, 166, 255, 0.2);
+  color: #58a6ff;
+  border: 1px solid rgba(88, 166, 255, 0.4);
+}
+
+/* Flash Highlighting Animation */
+@keyframes auditPulse {
+  0% {
+    background-color: rgba(210, 153, 34, 0.45);
+    box-shadow: 0 0 12px rgba(210, 153, 34, 0.8);
+    transform: scale(1.01);
+  }
+  50% {
+    background-color: rgba(210, 153, 34, 0.25);
+    box-shadow: 0 0 6px rgba(210, 153, 34, 0.4);
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: none;
+    transform: scale(1);
+  }
+}
+
+.audit-highlight-flash {
+  animation: auditPulse 2.5s ease-out forwards !important;
+  border-left: 4px solid #d29922 !important;
+  padding-left: 6px !important;
+  border-radius: 2px !important;
+}
+
+.audit-inline-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-right: 6px;
+  font-weight: 600;
+  vertical-align: middle;
+}

@@ -24,6 +24,7 @@ from literature_parser.services.verification.models import (
     VerificationConfig,
 )
 from literature_parser.services.verification.semantic_auditor import SemanticAuditor
+from literature_parser.services.verification.toc_alignment_auditor import TocAlignmentAuditor, TocNode
 
 logger = logging.getLogger(__name__)
 
@@ -46,14 +47,16 @@ class QualityInspectionEngine:
         doc_name: str = "document",
         file_path: Optional[str | Path] = None,
         base_dir: Optional[Path] = None,
+        expected_sections: Optional[list[TocNode]] = None,
     ) -> AuditReport:
-        """Runs the three-tier inspection on Markdown text.
+        """Runs the multi-tier inspection on Markdown text.
 
         Args:
             markdown_text: Markdown text to inspect.
             doc_name: Human-readable name or title of the document.
             file_path: Optional file path string of the source Markdown file.
             base_dir: Optional directory containing images/ and style.css.
+            expected_sections: Optional list of expected TOC section nodes for this chapter.
 
         Returns:
             Consolidated AuditReport with scores, issues, and auto-fixes.
@@ -78,6 +81,21 @@ class QualityInspectionEngine:
             for i in layout_issues
         )
         layout_score = max(0.0, round(100.0 - layout_deductions, 2))
+
+        # ── Tier 1.5: TOC Heading Tree Bi-directional Alignment ───────────────
+        if expected_sections:
+            toc_issues, current_md, toc_repairs = TocAlignmentAuditor.align_chapter(
+                markdown_text=current_md,
+                expected_sections=expected_sections,
+                auto_fix=self.config.enable_safe_autofix,
+            )
+            all_issues.extend(toc_issues)
+            total_repaired += toc_repairs
+            toc_deductions = sum(
+                15 if i.severity == "ERROR" else (10 if i.severity == "WARNING" else 1)
+                for i in toc_issues
+            )
+            layout_score = max(0.0, round(layout_score - toc_deductions, 2))
 
         # ── Tier 2: Lexical & Formula Audit ───────────────────────────────────
         lex_issues, current_md, lex_repairs, coverage = self.lexical_auditor.audit(

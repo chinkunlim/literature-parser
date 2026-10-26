@@ -569,3 +569,19 @@
 ### [2026-10-23 16:26 UTC] 建立任務 `TASK-044`: 重構歸檔目錄至 input/processed/ 並執行全書庫無人值守重跑 (by `antigravity`)
 - **狀態**: `in_progress`
 - **相關範圍**: `-`
+
+### [2026-10-23 16:26 UTC] 認領任務 `TASK-044` (重構歸檔目錄至 input/processed/ 並執行全書庫無人值守重跑) (by `antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `antigravity`
+
+### [2026-10-24 07:50 UTC] 完成任務 `TASK-044` — 重構歸檔目錄至 input/processed/ 並執行全書庫無人值守重跑 (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: (無)
+
+### [2026-10-25 14:23 UTC] Session Closeout (結束對話收尾) (by `antigravity`)
+- **檢查結果**: 測試與 Code Review Guard 通過
+- **目標**: 全書庫 5 本教科書自主無人值守重跑、100% 驗收歸檔、斷點續傳機制與文檔體系全量更新
+- **錯誤與根因**: 1. 大綱含 \x00 崩潰 → 控制字元清洗 (ISSUE-010)；2. literature 專案名稱假陽性歸檔 → 改用 relative_to (ISSUE-011)；3. Credits 標題密度失敗 → 擴充 is_back_matter (ISSUE-012)；4. 多 Worker 並發狀態覆蓋 → 
+- **下一步**: 全書庫 5 本教科書 128 章節已達成 100% 驗證通過並自動歸檔；後續可推進學術論文領域 (DATA_DIR/input/literature/) 之批次轉檔實測、雙欄 IMRAD 結構化與 EPUB 3 匯出檢驗
+- **交接備註**: 全書庫 5 本教科書 128 章節全數 100% 驗證通過並歸檔，全套 ADR、Known Issues 與文檔已完成同步
+- **本機對話紀錄**: `.agents/conversations/2026-10-25-2223-antigravity-summary.md`（只在這台電腦）

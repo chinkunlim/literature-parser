@@ -85,6 +85,29 @@
   2. 第二道：自動傳送至本地 Ollama `minicpm-v:latest` 呼叫多模態視覺檢驗，評估是否有標題雙重陰影、HTML 實體洩漏、雙欄撕裂、殘留裝飾切片或段落中斷，由 VLM 給予審查評分（`rating: 1-10` 與 `has_defects`）。
   3. 發現缺陷時自動拋出警示或觸發補償修正，確保交付使用者的 Apple Books EPUB 達到出版級無瑕疵品質。
 
+### 2.13 嚴格確定性評分標準與缺陷扣分矩陣 (Deterministic Scoring Rubric)
+- **鐵律標準**：同一份文件重複評分，各維度得分與總分**必須 100% 恆定**，嚴禁模型主觀隨機浮動。
+- **Ollama 參數鎖定**：所有視覺與語意大模型調用，一律強制綁定 `options: {"temperature": 0.0, "seed": 42}`。
+- **布林缺陷扣分矩陣 (Deterministic Defect Matrix)**：
+  - `has_title_drop_shadow`：-10.0 分
+  - `has_html_entity_leak`：-15.0 分
+  - `has_torn_two_column`：-20.0 分
+  - `has_stray_slice`：-10.0 分
+  - `has_overlapping_text`：-25.0 分
+  - 計算公式：`Score = max(0.0, 100.0 - sum(deductions))`。無缺陷時嚴格為 100.0 分。
+
+### 2.14 TOC 標題骨架雙向對齊與小節填補 (TOC-to-Body Heading Tree Alignment)
+- **出版商權威骨架**：由 `00-07-TOC` 或 `profile.json` 提取官方章節與小節清單作為 Ground Truth 樹狀骨架。
+- **雙向校驗與修復**：
+  - **小節向下嵌套**：正文中更細緻的 H3/H4 小節自動掛載於所屬 H2 骨架下。
+  - **遺漏檢測 (`TOC_MISSING_SECTION`)**：TOC 中有但正文未找到時，發出 `ERROR` 警示，防範章節截斷與漏頁。
+  - **多餘標題 (`TOC_SURPLUS_HEADING`)**：正文出現未列於 TOC 的 H2 標題時，發出 `WARNING` 警示，避免將引言或對話框誤判為小節。
+  - **自動層級校準**：因字級誤判降為 H3 的官方小節，自動校準回 H2。
+
+### 2.15 Web Studio 缺陷側邊清單與一鍵閃爍定位高亮 (Web Studio Defect Flash Highlighting)
+- **零閱讀工作量原則**：評分未達 100 分之章節，Web Studio 必須即刻展開缺陷卡片抽屜，明確列出扣分原因、分類標籤與行號。
+- **一鍵跳轉與光暈閃爍**：使用者點擊任一缺陷卡片，預覽區或編輯器瞬間平滑滾動至問題段落，並觸發 2.5 秒金黃色光暈閃爍動畫（`.audit-highlight-flash`），達成 1 秒內精確鎖定問題。
+
 ---
 
 ## 3. 和通用規範不同的例外

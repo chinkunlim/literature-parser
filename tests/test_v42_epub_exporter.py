@@ -281,5 +281,58 @@ class TestEpubCLIDispatch(unittest.TestCase):
                 mock_export.assert_called_once()
 
 
+class TestEpubAuditExclusion(unittest.TestCase):
+    """Verifies that AUDIT.md and other audit artifacts are never packaged into EPUBs."""
+
+    def test_get_primary_chapter_markdown_excludes_audit(self):
+        """Verifies get_primary_chapter_markdown returns real chapter markdown over AUDIT.md."""
+        from literature_parser.services.utils.text_utils import get_primary_chapter_markdown
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            ch_dir = Path(tmp_dir) / "Ch01-Life-Career-Development"
+            ch_dir.mkdir(parents=True)
+
+            audit_file = ch_dir / "AUDIT.md"
+            audit_file.write_text("# Quality Inspection Report\nScore: 100", encoding="utf-8")
+
+            real_md = ch_dir / "Ch01-Life-Career-Development.md"
+            real_md.write_text("# Chapter 1: Life Career Development\nReal textbook content here.", encoding="utf-8")
+
+            primary = get_primary_chapter_markdown(ch_dir)
+            self.assertIsNotNone(primary)
+            self.assertEqual(primary.name, "Ch01-Life-Career-Development.md")
+
+    def test_export_book_packages_real_chapter_content_not_audit_report(self):
+        """Verifies EpubExporter packages real chapter text instead of AUDIT.md."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            book_dir = Path(tmp_dir) / "Test-Book"
+            chapters_dir = book_dir / "chapters"
+            ch1_dir = chapters_dir / "Ch01-Introduction"
+            ch1_dir.mkdir(parents=True)
+
+            # AUDIT.md would sort before Ch01 alphabetically without the fix
+            audit_file = ch1_dir / "AUDIT.md"
+            audit_file.write_text("# Quality Inspection Report: Ch01-Introduction\nAudit defect details", encoding="utf-8")
+
+            ch_file = ch1_dir / "Ch01-Introduction.md"
+            ch_file.write_text("# Chapter 1: Introduction\nThis is authentic textbook body text.", encoding="utf-8")
+
+            out_epub = book_dir / "Test-Book.epub"
+            EpubExporter.export_book(book_dir, output_epub_path=out_epub, engine="pure")
+
+            self.assertTrue(out_epub.exists())
+            with zipfile.ZipFile(out_epub, "r") as z:
+                # Find the chapter XHTML
+                xhtml_files = [n for n in z.namelist() if n.startswith("OEBPS/text/chapter_") and n.endswith(".xhtml")]
+                self.assertTrue(len(xhtml_files) > 0)
+                found_real_content = False
+                for xf in xhtml_files:
+                    txt = z.read(xf).decode("utf-8")
+                    self.assertNotIn("Quality Inspection Report", txt)
+                    if "authentic textbook body text" in txt:
+                        found_real_content = True
+                self.assertTrue(found_real_content, "Real textbook text was not found in exported EPUB")
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -16,6 +16,7 @@ from literature_parser.services.utils.obsidian_linker import (
     generate_book_index,
     inject_chapter_navigation,
 )
+from literature_parser.services.utils.text_utils import get_primary_chapter_markdown
 
 logger = logging.getLogger(__name__)
 
@@ -111,13 +112,9 @@ class MarkdownUpdater:
         toc_nodes = TOCResolver.scan_book_hierarchy(book_dir)
 
         for c_dir in ch_dirs:
-            md_file = c_dir / f"{c_dir.name}.md"
-            if not md_file.exists():
-                candidates = list(c_dir.glob("*.md"))
-                if candidates:
-                    md_file = candidates[0]
-                else:
-                    continue
+            md_file = get_primary_chapter_markdown(c_dir)
+            if not md_file:
+                continue
 
             ch_list.append({"name": c_dir.name, "md_path": md_file})
             content = md_file.read_text(encoding="utf-8")

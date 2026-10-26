@@ -3,8 +3,9 @@ Text Processing Utilities
 =========================
 """
 
+from pathlib import Path
 import re
-from typing import Optional
+from typing import List, Optional
 
 from literature_parser.config.processor_config import MAX_FILENAME_LEN
 
@@ -745,3 +746,78 @@ def format_appendix_title(title: str) -> str:
     if not cleaned_rest:
         return "Appendix"
     return f"Appendix-{sanitize_filename(cleaned_rest)}".strip('-')
+
+
+def get_primary_chapter_markdown(ch_dir: Path) -> Optional[Path]:
+    """Finds and returns the primary content Markdown file in a chapter directory.
+
+    Strictly ignores auxiliary metadata and quality inspection files such as
+    AUDIT.md, audit_report.md, processing_status.md, README.md, and *_Verified.md.
+    Prefers exact directory name matches and higher file sizes to ensure true chapter
+    text is used rather than reports or stubs.
+
+    Args:
+        ch_dir: Path to the chapter folder.
+
+    Returns:
+        Path to the primary chapter Markdown file, or None if none found.
+    """
+    if not ch_dir or not ch_dir.exists() or not ch_dir.is_dir():
+        return None
+
+    # Fast path: exact match with directory name
+    exact_match = ch_dir / f"{ch_dir.name}.md"
+    if exact_match.exists() and exact_match.is_file():
+        return exact_match
+
+    # Disallowed non-content filenames
+    excluded_names = {
+        "audit.md",
+        "audit_report.md",
+        "processing_status.md",
+        "readme.md",
+        "index.md",
+        "summary.md",
+    }
+    excluded_suffixes = (
+        "_verified.md",
+        "_audit.md",
+        "_report.md",
+        "_summary.md",
+        "_test.md",
+    )
+
+    candidates: List[Path] = []
+    for f in ch_dir.glob("*.md"):
+        if not f.is_file():
+            continue
+        fname_lower = f.name.lower()
+        if fname_lower in excluded_names or fname_lower.endswith(excluded_suffixes):
+            continue
+        candidates.append(f)
+
+    if not candidates:
+        return None
+
+    if len(candidates) == 1:
+        return candidates[0]
+
+    def score_candidate(path: Path) -> float:
+        name_no_ext = path.stem.lower()
+        dir_name = ch_dir.name.lower()
+        score = 0.0
+        if name_no_ext == dir_name:
+            score += 1000.0
+        elif dir_name in name_no_ext or name_no_ext in dir_name:
+            score += 200.0
+        if path.name.startswith(("Ch", "00-", "Appendix")):
+            score += 50.0
+        try:
+            score += path.stat().st_size / 1024.0
+        except OSError:
+            pass
+        return score
+
+    candidates.sort(key=score_candidate, reverse=True)
+    return candidates[0]
+

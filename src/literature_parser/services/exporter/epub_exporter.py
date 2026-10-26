@@ -28,6 +28,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from literature_parser.services.core.toc_resolver import TOCResolver, TOCNode
 from literature_parser.services.exporter.epub_styles import get_epub_css
+from literature_parser.services.utils.text_utils import get_primary_chapter_markdown
 
 logger = logging.getLogger("EpubExporter")
 
@@ -1199,9 +1200,9 @@ class EpubExporter:
         # Build chapter filename mapping and scan hierarchical TOC structure (Refs: ISSUE-017)
         chapter_id_map: Dict[str, str] = {}
         for c_idx, c_dir in enumerate(chapter_dirs, 1):
-            md_files = [f for f in c_dir.glob("*.md") if not f.name.endswith("_Verified.md")]
-            if md_files:
-                chapter_id_map[md_files[0].name] = f"chapter_{c_idx:02d}.xhtml"
+            primary_md = get_primary_chapter_markdown(c_dir)
+            if primary_md:
+                chapter_id_map[primary_md.name] = f"chapter_{c_idx:02d}.xhtml"
 
         toc_nodes = TOCResolver.scan_book_hierarchy(book_dir) if not chapter else []
 
@@ -1222,10 +1223,9 @@ class EpubExporter:
         )
 
         for c_idx, c_dir in enumerate(chapter_dirs, 1):
-            md_files = [f for f in c_dir.glob("*.md") if not f.name.endswith("_Verified.md")]
-            if not md_files:
+            c_md_path = get_primary_chapter_markdown(c_dir)
+            if not c_md_path:
                 continue
-            c_md_path = md_files[0]
             c_text = c_md_path.read_text(encoding="utf-8")
             c_cleaned, c_title = MarkdownToXHTML.clean_markdown_for_epub(c_text)
             c_title = c_title or c_dir.name

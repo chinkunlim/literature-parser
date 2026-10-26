@@ -20,6 +20,7 @@ from literature_parser.adapters.verification.layout_healer import LayoutAutoHeal
 from literature_parser.services.exporter.epub_exporter import EpubExporter
 from literature_parser.services.utils.text_utils import (
     clean_typography_artifacts,
+    get_primary_chapter_markdown,
     repair_hyphens,
 )
 
@@ -211,13 +212,9 @@ class EpubVisualAuditor:
         md_files: List[Path] = []
         if chapters_root.exists():
             for c_dir in sorted(d for d in chapters_root.iterdir() if d.is_dir()):
-                md_files.extend(
-                    sorted(
-                        f
-                        for f in c_dir.glob("*.md")
-                        if not f.name.endswith(("_Verified.md", "_report.md"))
-                    )
-                )
+                pri_md = get_primary_chapter_markdown(c_dir)
+                if pri_md:
+                    md_files.append(pri_md)
         if (book_dir / "markdown").exists():
             md_files.extend(
                 sorted(
@@ -269,13 +266,13 @@ class EpubVisualAuditor:
         md_mirror_dir = book_dir / "markdown"
         if chapters_root.exists() and md_mirror_dir.exists():
             for c_dir in sorted(d for d in chapters_root.iterdir() if d.is_dir()):
-                for c_md in c_dir.glob("*.md"):
-                    if not c_md.name.endswith(("_Verified.md", "_report.md")):
-                        mirror_target = md_mirror_dir / c_md.name
-                        if mirror_target.exists():
-                            mirror_target.write_text(
-                                c_md.read_text(encoding="utf-8"), encoding="utf-8"
-                            )
+                pri_md = get_primary_chapter_markdown(c_dir)
+                if pri_md:
+                    mirror_target = md_mirror_dir / pri_md.name
+                    if mirror_target.exists():
+                        mirror_target.write_text(
+                            pri_md.read_text(encoding="utf-8"), encoding="utf-8"
+                        )
 
         return {
             "healed_chapter_files": healed_files,
@@ -492,9 +489,9 @@ class EpubVisualAuditor:
         # 1. TOC Chapter
         toc_dirs = list(chapters_dir.glob("*TOC*")) if chapters_dir.exists() else []
         if toc_dirs:
-            toc_mds = list(toc_dirs[0].glob("*.md"))
-            if toc_mds:
-                txt = toc_mds[0].read_text(encoding="utf-8", errors="replace")
+            toc_md = get_primary_chapter_markdown(toc_dirs[0])
+            if toc_md:
+                txt = toc_md.read_text(encoding="utf-8", errors="replace")
                 m_p = re.search(r"<![—–-]+\s*Page\s+(\d+)\s*[—–-]+>", txt)
                 p_num = int(m_p.group(1)) if m_p else 1
                 candidates.append({
@@ -510,10 +507,10 @@ class EpubVisualAuditor:
             for c_dir in sorted(chapters_dir.iterdir()):
                 if not c_dir.is_dir() or "TOC" in c_dir.name:
                     continue
-                md_files = list(c_dir.glob("*.md"))
-                if not md_files:
+                c_md = get_primary_chapter_markdown(c_dir)
+                if not c_md:
                     continue
-                c_txt = md_files[0].read_text(encoding="utf-8", errors="replace")
+                c_txt = c_md.read_text(encoding="utf-8", errors="replace")
 
                 # Check for Table
                 if ("| --- |" in c_txt or '<table class="textbook-table">' in c_txt) and not any(c["category"] == "Table" for c in candidates):

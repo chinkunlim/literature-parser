@@ -12,11 +12,12 @@ import logging
 import sys
 import time
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from literature_parser.config.logging_setup import setup_logging
 from literature_parser.config.settings import load_config
 from literature_parser.services.exporter.epub_exporter import EpubExporter
+from literature_parser.services.utils.text_utils import get_primary_chapter_markdown
 from literature_parser.services.verification.glossary_anchor import GlossaryAnchor
 from literature_parser.services.verification.quality_engine import QualityInspectionEngine
 from literature_parser.services.verification.toc_alignment_auditor import TocAlignmentAuditor, TocNode
@@ -44,25 +45,29 @@ def re_audit_and_rebuild_book(book_dir: Path, rebuild_epub: bool = True) -> Dict
 
     # 1. Parse TOC Skeleton if present in front matter
     toc_skeleton = None
-    toc_candidates = list(chapters_dir.glob("00-*-TOC*/*.md")) + list(chapters_dir.glob("*TOC*/*.md"))
-    if toc_candidates:
-        try:
-            toc_text = toc_candidates[0].read_text(encoding="utf-8")
-            toc_skeleton = TocAlignmentAuditor.parse_toc_markdown(toc_text)
-            print(f"  [✓] 成功載入 TOC 骨架樹: 包含 {len(toc_skeleton.chapters)} 個章節目錄")
-        except Exception as err:
-            logger.warning("Failed parsing TOC skeleton from %s: %s", toc_candidates[0], err)
+    toc_dirs = [d for d in chapters_dir.iterdir() if d.is_dir() and "TOC" in d.name]
+    if toc_dirs:
+        toc_cand = get_primary_chapter_markdown(toc_dirs[0])
+        if toc_cand:
+            try:
+                toc_text = toc_cand.read_text(encoding="utf-8")
+                toc_skeleton = TocAlignmentAuditor.parse_toc_markdown(toc_text)
+                print(f"  [✓] 成功載入 TOC 骨架樹: 包含 {len(toc_skeleton.chapters)} 個章節目錄")
+            except Exception as err:
+                logger.warning("Failed parsing TOC skeleton from %s: %s", toc_cand, err)
 
     # 2. Extract Glossary terms if present in back matter
     glossary_terms: Dict[str, str] = {}
-    glo_candidates = list(chapters_dir.glob("00-*-Glossary*/*.md")) + list(chapters_dir.glob("*Glossary*/*.md"))
-    if glo_candidates:
-        try:
-            glo_text = glo_candidates[0].read_text(encoding="utf-8")
-            glossary_terms = GlossaryAnchor.extract_terms(glo_text)
-            print(f"  [✓] 成功載入書末詞彙庫: 包含 {len(glossary_terms)} 個專業名詞釋義")
-        except Exception as err:
-            logger.warning("Failed extracting glossary terms from %s: %s", glo_candidates[0], err)
+    glo_dirs = [d for d in chapters_dir.iterdir() if d.is_dir() and "Glossary" in d.name]
+    if glo_dirs:
+        glo_cand = get_primary_chapter_markdown(glo_dirs[0])
+        if glo_cand:
+            try:
+                glo_text = glo_cand.read_text(encoding="utf-8")
+                glossary_terms = GlossaryAnchor.extract_terms(glo_text)
+                print(f"  [✓] 成功載入書末詞彙庫: 包含 {len(glossary_terms)} 個專業名詞釋義")
+            except Exception as err:
+                logger.warning("Failed extracting glossary terms from %s: %s", glo_cand, err)
 
     # 3. Iterate through all chapters
     chapter_dirs = sorted([d for d in chapters_dir.iterdir() if d.is_dir() and not d.name.startswith(".")])
@@ -75,11 +80,10 @@ def re_audit_and_rebuild_book(book_dir: Path, rebuild_epub: bool = True) -> Dict
         GlossaryAnchor.inject_domain_vocabulary(engine.lexical_auditor, glossary_terms)
 
     for idx, ch_dir in enumerate(chapter_dirs, 1):
-        md_files = [f for f in ch_dir.glob("*.md") if not f.name.endswith("_Verified.md") and f.name != "AUDIT.md"]
-        if not md_files:
+        md_path = get_primary_chapter_markdown(ch_dir)
+        if not md_path:
             continue
 
-        md_path = md_files[0]
         md_text = md_path.read_text(encoding="utf-8")
 
         # Find matching chapter sections from TOC skeleton

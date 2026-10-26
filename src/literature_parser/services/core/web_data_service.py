@@ -16,6 +16,7 @@ import fitz  # PyMuPDF
 from literature_parser.config.settings import load_config
 from literature_parser.services.core.correction_service import CorrectionService
 from literature_parser.services.core.global_state import GlobalStateManager
+from literature_parser.services.utils.text_utils import get_primary_chapter_markdown
 
 logger = logging.getLogger(__name__)
 
@@ -153,14 +154,14 @@ class WebDataService:
         chapters: List[Dict[str, Any]] = []
         for ch in sorted(chapters_dir.iterdir()):
             if ch.is_dir() and not ch.name.startswith("."):
-                md_files = list(ch.glob("*.md"))
+                primary_md = get_primary_chapter_markdown(ch)
                 pdf_files = list(ch.glob("*.pdf"))
                 audit_files = list(ch.glob("*_audit.json"))
 
                 word_count = 0
-                if md_files:
+                if primary_md:
                     try:
-                        word_count = len(md_files[0].read_text(encoding="utf-8").split())
+                        word_count = len(primary_md.read_text(encoding="utf-8").split())
                     except Exception:
                         pass
 
@@ -175,7 +176,7 @@ class WebDataService:
                 chapters.append({
                     "id": ch.name,
                     "title": ch.name,
-                    "has_markdown": len(md_files) > 0,
+                    "has_markdown": primary_md is not None,
                     "has_pdf": len(pdf_files) > 0,
                     "word_count": word_count,
                     "audit_score": audit_score,
@@ -199,11 +200,10 @@ class WebDataService:
         if not ch_dir.exists():
             raise FileNotFoundError(f"Chapter directory not found: {ch_dir}")
 
-        md_files = list(ch_dir.glob("*.md"))
-        if not md_files:
+        md_path = get_primary_chapter_markdown(ch_dir)
+        if not md_path:
             raise FileNotFoundError(f"No Markdown file found in chapter: {ch_dir}")
 
-        md_path = md_files[0]
         content = md_path.read_text(encoding="utf-8")
 
         # Check for audit reports in chapter directory
@@ -271,12 +271,12 @@ class WebDataService:
         if not ch_dir.exists():
             raise FileNotFoundError(f"Chapter directory not found: {ch_dir}")
 
-        md_files = list(ch_dir.glob("*.md"))
-        if not md_files:
+        primary_md = get_primary_chapter_markdown(ch_dir)
+        if not primary_md:
             target_md = ch_dir / f"{chapter_id}.md"
             original_content = ""
         else:
-            target_md = md_files[0]
+            target_md = primary_md
             original_content = target_md.read_text(encoding="utf-8")
 
         # Save the updated Markdown content

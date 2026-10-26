@@ -14,6 +14,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List, Optional
 
+from literature_parser.services.utils.text_utils import get_primary_chapter_markdown
+
 logger = logging.getLogger("TOCResolver")
 
 
@@ -83,10 +85,9 @@ class TOCResolver:
 
         for ch_dir in ch_dirs:
             # Skip TOC itself from being an entry inside its own TOC, but allow Preface/Cover etc
-            md_files = list(ch_dir.glob("*.md"))
-            if not md_files:
+            primary_md = get_primary_chapter_markdown(ch_dir)
+            if not primary_md:
                 continue
-            primary_md = md_files[0]
             if ch_dir.name in ("00-07-TOC", "TOC"):
                 continue
 

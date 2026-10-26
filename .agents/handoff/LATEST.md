@@ -5,10 +5,10 @@
 <!-- LIVE_STATE_START -->
 ## 📊 即時狀態看板 (Live Snapshot)
 
-- **最後更新時間**: `2026-10-26 08:53 UTC`
+- **最後更新時間**: `2026-10-26 09:10 UTC`
 - **最近操作 Agent**: `Antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `a6848b9 feat(anchors): implement GlossaryAnchor, FigureTableContinuityAuditor, and PedagogicalEnclosureAuditor [agent:Antigravity]`
+- **最新 Git Commit**: `91b6466 feat(library): complete full library re-audit, AUDIT updates, and EPUB 3 rebuild across all 5 books [agent:Antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
@@ -17,6 +17,18 @@
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-10-26 09:10 UTC] 完成任務 `TASK-055` — 修復EPUB匯出誤讀AUDIT.md及全書庫重匯出 (by `Antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: (無)
+
+### [2026-10-26 08:59 UTC] 認領任務 `TASK-055` (修復EPUB匯出誤讀AUDIT.md及全書庫重匯出) (by `Antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `Antigravity`
+
+### [2026-10-26 08:59 UTC] 建立任務 `TASK-055`: 修復EPUB匯出誤讀AUDIT.md及全書庫重匯出 (by `Antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
 
 ### [2026-10-26 08:53 UTC] 完成任務 `TASK-054` — 全書庫5本教科書依最新結構錨定與確定性標準全面體檢與EPUB重新打包 (by `Antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
@@ -85,15 +97,3 @@
 ### [2026-10-26 04:58 UTC] 認領任務 `TASK-049` (EPUB Layout Healing, Front-matter Image Filtering, and TOC Title Backlinks) (by `Antigravity`)
 - **相關範圍**: `-`
 - **接棒自**: `Antigravity`
-
-### [2026-10-26 04:58 UTC] 建立任務 `TASK-049`: EPUB Layout Healing, Front-matter Image Filtering, and TOC Title Backlinks (by `Antigravity`)
-- **狀態**: `in_progress`
-- **相關範圍**: `-`
-
-### [2026-10-26 03:26 UTC] 完成任務 `TASK-048` — Full-pipeline formatting enhancements and EPUB full-page screenshot closed-loop healing (by `Antigravity`)
-- **狀態**: ✅ 已完成 (`done`)
-- **完成摘要**: Completed full-pipeline EPUB XML healing, TOCResolver hierarchical hyperlinking, side-by-side visual diffing, and MarkdownUpdater offline synchronization across all 138 Markdown files (0 defects, 367 tests passing).
-
-### [2026-10-26 00:38 UTC] 建立任務 `TASK-048`: Full-pipeline formatting enhancements and EPUB full-page screenshot closed-loop healing (by `Antigravity`)
-- **狀態**: `in_progress`
-- **相關範圍**: `-`

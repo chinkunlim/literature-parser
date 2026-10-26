@@ -609,3 +609,15 @@
 ### [2026-10-25 17:05 UTC] 完成任務 `TASK-047` — Fix 6 spot-checked defects (Mermaid arrows, EOC sections, Key Terms table, bogus diagram crops, complex Career Counseling tables, split headings) and run visual/structural verification (by `Antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
 - **完成摘要**: Fixed all 6 spot-checked defects (Mermaid arrow corruption, EOC profile overwrite, hyphenated Table ID collision, centered landscape table left boundary, bogus diagram_p* cropping, split multi-line headings) and re-converted & verified all 128 chapters across 5 books.
+
+### [2026-10-26 00:38 UTC] 建立任務 `TASK-048`: Full-pipeline formatting enhancements and EPUB full-page screenshot closed-loop healing (by `Antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
+
+### [2026-10-26 03:26 UTC] 完成任務 `TASK-048` — Full-pipeline formatting enhancements and EPUB full-page screenshot closed-loop healing (by `Antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: Completed full-pipeline EPUB XML healing, TOCResolver hierarchical hyperlinking, side-by-side visual diffing, and MarkdownUpdater offline synchronization across all 138 Markdown files (0 defects, 367 tests passing).
+
+### [2026-10-26 04:58 UTC] 建立任務 `TASK-049`: EPUB Layout Healing, Front-matter Image Filtering, and TOC Title Backlinks (by `Antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`

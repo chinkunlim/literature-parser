@@ -18,6 +18,7 @@ from pathlib import Path
 from literature_parser.adapters.verification.format_auditor import FormatAuditor
 from literature_parser.adapters.verification.ollama_verifier import OllamaVerifier
 from literature_parser.entrypoints.project_cli.common import ROOT
+from literature_parser.services.utils.text_utils import get_primary_chapter_markdown
 
 
 def cmd_audit(args):
@@ -54,19 +55,21 @@ def cmd_audit(args):
         if lit_dir.exists():
             for d in sorted(lit_dir.iterdir()):
                 if d.is_dir():
-                    candidates = [f for f in d.glob("*.md") if not f.name.endswith(("_Verified.md", "processing_status.md", "audit_report.md"))]
-                    md_files.extend(candidates)
+                    pri_f = get_primary_chapter_markdown(d)
+                    if pri_f:
+                        md_files.append(pri_f)
     elif target.is_file():
         md_files = [target]
     elif target.is_dir():
-        candidates = [f for f in target.glob("*.md") if not f.name.endswith(("_Verified.md", "processing_status.md", "audit_report.md"))]
-        if candidates:
-            md_files.extend(candidates)
+        pri_f = get_primary_chapter_markdown(target)
+        if pri_f:
+            md_files.append(pri_f)
         else:
             for d in sorted(target.iterdir()):
                 if d.is_dir():
-                    sub_cands = [f for f in d.glob("*.md") if not f.name.endswith(("_Verified.md", "processing_status.md", "audit_report.md"))]
-                    md_files.extend(sub_cands)
+                    sub_f = get_primary_chapter_markdown(d)
+                    if sub_f:
+                        md_files.append(sub_f)
 
     if not md_files:
         print("🛑 找不到可供稽核的 Markdown 檔案。")

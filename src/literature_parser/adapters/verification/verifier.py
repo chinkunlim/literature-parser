@@ -14,6 +14,7 @@ from pathlib import Path
 
 from literature_parser.config.processor_config import DEFAULT_DICT_PATH
 from literature_parser.adapters.verification.ollama_verifier import OllamaVerifier
+from literature_parser.services.utils.text_utils import get_primary_chapter_markdown
 from literature_parser.adapters.verification.rules import (
     check_blueprint_compliance,
     check_broken_ligatures,
@@ -69,18 +70,12 @@ class AccuracyVerifier:
         print(f"\n{'='*70}\n[VERIFYING ACCURACY] Chapter: {ch_name}\n{'='*70}")
 
         # 1. Locate Markdown file
-        canonical_md = ch_path / f"{ch_name}.md"
-        if canonical_md.exists():
-            md_file = canonical_md
-        else:
-            candidates = [f for f in ch_path.glob("*.md") if f.name != "processing_status.md"]
-            if candidates:
-                md_file = candidates[0]
-            else:
-                print("  [FAIL] No Markdown file found in chapter folder.")
-                results['passed'] = False
-                results['checks']['markdown_exists'] = False
-                return results
+        md_file = get_primary_chapter_markdown(ch_path)
+        if not md_file:
+            print("  [FAIL] No Markdown file found in chapter folder.")
+            results['passed'] = False
+            results['checks']['markdown_exists'] = False
+            return results
         with open(md_file, 'r', encoding='utf-8', errors='ignore') as f:
             md_content = f.read()
 

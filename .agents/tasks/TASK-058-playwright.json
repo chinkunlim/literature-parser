@@ -1,0 +1,27 @@
+{
+  "id": "TASK-058",
+  "title": "修復側邊欄折疊排版並建立Playwright測試",
+  "status": "in_progress",
+  "agent": "Antigravity",
+  "handed_off_from": "",
+  "handed_off_to": "",
+  "paths": [],
+  "done_items": "",
+  "todo_items": "",
+  "blockers": "",
+  "created_at": "2026-10-26 10:08 UTC",
+  "updated_at": "2026-10-26 10:08 UTC",
+  "history": [
+    {
+      "timestamp": "2026-10-26 10:08 UTC",
+      "action": "created_and_claimed",
+      "agent": "Antigravity"
+    },
+    {
+      "timestamp": "2026-10-26 10:08 UTC",
+      "action": "claimed",
+      "agent": "Antigravity",
+      "previous_agent": "Antigravity"
+    }
+  ]
+}

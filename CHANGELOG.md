@@ -107,6 +107,7 @@ All notable changes to **literature-parser** are documented here
 
 ### Chore
 - chore(project): update project tooling and config (TASK-001, TASK-009, TASK-010, TASK-011) (by `@antigravity`)
+- chore(deps/test): update deps/test tooling and config (TASK-050, TASK-051, TASK-053, TASK-054, TASK-055, TASK-056, TASK-057, TASK-058) (by `@Antigravity`)
 
 ## [0.1.0] - 2026-10-21
 ### Added

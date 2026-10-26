@@ -232,13 +232,47 @@ function initSplitResizer() {
   });
 }
 
+const SIDEBAR_STORAGE_KEY = "literature_parser_sidebar_collapsed";
+
 /**
- * Toggles sidebar visibility to maximize workspace on smaller screens.
+ * Toggles sidebar visibility to maximize workspace on smaller screens and persists state.
+ * @param {boolean} [forceState] - Optional explicit collapse state to set.
  * @returns {void}
  */
-function toggleSidebar() {
+function toggleSidebar(forceState) {
   const sidebar = document.getElementById("sidebar");
-  if (sidebar) sidebar.classList.toggle("collapsed");
+  if (!sidebar) return;
+  const isCollapsed = typeof forceState === "boolean"
+    ? forceState
+    : !sidebar.classList.contains("collapsed");
+  sidebar.classList.toggle("collapsed", isCollapsed);
+  try {
+    localStorage.setItem(SIDEBAR_STORAGE_KEY, isCollapsed ? "1" : "0");
+  } catch (e) {
+    // Ignore localStorage errors
+  }
+}
+
+/**
+ * Initializes sidebar collapse state from localStorage or screen width.
+ * Automatically collapses sidebar on initial load if screen width is narrow (< 900px).
+ * @returns {void}
+ */
+function initSidebarState() {
+  const sidebar = document.getElementById("sidebar");
+  if (!sidebar) return;
+  try {
+    const saved = localStorage.getItem(SIDEBAR_STORAGE_KEY);
+    if (saved !== null) {
+      if (saved === "1") sidebar.classList.add("collapsed");
+      return;
+    }
+  } catch (e) {
+    // Ignore localStorage errors
+  }
+  if (window.innerWidth < 900) {
+    sidebar.classList.add("collapsed");
+  }
 }
 
 /**

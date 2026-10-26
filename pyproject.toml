@@ -21,7 +21,11 @@ book-processor = "literature_parser.entrypoints.doc_cli:main"
 verify-accuracy = "literature_parser.adapters.verification.verifier:main"
 
 [dependency-groups]
-dev = ["ruff>=0.6.0", "mypy>=1.11"]  # add with `uv add --dev <package>`
+dev = [
+    "ruff>=0.6.0",
+    "mypy>=1.11",
+    "playwright>=1.64.1",
+]  # add with `uv add --dev <package>`
 
 [build-system]
 requires = ["setuptools>=68.0"]

@@ -1,0 +1,27 @@
+{
+  "id": "TASK-057",
+  "title": "全書庫5本書清空與雙閘門全流程重新生成",
+  "status": "in_progress",
+  "agent": "Antigravity",
+  "handed_off_from": "",
+  "handed_off_to": "",
+  "paths": [],
+  "done_items": "",
+  "todo_items": "",
+  "blockers": "",
+  "created_at": "2026-10-26 10:04 UTC",
+  "updated_at": "2026-10-26 10:05 UTC",
+  "history": [
+    {
+      "timestamp": "2026-10-26 10:04 UTC",
+      "action": "created_and_claimed",
+      "agent": "Antigravity"
+    },
+    {
+      "timestamp": "2026-10-26 10:05 UTC",
+      "action": "claimed",
+      "agent": "Antigravity",
+      "previous_agent": "Antigravity"
+    }
+  ]
+}

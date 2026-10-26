@@ -15,3 +15,4 @@
 | [ADR-009](009-geometric-bounds-and-non-backtracking-regex.md) | 版面元件解析之嚴格幾何邊界收斂與線性時間跨頁流向縫合 | Accepted | 2026-10-23 |
 | [ADR-010](010-archive-segregation-and-batch-resilience.md) | 處理完成文檔嚴格分流歸檔與全書庫斷點續傳機制 | Accepted | 2026-10-25 | TODO |
 | [ADR-011](011-two-pass-chapter-blueprint-and-hybrid-docling.md) | 兩階段章節結構藍圖（Two-Pass Chapter Blueprint）、PyMuPDF+Docling 混合掃描與五大模組化渲染架構 | Accepted | 2026-10-25 | TODO |
+| [ADR-012](012-hierarchical-toc-resolution-and-side-by-side-visual-diff.md) | 出版級階層化目錄解析 (TOCResolver)、雙向錨點跳轉與原書 PDF/EPUB 並排視覺對比引擎 | Accepted | 2026-10-26 |

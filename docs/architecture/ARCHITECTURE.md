@@ -28,7 +28,8 @@ flowchart TD
         Converter["services.converter.*<br>(MarkdownConversionService, Cropper, Strategies)"]
         Parsers["services.parsers.*<br>(digital_pdf, layout, math, epub)"]
         CfgMgr["services.config_manager<br>(Hierarchical Config)"]
-        Exporter["services.exporter.epub_exporter<br>(EPUB 3 Builder)"]
+        Exporter["services.exporter.epub_exporter<br>(EPUB 3 Builder & TOCResolver)"]
+        MdUpdater["services.core.markdown_updater<br>(MarkdownUpdater & Obsidian Linker)"]
         VerifyService["services.verification.*<br>(Format Auditor, Rules)"]
     end
 
@@ -105,7 +106,8 @@ flowchart TD
     subgraph OutStage ["階段 4：知識匯出與多格式發布 (Export & Delivery)"]
         MarkdownOut["標準結構化 Markdown<br>DATA_DIR/output/"]
         MarkdownOut --> Obsidian["Obsidian 雙向筆記鏈結<br>utils.obsidian_linker (index.md)"]
-        MarkdownOut --> EPUB["EPUB 3 封裝匯出<br>services.exporter.epub_exporter"]
+        MarkdownOut --> EPUB["EPUB 3 封裝匯出<br>services.exporter.epub_exporter (TOCResolver)"]
+        EPUB --> VisualAuditor["EPUB 逐頁截圖與原書對比<br>adapters.verification.epub_visual_auditor"]
         MarkdownOut --> Checkpoint["更新斷點 Manifest<br>core.checkpoint.CheckpointManager"]
     end
 ```

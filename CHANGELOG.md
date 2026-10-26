@@ -6,6 +6,11 @@ All notable changes to **literature-parser** are documented here
 ## [Unreleased]
 
 ### Added
+- docs(adr): record ADR-012 on hierarchical TOC resolution with hyperlinked anchors and side-by-side visual diffing (TASK-048) (by `@Antigravity`)
+- docs(known-issues): record ISSUE-018 on EPUB 3 strict XML parsing error, comment corruption, and bold-italic tag interleaving (TASK-048) (by `@Antigravity`)
+- feat(toc,epub): implement TOCResolver for publishing-grade hierarchical TOC with dot leaders, slugified anchor hyperlinks, and EPUB 3 multi-level nav (TASK-048) (by `@Antigravity`)
+- feat(verification): implement side-by-side visual diffing engine between EPUB and PDF original pages (TASK-048) (by `@Antigravity`)
+- feat(markdown): implement MarkdownUpdater service and heal all 138 Markdown files on disk with zero defects, complete Obsidian graph index, and synchronized status (TASK-048) (by `@Antigravity`)
 - docs(adr): record ADR-009 on boundary-constrained layout parsers and non-backtracking continuity stitching (TASK-040) (by `@antigravity`)
 - docs(specs): add SPEC-008 on batch resilience, zero-defect audit, and clean-slate rerun criteria (TASK-040) (by `@antigravity`)
 - docs(known-issues): record ISSUE-006 on catastrophic regex backtracking during cross-page paragraph stitching (TASK-039, TASK-040) (by `@antigravity`)
@@ -82,6 +87,7 @@ All notable changes to **literature-parser** are documented here
 - docs: synchronize all project markdown documentation for input/output convention routing, ADR-008, and ISSUE-005 (by `@antigravity`)
 - docs(all): update ADR-009, SPEC-008, ISSUE-006~009, README, ARCHITECTURE, and tree sync (TASK-040) (by `@antigravity`)
 - docs: update all architecture, ADR, known issues, specs, and README markdown files (by `@antigravity`)
+- docs(adr/docs): update adr/docs documentation (ADR-009, ADR-010, ADR-011, ADR-012, ISSUE-006, ISSUE-015, ISSUE-016, ISSUE-017, ISSUE-018, TASK-039, TASK-040, TASK-041, TASK-047, TASK-048) (by `@Antigravity`)
 
 ### Testing
 - test(workflows): verify all CLI workflows, fix pathing and pure-python fallbacks (by `@antigravity`)

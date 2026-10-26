@@ -52,6 +52,10 @@
 14. **自適應版面剖析與斷點續傳 (Autonomous Profiler & Checkpoint Continuation)**：
    - Stage 0 探測器於並行前自動採樣正文特徵，解耦元件辨識（Component Registry）與容災守衛（Resilience Guard）。
    - 支援 `--resume` 斷點續傳旗標，已通過出版級驗收之章節直接略過，並結合實體檔案校驗，徹底杜絕多執行緒競爭造成的假性未完成。
+15. **出版級階層目錄 (TOCResolver)、EPUB XML 自愈與原書並排視覺對比 (Side-by-Side Visual Diffing)**：
+   - 支援 `Part -> Chapter -> Section` 巢狀目錄、點線導引（dot leaders）與內文標題錨點超連結跳轉（`<h2 id="slug">`）。
+   - 純 Python EPUB 3 引擎具備 `XHTMLSanitizer` 標籤棧嚴格 XML 自愈，配合 `PyMuPDF` 逐頁 PNG 截圖與原書 PDF 高精並排視覺對比（`visual_diff_samples/`）。
+   - 專用 `MarkdownUpdater` 提供離線全量 Markdown 語法自愈、符號清理、Obsidian 圖譜索引與狀態同步。
 
 ---
 

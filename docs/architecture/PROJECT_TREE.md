@@ -142,6 +142,7 @@ literature-parser/
 │   │   ├── 009-geometric-bounds-and-non-backtracking-regex.md
 │   │   ├── 010-archive-segregation-and-batch-resilience.md
 │   │   ├── 011-two-pass-chapter-blueprint-and-hybrid-docling.md
+│   │   ├── 012-hierarchical-toc-resolution-and-side-by-side-visual-diff.md
 │   │   ├── _TEMPLATE.md                    # ADR 範本 (tracker_cli 會套用)
 │   │   └── DECISIONS.md                    # 架構決策總表
 │   ├── architecture/                       # [系統架構與資料模型]
@@ -165,6 +166,7 @@ literature-parser/
 │   │   ├── 015-table-list-degradation-and-vision-blindspot.md
 │   │   ├── 016-mermaid-arrow-corruption-eoc-profile-overwrite-and-hyphen-table-collision.md
 │   │   ├── 017-epub-gfm-table-mermaid-svg-and-two-col-soft-hyphen-healer.md
+│   │   ├── 018-epub-xml-parsing-corruption-and-tag-interleaving.md
 │   │   ├── _TEMPLATE.md                    # 已知問題範本 (tracker_cli 會套用)
 │   │   └── KNOWN_ISSUES.md                 # 已知問題總表 (🔴/🟡/🟢)
 │   ├── migration/                          # [遷移紀錄] 舊專案搬移清單、批次與完成標準

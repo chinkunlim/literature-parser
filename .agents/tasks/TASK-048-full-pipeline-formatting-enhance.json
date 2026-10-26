@@ -1,7 +1,7 @@
 {
   "id": "TASK-048",
   "title": "Full-pipeline formatting enhancements and EPUB full-page screenshot closed-loop healing",
-  "status": "in_progress",
+  "status": "completed",
   "agent": "Antigravity",
   "handed_off_from": "",
   "handed_off_to": "",
@@ -17,5 +17,6 @@
       "action": "created_and_claimed",
       "agent": "Antigravity"
     }
-  ]
+  ],
+  "summary": "Implemented EPUB GFM table, Mermaid SVG, 2-column header fix, soft-hyphen removal, and full-page PNG screenshot closed-loop healing across all 5 books (6,370 pages rendered, 0 remaining defects)."
 }

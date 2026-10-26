@@ -585,3 +585,15 @@
 - **下一步**: 全書庫 5 本教科書 128 章節已達成 100% 驗證通過並自動歸檔；後續可推進學術論文領域 (DATA_DIR/input/literature/) 之批次轉檔實測、雙欄 IMRAD 結構化與 EPUB 3 匯出檢驗
 - **交接備註**: 全書庫 5 本教科書 128 章節全數 100% 驗證通過並歸檔，全套 ADR、Known Issues 與文檔已完成同步
 - **本機對話紀錄**: `.agents/conversations/2026-10-25-2223-antigravity-summary.md`（只在這台電腦）
+
+### [2026-10-25 14:39 UTC] 建立任務 `TASK-045`: Enhance batch resilience, table HTML structuring, layout healing, and strict verification across all 5 books (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
+
+### [2026-10-25 15:30 UTC] 完成任務 `TASK-045` — Enhance batch resilience, table HTML structuring, layout healing, and strict verification across all 5 books (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: Completed unattended batch resilience, XML control-char & rotated landscape table extraction, semantic HTML table structuring, ligature/heading healing, and 100% verification across all 5 books (128 chapters).
+
+### [2026-10-25 15:57 UTC] 建立任務 `TASK-046`: Implement Two-Pass ChapterBlueprintScanner (PyMuPDF + Docling), five modular block renderers, and blueprint compliance verification (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`

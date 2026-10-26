@@ -113,7 +113,8 @@ literature-parser/
 │   │   ├── TASK-049-epub-layout-healing-front-matter.json
 │   │   ├── TASK-050-epub.json
 │   │   ├── TASK-051-markdown-epub.json
-│   │   └── TASK-052-glossary-lo-eoc.json
+│   │   ├── TASK-052-glossary-lo-eoc.json
+│   │   └── TASK-053-glossary-lo-eoc.json
 │   ├── framework.lock                      # [框架鎖定檔] 框架版本與檔案雜湊，供 update_framework 判斷是否被修改
 │   └── project.toml                        # [專案設定・各專案自訂] 語言、分層、品質門檻、指令、業務規則
 ├── .cursor/                                # [Agent 轉接] Cursor 規則 (自動產生)
@@ -407,10 +408,13 @@ literature-parser/
 │       │   ├── verification/
 │       │   │   ├── __init__.py
 │       │   │   ├── epub_visual_auditor.py
+│       │   │   ├── figure_table_continuity_auditor.py
 │       │   │   ├── formula_auditor.py
+│       │   │   ├── glossary_anchor.py
 │       │   │   ├── layout_auditor.py
 │       │   │   ├── lexical_auditor.py
 │       │   │   ├── models.py
+│       │   │   ├── pedagogical_enclosure_auditor.py
 │       │   │   ├── quality_engine.py
 │       │   │   ├── semantic_auditor.py
 │       │   │   └── toc_alignment_auditor.py
@@ -435,14 +439,17 @@ literature-parser/
 │   ├── test_epub_visual_closed_loop.py
 │   ├── test_feedback_loop.py
 │   ├── test_feedback_service.py
+│   ├── test_figure_table_continuity_auditor.py
 │   ├── test_fingerprinting.py
 │   ├── test_formula_auditor.py
+│   ├── test_glossary_anchor.py
 │   ├── test_journal_conversion.py
 │   ├── test_layout_submodules.py
 │   ├── test_m5_concurrency.py
 │   ├── test_markdown_converter.py
 │   ├── test_markdown_updater.py
 │   ├── test_mcp_server.py
+│   ├── test_pedagogical_enclosure_auditor.py
 │   ├── test_quality_engine.py
 │   ├── test_resilience_guard.py
 │   ├── test_semantic_stitcher.py

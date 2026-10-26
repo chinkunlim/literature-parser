@@ -14,7 +14,9 @@ import time
 from pathlib import Path
 from typing import Any, Dict, Optional
 
+from literature_parser.services.verification.figure_table_continuity_auditor import FigureTableContinuityAuditor
 from literature_parser.services.verification.formula_auditor import FormulaAuditor
+from literature_parser.services.verification.glossary_anchor import GlossaryAnchor
 from literature_parser.services.verification.layout_auditor import LayoutAuditor
 from literature_parser.services.verification.lexical_auditor import LexicalAuditor
 from literature_parser.services.verification.models import (
@@ -23,6 +25,7 @@ from literature_parser.services.verification.models import (
     QualityScore,
     VerificationConfig,
 )
+from literature_parser.services.verification.pedagogical_enclosure_auditor import PedagogicalEnclosureAuditor
 from literature_parser.services.verification.semantic_auditor import SemanticAuditor
 from literature_parser.services.verification.toc_alignment_auditor import TocAlignmentAuditor, TocNode
 
@@ -97,7 +100,26 @@ class QualityInspectionEngine:
             )
             layout_score = max(0.0, round(layout_score - toc_deductions, 2))
 
+        # ── Tier 1.6: Figure & Table Numbering Continuity Audit ───────────────
+        ft_issues = FigureTableContinuityAuditor.audit(markdown_text=current_md)
+        all_issues.extend(ft_issues)
+        ft_deductions = sum(
+            15 if i.severity == "ERROR" else (5 if i.severity == "WARNING" else 1)
+            for i in ft_issues
+        )
+        layout_score = max(0.0, round(layout_score - ft_deductions, 2))
+
         # ── Tier 2: Lexical & Formula Audit ───────────────────────────────────
+        # Auto-inject glossary domain vocabulary if base_dir contains glossary
+        if base_dir and base_dir.exists():
+            for g_file in list(base_dir.glob("00-*-Glossary*.md")) + list(base_dir.glob("*Glossary*.md")):
+                try:
+                    terms = GlossaryAnchor.extract_terms(g_file.read_text(encoding="utf-8"))
+                    GlossaryAnchor.inject_domain_vocabulary(self.lexical_auditor, terms)
+                    break
+                except Exception as err:
+                    logger.debug("Failed auto-injecting glossary vocabulary: %s", err)
+
         lex_issues, current_md, lex_repairs, coverage = self.lexical_auditor.audit(
             markdown_text=current_md,
             auto_fix=self.config.enable_safe_autofix,
@@ -140,6 +162,15 @@ class QualityInspectionEngine:
             for i in sem_issues
         )
         semantic_score = max(0.0, round(100.0 - sem_deductions, 2))
+
+        # ── Tier 4.5: Pedagogical Objectives & Summary Enclosure Audit ────────
+        pe_issues = PedagogicalEnclosureAuditor.audit(markdown_text=current_md)
+        all_issues.extend(pe_issues)
+        pe_deductions = sum(
+            10 if i.severity == "WARNING" else 1
+            for i in pe_issues
+        )
+        semantic_score = max(0.0, round(semantic_score - pe_deductions, 2))
 
         # ── Composite Overall Score (25% Layout, 25% Lexical, 20% Formula, 30% Semantic) ───
         overall = round(layout_score * 0.25 + lexical_score * 0.25 + formula_score * 0.20 + semantic_score * 0.30, 2)

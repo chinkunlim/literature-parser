@@ -597,3 +597,15 @@
 ### [2026-10-25 15:57 UTC] 建立任務 `TASK-046`: Implement Two-Pass ChapterBlueprintScanner (PyMuPDF + Docling), five modular block renderers, and blueprint compliance verification (by `antigravity`)
 - **狀態**: `in_progress`
 - **相關範圍**: `-`
+
+### [2026-10-25 16:10 UTC] 完成任務 `TASK-046` — Implement Two-Pass ChapterBlueprintScanner (PyMuPDF + Docling), five modular block renderers, and blueprint compliance verification (by `antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: Implemented Two-Pass ChapterBlueprintScanner (PyMuPDF vector geometry + Docling hybrid adapter), five modular block renderers (BlockRendererRegistry), and check_blueprint_compliance across all 5 books (128 chapters).
+
+### [2026-10-25 16:34 UTC] 建立任務 `TASK-047`: Fix 6 spot-checked defects (Mermaid arrows, EOC sections, Key Terms table, bogus diagram crops, complex Career Counseling tables, split headings) and run visual/structural verification (by `Antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
+
+### [2026-10-25 17:05 UTC] 完成任務 `TASK-047` — Fix 6 spot-checked defects (Mermaid arrows, EOC sections, Key Terms table, bogus diagram crops, complex Career Counseling tables, split headings) and run visual/structural verification (by `Antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: Fixed all 6 spot-checked defects (Mermaid arrow corruption, EOC profile overwrite, hyphenated Table ID collision, centered landscape table left boundary, bogus diagram_p* cropping, split multi-line headings) and re-converted & verified all 128 chapters across 5 books.

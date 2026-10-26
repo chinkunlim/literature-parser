@@ -113,6 +113,51 @@ def repair_drop_caps(text: str) -> str:
     return text
 
 
+def clean_shadow_duplicates(text: str) -> str:
+    """Deduplicates repeated words or lines caused by PDF drop-shadow layers and repairs broken capitals.
+
+    Drop-shadow layers in PDF vector art place duplicate identical text elements offset by fractions
+    of a point, which results in doubled words like 'CAREER CAREER COUNSELING COUNSELING' or
+    doubled lines.
+
+    Args:
+        text: The input text containing potential drop-shadow duplicates.
+
+    Returns:
+        The cleaned text with duplicated tokens and lines deduplicated.
+    """
+    if not text:
+        return ""
+
+    # 1. Line-level deduplication: consecutive identical non-empty lines (excluding HTML tags)
+    lines = text.split("\n")
+    deduped_lines: list[str] = []
+    for line in lines:
+        s_line = line.strip()
+        if deduped_lines and s_line and not s_line.startswith("<") and s_line == deduped_lines[-1].strip():
+            continue
+        deduped_lines.append(line)
+    text = "\n".join(deduped_lines)
+
+    # 2. Word-level deduplication: repeated identical words 'WORD WORD' -> 'WORD'
+    pat_dup = re.compile(r"\b([A-Za-z0-9_-]{2,})\s+\1\b", re.IGNORECASE)
+    prev = None
+    while prev != text:
+        prev = text
+        text = pat_dup.sub(r"\1", text)
+
+    # 3. Fix fractured drop-shadow title text: 'A MERICAN OUNSELING C A SSOCIATION' -> 'AMERICAN COUNSELING ASSOCIATION'
+    text = re.sub(
+        r"\bA\s+MERICAN\s+OUNSELING\s+C\s+A\s*SSOCIATION\b",
+        "AMERICAN COUNSELING ASSOCIATION",
+        text,
+        flags=re.IGNORECASE,
+    )
+    text = re.sub(r"\bA\s+MERICAN\b", "AMERICAN", text)
+
+    return text
+
+
 def clean_decorative_noise(text: str) -> str:
     """
     Cleans decorative artifacts, dingbat font glitches, and stray running elements:
@@ -327,7 +372,12 @@ def reflow_wrapped_lines(text: str) -> str:
                     cur_para[-1] += ' ' + s
             else:
                 # Regular prose paragraph: reflow lines
-                if not cur_para:
+                # Detect start of a new APA reference item: Last, F. M. (Year).
+                is_ref_item = bool(re.match(r'^[A-Z][a-zA-Z\s\.,&\'’–-]{1,60}\s+\(\d{4}[a-z]?\)\.', s))
+                if is_ref_item and cur_para:
+                    reflowed_paragraphs.append('\n'.join(cur_para))
+                    cur_para = [s]
+                elif not cur_para:
                     cur_para.append(s)
                 else:
                     last_line = cur_para[-1]
@@ -514,6 +564,7 @@ def clean_typography_artifacts(text: str) -> str:
         text = text.replace("\xad", "")
     text = normalize_ligatures(text)
     text = clean_decorative_noise(text)
+    text = clean_shadow_duplicates(text)
 
     # Protect fenced code blocks (e.g. ```mermaid ... ```), table separator rows (| --- |),
     # and HTML comments (<!-- ... -->) so `--` is never corrupted into em-dashes `—` (Refs: ISSUE-017)
@@ -548,6 +599,7 @@ def clean_typography_artifacts(text: str) -> str:
     text = re.sub(r"```[\s\S]*?```", _stash, text)
     text = re.sub(r"(?m)^[ \t]*\|[ \t:\-\|]+\|[ \t]*$", _stash, text)
     text = re.sub(r"<!--[\s\S]*?-->", _stash, text)
+    text = re.sub(r"<table\b[\s\S]*?</table>", _stash, text, flags=re.IGNORECASE)
 
     # Standardize dashes in regular prose
     text = re.sub(r"---", "—", text)

@@ -618,15 +618,24 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             return ""
 
         # Baseline clustering: cluster text elements within baseline tolerance into lines
-        is_single_col_doc = _STYLE.get("geometry", {}).get("columns", {}).get("layout") == "single_column"
+        is_multi_col_doc = _STYLE.get("geometry", {}).get("columns", {}).get("layout") in ("two_column", "three_column")
         p1_body_y = _STYLE.get("geometry", {}).get("content_start", {}).get("page_1_body_start_y") or (ph * 0.45)
         raw_lines.sort(key=lambda x: x[0])
         clusters = []
 
         # Auto-detect if this page genuinely has two-column layout even if global _STYLE says single_column (Refs: ISSUE-017)
         left_col_spans = [it for it in raw_lines if it[1] < pw * 0.45 and (it[1] + it[2]) < pw * 0.51 and len(it[4]) >= 10]
-        right_col_spans = [it for it in raw_lines if it[1] >= pw * 0.46 and len(it[4]) >= 10]
-        page_has_two_cols = len(left_col_spans) >= 4 and len(right_col_spans) >= 4
+        right_col_spans = [
+            it for it in raw_lines
+            if it[1] >= pw * 0.46 and len(it[4]) >= 10
+            and not any(abs(x[0] - it[0]) <= 3.5 and x[1] < pw * 0.40 for x in raw_lines)
+        ]
+        crossing_lines = sum(
+            1 for it in raw_lines
+            if (it[1] < pw * 0.35 and (it[1] + it[2]) > pw * 0.65)
+            or any(abs(x[0] - it[0]) <= 3.5 and x[1] < pw * 0.35 and (it[1] + it[2]) > pw * 0.65 for x in raw_lines)
+        )
+        page_has_two_cols = len(left_col_spans) >= 4 and len(right_col_spans) >= 4 and (crossing_lines < 4)
         two_col_top_y = (
             max(min(it[0] for it in left_col_spans), min(it[0] for it in right_col_spans))
             if page_has_two_cols
@@ -649,7 +658,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             item_top = item[0]
             # Page 1 Sanctuary: On page 1 above the body content start (title, author, abstract), enforce single column unless side rail or genuine 2-col start!
             is_p1_header_area = (page_num == 1) and (item_top < effective_p1_header_y)
-            treat_as_single_col = (is_single_col_doc and not page_has_two_cols) or (is_p1_header_area and not has_p1_side_rail)
+            treat_as_single_col = (not is_multi_col_doc and not page_has_two_cols) or (is_p1_header_area and not has_p1_side_rail)
 
             split_x = p1_rail_split_x if (page_num == 1 and has_p1_side_rail and item_top < effective_p1_header_y) else (pw * 0.48)
             item_is_left = item[1] < split_x and (item[1] + item[2]) < split_x
@@ -697,7 +706,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             for item in c_sorted:
                 top_val, left_val, width_val, size_val, txt_val = item
                 item_is_p1_header = (page_num == 1) and (top_val < effective_p1_header_y)
-                treat_as_single_col = (is_single_col_doc and not page_has_two_cols) or (item_is_p1_header and not has_p1_side_rail)
+                treat_as_single_col = (not is_multi_col_doc and not page_has_two_cols) or (item_is_p1_header and not has_p1_side_rail)
                 split_x = p1_rail_split_x if (page_num == 1 and has_p1_side_rail and top_val < effective_p1_header_y) else (pw * 0.48)
                 if not cur_line:
                     cur_line = [top_val, left_val, width_val, size_val, txt_val]
@@ -751,7 +760,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
         left_count = sum(1 for c in classified if c[4] == 'left')
         right_count = sum(1 for c in classified if c[4] == 'right')
 
-        if (not is_single_col_doc or page_has_two_cols) and left_count >= 5 and right_count >= 5:
+        if (is_multi_col_doc or page_has_two_cols) and left_count >= 5 and right_count >= 5:
             # Multi-column page: group spanning elements into bands
             span_intervals = []
             for top, left, size, text, cls_type in classified:
@@ -1283,8 +1292,10 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                     FigureFormatter,
                 )
                 placed_img_blocks.append(FigureFormatter.render_figure_html(f"images/{fname}", img_caption))
-            else:
+            elif img_caption and img_caption.lower() != 'illustration':
                 placed_img_blocks.append(f"![{img_caption}](images/{fname})\n\n*{img_caption}*")
+            else:
+                placed_img_blocks.append(f"![Illustration](images/{fname})")
 
         for b in final_blocks:
             placed_img_blocks.append(b)
@@ -1297,8 +1308,10 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                     FigureFormatter,
                 )
                 placed_img_blocks.append(FigureFormatter.render_figure_html(f"images/{fname}", img_caption))
-            else:
+            elif img_caption and img_caption.lower() != 'illustration':
                 placed_img_blocks.append(f"![{img_caption}](images/{fname})\n\n*{img_caption}*")
+            else:
+                placed_img_blocks.append(f"![Illustration](images/{fname})")
 
 
         # Append extracted footnotes at the bottom of the page

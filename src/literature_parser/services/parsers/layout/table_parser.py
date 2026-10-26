@@ -906,6 +906,9 @@ class TableParser:
                             table_lines.append("    <tr>")
                             for c in r:
                                 table_lines.append(f"      <td>{c}</td>")
+                            if len(r) < len(header_titles):
+                                for _ in range(len(header_titles) - len(r)):
+                                    table_lines.append("      <td>—</td>")
                             table_lines.append("    </tr>")
                     table_lines.append("  </tbody>")
                     if note_str:

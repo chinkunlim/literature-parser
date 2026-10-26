@@ -294,8 +294,10 @@ class MarkdownToXHTML:
     @classmethod
     def clean_markdown_for_epub(cls, md: str) -> Tuple[str, Optional[str]]:
         """Strips in-line <style> blocks, Obsidian navigation wikilinks, and comments, and extracts primary title."""
-        # Extract title from first H1
+        # Extract title from first H1 (or H2/H3 if no H1 exists)
         title_match = re.search(r'(?m)^#\s+([^\n]+)', md)
+        if not title_match:
+            title_match = re.search(r'(?m)^#{1,3}\s+([^\n]+)', md)
         title = title_match.group(1).strip() if title_match else None
 
         # Strip Obsidian navigation blocks and center navigation divs
@@ -315,6 +317,10 @@ class MarkdownToXHTML:
 
         # Separate touching bold and italic markers in numbered items (e.g. **2.***Temporality.* -> **2.** *Temporality.*)
         cleaned = re.sub(r'(?<=\d\.)\*\*\*(?=[a-zA-Z])', r'** *', cleaned)
+
+        # Deduplicate drop-shadow doubled tokens and lines (Refs: ISSUE-017)
+        from literature_parser.services.utils.text_utils import clean_shadow_duplicates
+        cleaned = clean_shadow_duplicates(cleaned)
 
         return cleaned.strip(), title
 
@@ -377,7 +383,7 @@ class MarkdownToXHTML:
         return "\n".join(out)
 
     @classmethod
-    def to_xhtml_body(cls, md: str) -> str:
+    def to_xhtml_body(cls, md: str, toc_href: Optional[str] = None) -> str:
         """Converts Markdown text into well-formed XHTML5 body content (Refs: ISSUE-017)."""
         # 1. MathML conversion
         content = LaTeXToMathML.process_markdown_math(md)
@@ -391,7 +397,11 @@ class MarkdownToXHTML:
         codeblock_buf: List[str] = []
         in_list = False
         in_blockquote = False
+        in_references = False
         pipe_table_buf: List[str] = []
+        has_h1 = bool(re.search(r'(?m)^#\s+', content))
+        first_h_linked = False
+        last_h1_text = ""
 
         def _flush_pipe_table() -> None:
             nonlocal pipe_table_buf
@@ -536,10 +546,30 @@ class MarkdownToXHTML:
             if header_match:
                 level = len(header_match.group(1))
                 h_text_raw = header_match.group(2).strip()
+
+                # Suppress immediate duplicate subheadings identical to the chapter H1 title
+                if level > 1 and last_h1_text:
+                    norm_curr = re.sub(r'[^a-zA-Z0-9]', '', h_text_raw).lower()
+                    norm_h1 = re.sub(r'[^a-zA-Z0-9]', '', last_h1_text).lower()
+                    if norm_curr and (norm_curr == norm_h1 or norm_curr.startswith(norm_h1) or norm_h1.startswith(norm_curr)):
+                        continue
+
+                if level == 1:
+                    last_h1_text = h_text_raw
+
+                if re.search(r'^\s*references\s*$', h_text_raw, re.IGNORECASE):
+                    in_references = True
+                elif level <= 2:
+                    in_references = False
+
                 from literature_parser.services.core.toc_resolver import TOCResolver
                 h_slug = TOCResolver.slugify_anchor(h_text_raw)
                 h_text = cls._format_inline(h_text_raw)
                 id_attr = f' id="{h_slug}"' if h_slug else ""
+                should_link = toc_href and (level == 1 or (not has_h1 and not first_h_linked))
+                if should_link:
+                    h_text = f'<a href="{html.escape(toc_href)}" class="toc-backlink" title="Return to Table of Contents">{h_text}</a>'
+                    first_h_linked = True
                 out_lines.append(f"<h{level}{id_attr}>{h_text}</h{level}>")
                 continue
 
@@ -548,11 +578,13 @@ class MarkdownToXHTML:
             if img_match:
                 alt = html.escape(img_match.group(1))
                 src = img_match.group(2).strip()
-                out_lines.append(f'<figure><img src="{src}" alt="{alt}" /><figcaption>{alt}</figcaption></figure>')
+                caption_html = f"<figcaption>{alt}</figcaption>" if alt and alt.lower() != "illustration" else ""
+                out_lines.append(f'<figure><img src="{src}" alt="{alt}" />{caption_html}</figure>')
                 continue
 
             # Standard paragraph
-            out_lines.append(f"<p>{cls._format_inline(trimmed)}</p>")
+            p_class = ' class="hanging-indent"' if in_references else ""
+            out_lines.append(f"<p{p_class}>{cls._format_inline(trimmed)}</p>")
 
         _flush_pipe_table()
         if in_list:
@@ -648,6 +680,39 @@ class MarkdownToXHTML:
             text = text.replace(f"__MATH_PH_{idx}__", m_str)
 
         return text
+
+    @classmethod
+    def markdown_to_xhtml(
+        cls,
+        md: str,
+        title: str = "",
+        stylesheet: str = "styles/style.css",
+        toc_href: Optional[str] = None,
+    ) -> str:
+        """Converts Markdown text into a standalone valid XHTML document.
+
+        Args:
+            md: Markdown source string.
+            title: Document title for the XHTML <title> tag.
+            stylesheet: Relative path to the CSS stylesheet.
+            toc_href: Optional href to the Table of Contents chapter for h1 backlink.
+
+        Returns:
+            Well-formed standalone XHTML5 document string.
+        """
+        body = cls.to_xhtml_body(md, toc_href=toc_href)
+        return f"""<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <title>{html.escape(title)}</title>
+  <link rel="stylesheet" type="text/css" href="{stylesheet}" />
+</head>
+<body>
+{body}
+</body>
+</html>"""
 
 
 class XHTMLSanitizer(html.parser.HTMLParser):
@@ -765,15 +830,17 @@ class PurePythonEpubBuilder:
         language: str = "en",
         toc_nodes: Optional[List[Any]] = None,
         chapter_id_map: Optional[Dict[str, str]] = None,
+        book_id: Optional[str] = None,
     ):
         self.book_title = book_title
         self.author = author
         self.language = language
-        self.book_id = f"urn:uuid:{uuid.uuid4()}"
+        self.book_id = book_id or f"urn:uuid:{uuid.uuid4()}"
         self.chapters: List[Dict[str, str]] = []  # [{title, filename, xhtml_content}]
         self.images: Dict[str, Path] = {}  # {epub_relative_path: source_abs_path}
         self.toc_nodes = toc_nodes or []
         self.chapter_id_map = chapter_id_map or {}
+        self.cover_image_key: Optional[str] = None
 
     def add_chapter(self, title: str, filename: str, xhtml_body: str):
         """Adds an XHTML document to the book spine with XML well-formedness validation."""
@@ -827,15 +894,24 @@ class PurePythonEpubBuilder:
             "content": full_xhtml,
         })
 
-    def add_image(self, relative_path: str, source_path: Path):
-        """Registers an image file to bundle inside OEBPS/images/."""
+    def add_image(self, relative_path: str, source_path: Path, is_cover: bool = False):
+        """Registers an image file to bundle inside OEBPS/images/.
+
+        Args:
+            relative_path: Target relative path inside EPUB (e.g. 'images/01_cover.jpeg').
+            source_path: Path or Path-like object pointing to source image on disk.
+            is_cover: Whether this image is the official book cover thumbnail.
+        """
         clean_rel = relative_path.replace("\\", "/").lstrip("/")
         if not clean_rel.startswith("images/"):
             clean_rel = f"images/{Path(clean_rel).name}"
         self.images[clean_rel] = source_path
+        if is_cover or (self.cover_image_key is None and ("cover" in clean_rel.lower() or "01_001_001" in clean_rel)):
+            self.cover_image_key = clean_rel
 
     def build(self, output_epub_path: Path):
         """Packages all registered elements into a valid EPUB 3 zip archive."""
+        output_epub_path = Path(output_epub_path)
         output_epub_path.parent.mkdir(parents=True, exist_ok=True)
         css_content = get_epub_css()
         mod_time = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -966,11 +1042,28 @@ class PurePythonEpubBuilder:
                 ext = Path(epub_rel).suffix.lower()
                 mtype, _ = mimetypes.guess_type(epub_rel)
                 mtype = mtype or ("image/png" if ext == ".png" else "image/jpeg")
-                manifest_items.append(
-                    f'    <item id="img_{idx}" href="{epub_rel}" media-type="{mtype}"/>'
-                )
+                if epub_rel == self.cover_image_key:
+                    manifest_items.append(
+                        f'    <item id="cover-image" href="{epub_rel}" media-type="{mtype}" properties="cover-image"/>'
+                    )
+                else:
+                    manifest_items.append(
+                        f'    <item id="img_{idx}" href="{epub_rel}" media-type="{mtype}"/>'
+                    )
 
             spine_items = [f'    <itemref idref="{ch["id"]}"/>' for ch in self.chapters]
+
+            meta_cover_tag = '    <meta name="cover" content="cover-image"/>\n' if self.cover_image_key else ""
+            guide_block = ""
+            cover_ch = next(
+                (ch for ch in self.chapters if "cover" in ch["title"].lower() or "00-01" in ch["filename"].lower()),
+                None,
+            )
+            if cover_ch:
+                guide_block = f"""  <guide>
+    <reference type="cover" title="Cover" href="text/{cover_ch['filename']}"/>
+  </guide>
+"""
 
             content_opf = f"""<?xml version="1.0" encoding="UTF-8"?>
 <package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="pub-id">
@@ -980,14 +1073,14 @@ class PurePythonEpubBuilder:
     <dc:creator>{html.escape(self.author)}</dc:creator>
     <dc:language>{self.language}</dc:language>
     <meta property="dcterms:modified">{mod_time}</meta>
-  </metadata>
+{meta_cover_tag}  </metadata>
   <manifest>
 {chr(10).join(manifest_items)}
   </manifest>
   <spine toc="ncx">
 {chr(10).join(spine_items)}
   </spine>
-</package>"""
+{guide_block}</package>"""
             zf.writestr("OEBPS/content.opf", content_opf, compress_type=zipfile.ZIP_DEFLATED)
 
         logger.info("Successfully packaged EPUB 3 with pure-Python engine: %s", output_epub_path)
@@ -1106,6 +1199,12 @@ class EpubExporter:
 
         # Collect chapter markdown files and images
         chapter_data = []
+        toc_filename: Optional[str] = None
+        for c_idx, c_dir in enumerate(chapter_dirs, 1):
+            if c_dir.name in ("00-07-TOC", "TOC") or "contents" in c_dir.name.lower():
+                toc_filename = f"chapter_{c_idx:02d}.xhtml"
+                break
+
         builder = PurePythonEpubBuilder(
             book_title=book_name,
             author="Author",
@@ -1124,6 +1223,8 @@ class EpubExporter:
             c_title = c_title or c_dir.name
             c_filename = f"chapter_{c_idx:02d}.xhtml"
 
+            is_cover_chapter = ("cover" in c_dir.name.lower() or "00-01" in c_dir.name.lower() or c_idx == 1)
+
             # Register chapter images (including .jpx converted to .png for EPUB 3 reader compatibility)
             img_dir = c_dir / "images"
             if img_dir.exists():
@@ -1131,6 +1232,7 @@ class EpubExporter:
                     if not img_f.is_file():
                         continue
                     ext_low = img_f.suffix.lower()
+                    is_img_cover = is_cover_chapter and ("cover" in img_f.name.lower() or "001_001" in img_f.name.lower())
                     if ext_low == ".jpx":
                         png_equiv = img_f.with_suffix(".png")
                         if not png_equiv.exists():
@@ -1140,10 +1242,10 @@ class EpubExporter:
                             except Exception:
                                 pass
                         target_img = png_equiv if png_equiv.exists() else img_f
-                        builder.add_image(f"images/{c_idx:02d}_{target_img.name}", target_img)
+                        builder.add_image(f"images/{c_idx:02d}_{target_img.name}", target_img, is_cover=is_img_cover)
                         c_cleaned = c_cleaned.replace(f"images/{img_f.name}", f"../images/{c_idx:02d}_{target_img.name}")
                     elif ext_low in (".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg"):
-                        builder.add_image(f"images/{c_idx:02d}_{img_f.name}", img_f)
+                        builder.add_image(f"images/{c_idx:02d}_{img_f.name}", img_f, is_cover=is_img_cover)
                         # Relink in chapter text
                         c_cleaned = c_cleaned.replace(f"images/{img_f.name}", f"../images/{c_idx:02d}_{img_f.name}")
 
@@ -1159,7 +1261,8 @@ class EpubExporter:
                 )
                 c_md_path.write_text(f"# Contents\n\n{md_toc_html}\n", encoding="utf-8")
             else:
-                xhtml_body = MarkdownToXHTML.to_xhtml_body(c_cleaned)
+                current_toc_href = toc_filename if c_filename != toc_filename else None
+                xhtml_body = MarkdownToXHTML.to_xhtml_body(c_cleaned, toc_href=current_toc_href)
 
             builder.add_chapter(title=c_title, filename=c_filename, xhtml_body=xhtml_body)
             chapter_data.append((c_md_path, c_title))

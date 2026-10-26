@@ -1,23 +1,251 @@
 <!DOCTYPE html>
 <!--
-  literature-parser — web front end entry page.
-  Loads styles.css and app.js; the #app section shows loading / empty / error / data states.
+Literature Parser Web Studio & Review Dashboard
+Interactive Single Page Application for Comparing PDF with EPUB,
+In-browser Markdown/EPUB Editing, Issue Feedback Logging, and Regression Test Generation.
 -->
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>literature-parser</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📚 Literature Parser Studio — Dashboard & Comparison</title>
+  <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-  <header class="site-header">
-    <h1>literature-parser</h1>
-  </header>
-  <main>
-    <section id="app" aria-live="polite"></section>
-    <button type="button" id="refresh">重新載入</button>
-  </main>
-  <script type="module" src="app.js"></script>
+  <div id="app-layout">
+    <!-- Sidebar -->
+    <aside id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-title">
+          <span>📚</span>
+          <span>Literature Studio</span>
+        </div>
+        <div class="status-indicator">
+          <span class="status-dot"></span>
+          <span id="api-status-text">連線中</span>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <ul class="nav-menu">
+        <li class="nav-item active" data-view="dashboard">
+          <span>📊</span>
+          <span>儀表板總覽</span>
+        </li>
+        <li class="nav-item" data-view="compare">
+          <span>🔍</span>
+          <span>PDF vs EPUB 對比</span>
+        </li>
+        <li class="nav-item" data-view="diffs">
+          <span>🖼️</span>
+          <span>視覺頁面差異</span>
+        </li>
+        <li class="nav-item" data-view="corrections">
+          <span>🛠️</span>
+          <span>問題修正紀錄庫</span>
+        </li>
+      </ul>
+
+      <!-- Chapter Explorer -->
+      <div class="tree-container">
+        <div class="tree-section-title">選擇書籍 / 文獻</div>
+        <select id="book-select" class="book-select">
+          <option value="">載入中...</option>
+        </select>
+
+        <div class="tree-section-title" style="margin-top: 1rem;">章節清單</div>
+        <ul id="chapter-list" class="chapter-list">
+          <li style="padding: 0.5rem; color: var(--text-secondary);">請先選擇書籍</li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Main Viewport -->
+    <main id="main-viewport">
+      <!-- Top Action Header -->
+      <header class="top-header">
+        <div class="top-title-area">
+          <h2 id="current-view-title" class="current-view-title">📊 處理進度儀表板</h2>
+          <span id="active-breadcrumb" style="font-size: 0.8rem; color: var(--text-secondary); margin-left: 0.5rem;"></span>
+        </div>
+        <div class="top-actions">
+          <button id="btn-refresh" class="btn">🔄 重新整理</button>
+          <button id="btn-rebuild-epub-top" class="btn btn-primary" style="display: none;">📦 重新編譯 EPUB</button>
+          <a id="btn-download-epub" class="btn" style="display: none; text-decoration: none;" target="_blank">⬇️ 下載 EPUB</a>
+        </div>
+      </header>
+
+      <!-- View 1: Dashboard -->
+      <section id="view-dashboard" class="view-panel active">
+        <div class="dashboard-content">
+          <div id="stats-summary" class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-card-title">總處理文檔</div>
+              <div class="stat-card-value" id="stat-total-docs">-</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-title">已全數完工</div>
+              <div class="stat-card-value" id="stat-completed-docs" style="color: var(--accent-green-text);">-</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-title">全域章節通過率</div>
+              <div class="stat-card-value" id="stat-overall-pct" style="color: var(--accent-blue-hover);">-</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-title">累積問題修正</div>
+              <div class="stat-card-value" id="stat-total-corrections" style="color: var(--accent-amber-text);">-</div>
+            </div>
+          </div>
+
+          <h3 style="margin-bottom: 0.8rem; font-size: 1rem;">📚 書籍與論文轉檔明細</h3>
+          <div id="books-grid" class="books-grid">
+            <p style="color: var(--text-secondary); padding: 2rem; text-align: center;">載入資料中...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- View 2: Split View (PDF vs EPUB / Markdown Editor) -->
+      <section id="view-compare" class="view-panel">
+        <div class="split-workspace">
+          <!-- Left: PDF Viewer -->
+          <div class="pane pane-pdf">
+            <div class="pane-toolbar">
+              <div style="display: flex; align-items: center; gap: 0.4rem;">
+                <span>📄 原始章節 PDF</span>
+                <span id="pdf-meta-badge" class="badge-score" style="background:#1f6feb20; color:var(--accent-blue-hover); border-color:#1f6feb40;">-</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.4rem;">
+                <button id="btn-pdf-prev" class="btn" style="padding: 0.2rem 0.5rem;">◀ 上頁</button>
+                <span id="pdf-page-display">1 / 1</span>
+                <button id="btn-pdf-next" class="btn" style="padding: 0.2rem 0.5rem;">下頁 ▶</button>
+                <button id="btn-pdf-zoom-in" class="btn" style="padding: 0.2rem 0.4rem;">🔍+</button>
+                <button id="btn-pdf-zoom-out" class="btn" style="padding: 0.2rem 0.4rem;">🔍-</button>
+              </div>
+            </div>
+            <div class="pdf-viewport">
+              <div id="pdf-loading" style="display: none; position: absolute; color: var(--text-secondary);">渲染頁面中...</div>
+              <img id="pdf-render-img" class="pdf-image" src="" alt="PDF Page" style="display: none;">
+              <div id="pdf-empty-notice" style="color: var(--text-secondary); text-align: center; padding: 2rem;">
+                請於左側選取章節以載入對應 PDF。
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: EPUB / Markdown Editor -->
+          <div class="pane pane-editor">
+            <div class="pane-toolbar">
+              <div class="editor-tabs">
+                <div id="tab-editor-preview" class="editor-tab active" data-tab="preview">👁️ 即時排版預覽</div>
+                <div id="tab-editor-raw" class="editor-tab" data-tab="raw">✏️ Markdown 編輯器</div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <button id="btn-save-correction" class="btn btn-success">💾 儲存修改並記錄問題</button>
+              </div>
+            </div>
+            <div class="editor-container">
+              <!-- Raw Markdown Code Editor -->
+              <textarea id="markdown-textarea" class="code-editor" style="display: none;" placeholder="在此編輯章節 Markdown..."></textarea>
+              <!-- Live Preview Container -->
+              <div id="preview-viewport" class="preview-container active">
+                <p style="color: #666;">載入預覽內容中...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- View 3: Visual Diff Samples -->
+      <section id="view-diffs" class="view-panel">
+        <div style="padding: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3>🖼️ 頁對頁視覺圖像對照 (Visual Page Diff Samples)</h3>
+            <span style="font-size: 0.82rem; color: var(--text-secondary);">展示 PDF 原頁 vs EPUB 3 渲染截圖並列分析</span>
+          </div>
+          <div id="diff-gallery" class="diff-gallery">
+            <p style="color: var(--text-secondary);">載入視覺差異樣本中...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- View 4: Correction Feedback Library -->
+      <section id="view-corrections" class="view-panel">
+        <div class="table-container">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
+            <div>
+              <h3>🛠️ 人工修正與反饋資料庫</h3>
+              <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.2rem;">
+                記錄所有在 Web Studio 進行的校訂，並支援一鍵生成自動化回歸測試以防止重複犯錯。
+              </p>
+            </div>
+            <button id="btn-generate-tests" class="btn btn-primary">⚡ 生成自動化回歸測試 (PyTest / Unittest)</button>
+          </div>
+
+          <table class="styled-table">
+            <thead>
+              <tr>
+                <th>時間</th>
+                <th>書籍與章節</th>
+                <th>問題類型</th>
+                <th>差異摘要 (Diff)</th>
+                <th>備註說明</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="corrections-tbody">
+              <tr>
+                <td colspan="6" style="text-align: center; color: var(--text-secondary); padding: 2rem;">尚無修正記錄。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal: Issue Feedback & Save Dialog -->
+  <div id="correction-modal" class="modal-overlay">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h4 style="font-size: 1rem;">💾 記錄問題分類與修正備註</h4>
+        <button id="btn-modal-close" class="btn" style="padding: 0.2rem 0.5rem;">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="modal-issue-type">問題分類標籤 (Issue Taxonomy)</label>
+          <select id="modal-issue-type" class="form-control">
+            <option value="ocr_typo">🔤 OCR 識別錯字 / 符號黏著</option>
+            <option value="heading_level">📑 標題階層錯誤 (H1/H2/H3 誤判)</option>
+            <option value="table_layout">📊 表格排版破損 / 跨欄錯位</option>
+            <option value="missing_image">🖼️ 圖表遺漏或標題 (Caption) 缺失</option>
+            <option value="header_footer_leak">✂️ 頁首頁尾/頁碼未清除殘留</option>
+            <option value="formatting">📐 標點格式 / LaTeX 數學式異常</option>
+            <option value="general_edit">✍️ 一般文意潤飾 / 內容補齊</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="modal-user-notes">問題原因與優化建議 (供後續演算法修復參考)</label>
+          <textarea id="modal-user-notes" class="form-control" rows="3" placeholder="例如：雙欄切換時段落中斷、或首字下沉多吃掉一個字母..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>變更差異預覽 (Unified Diff)</label>
+          <div id="modal-diff-preview" style="background:#0d1117; color:#58a6ff; font-family:var(--font-mono); font-size:0.75rem; padding:0.6rem; border-radius:4px; max-height:140px; overflow-y:auto; white-space:pre-wrap;">計算中...</div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <input type="checkbox" id="modal-rebuild-epub" checked>
+          <label for="modal-rebuild-epub" style="font-size: 0.82rem; cursor: pointer;">儲存後在背景自動重新編譯 EPUB 3 並刷新</label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-modal-cancel" class="btn">取消</button>
+        <button id="btn-modal-confirm" class="btn btn-success">確認儲存並建立反饋記錄</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container"></div>
+
+  <!-- Application Logic -->
+  <script src="/static/app.js"></script>
 </body>
 </html>

@@ -48,7 +48,6 @@ class EndOfChapterParser:
             r"^Discussion Questions\b",
             r"^Critical Thinking\b",
             r"^Further Reading\b",
-            r"^References\b",
         ])
 
         # 1. Find all EOC section headings on this page
@@ -324,7 +323,12 @@ class EndOfChapterParser:
 
             return '\n'.join(cleaned_res).strip()
 
-        if len(left_elems) >= 3 and len(right_elems) >= 3:
+        has_baseline_crossing = any(
+            any(abs(float(r.attrib.get('top', 0)) - float(l.attrib.get('top', 0))) <= 3.5 for r in right_elems)
+            for l in left_elems
+        )
+
+        if len(left_elems) >= 3 and len(right_elems) >= 3 and not has_baseline_crossing:
             col1_md = process_elems(left_elems)
             col2_md = process_elems(right_elems)
             col1_rstrip = col1_md.rstrip()

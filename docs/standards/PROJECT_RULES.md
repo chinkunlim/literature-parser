@@ -40,6 +40,7 @@
 ### 2.5 硬體守衛與離線主權 (Hardware Guard & Local AI)
 - **硬體守衛優先**：所有啟動本地 Ollama 大模型推理或密集 OCR 運算的任務，必須事先通過 RAM（≥ 2.0GB/4.0GB）與電源狀態（電池低電量防護）檢查，資源不足時應優雅降級或中止。
 - **純本地離線保證**：本地大模型服務僅綁定 `http://127.0.0.1:11434`，絕不將資料傳送至外部非授權端點。
+- **Web 與 API 服務埠號**：本專案之 Web 儀表板與 REST API/MCP 服務固定綁定 `127.0.0.1:8767`（由 `HTTP_PORT=8767` 指定），避免與 Open WebUI (8080)、literature-fetch (8765) 或模板網頁 (8766) 衝突。
 
 ### 2.6 獨立轉換引擎與策略模式 (MarkdownConversionService)
 - **單一職責與可重入**：核心 Markdown 轉換邏輯必須由 `MarkdownConversionService` 承載，嚴禁在 Pipeline/Orchestrator 內覆寫模組全域變數（如 `_STYLE`）或編寫逐頁拼接迴圈。

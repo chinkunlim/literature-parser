@@ -28,6 +28,7 @@ from literature_parser.entrypoints.project_cli.cli_project import (
     cmd_status,
     cmd_test_ollama_auto_trigger,
     cmd_watchdog,
+    cmd_web,
 )
 from literature_parser.entrypoints.project_cli.common import (
     ROOT,
@@ -58,6 +59,7 @@ __all__ = [
     "cmd_status",
     "cmd_test_ollama_auto_trigger",
     "cmd_watchdog",
+    "cmd_web",
     "get_current_date",
     "get_current_timestamp",
     "sync_markdown_dates",

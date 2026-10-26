@@ -79,15 +79,20 @@ class ImageManager:
         is_scanned: bool = False,
         target_pages: set = None,
         is_cover: bool = False,
+        is_front_matter: bool = False,
     ) -> list:
-        """
-        Extracts embedded images from PDF using native PyMuPDF with pdfimages fallback.
+        """Extracts embedded images from PDF using native PyMuPDF with pdfimages fallback.
 
         - Converts .jp2/.tiff to high-res JPEG using macOS sips when using CLI.
         - Discards .jb2e font masks.
         - If is_scanned is True, discards full-page background paper sheet scans.
         - Cover art (page 1, sub-index 0) is only preserved if is_cover is True.
+        - Front-matter chapters (except cover page 1) have decorative graphics discarded.
         """
+        # If non-cover front matter, discard all raster images directly
+        if is_front_matter and not is_cover:
+            return []
+
         # 1. High-speed native PyMuPDF extraction
         try:
             import pymupdf  # type: ignore
@@ -128,8 +133,20 @@ class ImageManager:
                             or ((w >= 1100 and h >= 1400) or (w >= 2000 and h >= 3000))
                             or is_sheet_like
                         )
-                        if is_full_page and not (is_cover and p_num == 1 and s_idx == 0):
+                        if is_cover:
+                            if not (p_num == 1 and s_idx == 0):
+                                continue
+                        elif is_front_matter:
                             continue
+                        elif is_full_page:
+                            continue
+
+                        # Filter out extreme decorative aspect ratios (thin strips/dividers) and tiny icons
+                        if w > 0 and h > 0:
+                            aspect = max(w / h, h / w)
+                            if aspect > 4.5 or (w < 80 and h < 80):
+                                continue
+
                         native_images.append({
                             'page': p_num,
                             'sub_idx': s_idx,
@@ -218,8 +235,12 @@ class ImageManager:
 
                 # 5. Full-page background scan filter for scanned books.
                 #    Cover art (page_num==1, sub_idx==0) is preserved only if is_cover is True.
-                is_cover_art = is_cover and page_num == 1 and sub_idx == 0
-                if is_scanned and not is_cover_art and cls._is_full_page_scan(src_file, is_scanned):
+                if is_cover:
+                    if not (page_num == 1 and sub_idx == 0):
+                        continue
+                elif is_front_matter:
+                    continue
+                elif is_scanned and cls._is_full_page_scan(src_file, is_scanned):
                     logger.debug("Discarding full-page scan: page %d sub %d", page_num, sub_idx)
                     continue
 

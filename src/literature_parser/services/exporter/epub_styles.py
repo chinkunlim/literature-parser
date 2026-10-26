@@ -192,6 +192,17 @@ tfoot {
   margin: 0.6em 0;
 }
 
+/* Chapter Title Backlink to TOC */
+a.toc-backlink {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+a.toc-backlink:hover {
+  text-decoration: underline;
+}
+
 /* Code & Formulas */
 code, pre {
   font-family: ui-monospace, Menlo, Monaco, "Cascadia Mono", monospace;

@@ -20,6 +20,7 @@ import sys
 import time
 import webbrowser
 from pathlib import Path
+from typing import Any
 
 from literature_parser.entrypoints.project_cli.cli_process import cmd_process
 from literature_parser.entrypoints.project_cli.common import ROOT, clean_dangling_tmp_files, get_current_date
@@ -837,3 +838,42 @@ Visualizes processing pipeline status, progress bars, and chapter stats.
             print("🚀 已自動在預設瀏覽器中開啟儀表板。\n")
         except Exception:
             pass
+
+
+def cmd_web(args: Any) -> None:
+    """Starts the FastAPI Web Application & MCP Server for interactive review and comparison.
+
+    Args:
+        args: Parsed command-line arguments (host, port, no_open).
+
+    Returns:
+        None.
+    """
+    import threading
+    import uvicorn
+    from literature_parser.config.settings import load_config
+
+    cfg = load_config()
+    host = getattr(args, "host", None) or cfg.http_host
+    port = getattr(args, "port", None) or cfg.http_port
+
+    url = f"http://{host}:{port}"
+    print("\n" + "=" * 65)
+    print(f"🚀 [WEB STUDIO] 正在啟動 Literature Parser 互動式 Web Studio...")
+    print(f"• 綁定端點: {url}")
+    print(f"• OpenAPI 文件: {url}/docs")
+    print(f"• 靜態頁面: {url}/")
+    print("=" * 65 + "\n")
+
+    if not getattr(args, "no_open", False):
+        def _open():
+            import time
+            time.sleep(1.0)
+            try:
+                webbrowser.open(url)
+            except Exception:
+                pass
+        threading.Thread(target=_open, daemon=True).start()
+
+    uvicorn.run("literature_parser.entrypoints.web_app:app", host=host, port=port, log_level="info")
+

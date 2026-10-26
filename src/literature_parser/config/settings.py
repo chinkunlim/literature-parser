@@ -75,7 +75,18 @@ class AppConfig:
     log_to_file: bool = True
     timeout_seconds: int = 15
     ollama_base_url: str = "http://127.0.0.1:11434"
+    http_host: str = "127.0.0.1"
+    http_port: int = 8767
     data_dir: Path = resolve_data_dir(DEFAULT_DATA_DIR)
+
+    @property
+    def db_dir(self) -> Path:
+        """Folder for databases and feedback issue records.
+
+        Returns:
+            `<data_dir>/db`.
+        """
+        return self.data_dir / "db"
 
     @property
     def input_dir(self) -> Path:
@@ -179,5 +190,7 @@ def load_config() -> AppConfig:
         log_to_file=_flag(os.environ.get("LOG_TO_FILE", "true")),
         timeout_seconds=int(os.environ.get("API_TIMEOUT_SECONDS", "15")),
         ollama_base_url=os.environ.get("OLLAMA_BASE_URL", "http://127.0.0.1:11434").strip().rstrip("/"),
+        http_host=os.environ.get("HTTP_HOST", "127.0.0.1").strip(),
+        http_port=int(os.environ.get("HTTP_PORT", "8767")),
         data_dir=data_dir,
     )

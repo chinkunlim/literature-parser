@@ -56,6 +56,7 @@ from literature_parser.entrypoints.project_cli import (
     cmd_status,
     cmd_test_ollama_auto_trigger,
     cmd_watchdog,
+    cmd_web,
 )
 
 
@@ -204,6 +205,13 @@ def main(argv=None):
     p_dash = subparsers.add_parser("dashboard", help="生成靜態 HTML 視覺化儀表板並於瀏覽器中檢視進度")
     p_dash.add_argument("--no-open", action="store_true", help="僅生成檔案，不自動開啟瀏覽器")
     p_dash.set_defaults(func=cmd_dashboard)
+
+    # 18. web
+    p_web = subparsers.add_parser("web", help="啟動互動式 Web Studio、雙欄 PDF/EPUB 對比與問題修正系統")
+    p_web.add_argument("--host", default="127.0.0.1", help="綁定主機 (預設 127.0.0.1)")
+    p_web.add_argument("--port", type=int, default=8767, help="綁定埠號 (預設 8767)")
+    p_web.add_argument("--no-open", action="store_true", help="啟動後不自動開啟瀏覽器")
+    p_web.set_defaults(func=cmd_web)
 
     args = parser.parse_args(argv)
     if hasattr(args, "func"):

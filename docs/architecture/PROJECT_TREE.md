@@ -109,7 +109,8 @@ literature-parser/
 │   │   ├── TASK-045-enhance-batch-resilience-table-h.json
 │   │   ├── TASK-046-implement-two-pass-chapterbluepr.json
 │   │   ├── TASK-047-fix-6-spot-checked-defects-merma.json
-│   │   └── TASK-048-full-pipeline-formatting-enhance.json
+│   │   ├── TASK-048-full-pipeline-formatting-enhance.json
+│   │   └── TASK-049-epub-layout-healing-front-matter.json
 │   ├── framework.lock                      # [框架鎖定檔] 框架版本與檔案雜湊，供 update_framework 判斷是否被修改
 │   └── project.toml                        # [專案設定・各專案自訂] 語言、分層、品質門檻、指令、業務規則
 ├── .cursor/                                # [Agent 轉接] Cursor 規則 (自動產生)
@@ -143,6 +144,7 @@ literature-parser/
 │   │   ├── 010-archive-segregation-and-batch-resilience.md
 │   │   ├── 011-two-pass-chapter-blueprint-and-hybrid-docling.md
 │   │   ├── 012-hierarchical-toc-resolution-and-side-by-side-visual-diff.md
+│   │   ├── 013-interactive-web-dashboard-and-correction-feedback.md
 │   │   ├── _TEMPLATE.md                    # ADR 範本 (tracker_cli 會套用)
 │   │   └── DECISIONS.md                    # 架構決策總表
 │   ├── architecture/                       # [系統架構與資料模型]
@@ -181,6 +183,7 @@ literature-parser/
 │   │   ├── 007-theme-and-pipeline-configuration.md
 │   │   ├── 008-batch-resilience-and-zero-defect-pipeline.md
 │   │   ├── 009-autonomous-layout-and-archive-segregation.md
+│   │   ├── 010-web-comparison-and-feedback-system.md
 │   │   ├── _TEMPLATE.md                    # 規格範本
 │   │   └── SPECS.md                        # 規格清單
 │   ├── standards/                          # [工程規範] 依任務載入 (Progressive Disclosure)
@@ -293,7 +296,8 @@ literature-parser/
 │       │   │   ├── blueprint_schema.py
 │       │   │   ├── model_advisor.py
 │       │   │   └── profile_schema.py
-│       │   └── __init__.py
+│       │   ├── __init__.py
+│       │   └── correction.py
 │       ├── entrypoints/
 │       │   ├── project_cli/
 │       │   │   ├── __init__.py
@@ -306,7 +310,9 @@ literature-parser/
 │       │   ├── __init__.py
 │       │   ├── cli.py
 │       │   ├── doc_cli.py
-│       │   └── run.py
+│       │   ├── mcp_server.py
+│       │   ├── run.py
+│       │   └── web_app.py
 │       ├── services/
 │       │   ├── concurrency/
 │       │   │   ├── __init__.py
@@ -328,6 +334,7 @@ literature-parser/
 │       │   │   ├── __init__.py
 │       │   │   ├── analyzer.py
 │       │   │   ├── checkpoint.py
+│       │   │   ├── correction_service.py
 │       │   │   ├── global_state.py
 │       │   │   ├── image_manager.py
 │       │   │   ├── invariants.py
@@ -336,7 +343,8 @@ literature-parser/
 │       │   │   ├── markdown_updater.py
 │       │   │   ├── splitter.py
 │       │   │   ├── toc_resolver.py
-│       │   │   └── watchdog.py
+│       │   │   ├── watchdog.py
+│       │   │   └── web_data_service.py
 │       │   ├── exporter/
 │       │   │   ├── __init__.py
 │       │   │   ├── epub_exporter.py
@@ -418,18 +426,21 @@ literature-parser/
 │   ├── test_element_cropper.py
 │   ├── test_epub_visual_closed_loop.py
 │   ├── test_feedback_loop.py
+│   ├── test_feedback_service.py
 │   ├── test_fingerprinting.py
 │   ├── test_journal_conversion.py
 │   ├── test_layout_submodules.py
 │   ├── test_m5_concurrency.py
 │   ├── test_markdown_converter.py
 │   ├── test_markdown_updater.py
+│   ├── test_mcp_server.py
 │   ├── test_quality_engine.py
 │   ├── test_resilience_guard.py
 │   ├── test_semantic_stitcher.py
 │   ├── test_spotcheck_defects_and_visual_audit.py
 │   ├── test_stage0_profiler.py
 │   ├── test_toc_resolver.py
+│   ├── test_user_corrections_regression.py
 │   ├── test_v21_features.py
 │   ├── test_v22_features.py
 │   ├── test_v23_layout_features.py
@@ -462,7 +473,10 @@ literature-parser/
 │   ├── test_v51_book_profile_adaptive_learning.py
 │   ├── test_v52_unified_pymupdf_and_continuity_fixes.py
 │   ├── test_v53_regex_bullet_and_watermark_filters.py
+│   ├── test_v54_epub_cover_and_layout_healing.py
 │   ├── test_visual_pdf_epub_diff.py
+│   ├── test_web_data_service.py
+│   ├── test_web_routes.py
 │   └── test_zone_tagger.py
 ├── web/
 │   ├── app.js

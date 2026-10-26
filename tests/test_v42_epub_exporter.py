@@ -231,6 +231,35 @@ class TestEpubExporterLiteratureAndBook(unittest.TestCase):
             self.assertIn("OEBPS/text/chapter_01.xhtml", zf.namelist())
             self.assertNotIn("OEBPS/text/chapter_02.xhtml", zf.namelist())
 
+    def test_unbalanced_bold_italic_produces_well_formed_xml(self):
+        """Verifies that unbalanced ***A**B* and mixed emphasis convert to valid XML without tag mismatch."""
+        import xml.etree.ElementTree as ET
+        from literature_parser.services.exporter.epub_exporter import MarkdownToXHTML
+
+        raw_md = (
+            "1. Status: ***Not Clear**Somewhat Clear* *Quite Clear*\n\n"
+            "**LO 7.2** **Sensory organization:** ***hierarchical organization, functional*** "
+            "***segregation*** **, and** ***parallel processing*** **. Summarize**"
+        )
+        xhtml = MarkdownToXHTML.to_xhtml_body(raw_md)
+        doc = f'<?xml version="1.0" encoding="utf-8"?><div>{xhtml}</div>'
+        elem = ET.fromstring(doc.encode("utf-8"))
+        self.assertIsNotNone(elem)
+
+    def test_xhtml_sanitizer_repairs_overlapping_and_unclosed_tags(self):
+        """Verifies XHTMLSanitizer auto-heals overlapping and unclosed HTML tags."""
+        import xml.etree.ElementTree as ET
+        from literature_parser.services.exporter.epub_exporter import XHTMLSanitizer
+
+        broken_html = "<p>Unbalanced <strong><em>nested tags</strong> issue</em> in <p>another paragraph"
+        sanitizer = XHTMLSanitizer()
+        sanitizer.feed(broken_html)
+        healed = sanitizer.close()
+
+        doc = f'<?xml version="1.0" encoding="utf-8"?><div>{healed}</div>'
+        elem = ET.fromstring(doc.encode("utf-8"))
+        self.assertIsNotNone(elem)
+
 
 class TestEpubCLIDispatch(unittest.TestCase):
     """Verifies CLI argument parsing and dispatching for the 'epub' command."""

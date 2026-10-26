@@ -45,6 +45,7 @@ class EpubVisualAuditor:
         raw_bold_count = 0
         soft_hyphen_count = 0
         broken_img_count = 0
+        xml_error_count = 0
 
         if not epub_path.exists():
             return {
@@ -58,7 +59,16 @@ class EpubVisualAuditor:
             for name in sorted(names):
                 if not name.endswith((".xhtml", ".html")):
                     continue
-                html_text = zf.read(name).decode("utf-8", errors="ignore")
+                raw_bytes = zf.read(name)
+                # Verify strict XML well-formedness (Refs: ISSUE-017)
+                try:
+                    import xml.etree.ElementTree as ET
+                    ET.fromstring(raw_bytes)
+                except Exception as xml_err:
+                    xml_error_count += 1
+                    defects.append({"file": name, "type": "invalid_xml", "error": str(xml_err)})
+
+                html_text = raw_bytes.decode("utf-8", errors="ignore")
                 sh_cnt = html_text.count("\xad")
                 if sh_cnt > 0:
                     soft_hyphen_count += sh_cnt
@@ -103,12 +113,14 @@ class EpubVisualAuditor:
             "raw_bold_count": raw_bold_count,
             "soft_hyphen_count": soft_hyphen_count,
             "broken_img_count": broken_img_count,
+            "xml_error_count": xml_error_count,
             "defect_count": (
                 raw_pipe_count
                 + raw_mermaid_count
                 + raw_bold_count
                 + soft_hyphen_count
                 + broken_img_count
+                + xml_error_count
             ),
             "defects": defects,
         }

@@ -13,6 +13,7 @@ EPUB 3 digital publications:
 
 import datetime
 import html
+import html.parser
 import logging
 import mimetypes
 import os
@@ -291,13 +292,29 @@ class MarkdownToXHTML:
 
     @classmethod
     def clean_markdown_for_epub(cls, md: str) -> Tuple[str, Optional[str]]:
-        """Strips in-line <style> blocks and extracts primary title."""
+        """Strips in-line <style> blocks, Obsidian navigation wikilinks, and comments, and extracts primary title."""
         # Extract title from first H1
         title_match = re.search(r'(?m)^#\s+([^\n]+)', md)
         title = title_match.group(1).strip() if title_match else None
 
+        # Strip Obsidian navigation blocks and center navigation divs
+        cleaned = re.sub(r'<![—–-]+\s*OBSIDIAN_NAV_START[\s\S]*?OBSIDIAN_NAV_END\s*[—–-]+>', '', md)
+        cleaned = re.sub(r'<div\s+align="center">\s*\[\[.*?\]\].*?</div>', '', cleaned, flags=re.DOTALL)
+        cleaned = re.sub(r'\[\[(?:[^|\]]+\|)?([^\]]+)\]\]', r'\1', cleaned)
+
+        # Strip all HTML comments (both standard <!-- ... --> and dash-corrupted <!-— ... —>)
+        cleaned = re.sub(r'<![—–-][\s\S]*?[—–-]>', '', cleaned)
+
         # Strip inline <style>...</style> tags
-        cleaned = re.sub(r'<style\b[^>]*>.*?</style>', '', md, flags=re.DOTALL | re.IGNORECASE)
+        cleaned = re.sub(r'<style\b[^>]*>.*?</style>', '', cleaned, flags=re.DOTALL | re.IGNORECASE)
+
+        # Strip empty bold/italic tokens (Refs: ISSUE-017)
+        cleaned = re.sub(r'\*\*\s*\*\*', '', cleaned)
+        cleaned = re.sub(r'\*\*\*\s*\*\*\*', '', cleaned)
+
+        # Separate touching bold and italic markers in numbered items (e.g. **2.***Temporality.* -> **2.** *Temporality.*)
+        cleaned = re.sub(r'(?<=\d\.)\*\*\*(?=[a-zA-Z])', r'** *', cleaned)
+
         return cleaned.strip(), title
 
     VOID_TAGS = {"br", "hr", "img", "col", "input", "meta", "link"}
@@ -562,8 +579,14 @@ class MarkdownToXHTML:
         body = re.sub(r'<(br|hr|col|input)(?:\s+([^/>]*))?>', r'<\1 \2/>', body)
         body = re.sub(r'\s+/>', ' />', body)
 
-        # 3. Strip HTML comments (e.g. <!-- Page 4 -->)
-        body = re.sub(r'<!--.*?-->', '', body, flags=re.DOTALL)
+        # 3. Strip HTML comments (including dash-corrupted <!-— ... —> and Obsidian blocks) (Refs: ISSUE-017)
+        body = re.sub(r'<![—–-]+\s*OBSIDIAN_NAV_START[\s\S]*?OBSIDIAN_NAV_END\s*[—–-]+>', '', body)
+        body = re.sub(r'<div\s+align="center">\s*\[\[.*?\]\].*?</div>', '', body, flags=re.DOTALL)
+        body = re.sub(r'<![—–-][\s\S]*?[—–-]>', '', body)
+        body = re.sub(r'\[\[(?:[^|\]]+\|)?([^\]]+)\]\]', r'\1', body)
+
+        # 3.5. Convert bare angle-bracket autolink URLs (<http://...>) to valid XHTML anchors (Refs: ISSUE-017)
+        body = re.sub(r'<(https?://[^>]+)>', r'<a href="\1">\1</a>', body)
 
         # 4. Naked ampersands
         body = re.sub(r'&(?!(?:amp|lt|gt|quot|apos|#\d+|#x[0-9a-fA-F]+);)', '&amp;', body)
@@ -588,10 +611,23 @@ class MarkdownToXHTML:
             return f"__MATH_PH_{idx}__"
         text = re.sub(r'<math\b.*?</math>', _hide_math, text, flags=re.DOTALL)
 
-        # Bold & Italic
-        text = re.sub(r'\*\*\*(.*?)\*\*\*', r'<strong><em>\1</em></strong>', text)
-        text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', text)
-        text = re.sub(r'\*([^\*]+?)\*', r'<em>\1</em>', text)
+        # Autolink angle-bracket URLs (<http://...>)
+        text = re.sub(r'<(https?://[^>]+)>', r'<a href="\1">\1</a>', text)
+
+        # 1. Balanced 3 stars: ***...***
+        text = re.sub(r'\*\*\*(.+?)\*\*\*', r'<strong><em>\1</em></strong>', text)
+
+        # 2. Unbalanced mixed stars: ***A**B* -> <em><strong>A</strong>B</em> (Refs: ISSUE-017)
+        text = re.sub(r'(?<!\*)\*\*\*([^*\n]+?)\*\*([^*\n]+?)\*(?!\*)', r'<em><strong>\1</strong>\2</em>', text)
+        text = re.sub(r'(?<!\*)\*\*\*([^*\n]+?)\*([^*\n]+?)\*\*(?!\*)', r'<strong><em>\1</em>\2</strong>', text)
+        text = re.sub(r'(?<!\*)\*([^*\n]+?)\*\*([^*\n]+?)\*\*\*(?!\*)', r'<em>\1<strong>\2</strong></em>', text)
+        text = re.sub(r'(?<!\*)\*\*([^*\n]+?)\*([^*\n]+?)\*\*\*(?!\*)', r'<strong>\1<em>\2</em></strong>', text)
+
+        # 3. Balanced 2 stars: **...** (not adjacent to *)
+        text = re.sub(r'(?<!\*)\*\*(.*?)(?<!\*)\*\*(?!\*)', r'<strong>\1</strong>', text)
+
+        # 4. Balanced 1 star: *...* (not adjacent to *)
+        text = re.sub(r'(?<!\*)\*([^*\n]+?)(?<!\*)\*(?!\*)', r'<em>\1</em>', text)
 
         # Inline code
         text = re.sub(r'`([^`]+)`', lambda m: f"<code>{html.escape(m.group(1))}</code>", text)
@@ -599,11 +635,115 @@ class MarkdownToXHTML:
         # Markdown links: [text](url)
         text = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2">\1</a>', text)
 
+        # Strip any unrendered/broken bold tokens (Refs: ISSUE-017)
+        text = text.replace("**", "")
+
         # Restore MathML
         for idx, m_str in enumerate(math_placeholders):
             text = text.replace(f"__MATH_PH_{idx}__", m_str)
 
         return text
+
+
+class XHTMLSanitizer(html.parser.HTMLParser):
+    """Lenient HTML parser that balances and repairs tags into strictly well-formed XHTML.
+
+    Attributes:
+        VOID_TAGS: Set of HTML tags that are self-closing in XML/XHTML.
+    """
+
+    VOID_TAGS = {"br", "hr", "img", "col", "input", "meta", "link"}
+
+    def __init__(self) -> None:
+        """Initializes the sanitizer stack and output buffer."""
+        super().__init__()
+        self.stack: List[str] = []
+        self.output: List[str] = []
+
+    def handle_starttag(self, tag: str, attrs: List[Tuple[str, Optional[str]]]) -> None:
+        """Handles opening HTML tags, enforcing XHTML self-closing or pushing to tag stack.
+
+        Args:
+            tag: HTML tag name.
+            attrs: List of (name, value) attribute pairs.
+        """
+        attr_str = ""
+        if attrs:
+            formatted_attrs = []
+            for k, v in attrs:
+                if v is None:
+                    formatted_attrs.append(k)
+                else:
+                    clean_v = v.replace("&", "&amp;").replace('"', "&quot;")
+                    formatted_attrs.append(f'{k}="{clean_v}"')
+            attr_str = " " + " ".join(formatted_attrs)
+        if tag.lower() in self.VOID_TAGS:
+            self.output.append(f"<{tag}{attr_str} />")
+        else:
+            self.stack.append(tag)
+            self.output.append(f"<{tag}{attr_str}>")
+
+    def handle_endtag(self, tag: str) -> None:
+        """Handles closing HTML tags, unwinding stack to repair mismatched tags.
+
+        Args:
+            tag: HTML tag name.
+        """
+        tag_lower = tag.lower()
+        if tag_lower in self.VOID_TAGS:
+            return
+        if tag_lower in self.stack:
+            reopen = []
+            while self.stack and self.stack[-1] != tag_lower:
+                unclosed = self.stack.pop()
+                self.output.append(f"</{unclosed}>")
+                reopen.append(unclosed)
+            if self.stack and self.stack[-1] == tag_lower:
+                self.stack.pop()
+                self.output.append(f"</{tag_lower}>")
+            for r in reversed(reopen):
+                self.stack.append(r)
+                self.output.append(f"<{r}>")
+
+    def handle_data(self, data: str) -> None:
+        """Handles raw text data, escaping bare XML special characters.
+
+        Args:
+            data: Raw text data.
+        """
+        self.output.append(html.escape(data, quote=False))
+
+    def handle_entityref(self, name: str) -> None:
+        """Handles XML/HTML entity references.
+
+        Args:
+            name: Entity name (e.g. 'amp', 'nbsp').
+        """
+        if name in ("amp", "lt", "gt", "quot", "apos"):
+            self.output.append(f"&{name};")
+        else:
+            char = html.unescape(f"&{name};")
+            self.output.append(html.escape(char, quote=False))
+
+    def handle_charref(self, name: str) -> None:
+        """Handles character numeric references.
+
+        Args:
+            name: Numeric character reference (e.g. '#160', '#x00a0').
+        """
+        self.output.append(f"&#{name};")
+
+    def close(self) -> str:
+        """Closes the parser, emitting any unclosed tags on the stack.
+
+        Returns:
+            Well-formed XHTML string.
+        """
+        super().close()
+        while self.stack:
+            unclosed = self.stack.pop()
+            self.output.append(f"</{unclosed}>")
+        return "".join(self.output)
 
 
 class PurePythonEpubBuilder:
@@ -622,7 +762,12 @@ class PurePythonEpubBuilder:
         self.images: Dict[str, Path] = {}  # {epub_relative_path: source_abs_path}
 
     def add_chapter(self, title: str, filename: str, xhtml_body: str):
-        """Adds an XHTML document to the book spine."""
+        """Adds an XHTML document to the book spine with XML well-formedness validation."""
+        # Strip any residual comments or Obsidian navigation tags
+        xhtml_body = re.sub(r'<![—–-]+\s*OBSIDIAN_NAV_START[\s\S]*?OBSIDIAN_NAV_END\s*[—–-]+>', '', xhtml_body)
+        xhtml_body = re.sub(r'<div\s+align="center">\s*\[\[.*?\]\].*?</div>', '', xhtml_body, flags=re.DOTALL)
+        xhtml_body = re.sub(r'<![—–-][\s\S]*?[—–-]>', '', xhtml_body)
+
         full_xhtml = f"""<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="{self.language}">
@@ -635,6 +780,32 @@ class PurePythonEpubBuilder:
 {xhtml_body}
 </body>
 </html>"""
+
+        try:
+            import xml.etree.ElementTree as ET
+            ET.fromstring(full_xhtml.encode("utf-8"))
+        except Exception as parse_err:
+            logger.warning("Chapter '%s' XML validation flagged %s; applying auto-healing", filename, parse_err)
+            sanitizer = XHTMLSanitizer()
+            sanitizer.feed(xhtml_body)
+            healed_body = sanitizer.close()
+            full_xhtml = f"""<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="{self.language}">
+<head>
+  <meta charset="utf-8" />
+  <title>{html.escape(title)}</title>
+  <link rel="stylesheet" type="text/css" href="../styles/style.css" />
+</head>
+<body>
+{healed_body}
+</body>
+</html>"""
+            try:
+                ET.fromstring(full_xhtml.encode("utf-8"))
+            except Exception as final_err:
+                logger.error("Auto-healed chapter '%s' still flagged XML error: %s", filename, final_err)
+
         self.chapters.append({
             "id": f"sec_{len(self.chapters) + 1}",
             "title": title,

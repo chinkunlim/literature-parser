@@ -515,8 +515,8 @@ def clean_typography_artifacts(text: str) -> str:
     text = normalize_ligatures(text)
     text = clean_decorative_noise(text)
 
-    # Protect fenced code blocks (e.g. ```mermaid ... ```) and Markdown table separator rows (| --- |)
-    # so `-->` and `| --- |` are never corrupted into `—>` or `| — |` (Refs: ISSUE-016)
+    # Protect fenced code blocks (e.g. ```mermaid ... ```), table separator rows (| --- |),
+    # and HTML comments (<!-- ... -->) so `--` is never corrupted into em-dashes `—` (Refs: ISSUE-017)
     protected_blocks: list[str] = []
 
     def _stash(match: re.Match) -> str:
@@ -524,8 +524,15 @@ def clean_typography_artifacts(text: str) -> str:
         protected_blocks.append(match.group(0))
         return f"\x00PROTECTED_BLOCK_{idx}\x00"
 
+    # Restore any already-corrupted em-dash comments back to standard ASCII <!-- ... -->
+    text = re.sub(
+        r"<![—–-]([\s\S]*?)[—–-]>",
+        lambda m: f"<!--{m.group(1).replace('—', '--').replace('–', '--')}-->",
+        text,
+    )
     text = re.sub(r"```[\s\S]*?```", _stash, text)
     text = re.sub(r"(?m)^[ \t]*\|[ \t:\-\|]+\|[ \t]*$", _stash, text)
+    text = re.sub(r"<!--[\s\S]*?-->", _stash, text)
 
     # Standardize dashes in regular prose
     text = re.sub(r"---", "—", text)

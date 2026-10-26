@@ -52,8 +52,16 @@
 - **表格雙軌呈現**：Markdown 內文保留結構化文字表格（供檢索與 AI 分析），並在該處嵌入獨立裁切圖片連結（供人類視覺對照）。
 - **CSS 混合雙出**：輸出根目錄產出獨立 `style.css`，並在產出的 Markdown 檔頭自動嵌入 `<style>` 區塊。
 
-### 2.8 三層漸進式品質檢驗體系 (Three-Tier Progressive Verification)
-- **三維度權重**：轉換完成後依序執行排版檢查（`LayoutAuditor`, 35%）、詞語與公式檢查（`LexicalAuditor`, 35%）、語意與閱讀流檢查（`SemanticAuditor`, 30%）。
+### 2.8 雙閘門五維度品質檢驗體系 (Dual-Gate Five-Dimension Verification System)
+- **雙閘門把關架構**：
+  - **閘門 1 (Gate 1: Markdown 驗收)**：於章節轉譯完成時，對 Markdown 原始碼執行全量檢查。
+  - **閘門 2 (Gate 2: EPUB 驗收)**：於全書打包成 EPUB 後，對 EPUB 內部 XHTML 與 PyMuPDF 渲染之頁面截圖執行第二次覆查。
+- **五大檢驗維度與權重**：
+  1. **排版幾何 (LayoutAuditor, 25%)**：標題樹階層、表格結構對齊、清單閉合與 TOC 目錄導航。
+  2. **詞彙拼寫 (LexicalAuditor, 25%)**：字典覆蓋率、OCR 殘損連字、字根斷裂修復（如 `infor mation` ➔ `information`）。
+  3. **數學與統計公式 (FormulaAuditor, 20%)**：LaTeX 行內與塊級 `$` 閉合、MathML 相容性、貨幣 `\$` 防護與 APA 統計符號標準化（*t*, *F*, *p*, *R*²）。
+  4. **語意閱讀流 (SemanticAuditor, 30%)**：跨頁斷句縫合、標題連貫性，由本地 Ollama LLM (`qwen2.5` / `gemma4`) 深度審查。
+  5. **視覺多模態 (Vision Auditor)**：由本地 Ollama VLM (`minicpm-v:latest`) 對渲染點陣圖進行排版、重疊字與裝飾切片之視覺評分（1-10 分）。
 - **處置原則**：確定性瑕疵執行 Safe Auto-Fix（自動過濾洩漏頁首、清理孤立頁碼、閉合標籤、連字號斷詞黏合、統計符號標準化）；整體品質未達門檻（預設 85%）或排版破損時，隔離至 `DATA_DIR/needs_review/`。
 - **報告雙輸出與 CLI**：同目錄產出視覺化 `AUDIT.md` 與結構化 `audit_report.json`，並提供獨立 CLI 指令 `book-processor verify -f path/to/chapter.md` 供隨時體檢。
 

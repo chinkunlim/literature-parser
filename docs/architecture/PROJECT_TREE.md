@@ -111,7 +111,8 @@ literature-parser/
 │   │   ├── TASK-047-fix-6-spot-checked-defects-merma.json
 │   │   ├── TASK-048-full-pipeline-formatting-enhance.json
 │   │   ├── TASK-049-epub-layout-healing-front-matter.json
-│   │   └── TASK-050-epub.json
+│   │   ├── TASK-050-epub.json
+│   │   └── TASK-051-markdown-epub.json
 │   ├── framework.lock                      # [框架鎖定檔] 框架版本與檔案雜湊，供 update_framework 判斷是否被修改
 │   └── project.toml                        # [專案設定・各專案自訂] 語言、分層、品質門檻、指令、業務規則
 ├── .cursor/                                # [Agent 轉接] Cursor 規則 (自動產生)
@@ -405,6 +406,7 @@ literature-parser/
 │       │   ├── verification/
 │       │   │   ├── __init__.py
 │       │   │   ├── epub_visual_auditor.py
+│       │   │   ├── formula_auditor.py
 │       │   │   ├── layout_auditor.py
 │       │   │   ├── lexical_auditor.py
 │       │   │   ├── models.py
@@ -431,6 +433,7 @@ literature-parser/
 │   ├── test_feedback_loop.py
 │   ├── test_feedback_service.py
 │   ├── test_fingerprinting.py
+│   ├── test_formula_auditor.py
 │   ├── test_journal_conversion.py
 │   ├── test_layout_submodules.py
 │   ├── test_m5_concurrency.py

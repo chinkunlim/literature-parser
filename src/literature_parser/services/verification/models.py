@@ -50,11 +50,12 @@ class AuditIssue:
 
 @dataclass
 class QualityScore:
-    """Weighted scores across the three verification dimensions.
+    """Weighted scores across the verification dimensions.
 
     Attributes:
         layout_score: Layout and formatting score (0.0 to 100.0).
-        lexical_score: Lexical spelling and LaTeX formula score (0.0 to 100.0).
+        lexical_score: Lexical spelling score (0.0 to 100.0).
+        formula_score: Mathematical and statistical formula score (0.0 to 100.0).
         semantic_score: Semantic reading flow and continuity score (0.0 to 100.0).
         overall_score: Weighted composite score (0.0 to 100.0).
         passed: Whether overall score meets or exceeds the required passing threshold.
@@ -62,6 +63,7 @@ class QualityScore:
 
     layout_score: float = 100.0
     lexical_score: float = 100.0
+    formula_score: float = 100.0
     semantic_score: float = 100.0
     overall_score: float = 100.0
     passed: bool = True

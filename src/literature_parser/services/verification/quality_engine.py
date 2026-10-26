@@ -14,6 +14,7 @@ import time
 from pathlib import Path
 from typing import Any, Dict, Optional
 
+from literature_parser.services.verification.formula_auditor import FormulaAuditor
 from literature_parser.services.verification.layout_auditor import LayoutAuditor
 from literature_parser.services.verification.lexical_auditor import LexicalAuditor
 from literature_parser.services.verification.models import (
@@ -94,7 +95,21 @@ class QualityInspectionEngine:
         ) + coverage_penalty
         lexical_score = max(0.0, round(100.0 - lex_deductions, 2))
 
-        # ── Tier 3: Semantic & Reading Flow Audit ─────────────────────────────
+        # ── Tier 3: Mathematical & Statistical Formula Audit ──────────────────
+        form_issues, current_md, form_repairs = FormulaAuditor.audit(
+            markdown_text=current_md,
+            auto_fix=self.config.enable_safe_autofix,
+        )
+        all_issues.extend(form_issues)
+        total_repaired += form_repairs
+
+        form_deductions = sum(
+            20 if i.severity == "ERROR" else (5 if i.severity == "WARNING" else 1)
+            for i in form_issues
+        )
+        formula_score = max(0.0, round(100.0 - form_deductions, 2))
+
+        # ── Tier 4: Semantic & Reading Flow Audit ─────────────────────────────
         sem_issues, current_md, sem_repairs = SemanticAuditor.audit(
             markdown_text=current_md,
             auto_fix=self.config.enable_safe_autofix,
@@ -108,13 +123,14 @@ class QualityInspectionEngine:
         )
         semantic_score = max(0.0, round(100.0 - sem_deductions, 2))
 
-        # ── Composite Overall Score (35% Layout, 35% Lexical, 30% Semantic) ───
-        overall = round(layout_score * 0.35 + lexical_score * 0.35 + semantic_score * 0.30, 2)
+        # ── Composite Overall Score (25% Layout, 25% Lexical, 20% Formula, 30% Semantic) ───
+        overall = round(layout_score * 0.25 + lexical_score * 0.25 + formula_score * 0.20 + semantic_score * 0.30, 2)
         passed = bool(overall >= self.config.pass_threshold)
 
         scores = QualityScore(
             layout_score=layout_score,
             lexical_score=lexical_score,
+            formula_score=formula_score,
             semantic_score=semantic_score,
             overall_score=overall,
             passed=passed,
@@ -165,8 +181,9 @@ class QualityInspectionEngine:
             "",
             "## 📊 Score Breakdown",
             "",
-            f"- **Layout & Formatting (35%)**: {report.scores.layout_score}%",
-            f"- **Lexical & Formulas (35%)**: {report.scores.lexical_score}%",
+            f"- **Layout & Formatting (25%)**: {report.scores.layout_score}%",
+            f"- **Lexical Spelling (25%)**: {report.scores.lexical_score}%",
+            f"- **Mathematical & Statistical Formulas (20%)**: {report.scores.formula_score}%",
             f"- **Semantic Reading Flow (30%)**: {report.scores.semantic_score}%",
             "",
             "## 🔍 Findings & Issues Summary",

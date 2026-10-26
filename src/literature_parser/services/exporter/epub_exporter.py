@@ -1285,6 +1285,22 @@ class EpubExporter:
 
         builder.build(output_epub_path)
         print(f"  [✓] 使用純 Python EPUB 3 引擎成功生成全書 EPUB: {output_epub_path}")
+
+        # Gate 2: Trigger EPUB Visual & Layout Multimodal Audit
+        try:
+            from literature_parser.services.verification.epub_visual_auditor import EpubVisualAuditor
+            audit_dir = book_dir / "epub_visual_audit"
+            auditor = EpubVisualAuditor()
+            audit_report = auditor.audit_epub(
+                output_epub_path,
+                output_dir=audit_dir,
+                sample_pages=[0, 3, 4, 24],
+                use_ollama=True,
+            )
+            print(f"  [🛡️ GATE 2 AUDIT] EPUB 視覺與排版雙重驗收評分: {audit_report.get('average_rating')}/10 (檢出缺陷: {audit_report.get('defects_count')} 處)")
+        except Exception as audit_err:
+            logger.debug("Gate 2 EPUB visual audit encountered error: %s", audit_err)
+
         return output_epub_path
 
     @classmethod

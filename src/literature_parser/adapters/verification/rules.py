@@ -473,7 +473,11 @@ def check_broken_ligatures(content: str) -> dict:
     }
 
 
-def check_blueprint_compliance(content: str, blueprint_dict: dict | None = None) -> dict:
+def check_blueprint_compliance(
+    content: str,
+    blueprint_dict: dict | None = None,
+    is_front_matter: bool = False,
+) -> dict:
     """Verifies that the generated Markdown satisfies the pre-conversion `chapter_blueprint.json` contract.
 
     Checks that expected standalone tables in the blueprint are rendered as structured `<table>`
@@ -483,11 +487,12 @@ def check_blueprint_compliance(content: str, blueprint_dict: dict | None = None)
     Args:
         content: Markdown content of the chapter.
         blueprint_dict: Dictionary loaded from `chapter_blueprint.json`, or None.
+        is_front_matter: Whether the chapter is front-matter (e.g. 00-01-Cover, Title-Page).
 
     Returns:
         Dictionary with `passed`, `count`, `missing_tables`, and `missing_headings`.
     """
-    if not blueprint_dict:
+    if not blueprint_dict or is_front_matter:
         return {
             'passed': True,
             'count': 0,
@@ -521,7 +526,14 @@ def check_blueprint_compliance(content: str, blueprint_dict: dict | None = None)
         if hd.get('source') != 'outline':
             continue
         title = str(hd.get('title', '')).strip()
-        norm_title = re.sub(r'[^a-z0-9]+', '', title.lower())
+        # Strip trailing dot / period / bullet runs from outline titles (e.g. 'Overview·······')
+        clean_title = re.sub(r'[\s·\.]+$', '', title)
+        # Skip book-level division headers (e.g. 'Part 1: ...', 'Part One: ...', 'Appendixes')
+        if re.match(r'^Part\s+(?:\d+|[A-Z]+|One|Two|Three|Four|Five|Six|Seven|Eight|Nine|Ten)\b', clean_title, re.IGNORECASE):
+            continue
+        if re.match(r'^Appendix(?:es)?\b', clean_title, re.IGNORECASE):
+            continue
+        norm_title = re.sub(r'[^a-z0-9]+', '', clean_title.lower())
         clean_norm_title = re.sub(r'^(?:chapter)?\d+', '', norm_title)
         match_target = clean_norm_title[:16] if len(clean_norm_title) >= 8 else norm_title[:16]
         if len(match_target) >= 6 and (match_target not in norm_content and norm_title[:16] not in norm_content):
@@ -633,7 +645,9 @@ def check_latex_and_symbol_integrity(content: str) -> dict:
             issues.append(f"Unescaped percent sign % inside LaTeX math: ${math_block[:40]}$ (comments out closing $)")
 
     # 4. Check display math $$ parity
-    double_dollars = no_escaped_dollars.count("$$")
+    # Normalizing any adjacent inline math $A$$B$ -> $A$ $B$
+    norm_display_dollars = re.sub(r'(?<=[^\$\s])\$(?=\$(?:[^$\s]|\\[a-zA-Z]))', r'$ ', no_escaped_dollars)
+    double_dollars = norm_display_dollars.count("$$")
     if double_dollars % 2 != 0:
         issues.append(f"Unpaired display math delimiter '$$' (count: {double_dollars})")
 

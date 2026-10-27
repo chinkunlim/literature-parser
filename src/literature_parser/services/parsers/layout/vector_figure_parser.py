@@ -108,73 +108,44 @@ class VectorFigureParser:
             scale = (612.0 * 150.0 / 72.0) / pw if pw else (150.0 / 72.0)
             cap_bottom = max(float(t.attrib.get('top', 0)) + float(t.attrib.get('height', 15)) for t in cap_consumed)
 
-            if vec_elems:
-                diag_elems = vec_elems
-                min_x = min(float(t.attrib.get('left', 0)) for t in diag_elems)
-                max_x = max(float(t.attrib.get('left', 0)) + float(t.attrib.get('width', 0)) for t in diag_elems)
-                min_y = min(float(t.attrib.get('top', 0)) for t in diag_elems)
-                max_y = max(float(t.attrib.get('top', 0)) + float(t.attrib.get('height', 0)) for t in diag_elems)
+            # If there are no unmapped vector/font elements associated with this figure,
+            # do not synthesize an artificial crop or consume regular body text.
+            if not vec_elems:
+                continue
 
-                # Differentiate sidebar figures (e.g. Fig 1.1) vs main column figures (e.g. Fig 1.2)
-                if max_x <= pw * 0.46:
-                    content_min_x = min_x - 23.0
-                    content_max_x = max_x + 14.0
-                    content_min_y = min_y - 6.0
-                    content_max_y = max_y + 37.0
-                    col_right_limit = pw * 0.46
-                    uniform_pad = 13.0
-                    left_b = max(0.0, content_min_x - uniform_pad)
-                    right_b = min(col_right_limit, content_max_x + uniform_pad)
-                    top_b = max(cap_bottom + 1.0, content_min_y - uniform_pad)
-                    bottom_b = content_max_y + uniform_pad
-                else:
-                    content_min_x = min_x - 21.0
-                    content_max_x = max_x + 29.0
-                    content_min_y = min_y - 15.0
-                    content_max_y = max_y + 13.0
-                    col_left_limit = pw * 0.28 if min_x > pw * 0.25 else 0.0
-                    left_b = max(col_left_limit, content_min_x)
-                    right_b = min(pw, content_max_x)
-                    top_b = max(cap_bottom + 5.0, content_min_y)
-                    bottom_b = content_max_y
+            diag_elems = vec_elems
+            min_x = min(float(t.attrib.get('left', 0)) for t in diag_elems)
+            max_x = max(float(t.attrib.get('left', 0)) + float(t.attrib.get('width', 0)) for t in diag_elems)
+            min_y = min(float(t.attrib.get('top', 0)) for t in diag_elems)
+            max_y = max(float(t.attrib.get('top', 0)) + float(t.attrib.get('height', 0)) for t in diag_elems)
 
-                crop_x = int(left_b * scale)
-                crop_y = int(top_b * scale)
-                crop_w = int((right_b - left_b) * scale)
-                crop_h = int((bottom_b - top_b) * scale)
+            # Differentiate sidebar figures (e.g. Fig 1.1) vs main column figures (e.g. Fig 1.2)
+            if max_x <= pw * 0.46:
+                content_min_x = min_x - 23.0
+                content_max_x = max_x + 14.0
+                content_min_y = min_y - 6.0
+                content_max_y = max_y + 37.0
+                col_right_limit = pw * 0.46
+                uniform_pad = 13.0
+                left_b = max(0.0, content_min_x - uniform_pad)
+                right_b = min(col_right_limit, content_max_x + uniform_pad)
+                top_b = max(cap_bottom + 1.0, content_min_y - uniform_pad)
+                bottom_b = content_max_y + uniform_pad
             else:
-                diag_elems = []
-                for t in page_elem.findall('text'):
-                    if t in cap_consumed:
-                        continue
-                    top = float(t.attrib.get('top', 0))
-                    left = float(t.attrib.get('left', 0))
-                    txt = ''.join(t.itertext()).strip()
-                    if not txt:
-                        continue
-                    if (0 <= top - f_top <= 300) and (left < pw * 0.45 if f_left < pw * 0.45 else left > pw * 0.55):
-                        fid = t.attrib.get('font', '')
-                        if fonts.get(fid, {}).get('size', 12) <= 14:
-                            diag_elems.append(t)
-                if diag_elems:
-                    min_x = min(float(t.attrib.get('left', 0)) for t in diag_elems)
-                    max_x = max(float(t.attrib.get('left', 0)) + float(t.attrib.get('width', 0)) for t in diag_elems)
-                    min_y = min(float(t.attrib.get('top', 0)) for t in diag_elems)
-                    max_y = max(float(t.attrib.get('top', 0)) + float(t.attrib.get('height', 0)) for t in diag_elems)
-                    left_b = max(0.0, min_x - 15)
-                    top_b = max(cap_bottom + 10.0, min_y - 15)
-                    right_b = max_x + 15
-                    bottom_b = max_y + 15
-                else:
-                    left_b = 0.0 if f_left < pw * 0.40 else max(0.0, f_left - 30)
-                    top_b = f_top + 10.0
-                    right_b = left_b + 350.0
-                    bottom_b = top_b + 220.0
+                content_min_x = min_x - 21.0
+                content_max_x = max_x + 29.0
+                content_min_y = min_y - 15.0
+                content_max_y = max_y + 13.0
+                col_left_limit = pw * 0.28 if min_x > pw * 0.25 else 0.0
+                left_b = max(col_left_limit, content_min_x)
+                right_b = min(pw, content_max_x)
+                top_b = max(cap_bottom + 5.0, content_min_y)
+                bottom_b = content_max_y
 
-                crop_x = int(left_b * scale)
-                crop_y = int(top_b * scale)
-                crop_w = int((right_b - left_b) * scale)
-                crop_h = int((bottom_b - top_b) * scale)
+            crop_x = int(left_b * scale)
+            crop_y = int(top_b * scale)
+            crop_w = int((right_b - left_b) * scale)
+            crop_h = int((bottom_b - top_b) * scale)
 
             img_fname = f"figure_{fig_sanitized}.png"
             target_img_path = img_dir / img_fname
@@ -228,7 +199,19 @@ class VectorFigureParser:
                 for t_box in page_elem.findall('text'):
                     t_b_top = float(t_box.attrib.get('top', 0))
                     t_b_left = float(t_box.attrib.get('left', 0))
-                    if (left_b - 10.0 <= t_b_left <= right_b + 10.0) and (top_b - 10.0 <= t_b_top <= bottom_b + 10.0):
+                    t_b_w = float(t_box.attrib.get('width', 0))
+                    # Guardrail: never consume body prose or headings from another column
+                    if f_left < pw * 0.38 and t_b_left >= pw * 0.38:
+                        continue
+                    if f_left >= pw * 0.55 and (t_b_left + t_b_w) <= pw * 0.50:
+                        continue
+                    if t_b_w >= pw * 0.35:
+                        continue
+                    fid = t_box.attrib.get('font', '')
+                    f_info = fonts.get(fid, {})
+                    if f_info.get('size', 10) >= 11.0:
+                        continue
+                    if (left_b - 5.0 <= t_b_left <= right_b + 5.0) and (top_b - 5.0 <= t_b_top <= bottom_b + 5.0):
                         consumed.add(t_box)
 
         # Uncaptioned random diagram cropping (`diagram_pXX_XX.png`) removed per ADR/ISSUE-016:

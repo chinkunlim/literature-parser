@@ -173,12 +173,30 @@ class ChapterBlueprintScanner:
         entries: List[BlueprintHeadingEntry] = []
         try:
             toc = doc.get_toc(simple=True) or []
+            doc_sample_text = ""
+            try:
+                doc_sample_text = " ".join(doc[i].get_text() for i in range(min(total_pages, 50))).lower()
+            except Exception:
+                pass
             for item in toc:
                 if len(item) >= 3:
                     lvl = max(1, min(4, int(item[0])))
                     title = re.sub(r"[\s\u00a0]+", " ", str(item[1])).strip()
                     pg = int(item[2])
                     if 1 <= pg <= total_pages and title:
+                        # Reject phantom/misplaced sub-headings (lvl >= 2) whose keywords never appear near target page
+                        is_top_level = (lvl == 1) or bool(re.match(r"^(?:ch(?:apter)?\s*\d+|part\s+[a-z0-9]+)", title, re.IGNORECASE))
+                        if not is_top_level:
+                            keywords = [w for w in re.findall(r'[a-z]{4,}', title.lower()) if w not in ('chapter', 'part', 'section', 'appendix')]
+                            if len(keywords) >= 2:
+                                surrounding_text = ""
+                                for p_off in range(max(0, pg - 2), min(total_pages, pg + 1)):
+                                    try:
+                                        surrounding_text += doc[p_off].get_text().lower() + " "
+                                    except Exception:
+                                        pass
+                                if surrounding_text and not any(kw in surrounding_text for kw in keywords):
+                                    continue
                         entries.append(
                             BlueprintHeadingEntry(
                                 level=lvl,

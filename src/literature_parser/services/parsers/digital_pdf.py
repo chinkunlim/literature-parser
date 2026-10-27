@@ -165,6 +165,13 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             if re.match(r'^\d+$', clean):
                 return True
             if clean.isupper() and len(clean) > 5 and font_size <= 14.0:
+                # Section headings often end with punctuation (., :, ?) or are question/statement headings
+                if re.search(r'[?:.]$', clean):
+                    return False
+                # If top >= ph * 0.05, only treat as running header if it matches explicit running header markers
+                if top >= ph * 0.05:
+                    if not re.search(r'\b(?:INDEX|CHAPTER|PART|SECTION|VOLUME|BOOK)\b', clean, re.IGNORECASE):
+                        return False
                 return True
         return False
 
@@ -564,7 +571,7 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 continue
             if re.search(r'\b(?:8GTDCN|1RGTCVKQ|5JGKUCIQQF|UCNGURGTUQP|UGNNUOCP|CUUKUVUYKVJ|1DUGTXCVKQPU|6JGQT|TGGCTEJ|&CVCFTKXGP)\b', txt_raw):
                 continue
-            if re.search(r'This document is copyrighted|intended solely for the personal use|text and data mining|AI training|allied publishers|disseminated broadly|All rights, including for text|American Psychological Association|American Psychological|reserved\.?|WCN\s*\d+-\d+|may not be copied, scanned, or duplicated|in whole or in part', txt_raw, re.IGNORECASE):
+            if re.search(r'This document is copyrighted|intended solely for the personal use|text and data mining|AI training|allied publishers|disseminated broadly|All rights, including for text|American Psychological Association|American Psychological|\b(?:All\s+rights\s+reserved|rights\s+reserved)\b|WCN\s*\d+-\d+|may not be copied, scanned, or duplicated|in whole or in part', txt_raw, re.IGNORECASE):
                 continue
 
             # Filter decorative rule divider artifacts (e.g. repeated symbols like '- * -', '▪', '= = = =')
@@ -624,10 +631,10 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
         clusters = []
 
         # Auto-detect if this page genuinely has two-column layout even if global _STYLE says single_column (Refs: ISSUE-017)
-        left_col_spans = [it for it in raw_lines if it[1] < pw * 0.45 and (it[1] + it[2]) < pw * 0.51 and len(it[4]) >= 10]
+        left_col_spans = [it for it in raw_lines if it[1] < pw * 0.45 and (it[1] + it[2]) < pw * 0.51 and (it[2] >= 100.0 or len(it[4]) >= 20)]
         right_col_spans = [
             it for it in raw_lines
-            if it[1] >= pw * 0.46 and len(it[4]) >= 10
+            if it[1] >= pw * 0.46 and (it[2] >= 100.0 or len(it[4]) >= 20)
             and not any(abs(x[0] - it[0]) <= 3.5 and x[1] < pw * 0.40 for x in raw_lines)
         ]
         # A crossing line must genuinely span across the central gutter (e.g. from < 0.40 to > 0.60 as a single element)
@@ -636,7 +643,8 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             1 for it in raw_lines
             if it[1] < pw * 0.38 and (it[1] + it[2]) > pw * 0.62 and len(it[4]) >= 20
         )
-        page_has_two_cols = len(left_col_spans) >= 4 and len(right_col_spans) >= 4 and (crossing_lines < 4)
+        max_allowed_crossing = max(6, (len(left_col_spans) + len(right_col_spans)) // 4)
+        page_has_two_cols = len(left_col_spans) >= 4 and len(right_col_spans) >= 4 and (crossing_lines <= max_allowed_crossing)
         two_col_top_y = (
             max(min(it[0] for it in left_col_spans), min(it[0] for it in right_col_spans))
             if page_has_two_cols
@@ -879,6 +887,8 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
             # Check if major section heading (size >= 28 or journal academic section heading)
             # Check if continuation of previous H2/H3/H4 heading wrapped across lines
             # (e.g. 'Career Behavior ' + 'and Development', or '#### 3 Identifying Research Questions and' + 'Forming Hypotheses')
+            is_connector_start = bool(re.match(r'^(?:and|or|of|in|to|for|with|on|from|by|the|a|an)\b', clean_t, re.IGNORECASE))
+            has_hanging_end = bool(re.search(r'\b(?:and|or|of|in|to|for|with|on|from|by|the|a|an|:)$', blocks[-1].strip(), re.IGNORECASE)) if blocks else False
             if (
                 not curr_p
                 and blocks
@@ -887,10 +897,11 @@ class DigitalPDFParser(metaclass=_ChapterStateMeta):
                 and (0 <= top - last_top <= 35)
                 and not re.search(r'[.?!]$', blocks[-1].strip())
                 and len(clean_t) < 95
+                and not re.fullmatch(r'\d+', clean_t)
                 and (
                     (13.5 <= size < 28.0)
-                    or re.match(r'^(?:and|or|of|in|to|for|with|on|from|by|the|a|an)\b', clean_t, re.IGNORECASE)
-                    or bool(re.search(r'\b(?:and|or|of|in|to|for|with|on|from|by|the|a|an|:)$', blocks[-1].strip(), re.IGNORECASE))
+                    or (size >= 12.0 and is_connector_start)
+                    or (size >= 13.5 and has_hanging_end)
                 )
                 and not re.search(r'[.?!]$', clean_t)
                 and not re.match(r'^(?:Figure|Fig\.|Table|Exhibit|Photo|LO\s+\d|\d+\.\d+)\b', clean_t, re.IGNORECASE)

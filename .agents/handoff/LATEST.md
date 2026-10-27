@@ -5,10 +5,10 @@
 <!-- LIVE_STATE_START -->
 ## 📊 即時狀態看板 (Live Snapshot)
 
-- **最後更新時間**: `2026-10-26 17:48 UTC`
+- **最後更新時間**: `2026-10-27 02:34 UTC`
 - **最近操作 Agent**: `Antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `5308314 fix(layout): heal two-column flow, borderless quiz tables, TOC positioning, and EPUB chapter sort order [agent:Antigravity]`
+- **最新 Git Commit**: `7e1ee06 feat(library): complete clean full-library re-generation and dual-gate rebuild without code changes [agent:Antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
@@ -17,6 +17,18 @@
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-10-27 02:34 UTC] 完成任務 `TASK-061` — 全書庫輸出準確率深度分析與驗證缺陷修復 (by `Antigravity`)
+- **狀態**: ✅ 已完成 (`done`)
+- **完成摘要**: Completed library-wide accuracy analysis and healing across 128 chapters and 5 textbooks. Diagnosed and fixed 7 core issues: bold word merging, fallback vector text swallowing, running header false positives on uppercase punctuated headings, multi-line spanning caption column collapse, outline bookmark validation, adjacent inline math collision, and hanging preposition heading continuation. 100% (128/128) chapters passed verification and all 5 EPUBs generated with 10.0/10 Gate 2 audit scores.
+
+### [2026-10-26 17:57 UTC] 認領任務 `TASK-061` (全書庫輸出準確率深度分析與驗證缺陷修復) (by `Antigravity`)
+- **相關範圍**: `-`
+- **接棒自**: `Antigravity`
+
+### [2026-10-26 17:57 UTC] 建立任務 `TASK-061`: 全書庫輸出準確率深度分析與驗證缺陷修復 (by `Antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `-`
 
 ### [2026-10-26 17:48 UTC] 完成任務 `TASK-060` — 全書庫5本書清空與雙閘門全流程重新生成v2 (by `Antigravity`)
 - **狀態**: ✅ 已完成 (`done`)
@@ -83,17 +95,5 @@
 - **完成摘要**: (無)
 
 ### [2026-10-26 08:59 UTC] 認領任務 `TASK-055` (修復EPUB匯出誤讀AUDIT.md及全書庫重匯出) (by `Antigravity`)
-- **相關範圍**: `-`
-- **接棒自**: `Antigravity`
-
-### [2026-10-26 08:59 UTC] 建立任務 `TASK-055`: 修復EPUB匯出誤讀AUDIT.md及全書庫重匯出 (by `Antigravity`)
-- **狀態**: `in_progress`
-- **相關範圍**: `-`
-
-### [2026-10-26 08:53 UTC] 完成任務 `TASK-054` — 全書庫5本教科書依最新結構錨定與確定性標準全面體檢與EPUB重新打包 (by `Antigravity`)
-- **狀態**: ✅ 已完成 (`done`)
-- **完成摘要**: 完成全書庫5本教科書（128章節）全量雙閘門體檢、AUDIT更新與EPUB 3出版級重編
-
-### [2026-10-26 08:48 UTC] 認領任務 `TASK-054` (全書庫5本教科書依最新結構錨定與確定性標準全面體檢與EPUB重新打包) (by `Antigravity`)
 - **相關範圍**: `-`
 - **接棒自**: `Antigravity`

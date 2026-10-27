@@ -239,7 +239,8 @@ class AccuracyVerifier:
                 h_m = re.search(r'pixelHeight:\s+(\d+)', sips_out)
                 if w_m and h_m:
                     w, h = int(w_m.group(1)), int(h_m.group(1))
-                    if not img_filename.startswith("figure_") and ((w >= 1100 and h >= 1400) or (w >= 2000 and h >= 3000)):
+                    is_cover_ch = is_front_matter or ("cover" in ch_name.lower())
+                    if not is_cover_ch and not img_filename.startswith("figure_") and ((w >= 1100 and h >= 1400) or (w >= 2000 and h >= 3000)):
                         full_page_scans_embedded.append(f"{img_filename} ({w}x{h})")
             except Exception:
                 pass
@@ -299,7 +300,7 @@ class AccuracyVerifier:
         tbl_ban_res   = check_table_banner_integrity(md_content)
         unfmt_tbl_res = check_unformatted_table_blocks(md_content)
         ligature_res  = check_broken_ligatures(md_content)
-        bp_comp_res   = check_blueprint_compliance(md_content, bp_dict)
+        bp_comp_res   = check_blueprint_compliance(md_content, bp_dict, is_front_matter=is_front_matter)
         head_den_res  = check_heading_density(md_content, total_tokens, is_front_matter, is_journal, is_back_matter)
         hard_wrap_res = check_excessive_hard_wraps(md_content)
 

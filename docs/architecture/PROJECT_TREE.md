@@ -121,7 +121,8 @@ literature-parser/
 │   │   ├── TASK-057-5.json
 │   │   ├── TASK-058-playwright.json
 │   │   ├── TASK-059-fix-two-column-reading-flow-quiz.json
-│   │   └── TASK-060-5-v2.json
+│   │   ├── TASK-060-5-v2.json
+│   │   └── TASK-061-task.json
 │   ├── framework.lock                      # [框架鎖定檔] 框架版本與檔案雜湊，供 update_framework 判斷是否被修改
 │   └── project.toml                        # [專案設定・各專案自訂] 語言、分層、品質門檻、指令、業務規則
 ├── .cursor/                                # [Agent 轉接] Cursor 規則 (自動產生)
@@ -498,6 +499,7 @@ literature-parser/
 │   ├── test_v51_book_profile_adaptive_learning.py
 │   ├── test_v52_unified_pymupdf_and_continuity_fixes.py
 │   ├── test_v53_regex_bullet_and_watermark_filters.py
+│   ├── test_v54_accuracy_healing_and_bold_spacing.py
 │   ├── test_v54_epub_cover_and_layout_healing.py
 │   ├── test_visual_pdf_epub_diff.py
 │   ├── test_web_data_service.py

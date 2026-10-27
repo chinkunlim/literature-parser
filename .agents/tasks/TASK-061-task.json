@@ -1,0 +1,34 @@
+{
+  "id": "TASK-061",
+  "title": "全書庫輸出準確率深度分析與驗證缺陷修復",
+  "status": "done",
+  "agent": "Antigravity",
+  "handed_off_from": "",
+  "handed_off_to": "",
+  "paths": [],
+  "done_items": "Completed library-wide accuracy analysis and healing across 128 chapters and 5 textbooks. Diagnosed and fixed 7 core issues: bold word merging, fallback vector text swallowing, running header false positives on uppercase punctuated headings, multi-line spanning caption column collapse, outline bookmark validation, adjacent inline math collision, and hanging preposition heading continuation. 100% (128/128) chapters passed verification and all 5 EPUBs generated with 10.0/10 Gate 2 audit scores.",
+  "todo_items": "",
+  "blockers": "",
+  "created_at": "2026-10-26 17:57 UTC",
+  "updated_at": "2026-10-27 02:34 UTC",
+  "history": [
+    {
+      "timestamp": "2026-10-26 17:57 UTC",
+      "action": "created_and_claimed",
+      "agent": "Antigravity"
+    },
+    {
+      "timestamp": "2026-10-26 17:57 UTC",
+      "action": "claimed",
+      "agent": "Antigravity",
+      "previous_agent": "Antigravity"
+    },
+    {
+      "timestamp": "2026-10-27 02:34 UTC",
+      "action": "done",
+      "agent": "Antigravity",
+      "summary": "Completed library-wide accuracy analysis and healing across 128 chapters and 5 textbooks. Diagnosed and fixed 7 core issues: bold word merging, fallback vector text swallowing, running header false positives on uppercase punctuated headings, multi-line spanning caption column collapse, outline bookmark validation, adjacent inline math collision, and hanging preposition heading continuation. 100% (128/128) chapters passed verification and all 5 EPUBs generated with 10.0/10 Gate 2 audit scores."
+    }
+  ],
+  "summary": "Completed library-wide accuracy analysis and healing across 128 chapters and 5 textbooks. Diagnosed and fixed 7 core issues: bold word merging, fallback vector text swallowing, running header false positives on uppercase punctuated headings, multi-line spanning caption column collapse, outline bookmark validation, adjacent inline math collision, and hanging preposition heading continuation. 100% (128/128) chapters passed verification and all 5 EPUBs generated with 10.0/10 Gate 2 audit scores."
+}

@@ -546,6 +546,8 @@ class MathLaTeXConverter:
         """
         from literature_parser.services.parsers.math.apa_stats_normalizer import APAStatsNormalizer
 
+        # Separate adjacent inline math delimiters ($A$$B$ -> $A$ $B$) to prevent false display-math collision
+        text = re.sub(r'(?<=[^\$\s])\$(?=\$(?:[^$\s]|\\[a-zA-Z]))', r'$ ', text)
         text = cls.escape_currency_dollars(text)
         text = cls.convert_symbols(text)
         text = APAStatsNormalizer.normalize_text(text)

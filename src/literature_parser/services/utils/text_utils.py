@@ -649,8 +649,14 @@ def clean_typography_artifacts(text: str) -> str:
     text = re.sub(r'(?m)^[ \t]*(?:\d{1,3}[ \t]+){2,}\d{1,3}[ \t]*$', '', text)
     text = re.sub(r'(?m)\b(?:\d{1,2}[ \t]+){2,}\d{1,2}[ \t]+(?=[a-z]{3,}\b)', '', text)
     # Strip empty bold/italic tokens (Refs: ISSUE-017)
-    text = re.sub(r'\*\*\s*\*\*', '', text)
-    text = re.sub(r'\*\*\*\s*\*\*\*', '', text)
+    # Safely merge adjacent bold/italic markers while strictly preserving whitespace (Refs: ISSUE-019)
+    text = re.sub(r'\*\*([ \t]+)\*\*', r'\1', text)
+    text = re.sub(r'(?<!\*)\*([ \t]+)\*(?!\*)', r'\1', text)
+    # Strip standalone empty bold/italic tokens (e.g. '****', '******', or isolated '** **')
+    text = re.sub(r'(?<!\*)\*{4,6}(?!\*)', '', text)
+    text = re.sub(r'(?<!\S)\*\*[ \t]+\*\*(?!\S)', '', text)
+    # Normalize line-starting numbered items prefixed with '#' (e.g. '#1. Imagine...' -> '1. Imagine...')
+    text = re.sub(r'(?m)^#\s*(\d+[\.\)])', r'\1', text)
     # Separate touching bold and italic markers in numbered items (e.g. **2.***Temporality.* -> **2.** *Temporality.*)
     text = re.sub(r'(?<=\d\.)\*\*\*(?=[a-zA-Z])', r'** *', text)
     return text
@@ -899,6 +905,11 @@ def heal_corrupted_headings(text: str) -> Tuple[str, List[str]]:
 
     text = re.sub(
         r"(?m)^(#{2,5})\s+([^\n]+?)\n{1,2}#{2,6}\s+((?:and|or|of|in|to|for|with|on|at|from|by|as|into|between|the|a|an)\b[^\n]+|[a-z][^\n]{1,55})$",
+        _stitch_split_headings,
+        text,
+    )
+    text = re.sub(
+        r"(?m)^(#{2,5})\s+([^\n]+?\b(?:and|or|of|in|to|for|with|on|at|from|by|as|into|between|the|a|an|&))\n{1,2}#{2,6}\s+([A-Z][^\n]{1,85})$",
         _stitch_split_headings,
         text,
     )

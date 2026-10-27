@@ -321,4 +321,53 @@ flowchart TD
    - 程式碼關鍵字採用具備語法特徵之模式（如 `\bclass\s+[A-Za-z_]\w*\s*(?:\([^)]*\))?\s*:`），杜絕自然語言（如 `social class worldview`）誤判為代碼塊。
    - 輸出端配置全域保險清洗正則，徹底過濾 Cengage WCN 與出版商權利宣告雜訊。
 
+---
+
+## 11. 互動式 Web Studio 與閉環反饋回歸系統 (Interactive Web Studio & Feedback Loop)
+
+為提供視覺化排版校對與即時錯誤反饋，系統內建出版級 Web 工作站（參照 `ADR-013`）：
+
+1. **全功能單頁應用 (SPA)**：
+   - 透過 `literature-parser web --port 8767` 啟動，完全綁定 `127.0.0.1` 本機端。
+   - 左側為原書 PDF 高解析度渲染畫面與平滑縮放拖曳（Pan/Zoom），右側為章節 Markdown / EPUB 編輯器，支援雙欄同步捲動（Synchronized Scrolling）。
+2. **雙向錨點導航與視覺缺陷跳轉**：
+   - 支援從 TOC 目錄點擊章節標題直接同步捲動 PDF 與 EPUB 至對應頁面。
+   - 點擊視覺審查缺陷標籤（如字詞遺漏、標題陰影），可一鍵自動對齊該頁進行人工微調。
+3. **閉環問題反饋自動化回歸機制**：
+   - 使用者在網頁介面反饋的修訂（如標題層級修正、表格撕裂補正），會記錄至 `DATA_DIR/feedback/` 並透過 `POST /api/corrections/generate-tests` 自動轉譯為標準 `tests/test_user_corrections_regression.py` 單元測試，實現「一處修復、永久防回歸」。
+
+---
+
+## 12. 三視覺雙渲染並排對比與重排版動態視窗架構 (Tri-Vision Dual-Render Audit)
+
+為達成最嚴苛的出版級視覺驗收，系統建構了三重視覺檢驗引擎與動態重排版視窗映射架構（參照 `ADR-014`）：
+
+```mermaid
+flowchart TD
+    subgraph Rendering ["雙向 150 DPI 渲染"]
+        PDF_SRC["原始章節 PDF"] -->|PyMuPDF| PDF_IMGS["PDF 逐頁 PNG"]
+        EPUB_SRC["產出之 EPUB 3"] -->|TOC 錨定 + PyMuPDF| EPUB_IMGS["EPUB 重排版 PNG 視窗"]
+    end
+
+    subgraph TriVision ["三重視覺交叉檢驗引擎"]
+        PDF_IMGS & EPUB_IMGS --> Engine1["1. Native Apple Vision OCR<br>(Swift VNRecognizeTextRequest / Metal 加速)<br>• 0.08s/頁 極速文字座標與字詞流<br>• 重排版視窗關鍵字召回率 (Word Recall >= 75%)"]
+        EPUB_IMGS --> Engine2["2. MiniCPM-V 2.6 (Ollama 本地端)<br>• 100% Apple Silicon GPU 渲染瑕疵快篩<br>• 標題陰影 / 雙欄撕裂 / 文字重疊 / HTML 實體洩漏"]
+        EPUB_IMGS --> Engine3["3. Llama 3.2 Vision 11B (Ollama)<br>• 深層多模態語義理解<br>• 架構未支援自適應跳過防護 (ISSUE-019)"]
+    end
+
+    subgraph Report ["驗收報告與自動化工具"]
+        Engine1 & Engine2 & Engine3 --> Summary["$DATA_DIR/evals/visual_audit/<br>cross_audit_summary.json"]
+        Summary --> CLI["專用執行腳本<br>scripts/run_visual_cross_audit.py"]
+    end
+```
+
+1. **擴展比率動態視窗映射 (Expansion Ratio Windowing)**：
+   - 解析 EPUB 3 TOC 結構樹鎖定章節起訖頁（例如 Ch01: 22 頁 ~ 64 頁）。
+   - 計算擴展比率 $R = \text{EPUB頁數} / \text{PDF頁數}$，將 PDF 第 $i$ 頁映射至 EPUB 頁面視窗 $[i \cdot R, (i+1) \cdot R + 1]$，聚合視窗內字詞流進行比對，徹底消除流動版面（Reflowable）與固定版面的對齊落差。
+2. **子標題防護與最高權重匹配**：
+   - 嚴格限定章節結束條件必須為相異章節編號或同階層以上標題（`ISSUE-020`），杜絕內部 Level 2 子標題提早截斷章節。
+   - 索引條目採最高命中單詞數比對（Best Token Matching），精準區隔 `Subject Index` 與 `Name Index`。
+3. **實測標準**：
+   - 全書庫 5 本教科書正文章節之 Apple Vision 字詞召回率達 **80% ~ 95%**，MiniCPM-V 檢出 0 處排版撕裂。
+
 

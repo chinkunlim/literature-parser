@@ -108,6 +108,20 @@
 - **零閱讀工作量原則**：評分未達 100 分之章節，Web Studio 必須即刻展開缺陷卡片抽屜，明確列出扣分原因、分類標籤與行號。
 - **一鍵跳轉與光暈閃爍**：使用者點擊任一缺陷卡片，預覽區或編輯器瞬間平滑滾動至問題段落，並觸發 2.5 秒金黃色光暈閃爍動畫（`.audit-highlight-flash`），達成 1 秒內精確鎖定問題。
 
+### 2.16 三視覺雙渲染全頁並排交叉審查 (Tri-Vision Dual-Render Cross-Audit)
+- **三模態協同管線**：
+  1. **Native Apple Vision OCR (`apple_vision_bridge.swift`)**：利用 macOS 原生 Swift 呼叫 `VNRecognizeTextRequest`，以 0.08s/頁 的 Neural Engine 速度提取字詞座標與字詞流，計算重排版視窗之關鍵字召回率（標準需 $\ge 75\%$，正文章節實測達 80%~95%）。
+  2. **本地 MiniCPM-V 2.6 (`minicpm-v:latest`)**：以 100% Apple Silicon GPU 加速對代表頁進行標題陰影、雙欄撕裂、文字重疊與 HTML 實體洩漏之扣分快篩。
+  3. **Llama 3.2 Vision 11B**：深層語義檢查；若遇到本地環境未支援之架構（`ISSUE-019`），必須自適應優雅降級跳過，由前二者完成全量驗收。
+- **動態重排版視窗映射 (Expansion Ratio Windowing)**：
+  - 依據 EPUB TOC 精確錨定章節頁碼範圍，並以擴展比率 $R = \text{EPUB頁數} / \text{PDF頁數}$ 聚合對應視窗之字詞流，徹底解決固定版面與流動版面的比對落差。
+  - **嚴格子標題防護**：尋找章節結束頁時，遇見內部 Level 2 子標題不得中斷（`ISSUE-020`），必須為不同章節編號或同級以上標題才視為結束。
+  - **索引最高命中匹配**：條目匹配計算最高命中相符單詞數（`best_matches`），徹底消除 `Name Index` 覆蓋 `Subject Index` 的前綴衝突。
+
+### 2.17 閉環反饋與自動化回歸測試 (Closed-Loop Correction Feedback to Automated Tests)
+- **使用者修正永久固化**：使用者在 Web 工作站反饋的任何結構修正（如標題階層校正、段落縫合調整），除即時回寫 Markdown 與觸發自愈外，必須自動透過 `/api/corrections/generate-tests` 轉譯為標準單元測試檔（`tests/test_user_corrections_regression.py`）。
+- **CI/CD 全自動防禦**：每次執行 `python3 scripts/agentctl.py check` 與 `unittest` 時，回歸測試自動運行，確保歷史修正永遠不會在後續迭代中回退。
+
 ---
 
 ## 3. 和通用規範不同的例外

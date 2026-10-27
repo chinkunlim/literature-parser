@@ -6,6 +6,21 @@ All notable changes to **literature-parser** are documented here
 ## [Unreleased]
 
 ### Added
+- docs(adr): record ADR-014 on Tri-Vision dual-render cross-auditor and reflow window mapping architecture (TASK-062, TASK-063) (by `@Antigravity`)
+- docs(adr): record ADR-013 on interactive Web Studio, side-by-side PDF/EPUB dual editor, and closed-loop regression testing (TASK-049) (by `@Antigravity`)
+- docs(specs): add SPEC-010 on interactive Web Studio and SPEC-011 on Tri-Vision dual-render cross-auditor (TASK-049, TASK-062) (by `@Antigravity`)
+- docs(known-issues): record ISSUE-019 on macOS Ollama mllama architecture compatibility and ISSUE-020 on TOC subsection early-break resolution (TASK-062, TASK-063) (by `@Antigravity`)
+- feat(verification): implement Tri-Vision cross-auditor with Native Apple Vision OCR, MiniCPM-V 2.6, and dual-render expansion ratio windowing (TASK-062) (by `@Antigravity`)
+- feat(web): build interactive Web Studio with synchronized dual-scroll, PDF pan/zoom, defect highlighting, and correction feedback (TASK-049) (by `@Antigravity`)
+
+### Changed
+- docs(migration): mark all migration acceptance criteria as completed (by `@antigravity`)
+- docs(evals,web,readme): update eval commands, dashboard guide, CLI command references, and offline test instructions (by `@antigravity`)
+- refactor(migration): complete legacy codebase migration to structured layout (by `@antigravity`)
+- refactor(data): reorganize DATA_DIR input and output directory structures with convention routing and hyphen hygiene (by `@antigravity`)
+
+### Fixed
+- fix(verification): enhance chapter EPUB page boundary resolution, TOC hierarchy detection, and multi-token index matching (TASK-062, ISSUE-020) (by `@Antigravity`)
 - docs(adr): record ADR-012 on hierarchical TOC resolution with hyperlinked anchors and side-by-side visual diffing (TASK-048) (by `@Antigravity`)
 - docs(known-issues): record ISSUE-018 on EPUB 3 strict XML parsing error, comment corruption, and bold-italic tag interleaving (TASK-048) (by `@Antigravity`)
 - feat(toc,epub): implement TOCResolver for publishing-grade hierarchical TOC with dot leaders, slugified anchor hyperlinks, and EPUB 3 multi-level nav (TASK-048) (by `@Antigravity`)
@@ -57,14 +72,6 @@ All notable changes to **literature-parser** are documented here
 - feat(anchors): implement GlossaryAnchor, FigureTableContinuityAuditor, and PedagogicalEnclosureAuditor (by `@Antigravity`)
 - feat(library): complete full library re-audit, AUDIT updates, and EPUB 3 rebuild across all 5 books (by `@Antigravity`)
 - feat(verification): implement tri-vision epub vs pdf dual-render cross-auditor with native apple vision ocr and minicpm-v (by `@Antigravity`)
-
-### Changed
-- docs(migration): mark all migration acceptance criteria as completed (by `@antigravity`)
-- docs(evals,web,readme): update eval commands, dashboard guide, CLI command references, and offline test instructions (by `@antigravity`)
-- refactor(migration): complete legacy codebase migration to structured layout (by `@antigravity`)
-- refactor(data): reorganize DATA_DIR input and output directory structures with convention routing and hyphen hygiene (by `@antigravity`)
-
-### Fixed
 - fix(config): standardize DATA_DIR hierarchy and route all data paths through AppConfig (by `@antigravity`)
 - fix(verification): refine layout auditor TOC scope and adapt cli_audit for book chapters (TASK-028) (by `@antigravity`)
 - fix(parser): eliminate runaway blockquotes, isolate H4 headings, suppress duplicate table images, and enhance Ollama multi-window verification (TASK-030) (by `@antigravity`)
@@ -102,6 +109,7 @@ All notable changes to **literature-parser** are documented here
 - docs(all): update ADR-009, SPEC-008, ISSUE-006~009, README, ARCHITECTURE, and tree sync (TASK-040) (by `@antigravity`)
 - docs: update all architecture, ADR, known issues, specs, and README markdown files (by `@antigravity`)
 - docs(adr/docs): update adr/docs documentation (ADR-009, ADR-010, ADR-011, ADR-012, ISSUE-006, ISSUE-015, ISSUE-016, ISSUE-017, ISSUE-018, TASK-039, TASK-040, TASK-041, TASK-047, TASK-048) (by `@Antigravity`)
+- docs: synchronize full technical records including ADR-014, ISSUE-020, SPEC-011, architecture, and project rules (by `@Antigravity`)
 
 ### Testing
 - test(workflows): verify all CLI workflows, fix pathing and pure-python fallbacks (by `@antigravity`)

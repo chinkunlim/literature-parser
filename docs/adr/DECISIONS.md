@@ -17,3 +17,4 @@
 | [ADR-011](011-two-pass-chapter-blueprint-and-hybrid-docling.md) | 兩階段章節結構藍圖（Two-Pass Chapter Blueprint）、PyMuPDF+Docling 混合掃描與五大模組化渲染架構 | Accepted | 2026-10-25 | TODO |
 | [ADR-012](012-hierarchical-toc-resolution-and-side-by-side-visual-diff.md) | 出版級階層化目錄解析 (TOCResolver)、雙向錨點跳轉與原書 PDF/EPUB 並排視覺對比引擎 | Accepted | 2026-10-26 |
 | [ADR-013](013-interactive-web-dashboard-and-correction-feedback.md) | 互動式 Web Studio、雙欄 PDF/EPUB 對照編輯器與閉環問題反饋自動化回歸測試系統 | Accepted | 2026-10-26 |
+| [ADR-014](014-tri-vision-dual-render-cross-audit.md) | 三視覺模型全頁雙渲染並排交叉審查與重排版動態視窗映射架構 | Accepted | 2026-10-27 |

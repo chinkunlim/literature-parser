@@ -14,3 +14,4 @@
 | [SPEC-008](008-batch-resilience-and-zero-defect-pipeline.md) | 批次轉檔韌性與全量零缺陷驗證規格 | Implemented | `adapters.core.orchestrator`, `services.utils.text_utils`, `services.parsers.layout.*` |
 | [SPEC-009](009-autonomous-layout-and-archive-segregation.md) | 自適應版面剖析、歸檔分流與批次斷點續傳規格 | Implemented | `services.profiler.*`, `services.converter.*`, `adapters.guards.*` |
 | [SPEC-010](010-web-comparison-and-feedback-system.md) | 互動式 Web Studio、雙欄 PDF/EPUB 對照編輯與問題反饋回歸保護規格 | Implemented | `web_app.py`, `mcp_server.py`, `web_data_service.py`, `correction_service.py`, `web/` |
+| [SPEC-011](011-tri-vision-cross-audit-and-dual-render.md) | 三視覺模型全頁雙渲染並排交叉審查規格 | Implemented | `apple_vision_auditor`, `dual_render_comparator`, `visual_cross_audit_orchestrator` |

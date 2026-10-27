@@ -56,6 +56,7 @@ All notable changes to **literature-parser** are documented here
 - feat(verification): implement deterministic scoring matrix, TOC skeleton alignment, and web defect inspector with flash highlighting (by `@Antigravity`)
 - feat(anchors): implement GlossaryAnchor, FigureTableContinuityAuditor, and PedagogicalEnclosureAuditor (by `@Antigravity`)
 - feat(library): complete full library re-audit, AUDIT updates, and EPUB 3 rebuild across all 5 books (by `@Antigravity`)
+- feat(verification): implement tri-vision epub vs pdf dual-render cross-auditor with native apple vision ocr and minicpm-v (by `@Antigravity`)
 
 ### Changed
 - docs(migration): mark all migration acceptance criteria as completed (by `@antigravity`)

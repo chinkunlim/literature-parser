@@ -122,7 +122,8 @@ literature-parser/
 │   │   ├── TASK-058-playwright.json
 │   │   ├── TASK-059-fix-two-column-reading-flow-quiz.json
 │   │   ├── TASK-060-5-v2.json
-│   │   └── TASK-061-task.json
+│   │   ├── TASK-061-task.json
+│   │   └── TASK-062-apple-vision-minicpm-v-llama-vis.json
 │   ├── framework.lock                      # [框架鎖定檔] 框架版本與檔案雜湊，供 update_framework 判斷是否被修改
 │   └── project.toml                        # [專案設定・各專案自訂] 語言、分層、品質門檻、指令、業務規則
 ├── .cursor/                                # [Agent 轉接] Cursor 規則 (自動產生)
@@ -181,6 +182,7 @@ literature-parser/
 │   │   ├── 016-mermaid-arrow-corruption-eoc-profile-overwrite-and-hyphen-table-collision.md
 │   │   ├── 017-epub-gfm-table-mermaid-svg-and-two-col-soft-hyphen-healer.md
 │   │   ├── 018-epub-xml-parsing-corruption-and-tag-interleaving.md
+│   │   ├── 019-mllama-architecture-unsupported-in-ollama-macos.md
 │   │   ├── _TEMPLATE.md                    # 已知問題範本 (tracker_cli 會套用)
 │   │   └── KNOWN_ISSUES.md                 # 已知問題總表 (🔴/🟡/🟢)
 │   ├── migration/                          # [遷移紀錄] 舊專案搬移清單、批次與完成標準
@@ -216,6 +218,7 @@ literature-parser/
 │   ├── apply_theme.py
 │   ├── batch_audit_runner.py
 │   ├── re_audit_and_rebuild_library.py
+│   ├── run_visual_cross_audit.py
 │   └── test_split_and_profile.py
 ├── src/                                    # 【核心原始碼層】分層與依賴方向定義於 .agents/project.toml
 │   └── literature_parser/
@@ -416,6 +419,9 @@ literature-parser/
 │       │   │   └── text_utils.py
 │       │   ├── verification/
 │       │   │   ├── __init__.py
+│       │   │   ├── apple_vision_auditor.py
+│       │   │   ├── apple_vision_bridge.swift
+│       │   │   ├── dual_render_comparator.py
 │       │   │   ├── epub_visual_auditor.py
 │       │   │   ├── figure_table_continuity_auditor.py
 │       │   │   ├── formula_auditor.py
@@ -426,7 +432,8 @@ literature-parser/
 │       │   │   ├── pedagogical_enclosure_auditor.py
 │       │   │   ├── quality_engine.py
 │       │   │   ├── semantic_auditor.py
-│       │   │   └── toc_alignment_auditor.py
+│       │   │   ├── toc_alignment_auditor.py
+│       │   │   └── visual_cross_audit_orchestrator.py
 │       │   ├── __init__.py
 │       │   ├── audit_project.py
 │       │   ├── book_style.py
@@ -501,6 +508,7 @@ literature-parser/
 │   ├── test_v53_regex_bullet_and_watermark_filters.py
 │   ├── test_v54_accuracy_healing_and_bold_spacing.py
 │   ├── test_v54_epub_cover_and_layout_healing.py
+│   ├── test_v55_tri_vision_and_dual_render.py
 │   ├── test_visual_pdf_epub_diff.py
 │   ├── test_web_data_service.py
 │   ├── test_web_e2e_playwright.py

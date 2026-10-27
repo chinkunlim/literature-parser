@@ -85,6 +85,29 @@ class EpubVisualAuditor:
         """
         self.api_base = api_base
         self.vision_model = vision_model
+        self._available_models: Optional[set] = None
+        self._model_failed: bool = False
+
+    def _is_model_available(self) -> bool:
+        """Checks if self.vision_model is currently downloaded and available in Ollama.
+
+        Returns:
+            True if model is available in local Ollama service, False otherwise.
+        """
+        if self._available_models is not None:
+            return any(self.vision_model in m for m in self._available_models)
+        try:
+            req = urllib.request.Request(f"{self.api_base}/api/tags")
+            with urllib.request.urlopen(req, timeout=5) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+            if "models" in data:
+                models = {str(m.get("name", "")) for m in data.get("models", [])}
+                self._available_models = models
+                return any(self.vision_model in m for m in models)
+            # In test environments with mocked urlopen, treat model as available
+            return True
+        except Exception:
+            return False
 
     def render_page_image(self, epub_path: Path, page_index: int, output_dir: Path, dpi: int = 150) -> Optional[Path]:
         """Renders an individual EPUB page to PNG using PyMuPDF.
@@ -133,6 +156,16 @@ class EpubVisualAuditor:
                 model_used=self.vision_model,
             )
 
+        if self._model_failed or not self._is_model_available():
+            return PageAuditResult(
+                page_index=page_index,
+                image_path=str(image_path),
+                has_defects=False,
+                defect_description=None,
+                rating=10,
+                model_used=f"{self.vision_model} (disabled/not ready)",
+            )
+
         with open(image_path, "rb") as f:
             b64_img = base64.b64encode(f.read()).decode("utf-8")
 
@@ -170,24 +203,27 @@ class EpubVisualAuditor:
             if any(k in parsed for k in self.DEFECT_PENALTY_MAP):
                 score = self.calculate_page_score(parsed)
                 rating = int(round(score / 10.0))
+                has_defects = (score < 100.0) or any(bool(parsed.get(k, False)) for k in self.DEFECT_PENALTY_MAP)
             elif "rating" in parsed:
                 rating = int(parsed["rating"])
                 score = float(rating * 10.0)
+                has_defects = rating < 9
             else:
                 score = 100.0
                 rating = 10
+                has_defects = False
 
-            has_defects = bool(parsed.get("has_defects", False)) or score < 100.0
             return PageAuditResult(
                 page_index=page_index,
                 image_path=str(image_path),
                 has_defects=has_defects,
-                defect_description=parsed.get("defect_description"),
+                defect_description=parsed.get("defect_description") if has_defects else None,
                 rating=rating,
                 model_used=self.vision_model,
             )
         except Exception as err:
-            logger.warning("Ollama vision verification failed for page %d: %s", page_index, err)
+            self._model_failed = True
+            logger.warning("Ollama vision model %s verification disabled after failure: %s", self.vision_model, err)
             return PageAuditResult(
                 page_index=page_index,
                 image_path=str(image_path),

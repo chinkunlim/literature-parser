@@ -91,6 +91,7 @@ All notable changes to **literature-parser** are documented here
 - fix(toc): prevent rogue prose headings from hijacking chapter titles in EPUB TOC (by `@Antigravity`)
 - fix(layout): heal two-column flow, borderless quiz tables, TOC positioning, and EPUB chapter sort order (by `@Antigravity`)
 - fix(accuracy): heal typography bold spacing, vector figure text preservation, and outline bookmark validation (by `@Antigravity`)
+- fix(verification): enhance chapter epub page boundary resolution and toc keyword matching (by `@Antigravity`)
 
 ### Documentation
 - docs: update and synchronize all project markdown documentation (by `@antigravity`)

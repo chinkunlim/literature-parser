@@ -152,6 +152,8 @@ async function selectBook(bookId) {
     state.chapters = data.chapters || [];
     const listEl = document.getElementById("chapter-list");
     if (!listEl) return;
+    const badge = document.getElementById("chapter-count-badge");
+    if (badge) badge.textContent = `${state.chapters.length} 章`;
     listEl.innerHTML = state.chapters.map((ch) => `
       <li class="chapter-item ${ch.id === state.selectedChapterId ? "active" : ""}" data-id="${ch.id}">
         <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px;">${ch.title}</span>
@@ -161,6 +163,8 @@ async function selectBook(bookId) {
     document.querySelectorAll(".chapter-item").forEach((el) => {
       el.addEventListener("click", () => selectChapter(el.dataset.id));
     });
+    const filterInput = document.getElementById("chapter-filter-input");
+    if (filterInput && filterInput.value) filterChapters(filterInput.value);
     if (state.chapters.length > 0 && !state.selectedChapterId) selectChapter(state.chapters[0].id);
   } catch (err) {
     console.error("selectBook error:", err);
@@ -195,7 +199,10 @@ async function selectChapter(chId) {
     state.originalMarkdown = data.markdown || "";
     state.currentMarkdown = state.originalMarkdown;
     const txt = document.getElementById("markdown-textarea");
-    if (txt) txt.value = state.currentMarkdown;
+    if (txt) {
+      txt.value = state.currentMarkdown;
+      updateEditorStats();
+    }
     renderPreview(state.currentMarkdown);
     renderAuditInspector(data.audit_report);
   } catch (err) {
@@ -216,150 +223,61 @@ async function selectChapter(chId) {
 }
 
 /**
- * Renders Markdown into EPUB-like HTML preview with page anchors.
+ * Updates character count in editor toolbar.
+ * @returns {void}
+ */
+function updateEditorStats() {
+  const txt = document.getElementById("markdown-textarea");
+  const el = document.getElementById("editor-char-count");
+  if (txt && el) el.textContent = `${(txt.value || "").length.toLocaleString()} 字`;
+}
+
+/**
+ * Filters the chapter navigation list in real-time.
+ * @param {string} q - Keyword search query.
+ * @returns {void}
+ */
+function filterChapters(q) {
+  const kw = (q || "").toLowerCase().trim();
+  let count = 0;
+  document.querySelectorAll(".chapter-item").forEach((el) => {
+    const match = !kw || el.textContent.toLowerCase().includes(kw);
+    el.style.display = match ? "flex" : "none";
+    if (match) count++;
+  });
+  const b = document.getElementById("chapter-count-badge");
+  if (b) b.textContent = `${count} 章`;
+}
+
+/**
+ * Toggles the keyboard shortcuts guide dialog.
+ * @param {boolean} [force] - Optional explicit state.
+ * @returns {void}
+ */
+function toggleShortcutsModal(force) {
+  const m = document.getElementById("shortcuts-modal");
+  if (m) m.classList.toggle("active", typeof force === "boolean" ? force : !m.classList.contains("active"));
+}
+
+/**
+ * Navigates to adjacent chapter in current book.
+ * @param {number} delta - Chapter offset (-1 or 1).
+ * @returns {void}
+ */
+function navigateChapter(delta) {
+  const idx = state.chapters.findIndex((c) => c.id === state.selectedChapterId);
+  if (idx !== -1 && state.chapters[idx + delta]) selectChapter(state.chapters[idx + delta].id);
+}
+
+/**
+ * Renders Markdown into EPUB-like HTML preview with page anchors and tables.
  * @param {string} md - Markdown source.
  * @returns {void}
  */
 function renderPreview(md) {
   const c = document.getElementById("preview-viewport");
   if (!c) return;
-  const html = md
-    .replace(/^### (.*$)/gim, '<h3 style="font-size:1.15rem;margin:1.2rem 0 0.5rem;color:#111;">$1</h3>')
-    .replace(/^## (.*$)/gim, '<h2 style="font-size:1.35rem;margin:1.4rem 0 0.6rem;color:#111;border-bottom:1px solid #eee;">$1</h2>')
-    .replace(/^# (.*$)/gim, '<h1 style="font-size:1.6rem;margin:1.6rem 0 0.8rem;color:#000;">$1</h1>')
-    .replace(/\*\*(.*?)\*\*/gim, "<strong>$1</strong>")
-    .replace(/\*(.*?)\*/gim, "<em>$1</em>")
-    .replace(/!\[(.*?)\]\((.*?)\)/gim, '<div style="text-align:center;margin:1.2rem 0;"><img src="$2" alt="$1" style="max-width:90%;"><p style="font-size:0.8rem;color:#666;">$1</p></div>')
-    .replace(/<!--\s*page\s*0*(\d+)\s*-->/gim, '<div id="epub-page-$1" class="epub-page-divider" data-page="$1"><span class="epub-page-pill">Page $1</span></div>')
-    .replace(/\n\n/gim, "</p><p style=\"margin-bottom:1rem;text-indent:1.5rem;\">");
-  c.innerHTML = `<div style="max-width:760px;margin:0 auto;"><p style="margin-bottom:1rem;text-indent:1.5rem;">${html}</p></div>`;
-}
-
-/**
- * Opens correction modal with calculated diff snippet.
- * @returns {void}
- */
-function openCorrectionModal() {
-  const txt = document.getElementById("markdown-textarea");
-  if (txt) state.currentMarkdown = txt.value;
-  const diffEl = document.getElementById("modal-diff-preview");
-  if (state.originalMarkdown === state.currentMarkdown) {
-    diffEl.textContent = "內容未變動（直接記錄備註或建立標籤）。";
-  } else {
-    diffEl.textContent = `原長度: ${state.originalMarkdown.length} 字 ➔ 新長度: ${state.currentMarkdown.length} 字\n章節: ${state.selectedChapterId}`;
-  }
-  document.getElementById("correction-modal")?.classList.add("active");
-}
-
-/**
- * Submits chapter changes and records feedback to API.
- * @returns {Promise<void>}
- */
-async function submitCorrection() {
-  const issue = document.getElementById("modal-issue-type").value;
-  const notes = document.getElementById("modal-user-notes").value;
-  const rebuild = document.getElementById("modal-rebuild-epub").checked;
-  try {
-    showToast("儲存中並觸發 EPUB 重建...", "info");
-    const res = await fetch(`/api/books/${state.selectedBookId}/chapters/${state.selectedChapterId}/markdown`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ markdown: state.currentMarkdown, issue_type: issue, user_notes: notes, rebuild_epub: rebuild }),
-    });
-    const data = await res.json();
-    document.getElementById("correction-modal")?.classList.remove("active");
-    state.originalMarkdown = state.currentMarkdown;
-    renderPreview(state.currentMarkdown);
-    showToast(`儲存成功！(ID: ${data.correction_id.slice(0, 8)})`, "success");
-    loadDashboard();
-  } catch (err) {
-    showToast(`儲存失敗: ${err.message}`, "error");
-  }
-}
-
-/**
- * Fetches and displays visual diff sample gallery.
- * @returns {Promise<void>}
- */
-async function loadVisualDiffs() {
-  const g = document.getElementById("diff-gallery");
-  if (!g) return;
-  try {
-    const res = await fetch(`/api/books/${state.selectedBookId}/visual-diffs`);
-    const data = await res.json();
-    if (!data.samples?.length) {
-      g.innerHTML = '<p style="color:var(--text-secondary);padding:2rem;">此書籍尚無視覺比對樣本。</p>';
-      return;
-    }
-    g.innerHTML = data.samples.map((s) => `
-      <div class="diff-card">
-        <div class="diff-card-header">${s.title}</div>
-        <div class="diff-image-wrapper"><img src="${s.url}" alt="${s.title}" loading="lazy"></div>
-      </div>
-    `).join("");
-  } catch (err) {
-    console.error("loadVisualDiffs error:", err);
-  }
-}
-
-/**
- * Fetches and renders correction feedback history.
- * @returns {Promise<void>}
- */
-async function loadCorrections() {
-  const tbody = document.getElementById("corrections-tbody");
-  if (!tbody) return;
-  try {
-    const res = await fetch("/api/corrections");
-    const data = await res.json();
-    if (!data.corrections?.length) {
-      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-secondary);padding:2rem;">尚無修正記錄。</td></tr>';
-      return;
-    }
-    tbody.innerHTML = data.corrections.map((r) => `
-      <tr>
-        <td style="white-space:nowrap;font-size:0.75rem;">${r.created_at.split("T")[0]}</td>
-        <td><strong>${r.book_id}</strong><br><span style="font-size:0.75rem;color:var(--text-secondary);">${r.chapter_id}</span></td>
-        <td><span class="diff-badge diff-badge-${r.issue_type}">${r.issue_type}</span></td>
-        <td><pre style="max-height:80px;overflow-y:auto;font-size:0.75rem;color:#58a6ff;">${r.diff_snippet || "置換"}</pre></td>
-        <td style="font-size:0.8rem;">${r.user_notes || "-"}</td>
-        <td><button class="btn btn-danger" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="deleteCorrection('${r.id}')">刪除</button></td>
-      </tr>
-    `).join("");
-  } catch (err) {
-    console.error("loadCorrections error:", err);
-  }
-}
-
-/**
- * Deletes a correction record by identifier.
- * @param {string} id - Record identifier.
- * @returns {Promise<void>}
- */
-window.deleteCorrection = async function(id) {
-  if (!confirm("確定刪除此記錄？")) return;
-  try {
-    await fetch(`/api/corrections/${id}`, { method: "DELETE" });
-    showToast("已刪除記錄", "info");
-    loadCorrections();
-  } catch (err) {
-    showToast(`刪除失敗: ${err.message}`, "error");
-  }
-};
-
-/**
- * Triggers automated unit regression test suite generation.
- * @returns {Promise<void>}
- */
-async function generateRegressionTests() {
-  try {
-    showToast("正在分析問題並生成回歸測試...", "info");
-    const res = await fetch("/api/corrections/generate-tests", { method: "POST" });
-    const data = await res.json();
-    showToast(`成功生成 ${data.total_records} 個回歸測試！`, "success");
-  } catch (err) {
-    showToast(`生成失敗: ${err.message}`, "error");
-  }
+  c.innerHTML = typeof parseMarkdownToHtml === "function" ? parseMarkdownToHtml(md) : md;
 }
 
 /**
@@ -411,6 +329,33 @@ function init() {
   document.getElementById("btn-modal-confirm")?.addEventListener("click", submitCorrection);
   document.getElementById("btn-generate-tests")?.addEventListener("click", generateRegressionTests);
 
+  document.getElementById("chapter-filter-input")?.addEventListener("input", (e) => filterChapters(e.target.value));
+  document.getElementById("btn-copy-markdown")?.addEventListener("click", () => {
+    const txt = document.getElementById("markdown-textarea");
+    const val = txt ? txt.value : state.currentMarkdown;
+    if (!val) { showToast("無內容可複製", "info"); return; }
+    navigator.clipboard.writeText(val).then(() => showToast("📋 已複製 Markdown 到剪貼簿！", "success"));
+  });
+  document.getElementById("btn-shortcuts-help")?.addEventListener("click", () => toggleShortcutsModal(true));
+  document.getElementById("btn-shortcuts-close")?.addEventListener("click", () => toggleShortcutsModal(false));
+  document.getElementById("btn-shortcuts-ok")?.addEventListener("click", () => toggleShortcutsModal(false));
+
+  const mdTextarea = document.getElementById("markdown-textarea");
+  mdTextarea?.addEventListener("input", () => {
+    state.currentMarkdown = mdTextarea.value;
+    updateEditorStats();
+  });
+  mdTextarea?.addEventListener("keydown", (e) => {
+    if (e.key === "Tab") {
+      e.preventDefault();
+      const s = mdTextarea.selectionStart;
+      const end = mdTextarea.selectionEnd;
+      mdTextarea.value = mdTextarea.value.substring(0, s) + "  " + mdTextarea.value.substring(end);
+      mdTextarea.selectionStart = mdTextarea.selectionEnd = s + 2;
+      updateEditorStats();
+    }
+  });
+
   // Defect Drawer Toggle Listeners
   document.getElementById("btn-toggle-defects")?.addEventListener("click", () => {
     const drawer = document.getElementById("audit-defect-drawer");
@@ -438,6 +383,19 @@ function init() {
       e.preventDefault();
       resetPdfFeedZoom();
       return;
+    }
+    if (e.key === "Escape") {
+      document.getElementById("correction-modal")?.classList.remove("active");
+      document.getElementById("shortcuts-modal")?.classList.remove("active");
+      return;
+    }
+    if (!isEditing) {
+      if (e.key === "?") toggleShortcutsModal();
+      else if (e.key === "[") navigateChapter(-1);
+      else if (e.key === "]") navigateChapter(1);
+      else if (e.key === "1") setLayoutMode("pdf-only");
+      else if (e.key === "2") setLayoutMode("split");
+      else if (e.key === "3") setLayoutMode("editor-only");
     }
   });
 

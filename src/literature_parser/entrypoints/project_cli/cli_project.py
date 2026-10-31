@@ -615,7 +615,7 @@ Visualizes processing pipeline status, progress bars, and chapter stats.
     }}
     * {{ box-sizing: border-box; margin: 0; padding: 0; }}
     body {{
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background-color: var(--bg);
       color: var(--text);
       line-height: 1.5;
@@ -729,9 +729,10 @@ Visualizes processing pipeline status, progress bars, and chapter stats.
     </div>
   </header>
 
-  <div class="stats-summary" id="statsSummary"></div>
-
-  <div class="grid" id="booksGrid"></div>
+  <main>
+    <div class="stats-summary" id="statsSummary"></div>
+    <div class="grid" id="booksGrid"></div>
+  </main>
 
   <script>
     const books = {books_json};

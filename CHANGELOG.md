@@ -99,6 +99,7 @@ All notable changes to **literature-parser** are documented here
 - fix(layout): heal two-column flow, borderless quiz tables, TOC positioning, and EPUB chapter sort order (by `@Antigravity`)
 - fix(accuracy): heal typography bold spacing, vector figure text preservation, and outline bookmark validation (by `@Antigravity`)
 - fix(verification): enhance chapter epub page boundary resolution and toc keyword matching (by `@Antigravity`)
+- fix(entrypoints/test): fix entrypoints/test logic (ADR-014, ISSUE-019, ISSUE-020, TASK-056, TASK-057, TASK-058, TASK-060, TASK-061, TASK-062, TASK-063, TASK-064) (by `@Antigravity`)
 
 ### Documentation
 - docs: update and synchronize all project markdown documentation (by `@antigravity`)

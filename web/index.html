@@ -9,6 +9,9 @@ Canvas Pan & Zoom for Small Screens, and Resizable Split Panes.
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>📚 Literature Parser Studio — Dashboard & Comparison</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
@@ -53,7 +56,13 @@ Canvas Pan & Zoom for Small Screens, and Resizable Split Panes.
           <option value="">載入中...</option>
         </select>
 
-        <div class="tree-section-title" style="margin-top: 0.8rem;">章節清單</div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.8rem;">
+          <div class="tree-section-title" style="margin: 0;">章節清單</div>
+          <span id="chapter-count-badge" style="font-size: 0.68rem; color: var(--text-secondary);">0 章</span>
+        </div>
+        <div style="margin-top: 0.35rem;">
+          <input type="text" id="chapter-filter-input" class="form-control" placeholder="🔍 快速篩選章節..." style="font-size: 0.74rem; padding: 0.3rem 0.5rem; width: 100%;">
+        </div>
         <ul id="chapter-list" class="chapter-list">
           <li style="padding: 0.4rem; color: var(--text-secondary);">請先選擇書籍</li>
         </ul>
@@ -76,6 +85,7 @@ Canvas Pan & Zoom for Small Screens, and Resizable Split Panes.
             <button id="btn-layout-split" class="btn active" title="左右雙欄對照">⚖️ 雙欄</button>
             <button id="btn-layout-editor" class="btn" title="純編輯器檢視">✏️ 僅編輯</button>
           </div>
+          <button id="btn-shortcuts-help" class="btn" title="查看鍵盤快捷鍵指南 (按 ? 亦可開啟)">⌨️ 快捷鍵</button>
           <button id="btn-refresh" class="btn">🔄 重新整理</button>
           <button id="btn-rebuild-epub-top" class="btn btn-primary" style="display: none;">📦 重編 EPUB</button>
           <a id="btn-download-epub" class="btn" style="display: none; text-decoration: none;" target="_blank">⬇️ 下載</a>
@@ -119,7 +129,11 @@ Canvas Pan & Zoom for Small Screens, and Resizable Split Panes.
             <div class="pane-toolbar">
               <div style="display: flex; align-items: center; gap: 0.35rem;">
                 <span style="font-weight: 600;">📄 原始 PDF</span>
-                <span id="pdf-scroll-indicator" class="badge-score" style="background:#1f6feb20; color:var(--accent-blue-hover);">第 1 頁</span>
+                <div class="pdf-page-jumper" title="輸入頁碼按 Enter 即可快速跳頁">
+                  <span>第</span>
+                  <input type="number" id="pdf-page-jump-input" min="1" max="1" value="1" aria-label="當前頁碼">
+                  <span>/ <span id="pdf-page-total-count">1</span> 頁</span>
+                </div>
               </div>
               <!-- Sync Toggle & Zoom Controls -->
               <div style="display: flex; align-items: center; gap: 0.4rem;">
@@ -151,7 +165,9 @@ Canvas Pan & Zoom for Small Screens, and Resizable Split Panes.
                 <div id="tab-editor-raw" class="editor-tab" data-tab="raw">✏️ Markdown 編輯器</div>
               </div>
               <div style="display: flex; align-items: center; gap: 0.4rem;">
-                <button id="btn-save-correction" class="btn btn-success" title="儲存修改並記錄問題 (Cmd+S / Ctrl+S)">💾 儲存修改並記錄問題</button>
+                <span id="editor-char-count" style="font-size: 0.72rem; color: var(--text-secondary); margin-right: 0.2rem;">0 字</span>
+                <button id="btn-copy-markdown" class="btn" title="複製目前章節 Markdown 內容至剪貼簿">📋 複製</button>
+                <button id="btn-save-correction" class="btn btn-success" title="儲存修改並記錄問題 (Cmd+S / Ctrl+S)">💾 儲存並反饋</button>
               </div>
             </div>
 
@@ -275,12 +291,63 @@ Canvas Pan & Zoom for Small Screens, and Resizable Split Panes.
     </div>
   </div>
 
+  <!-- Modal: Keyboard Shortcuts Cheat Sheet -->
+  <div id="shortcuts-modal" class="modal-overlay">
+    <div class="modal-dialog" style="max-width: 520px;">
+      <div class="modal-header">
+        <h4 style="font-size: 0.95rem; display: flex; align-items: center; gap: 0.5rem;">
+          <span>⌨️</span><span>鍵盤快捷鍵指南 (Keyboard Shortcuts)</span>
+        </h4>
+        <button id="btn-shortcuts-close" class="btn" style="padding: 0.2rem 0.5rem;">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 1rem 1.25rem;">
+        <table class="shortcuts-table" style="width: 100%; border-collapse: collapse; font-size: 0.84rem;">
+          <tbody>
+            <tr>
+              <td style="padding: 0.5rem 0; width: 140px;"><kbd>Cmd / Ctrl + S</kbd></td>
+              <td style="color: var(--text-secondary);">儲存章節修改並記錄問題反饋</td>
+            </tr>
+            <tr>
+              <td style="padding: 0.5rem 0;"><kbd>[</kbd> / <kbd>]</kbd></td>
+              <td style="color: var(--text-secondary);">切換上一章節 / 下一章節</td>
+            </tr>
+            <tr>
+              <td style="padding: 0.5rem 0;"><kbd>1</kbd> / <kbd>2</kbd> / <kbd>3</kbd></td>
+              <td style="color: var(--text-secondary);">切換佈局 (僅 PDF / 雙欄對比 / 僅編輯)</td>
+            </tr>
+            <tr>
+              <td style="padding: 0.5rem 0;"><kbd>Cmd / Ctrl + 0</kbd></td>
+              <td style="color: var(--text-secondary);">重設 PDF 視角與頁面寬度</td>
+            </tr>
+            <tr>
+              <td style="padding: 0.5rem 0;"><kbd>+</kbd> / <kbd>-</kbd></td>
+              <td style="color: var(--text-secondary);">放大 / 縮小 PDF 頁面寬度</td>
+            </tr>
+            <tr>
+              <td style="padding: 0.5rem 0;"><kbd>?</kbd></td>
+              <td style="color: var(--text-secondary);">開啟 / 關閉本快捷鍵視窗</td>
+            </tr>
+            <tr>
+              <td style="padding: 0.5rem 0;"><kbd>Esc</kbd></td>
+              <td style="color: var(--text-secondary);">關閉任何開啟的彈出對話框</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer" style="justify-content: flex-end;">
+        <button id="btn-shortcuts-ok" class="btn btn-primary">知道了</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div id="toast-container"></div>
 
   <!-- Application Logic -->
   <script src="/static/panzoom.js"></script>
+  <script src="/static/markdown.js"></script>
   <script src="/static/audit.js"></script>
+  <script src="/static/corrections.js"></script>
   <script src="/static/app.js"></script>
 </body>
 </html>

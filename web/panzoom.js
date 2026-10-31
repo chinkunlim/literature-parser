@@ -66,8 +66,26 @@ function buildPdfScrollFeed(bookId, chapterId, totalPages) {
     firstImg.src = firstImg.dataset.src;
   }
 
-  const indicator = document.getElementById("pdf-scroll-indicator");
-  if (indicator) indicator.textContent = `第 1 / ${totalPages} 頁`;
+  const totalCountEl = document.getElementById("pdf-page-total-count");
+  if (totalCountEl) totalCountEl.textContent = String(totalPages);
+  const jumpInput = document.getElementById("pdf-page-jump-input");
+  if (jumpInput) {
+    jumpInput.max = String(totalPages);
+    jumpInput.value = "1";
+  }
+}
+
+/**
+ * Smoothly scrolls PDF feed to a specific page number.
+ * @param {number} pageNum - 1-based page number.
+ * @returns {void}
+ */
+function jumpToPdfPage(pageNum) {
+  const feed = document.getElementById("pdf-scroll-feed");
+  const targetCard = document.getElementById(`pdf-page-${pageNum}`);
+  if (feed && targetCard) {
+    feed.scrollTo({ top: targetCard.offsetTop - feed.offsetTop - 8, behavior: "smooth" });
+  }
 }
 
 /**
@@ -111,6 +129,18 @@ function initSyncScrollController() {
     toggleBtn.textContent = syncState.enabled ? "🔗 同步中" : "🔓 獨立滾動";
   });
 
+  const jumpInput = document.getElementById("pdf-page-jump-input");
+  jumpInput?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      const p = parseInt(jumpInput.value, 10);
+      if (!isNaN(p)) jumpToPdfPage(p);
+    }
+  });
+  jumpInput?.addEventListener("change", () => {
+    const p = parseInt(jumpInput.value, 10);
+    if (!isNaN(p)) jumpToPdfPage(p);
+  });
+
   // PDF Feed Scroll ➔ Syncs to EPUB Preview
   pdfFeed.addEventListener("scroll", () => {
     if (!syncState.enabled || syncState.isProgrammatic) return;
@@ -129,8 +159,10 @@ function initSyncScrollController() {
       }
     }
 
-    const indicator = document.getElementById("pdf-scroll-indicator");
-    if (indicator) indicator.textContent = `第 ${activePage} / ${cards.length || 1} 頁`;
+    const currentJumpInput = document.getElementById("pdf-page-jump-input");
+    if (currentJumpInput && document.activeElement !== currentJumpInput) {
+      currentJumpInput.value = String(activePage);
+    }
 
     // Locate target anchor in EPUB preview
     const targetAnchor = epubPreview.querySelector(`#epub-page-${activePage}`);
@@ -187,8 +219,10 @@ function initSyncScrollController() {
       syncState.isProgrammatic = true;
       const targetTop = targetCard.offsetTop - pdfFeed.offsetTop - 16;
       pdfFeed.scrollTo({ top: Math.max(0, targetTop), behavior: "smooth" });
-      const indicator = document.getElementById("pdf-scroll-indicator");
-      if (indicator) indicator.textContent = `第 ${activePage} 頁`;
+      const curJump = document.getElementById("pdf-page-jump-input");
+      if (curJump && document.activeElement !== curJump) {
+        curJump.value = String(activePage);
+      }
       clearTimeout(syncState.timer);
       syncState.timer = setTimeout(() => { syncState.isProgrammatic = false; }, 140);
     }

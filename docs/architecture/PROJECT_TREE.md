@@ -124,7 +124,8 @@ literature-parser/
 │   │   ├── TASK-060-5-v2.json
 │   │   ├── TASK-061-task.json
 │   │   ├── TASK-062-apple-vision-minicpm-v-llama-vis.json
-│   │   └── TASK-063-adr.json
+│   │   ├── TASK-063-adr.json
+│   │   └── TASK-064-user-friendly.json
 │   ├── framework.lock                      # [框架鎖定檔] 框架版本與檔案雜湊，供 update_framework 判斷是否被修改
 │   └── project.toml                        # [專案設定・各專案自訂] 語言、分層、品質門檻、指令、業務規則
 ├── .cursor/                                # [Agent 轉接] Cursor 規則 (自動產生)
@@ -521,8 +522,10 @@ literature-parser/
 ├── web/
 │   ├── app.js
 │   ├── audit.js
+│   ├── corrections.js
 │   ├── dashboard.html
 │   ├── index.html
+│   ├── markdown.js
 │   ├── panzoom.js
 │   ├── styles.css
 │   └── WEB.md

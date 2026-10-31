@@ -241,6 +241,92 @@ class TestWebE2EPlaywright(unittest.TestCase):
 
             browser.close()
 
+    def test_keyboard_shortcuts_modal_toggle(self) -> None:
+        """Verifies opening and closing the keyboard shortcuts cheat sheet modal."""
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page(viewport={"width": 1280, "height": 800})
+            page.goto(self.base_url)
+            page.wait_for_selector("#btn-shortcuts-help")
+
+            # 1. Click shortcuts button
+            page.click("#btn-shortcuts-help")
+            modal = page.locator("#shortcuts-modal")
+            self.assertTrue(modal.is_visible())
+            self.assertIn("active", modal.get_attribute("class") or "")
+            self.assertIn("Cmd / Ctrl + S", modal.inner_text())
+
+            # 2. Close via Escape key
+            page.keyboard.press("Escape")
+            time.sleep(0.2)
+            self.assertFalse(modal.is_visible())
+
+            # 3. Open via '?' key
+            page.keyboard.press("?")
+            time.sleep(0.2)
+            self.assertTrue(modal.is_visible())
+
+            # 4. Close via Close button
+            page.click("#btn-shortcuts-close")
+            time.sleep(0.2)
+            self.assertFalse(modal.is_visible())
+
+            browser.close()
+
+    def test_markdown_rich_rendering_and_table_support(self) -> None:
+        """Verifies high-fidelity Markdown parsing for tables, callouts, lists and anchors."""
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page(viewport={"width": 1280, "height": 800})
+            page.goto(self.base_url)
+
+            # Test pure parseMarkdownToHtml in client context
+            test_md = (
+                "# Main Title\n\n"
+                "<!-- Page 1 -->\n\n"
+                "Introductory paragraph.\n\n"
+                "| Header 1 | Header 2 |\n"
+                "| :--- | :---: |\n"
+                "| Value A | Value B |\n\n"
+                "> A significant note in a callout.\n\n"
+                "- Bullet Item 1\n"
+                "- Bullet Item 2\n"
+            )
+
+            html_result = page.evaluate("(md) => parseMarkdownToHtml(md)", test_md)
+            self.assertIn('class="epub-h1"', html_result)
+            self.assertIn('id="epub-page-1"', html_result)
+            self.assertIn('class="epub-table"', html_result)
+            self.assertIn('class="epub-blockquote"', html_result)
+            self.assertIn('class="epub-list"', html_result)
+            self.assertIn("Value A", html_result)
+
+            browser.close()
+
+    def test_chapter_filter_search(self) -> None:
+        """Verifies real-time chapter search and filtering in the sidebar."""
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page(viewport={"width": 1280, "height": 800})
+            page.goto(self.base_url)
+            page.wait_for_selector("#chapter-filter-input")
+
+            # Check that chapter-filter-input exists and can be typed into
+            filter_input = page.locator("#chapter-filter-input")
+            self.assertTrue(filter_input.is_visible())
+            filter_input.fill("nonexistent_chapter_query_12345")
+            time.sleep(0.2)
+
+            badge = page.locator("#chapter-count-badge")
+            self.assertEqual(badge.inner_text(), "0 章")
+
+            # Clear search
+            filter_input.fill("")
+            time.sleep(0.2)
+            self.assertNotEqual(badge.inner_text(), "0 章")
+
+            browser.close()
+
 
 if __name__ == "__main__":
     unittest.main()

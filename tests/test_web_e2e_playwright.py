@@ -62,6 +62,13 @@ class TestWebE2EPlaywright(unittest.TestCase):
         Returns:
             None
         """
+        try:
+            with sync_playwright() as p:
+                b = p.chromium.launch(headless=True)
+                b.close()
+        except Exception as exc:
+            raise unittest.SkipTest(f"Playwright chromium browser not available: {exc}")
+
         if not _is_server_listening("127.0.0.1", 8767):
             cls.server_port = _find_free_port()
             cls.base_url = f"http://127.0.0.1:{cls.server_port}"

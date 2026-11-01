@@ -111,6 +111,7 @@ All notable changes to **literature-parser** are documented here
 - docs: update all architecture, ADR, known issues, specs, and README markdown files (by `@antigravity`)
 - docs(adr/docs): update adr/docs documentation (ADR-009, ADR-010, ADR-011, ADR-012, ISSUE-006, ISSUE-015, ISSUE-016, ISSUE-017, ISSUE-018, TASK-039, TASK-040, TASK-041, TASK-047, TASK-048) (by `@Antigravity`)
 - docs: synchronize full technical records including ADR-014, ISSUE-020, SPEC-011, architecture, and project rules (by `@Antigravity`)
+- docs(standards): sync web app and architecture rules from template (by `@antigravity`)
 
 ### Testing
 - test(workflows): verify all CLI workflows, fix pathing and pure-python fallbacks (by `@antigravity`)

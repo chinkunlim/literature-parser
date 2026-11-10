@@ -42,6 +42,10 @@ literature-parser/
 │   │   │   ├── scripts/
 │   │   │   │   └── review_guard.py
 │   │   │   └── SKILL.md
+│   │   ├── compliance-scanner/
+│   │   │   ├── scripts/
+│   │   │   │   └── scan_compliance.py
+│   │   │   └── SKILL.md
 │   │   ├── frontend-design/                # [Skill] Web App 響應式架構、無障礙檢查與視覺品味 (Anti-Slop) 審查
 │   │   │   ├── scripts/
 │   │   │   │   ├── frontend_tool.py

@@ -68,13 +68,23 @@
 
 ---
 
-## 快速開始
+## 快速安裝與開始 (Quick Install)
 
-### 1. 環境前置檢查
-本專案依賴純本地 Python 工具鏈與可選的本地 OCR / PDF 轉換工具：
-
+### 1. 一鍵安裝與環境初始化
+專案採用 `uv` 管理虛擬隔離環境，執行以下指令完成環境檢查、Git Hook 啟用、`DATA_DIR` 初始化與依賴安裝：
 ```bash
-# 系統前置軟硬體與 Ollama 健康檢查
+python3 scripts/agentctl.py doctor --fix
+python3 scripts/agentctl.py setup --install
+```
+
+環境設定檔複製自 `.env.example`（設定檔與資料夾位於專案目錄外之 `DATA_DIR`）：
+```bash
+cp .env.example .env
+```
+
+### 2. 環境前置檢查與選配工具
+確認本地 Python 工具鏈與 Ollama 健康狀態：
+```bash
 uv run literature-parser doctor
 ```
 
@@ -83,16 +93,19 @@ uv run literature-parser doctor
 brew install poppler tesseract
 ```
 
-### 2. 環境與依賴
-專案採用 `uv` 管理環境與虛擬隔離環境：
+---
+
+## 後期平滑更新 (Smooth Update)
+
+拉取新版程式碼並同步鎖定依賴：
 ```bash
-python3 scripts/agentctl.py setup --install
+git pull --ff-only
+uv sync
+python3 scripts/agentctl.py doctor
 ```
 
-環境設定檔複製自 `.env.example`（設定檔與資料夾位於專案目錄外之 `DATA_DIR`）：
-```bash
-cp .env.example .env
-```
+- **資料與設定保護**：更新流程不會覆蓋您的 `.env`、`config/theme.json` 自訂樣式與專案目錄外的 `DATA_DIR`（所有原始書籍、Markdown 產出、斷點狀態與 `corrections.json` 均完整保留）。
+- **框架對齊**：若需檢查與母版同步狀態，可執行 `python3 scripts/agentctl.py scan`。
 
 ---
 

@@ -5,18 +5,29 @@
 <!-- LIVE_STATE_START -->
 ## 📊 即時狀態看板 (Live Snapshot)
 
-- **最後更新時間**: `2026-11-01 15:14 UTC`
+- **最後更新時間**: `2026-11-22 13:26 UTC`
 - **最近操作 Agent**: `antigravity`
 - **目前 Git 分支**: `main`
-- **最新 Git Commit**: `cef019d chore: update framework to v3.4.0 [agent:antigravity]`
+- **最新 Git Commit**: `e2a55de chore(compliance): align AGENTS rules, skills config, and README install/update docs with v3.6.0 [agent:antigravity]`
 
 ### 🎯 進行中 / 待接手任務 (Active & Handed-Off Tasks)
 
-> 目前無進行中或待接手任務。可執行 `python3 scripts/agentctl.py task create "任務名稱" --agent <name>` 建立任務。
+| 任務 | 狀態 | 目前/上一位 Agent | 建議接手 | 相關範圍 | 已完成 | 待辦與卡點 |
+|---|---|---|---|---|---|---|
+| **TASK-065**<br/>Refactor 445 Code Review Guard warnings and isolate test_web_routes.py | 🟠 `handed_off` (待接手) | `antigravity` | `any` | `src/literature_parser/adapters/core/chapter_converter.py`, `src/literature_parser/adapters/core/orchestrator.py`, `web/`, `tests/test_web_routes.py` | Completed v3.6.0 framework update and compliance audit (scan 92/100; 0 CRITICAL, 445 pre-existing IMPORTANT warnings + 1 test isolation defect identified) | **TODO**: (1) Isolate tests/test_web_routes.py::test_corrections_endpoints so POST /api/corrections/generate-tests writes to a TemporaryDirectory instead of overwriting tracked tests/test_user_corrections_regression.py with a new UUID on every unittest run. (2) Run review_guard.py and incrementally refactor the 445 pre-existing [IMPORTANT] size/nesting/params warnings (chapter_converter.py, orchestrator.py, web/{audit,markdown,panzoom}.js, etc.) in safe batches while keeping all offline tests green. |
 
 <!-- LIVE_STATE_END -->
 
 ## 📜 交接與活動時間軸 (Handoff & Activity Timeline)
+
+### [2026-11-22 13:26 UTC] 任務交接 `TASK-065` — Refactor 445 Code Review Guard warnings and isolate test_web_routes.py (by `antigravity`)
+- **交接狀態**: 🟠 `handed_off` (`antigravity` ➔ `any`)
+- **已完成進度 (Done)**: Completed v3.6.0 framework update and compliance audit (scan 92/100; 0 CRITICAL, 445 pre-existing IMPORTANT warnings + 1 test isolation defect identified)
+- **待接手事項 (TODO)**: (1) Isolate tests/test_web_routes.py::test_corrections_endpoints so POST /api/corrections/generate-tests writes to a TemporaryDirectory instead of overwriting tracked tests/test_user_corrections_regression.py with a new UUID on every unittest run. (2) Run review_guard.py and incrementally refactor the 445 pre-existing [IMPORTANT] size/nesting/params warnings (chapter_converter.py, orchestrator.py, web/{audit,markdown,panzoom}.js, etc.) in safe batches while keeping all offline tests green.
+
+### [2026-11-22 13:26 UTC] 建立任務 `TASK-065`: Refactor 445 Code Review Guard warnings and isolate test_web_routes.py (by `antigravity`)
+- **狀態**: `in_progress`
+- **相關範圍**: `src/literature_parser/adapters/core/chapter_converter.py, src/literature_parser/adapters/core/orchestrator.py, web/, tests/test_web_routes.py`
 
 ### [2026-11-01 15:14 UTC] Session Closeout (結束對話收尾) (by `antigravity`)
 - **檢查結果**: 測試與 Code Review Guard 通過
@@ -97,11 +108,3 @@
 ### [2026-10-26 15:13 UTC] 建立任務 `TASK-059`: Fix two-column reading flow, quiz tables, TOC positioning, and EPUB callouts (by `Antigravity`)
 - **狀態**: `in_progress`
 - **相關範圍**: `-`
-
-### [2026-10-26 11:48 UTC] 完成任務 `TASK-057` — 全書庫5本書清空與雙閘門全流程重新生成 (by `Antigravity`)
-- **狀態**: ✅ 已完成 (`done`)
-- **完成摘要**: (無)
-
-### [2026-10-26 10:14 UTC] 完成任務 `TASK-058` — 修復側邊欄折疊排版並建立Playwright測試 (by `Antigravity`)
-- **狀態**: ✅ 已完成 (`done`)
-- **完成摘要**: (無)

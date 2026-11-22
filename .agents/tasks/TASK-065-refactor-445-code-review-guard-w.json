@@ -1,0 +1,35 @@
+{
+  "id": "TASK-065",
+  "title": "Refactor 445 Code Review Guard warnings and isolate test_web_routes.py",
+  "status": "handed_off",
+  "agent": "antigravity",
+  "handed_off_from": "antigravity",
+  "handed_off_to": "any",
+  "paths": [
+    "src/literature_parser/adapters/core/chapter_converter.py",
+    "src/literature_parser/adapters/core/orchestrator.py",
+    "web/",
+    "tests/test_web_routes.py"
+  ],
+  "done_items": "Completed v3.6.0 framework update and compliance audit (scan 92/100; 0 CRITICAL, 445 pre-existing IMPORTANT warnings + 1 test isolation defect identified)",
+  "todo_items": "(1) Isolate tests/test_web_routes.py::test_corrections_endpoints so POST /api/corrections/generate-tests writes to a TemporaryDirectory instead of overwriting tracked tests/test_user_corrections_regression.py with a new UUID on every unittest run. (2) Run review_guard.py and incrementally refactor the 445 pre-existing [IMPORTANT] size/nesting/params warnings (chapter_converter.py, orchestrator.py, web/{audit,markdown,panzoom}.js, etc.) in safe batches while keeping all offline tests green.",
+  "blockers": "",
+  "created_at": "2026-11-22 13:26 UTC",
+  "updated_at": "2026-11-22 13:26 UTC",
+  "history": [
+    {
+      "timestamp": "2026-11-22 13:26 UTC",
+      "action": "created_and_claimed",
+      "agent": "antigravity"
+    },
+    {
+      "timestamp": "2026-11-22 13:26 UTC",
+      "action": "handed_off",
+      "from_agent": "antigravity",
+      "to_agent": "any",
+      "done_items": "Completed v3.6.0 framework update and compliance audit (scan 92/100; 0 CRITICAL, 445 pre-existing IMPORTANT warnings + 1 test isolation defect identified)",
+      "todo_items": "(1) Isolate tests/test_web_routes.py::test_corrections_endpoints so POST /api/corrections/generate-tests writes to a TemporaryDirectory instead of overwriting tracked tests/test_user_corrections_regression.py with a new UUID on every unittest run. (2) Run review_guard.py and incrementally refactor the 445 pre-existing [IMPORTANT] size/nesting/params warnings (chapter_converter.py, orchestrator.py, web/{audit,markdown,panzoom}.js, etc.) in safe batches while keeping all offline tests green.",
+      "blockers": ""
+    }
+  ]
+}
